@@ -79,10 +79,10 @@ public class SwerveModule {
     driveEncoder.setVelocityConversionFactor(ModuleConstants.DRIVE_ENCODER_MPS_PER_REV);
 
     //Set absolute encoder magnet configuration
-    var magnetConfig = new MagnetSensorConfigs();
-    magnetConfig.SensorDirection = directionValue;
-    magnetConfig.MagnetOffset = -absOffset;
-    this.absEncoder.getConfigurator().apply(magnetConfig);
+    //var magnetConfig = new MagnetSensorConfigs();
+    //magnetConfig.SensorDirection = directionValue;
+    //magnetConfig.MagnetOffset = -absOffset;
+    //this.absEncoder.getConfigurator().apply(magnetConfig);
 
     // Limit the PID Controller's input range between -pi and pi and set the input
     // to be continuous.
@@ -126,8 +126,10 @@ public class SwerveModule {
   }
 
   public double getAbsPositionZeroed() {
-    var zeroedPosition = absEncoder.getAbsolutePosition();
-    return Units.degreesToRadians(zeroedPosition.getValue());
+    var angle = absEncoder.getAbsolutePosition();
+    //return Units.degreesToRadians(angle.getValue());
+    System.out.println(angle.getValue());
+    return angle.getValue();
   }
 
   public double getCommandedSpeed(){

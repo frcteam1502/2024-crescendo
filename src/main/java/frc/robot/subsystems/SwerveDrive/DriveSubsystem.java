@@ -61,10 +61,10 @@ final class DriveConstants {
   public static final boolean FrontRightTurningMotorReversed = true;
   public static final boolean BackRightTurningMotorReversed = true;
 
-  public static final CANSparkMax.IdleMode FrontLeftTurningMotorBrake = IdleMode.kCoast;
-  public static final CANSparkMax.IdleMode BackLeftTurningMotorBrake = IdleMode.kCoast;
-  public static final CANSparkMax.IdleMode FrontRightTurningMotorBrake = IdleMode.kCoast;
-  public static final CANSparkMax.IdleMode BackRightTurningMotorBrake = IdleMode.kCoast;
+  public static final CANSparkMax.IdleMode FrontLeftTurningMotorBrake = IdleMode.kBrake;
+  public static final CANSparkMax.IdleMode BackLeftTurningMotorBrake = IdleMode.kBrake;
+  public static final CANSparkMax.IdleMode FrontRightTurningMotorBrake = IdleMode.kBrake;
+  public static final CANSparkMax.IdleMode BackRightTurningMotorBrake = IdleMode.kBrake;
 
   //Drive Motors
   public static final boolean FrontLeftDriveMotorReversed = false;
@@ -72,10 +72,10 @@ final class DriveConstants {
   public static final boolean FrontRightDriveMotorReversed = false;
   public static final boolean BackRightDriveMotorReversed = false;
 
-  public static final CANSparkMax.IdleMode FrontLeftDriveMotorBrake = IdleMode.kCoast;
-  public static final CANSparkMax.IdleMode BackLeftDriveMotorBrake = IdleMode.kCoast;
-  public static final CANSparkMax.IdleMode FrontRightDriveMotorBrake = IdleMode.kCoast;
-  public static final CANSparkMax.IdleMode BackRightDriveMotorBrake = IdleMode.kCoast;
+  public static final CANSparkMax.IdleMode FrontLeftDriveMotorBrake = IdleMode.kBrake;
+  public static final CANSparkMax.IdleMode BackLeftDriveMotorBrake = IdleMode.kBrake;
+  public static final CANSparkMax.IdleMode FrontRightDriveMotorBrake = IdleMode.kBrake;
+  public static final CANSparkMax.IdleMode BackRightDriveMotorBrake = IdleMode.kBrake;
 
   //Wheel Base
   public static final double WHEEL_BASE_WIDTH = Units.inchesToMeters(23.25);
@@ -215,22 +215,28 @@ public class DriveSubsystem extends SubsystemBase{
     SmartDashboard.putNumber("Robot Relative vX Speed Command", speedCommands.vxMetersPerSecond);
     SmartDashboard.putNumber("Robot Relative vY Speed Command", speedCommands.vyMetersPerSecond);
 
+    SmartDashboard.putNumber("Gyro Yaw", getIMU_Yaw());
+
     //Swerve Module info
     SmartDashboard.putNumber("Front Left Speed Command", frontLeft.getCommandedSpeed());
     SmartDashboard.putNumber("Front Left Angle Command", frontLeft.getCommandedAngle());
     SmartDashboard.putNumber("Front Left Measured Speed", frontLeft.getModuleVelocity());
+    SmartDashboard.putNumber("Front Left CANcoder Angle", frontLeft.getAbsPositionZeroed());
 
     SmartDashboard.putNumber("Front Right Speed Command", frontRight.getCommandedSpeed());
     SmartDashboard.putNumber("Front Right Angle Command", frontRight.getCommandedAngle());
     SmartDashboard.putNumber("Front Right Measured Speed", frontRight.getModuleVelocity());
+    SmartDashboard.putNumber("Front Right CANcoder Angle", frontRight.getAbsPositionZeroed());
 
     SmartDashboard.putNumber("Rear Right Speed Command", backRight.getCommandedSpeed());
     SmartDashboard.putNumber("Rear Right Angle Command", backRight.getCommandedAngle());
     SmartDashboard.putNumber("Rear Right Measured Speed", backRight.getModuleVelocity());
+    SmartDashboard.putNumber("Rear Right CANcoder Angle", backRight.getAbsPositionZeroed());
 
     SmartDashboard.putNumber("Rear Left Speed Command", backLeft.getCommandedSpeed());
     SmartDashboard.putNumber("Rear Left Angle Command", backLeft.getCommandedAngle());
     SmartDashboard.putNumber("Rear Left Measured Speed", backLeft.getModuleVelocity());
+    SmartDashboard.putNumber("Rear Left CANcoder Angle", backLeft.getAbsPositionZeroed());
   }
   
   @Override
