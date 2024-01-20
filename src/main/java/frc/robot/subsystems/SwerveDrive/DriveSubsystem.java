@@ -1,5 +1,7 @@
 package frc.robot.subsystems.SwerveDrive;
 
+import javax.swing.text.Utilities;
+
 //import frc.robot.Logger;
 
 import com.ctre.phoenix6.hardware.CANcoder;
@@ -34,22 +36,22 @@ final class CANCoders {
   //Front Left CANCoder
   public static final CANcoder FRONT_LEFT_CAN_CODER = new CANcoder(16);
   public static final SensorDirectionValue FRONT_LEFT_CAN_CODER_DIRECTION = SensorDirectionValue.CounterClockwise_Positive;
-  public static final double FRONT_LEFT_CAN_CODER_OFFSET = 241.348 - 180.0;
+  public static final double FRONT_LEFT_CAN_CODER_OFFSET = 151.96;
 
   //Front Right CANCoder
   public static final CANcoder FRONT_RIGHT_CAN_CODER = new CANcoder(10);
   public static final SensorDirectionValue FRONT_RIGHT_CAN_CODER_DIRECTION = SensorDirectionValue.CounterClockwise_Positive;
-  public static final double FRONT_RIGHT_CAN_CODER_OFFSET = 29.883;
+  public static final double FRONT_RIGHT_CAN_CODER_OFFSET = 121.81;
 
   //Back Left CANCoder
   public static final CANcoder BACK_LEFT_CAN_CODER = new CANcoder(4);
   public static final SensorDirectionValue BACK_LEFT_CAN_CODER_DIRECTION = SensorDirectionValue.CounterClockwise_Positive;
-  public static final double BACK_LEFT_CAN_CODER_OFFSET = 95.977 - 180;
+  public static final double BACK_LEFT_CAN_CODER_OFFSET = 4.83;
 
   //Back Right CANCoder
   public static final CANcoder BACK_RIGHT_CAN_CODER = new CANcoder(8);
   public static final SensorDirectionValue BACK_RIGHT_CAN_CODER_DIRECTION = SensorDirectionValue.CounterClockwise_Positive;
-  public static final double BACK_RIGHT_CAN_CODER_OFFSET = 36.562;
+  public static final double BACK_RIGHT_CAN_CODER_OFFSET = 127.26;
 }
 
 final class DriveConstants {
@@ -67,8 +69,8 @@ final class DriveConstants {
   public static final CANSparkMax.IdleMode BackRightTurningMotorBrake = IdleMode.kBrake;
 
   //Drive Motors
-  public static final boolean FrontLeftDriveMotorReversed = false;
-  public static final boolean BackLeftDriveMotorReversed = false;
+  public static final boolean FrontLeftDriveMotorReversed = true;
+  public static final boolean BackLeftDriveMotorReversed = true;
   public static final boolean FrontRightDriveMotorReversed = false;
   public static final boolean BackRightDriveMotorReversed = false;
 
@@ -221,22 +223,21 @@ public class DriveSubsystem extends SubsystemBase{
     SmartDashboard.putNumber("Front Left Speed Command", frontLeft.getCommandedSpeed());
     SmartDashboard.putNumber("Front Left Angle Command", frontLeft.getCommandedAngle());
     SmartDashboard.putNumber("Front Left Measured Speed", frontLeft.getModuleVelocity());
-    SmartDashboard.putNumber("Front Left CANcoder Angle", frontLeft.getAbsPositionZeroed());
+    SmartDashboard.putNumber("Front Left CANcoder Angle", (frontLeft.getAbsPositionZeroed()*(180/Math.PI)));
 
     SmartDashboard.putNumber("Front Right Speed Command", frontRight.getCommandedSpeed());
     SmartDashboard.putNumber("Front Right Angle Command", frontRight.getCommandedAngle());
     SmartDashboard.putNumber("Front Right Measured Speed", frontRight.getModuleVelocity());
-    SmartDashboard.putNumber("Front Right CANcoder Angle", frontRight.getAbsPositionZeroed());
+    SmartDashboard.putNumber("Front Right CANcoder Angle", (frontRight.getAbsPositionZeroed()*(180/Math.PI)));
 
     SmartDashboard.putNumber("Rear Right Speed Command", backRight.getCommandedSpeed());
     SmartDashboard.putNumber("Rear Right Angle Command", backRight.getCommandedAngle());
     SmartDashboard.putNumber("Rear Right Measured Speed", backRight.getModuleVelocity());
-    SmartDashboard.putNumber("Rear Right CANcoder Angle", backRight.getAbsPositionZeroed());
-
+    SmartDashboard.putNumber("Rear Right CANcoder Angle", (backRight.getAbsPositionZeroed()*(180/Math.PI)));
     SmartDashboard.putNumber("Rear Left Speed Command", backLeft.getCommandedSpeed());
     SmartDashboard.putNumber("Rear Left Angle Command", backLeft.getCommandedAngle());
     SmartDashboard.putNumber("Rear Left Measured Speed", backLeft.getModuleVelocity());
-    SmartDashboard.putNumber("Rear Left CANcoder Angle", backLeft.getAbsPositionZeroed());
+    SmartDashboard.putNumber("Rear Left CANcoder Angle", (backLeft.getAbsPositionZeroed()*(180/Math.PI)));
   }
   
   @Override

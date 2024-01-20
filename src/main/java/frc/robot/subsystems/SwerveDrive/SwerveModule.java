@@ -1,7 +1,9 @@
 package frc.robot.subsystems.SwerveDrive;
 
+import com.ctre.phoenix6.configs.CANcoderConfiguration;
 import com.ctre.phoenix6.configs.MagnetSensorConfigs;
 import com.ctre.phoenix6.hardware.CANcoder;
+import com.ctre.phoenix6.signals.AbsoluteSensorRangeValue;
 import com.ctre.phoenix6.signals.SensorDirectionValue;
 
 import com.revrobotics.CANSparkMax;
@@ -79,10 +81,12 @@ public class SwerveModule {
     driveEncoder.setVelocityConversionFactor(ModuleConstants.DRIVE_ENCODER_MPS_PER_REV);
 
     //Set absolute encoder magnet configuration
-    //var magnetConfig = new MagnetSensorConfigs();
-    //magnetConfig.SensorDirection = directionValue;
-    //magnetConfig.MagnetOffset = -absOffset;
-    //this.absEncoder.getConfigurator().apply(magnetConfig);
+    CANcoderConfiguration config = new CANcoderConfiguration();
+    double offsetRotations = -absOffset/360;
+    config.MagnetSensor.MagnetOffset = offsetRotations;
+    config.MagnetSensor.SensorDirection = directionValue;
+    config.MagnetSensor.AbsoluteSensorRange = AbsoluteSensorRangeValue.Unsigned_0To1;
+    this.absEncoder.getConfigurator().apply(config);
 
     // Limit the PID Controller's input range between -pi and pi and set the input
     // to be continuous.
@@ -126,10 +130,9 @@ public class SwerveModule {
   }
 
   public double getAbsPositionZeroed() {
+    //CANcoders in Phoenix return rotations 0 to 1
     var angle = absEncoder.getAbsolutePosition();
-    //return Units.degreesToRadians(angle.getValue());
-    System.out.println(angle.getValue());
-    return angle.getValue();
+    return angle.getValue()*2.0*Math.PI;
   }
 
   public double getCommandedSpeed(){
