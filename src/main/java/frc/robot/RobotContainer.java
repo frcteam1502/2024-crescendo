@@ -5,8 +5,10 @@
 package frc.robot;
 
 import frc.robot.subsystems.PowerManagement.MockDetector;
+import frc.robot.subsystems.ShooterIntake.ShooterIntake;
 import frc.robot.commands.Autos;
 import frc.robot.commands.ControllerCommands;
+import frc.robot.commands.ShooterIntakeCommands;
 import frc.robot.subsystems.SwerveDrive.DriveSubsystem;
 import frc.robot.subsystems.ExampleSubsystem;
 import edu.wpi.first.wpilibj2.command.Command;
@@ -22,6 +24,7 @@ import edu.wpi.first.wpilibj2.command.button.Trigger;
 public class RobotContainer {
   // The robot's subsystems and commands are defined here...
   public final DriveSubsystem driveSubsystem = new DriveSubsystem();
+  public final ShooterIntake shooterIntake = new ShooterIntake();
   //private final PdpSubsystem pdpSubsystem = new PdpSubsystem();
   
   private final ExampleSubsystem m_exampleSubsystem = new ExampleSubsystem();
@@ -48,8 +51,13 @@ public class RobotContainer {
    * joysticks}.
    */
   private void configureBindings() {
+    //DriveSubsystem
     driveSubsystem.setDefaultCommand(new ControllerCommands(driveSubsystem, new MockDetector())); //USES THE LEFT BUMPER TO SLOW DOWN
 
+    //ShooterIntake
+    shooterIntake.setDefaultCommand(new ShooterIntakeCommands(shooterIntake));
+    
+    
     /* sample code
     // Schedule `ExampleCommand` when `exampleCondition` changes to `true`
     new Trigger(m_exampleSubsystem::exampleCondition)
