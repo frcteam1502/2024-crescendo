@@ -1,5 +1,7 @@
 package frc.robot.subsystems.SwerveDrive;
 
+import java.util.function.BooleanSupplier;
+
 import javax.swing.text.Utilities;
 
 //import frc.robot.Logger;
@@ -7,6 +9,10 @@ import javax.swing.text.Utilities;
 import com.ctre.phoenix6.hardware.CANcoder;
 import com.ctre.phoenix6.hardware.Pigeon2;
 import com.ctre.phoenix6.signals.SensorDirectionValue;
+import com.pathplanner.lib.auto.AutoBuilder;
+import com.pathplanner.lib.util.HolonomicPathFollowerConfig;
+import com.pathplanner.lib.util.PIDConstants;
+import com.pathplanner.lib.util.ReplanningConfig;
 
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 
@@ -23,6 +29,7 @@ import edu.wpi.first.math.kinematics.SwerveDriveKinematics;
 import edu.wpi.first.math.kinematics.SwerveModulePosition;
 import edu.wpi.first.math.kinematics.SwerveModuleState;
 import edu.wpi.first.math.util.Units;
+import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 
 import frc.robot.GameState;
@@ -82,6 +89,7 @@ final class DriveConstants {
   //Wheel Base
   public static final double WHEEL_BASE_WIDTH = Units.inchesToMeters(23.25);
   public static final double WHEEL_BASE_LENGTH = Units.inchesToMeters(23.25);
+  public static final double WHEEL_BASE_DIAMETER = Units.inchesToMeters(16.44);
 
 
   public static final Translation2d FRONT_LEFT_MODULE = new Translation2d(WHEEL_BASE_LENGTH/2, WHEEL_BASE_WIDTH/2);
@@ -164,6 +172,8 @@ public class DriveSubsystem extends SubsystemBase{
   public final SwerveDrivePoseEstimator odometry;
 
   private Pose2d pose = new Pose2d();
+
+  private final BooleanSupplier isPathFlipped = ()-> true;
   
 
   public DriveSubsystem() {
@@ -194,6 +204,8 @@ public class DriveSubsystem extends SubsystemBase{
     //Logger.RegisterSensor("FR Drive Speed", ()->frontRight.getVelocity());
     //Logger.RegisterSensor("RL Drive Speed", ()->backLeft.getVelocity());
     //Logger.RegisterSensor("RR Drive Speed", ()->backRight.getVelocity());
+
+    configAutoBuilder();
   }
 
   private void checkInitialAngle() {
@@ -414,6 +426,28 @@ public class DriveSubsystem extends SubsystemBase{
     Motors.ANGLE_FRONT_RIGHT.setIdleMode(DriveConstants.FrontRightTurningMotorBrake);
     Motors.ANGLE_BACK_LEFT.setIdleMode(DriveConstants.BackLeftTurningMotorBrake);
     Motors.ANGLE_BACK_RIGHT.setIdleMode(DriveConstants.BackRightTurningMotorBrake);
+  }
+
+  private void configAutoBuilder(){
+    //Wraper for AutoBuilder.configureHolonomic, must be called from DriveTrain config....
+
+    AutoBuilder.configureHolonomic(
+      this::getPose2d, //Robot pose supplier
+      this::resetOdometry, //Method to reset odometry (will be called if the robot has a starting pose)
+      this::getRobotRelativeSpeeds, //ChassisSpeeds provider.  MUST BE ROBOT RELATIVE!!! 
+      this::driveRobotRelative, //ChassisSpeeds consumer.  MUST BE ROBOT RELATIVE!!!
+      new HolonomicPathFollowerConfig(
+                new PIDConstants(5.0, 0, 0), //Translation PID constants
+                new PIDConstants(5.0, 0, 0), //Rotation PID constants
+                DriveConstants.MAX_SPEED_METERS_PER_SECOND, 
+                DriveConstants.WHEEL_BASE_DIAMETER,
+                new ReplanningConfig()), //HolonomicPathFollowerConfig
+      isPathFlipped,//Supplier which determines if paths should be flipped to the other side of the field (Blue Alliance origin)
+      this); //Reference to this subsystem to set 
+  }
+
+  public void dummyAction(){
+
   }
 
 }
