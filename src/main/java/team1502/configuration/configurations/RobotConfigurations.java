@@ -55,7 +55,7 @@ public final class RobotConfigurations {
                             .Note("Mk4i Option", "L2 = 6.75:1")
                         )
                         .PID(.08, 0.0, 0.0, 1.0)
-                         // no drive motors are reversed
+                         // no drive motors were reversed, but now left (?)
                     )
                     .Value("closedLoopRampRate", .25)
                     .Value("smartCurrentLimit", 40)
@@ -65,7 +65,7 @@ public final class RobotConfigurations {
                         .Square(23.25)
                         .WheelDiameter(4.0)
                     )
-                    .Value("MAX_SPEED_METERS_PER_SECOND", 4.6) //?
+                    .Value("MAX_SPEED_METERS_PER_SECOND", 4.6) // hard-code or calc?
                 )
             )
             // Top-Level Parts
@@ -74,19 +74,21 @@ public final class RobotConfigurations {
                 .SwerveDrive(sd -> sd
                     .SwerveModule("Module#1", sm -> sm
                         .CanNumberDown(16) // 16 16 15 -- also PDP channel
-                        .Encoder(e -> e.MagneticOffset(241.348 - 180.0))
+                        .Encoder(e -> e.MagneticOffset(151.96))
+                        .DrivingMotor().Reversed(true) // left side reversed
                     )
                     .SwerveModule("Module#2", sm -> sm
                         .CanNumber(10) // 10 10 11
-                        .Encoder(e -> e.MagneticOffset(29.883))
+                        .Encoder(e -> e.MagneticOffset(121.81))
                     )
                     .SwerveModule("Module#3", sm -> sm
                         .CanNumberDown(4) // 4 4 3
-                        .Encoder(e -> e.MagneticOffset(95.977 - 180))
+                        .Encoder(e -> e.MagneticOffset(4.83))
+                        .DrivingMotor().Reversed(true) // left side reversed
                     )
                     .SwerveModule("Module#4", sm -> sm
                         .CanNumber(8) // 8 8 9
-                        .Encoder(e -> e.MagneticOffset(36.562))
+                        .Encoder(e -> e.MagneticOffset(127.26))
                     )
                     // miscellaneous
                     .Value("goStraightGain", 0.02)
@@ -94,7 +96,7 @@ public final class RobotConfigurations {
             )
             // Configuration Values
             .Values(k -> k
-                .Eval("Pigeon2", e->e.GyroSensor("Pigeon2", g->g ))
+                .Eval("Pigeon2", e->e.GyroSensor())
                 .Eval("SwerveModule.TurningMotor.Motor.MotorType", e -> e
                     .SwerveModule(e.partName(), m -> m.TurningMotor().Motor().MotorType()))
                 .Eval("SwerveModule.TurningMotor.Reversed", e -> e

@@ -72,6 +72,9 @@ public class Evaluator {
     public Object Part(String partName, Function<Builder, Object> fn) {
         return getValue(partName, new Builder(), fn);   
     }
+    public GyroSensor GyroSensor() {
+        return (GyroSensor)getValue("Gyro", new GyroSensor(), g->(GyroSensor)g);   
+    }
     public Object GyroSensor(String partName, Function<GyroSensor, Object> fn) {
         return getValue(partName, new GyroSensor(), fn);   
     }
