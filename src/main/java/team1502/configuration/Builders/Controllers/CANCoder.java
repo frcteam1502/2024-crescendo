@@ -10,6 +10,8 @@ import team1502.configuration.Parts.Part;
 
 import java.util.function.Function;
 
+import com.ctre.phoenix6.signals.SensorDirectionValue;
+
 public class CANCoder extends Controller /*Encoder /* implements ICAN */{
     private static final DeviceType TYPE = DeviceType.GyroSensor; // is it?
     private static final String ISREVERSED = "isReversed";
@@ -34,9 +36,13 @@ public class CANCoder extends Controller /*Encoder /* implements ICAN */{
         return new CANCoder((Function<CANCoder, Builder>)buildFunction);
     }
     
-    public boolean Direction() {
+    public SensorDirectionValue Direction() {
         var result = getBoolean(ISREVERSED);
-        return result == null ? false : result;
+        return result == null
+          ? SensorDirectionValue.CounterClockwise_Positive
+          : result
+            ? SensorDirectionValue.Clockwise_Positive
+            : SensorDirectionValue.CounterClockwise_Positive;
     }
     /**
       False (default) means positive rotation occurs when magnet
