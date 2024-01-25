@@ -9,9 +9,12 @@ import frc.robot.commands.Autos;
 import frc.robot.commands.ControllerCommands;
 import frc.robot.subsystems.SwerveDrive.DriveSubsystem;
 import frc.robot.subsystems.ExampleSubsystem;
+
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
+
+import team1502.configuration.configurations.RobotConfigurations;
 
 /**
  * This class is where the bulk of the robot should be declared. Since Command-based is a
@@ -21,7 +24,7 @@ import edu.wpi.first.wpilibj2.command.button.Trigger;
  */
 public class RobotContainer {
   // The robot's subsystems and commands are defined here...
-  public final DriveSubsystem driveSubsystem = new DriveSubsystem();
+  public final DriveSubsystem driveSubsystem;
   //private final PdpSubsystem pdpSubsystem = new PdpSubsystem();
   
   private final ExampleSubsystem m_exampleSubsystem = new ExampleSubsystem();
@@ -34,6 +37,9 @@ public class RobotContainer {
   
   /** The container for the robot. Contains subsystems, OI devices, and commands. */
   public RobotContainer() {
+    var config = RobotConfigurations.getConfiguration("1502");
+    driveSubsystem = new DriveSubsystem(config);
+    
     // Configure the trigger bindings
     configureBindings();
   }

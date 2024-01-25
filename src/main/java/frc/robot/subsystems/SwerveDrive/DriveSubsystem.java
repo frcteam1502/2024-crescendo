@@ -1,124 +1,23 @@
 package frc.robot.subsystems.SwerveDrive;
 
-import javax.swing.text.Utilities;
-
-//import frc.robot.Logger;
-
-import com.ctre.phoenix6.hardware.CANcoder;
 import com.ctre.phoenix6.hardware.Pigeon2;
-import com.ctre.phoenix6.signals.SensorDirectionValue;
-
-import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
-
-import com.revrobotics.CANSparkMax;
-import com.revrobotics.CANSparkLowLevel;
-import com.revrobotics.CANSparkBase.IdleMode;
 
 import edu.wpi.first.math.estimator.SwerveDrivePoseEstimator;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
-import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.math.kinematics.ChassisSpeeds;
 import edu.wpi.first.math.kinematics.SwerveDriveKinematics;
 import edu.wpi.first.math.kinematics.SwerveModulePosition;
 import edu.wpi.first.math.kinematics.SwerveModuleState;
 import edu.wpi.first.math.util.Units;
+import edu.wpi.first.util.sendable.SendableBuilder;
+import edu.wpi.first.util.sendable.SendableRegistry;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 
 import frc.robot.GameState;
 
-final class Gyro {
-  public static final Pigeon2 gyro = new Pigeon2(14);
-  public static final boolean GYRO_REVERSED = true;
-}
-
-final class CANCoders {
-  //Front Left CANCoder
-  public static final CANcoder FRONT_LEFT_CAN_CODER = new CANcoder(16);
-  public static final SensorDirectionValue FRONT_LEFT_CAN_CODER_DIRECTION = SensorDirectionValue.CounterClockwise_Positive;
-  public static final double FRONT_LEFT_CAN_CODER_OFFSET = 151.96;
-
-  //Front Right CANCoder
-  public static final CANcoder FRONT_RIGHT_CAN_CODER = new CANcoder(10);
-  public static final SensorDirectionValue FRONT_RIGHT_CAN_CODER_DIRECTION = SensorDirectionValue.CounterClockwise_Positive;
-  public static final double FRONT_RIGHT_CAN_CODER_OFFSET = 121.81;
-
-  //Back Left CANCoder
-  public static final CANcoder BACK_LEFT_CAN_CODER = new CANcoder(4);
-  public static final SensorDirectionValue BACK_LEFT_CAN_CODER_DIRECTION = SensorDirectionValue.CounterClockwise_Positive;
-  public static final double BACK_LEFT_CAN_CODER_OFFSET = 4.83;
-
-  //Back Right CANCoder
-  public static final CANcoder BACK_RIGHT_CAN_CODER = new CANcoder(8);
-  public static final SensorDirectionValue BACK_RIGHT_CAN_CODER_DIRECTION = SensorDirectionValue.CounterClockwise_Positive;
-  public static final double BACK_RIGHT_CAN_CODER_OFFSET = 127.26;
-}
-
-final class DriveConstants {
-  public static final double MAX_SPEED_METERS_PER_SECOND = 4.6; //IF YOU UP THE SPEED CHANGE ACCELERATION
-
-  //Turning Motors
-  public static final boolean FrontLeftTurningMotorReversed = true;
-  public static final boolean BackLeftTurningMotorReversed = true;
-  public static final boolean FrontRightTurningMotorReversed = true;
-  public static final boolean BackRightTurningMotorReversed = true;
-
-  public static final CANSparkMax.IdleMode FrontLeftTurningMotorBrake = IdleMode.kBrake;
-  public static final CANSparkMax.IdleMode BackLeftTurningMotorBrake = IdleMode.kBrake;
-  public static final CANSparkMax.IdleMode FrontRightTurningMotorBrake = IdleMode.kBrake;
-  public static final CANSparkMax.IdleMode BackRightTurningMotorBrake = IdleMode.kBrake;
-
-  //Drive Motors
-  public static final boolean FrontLeftDriveMotorReversed = true;
-  public static final boolean BackLeftDriveMotorReversed = true;
-  public static final boolean FrontRightDriveMotorReversed = false;
-  public static final boolean BackRightDriveMotorReversed = false;
-
-  public static final CANSparkMax.IdleMode FrontLeftDriveMotorBrake = IdleMode.kBrake;
-  public static final CANSparkMax.IdleMode BackLeftDriveMotorBrake = IdleMode.kBrake;
-  public static final CANSparkMax.IdleMode FrontRightDriveMotorBrake = IdleMode.kBrake;
-  public static final CANSparkMax.IdleMode BackRightDriveMotorBrake = IdleMode.kBrake;
-
-  //Wheel Base
-  public static final double WHEEL_BASE_WIDTH = Units.inchesToMeters(23.25);
-  public static final double WHEEL_BASE_LENGTH = Units.inchesToMeters(23.25);
-
-
-  public static final Translation2d FRONT_LEFT_MODULE = new Translation2d(WHEEL_BASE_LENGTH/2, WHEEL_BASE_WIDTH/2);
-  public static final Translation2d FRONT_RIGHT_MODULE = new Translation2d(WHEEL_BASE_LENGTH/2, -WHEEL_BASE_WIDTH/2);
-  public static final Translation2d BACK_LEFT_MODULE = new Translation2d(-WHEEL_BASE_LENGTH/2, WHEEL_BASE_WIDTH/2);
-  public static final Translation2d BACK_RIGHT_MODULE = new Translation2d(-WHEEL_BASE_LENGTH/2, -WHEEL_BASE_WIDTH/2);
-
-  public static final SwerveDriveKinematics KINEMATICS =
-  new SwerveDriveKinematics(
-    FRONT_LEFT_MODULE,
-    FRONT_RIGHT_MODULE,
-    BACK_LEFT_MODULE,
-    BACK_RIGHT_MODULE
-    );
-
-    /*
-      public static final double MAX_ROTATION_RADIANS_PER_SECOND = (Math.PI/2);
-      public static final double MAX_ROTATION_RADIANS_PER_SECOND_PER_SECOND = Math.PI;
-      */
-
-      public static final double GO_STRAIGHT_GAIN = 0.01;
-}
-
-
-final class Motors {
-  //drive
-  public static final CANSparkMax DRIVE_FRONT_LEFT = new CANSparkMax(15, CANSparkLowLevel.MotorType.kBrushless);
-  public static final CANSparkMax DRIVE_FRONT_RIGHT = new CANSparkMax(11, CANSparkLowLevel.MotorType.kBrushless);
-  public static final CANSparkMax DRIVE_BACK_LEFT = new CANSparkMax(3, CANSparkLowLevel.MotorType.kBrushless);
-  public static final CANSparkMax DRIVE_BACK_RIGHT = new CANSparkMax(9, CANSparkLowLevel.MotorType.kBrushless);
-  
-  //turn
-  public static final CANSparkMax ANGLE_FRONT_LEFT = new CANSparkMax(16, CANSparkLowLevel.MotorType.kBrushless);
-  public static final CANSparkMax ANGLE_FRONT_RIGHT = new CANSparkMax(10, CANSparkLowLevel.MotorType.kBrushless);
-  public static final CANSparkMax ANGLE_BACK_LEFT = new CANSparkMax(4, CANSparkLowLevel.MotorType.kBrushless);
-  public static final CANSparkMax ANGLE_BACK_RIGHT = new CANSparkMax(8, CANSparkLowLevel.MotorType.kBrushless);
-}
+import team1502.configuration.RobotConfiguration;
 
 
 public class DriveSubsystem extends SubsystemBase{
@@ -133,67 +32,31 @@ public class DriveSubsystem extends SubsystemBase{
 
   ChassisSpeeds speedCommands = new ChassisSpeeds(0, 0, 0);
 
-  private final SwerveModule frontLeft = new SwerveModule(
-    Motors.DRIVE_FRONT_LEFT, Motors.ANGLE_FRONT_LEFT, 
-    CANCoders.FRONT_LEFT_CAN_CODER, 
-    CANCoders.FRONT_LEFT_CAN_CODER_OFFSET,
-    CANCoders.FRONT_LEFT_CAN_CODER_DIRECTION);
+  private final Pigeon2 gyro;
 
-  private final SwerveModule frontRight = new SwerveModule(
-    Motors.DRIVE_FRONT_RIGHT, Motors.ANGLE_FRONT_RIGHT, 
-    CANCoders.FRONT_RIGHT_CAN_CODER, 
-    CANCoders.FRONT_RIGHT_CAN_CODER_OFFSET,
-    CANCoders.FRONT_RIGHT_CAN_CODER_DIRECTION);
-
-  private final SwerveModule backLeft = new SwerveModule(
-    Motors.DRIVE_BACK_LEFT, Motors.ANGLE_BACK_LEFT, 
-    CANCoders.BACK_LEFT_CAN_CODER, 
-    CANCoders.BACK_LEFT_CAN_CODER_OFFSET,
-    CANCoders.BACK_LEFT_CAN_CODER_DIRECTION);
-
-  private final SwerveModule backRight = new SwerveModule(
-    Motors.DRIVE_BACK_RIGHT, Motors.ANGLE_BACK_RIGHT, 
-    CANCoders.BACK_RIGHT_CAN_CODER, 
-    CANCoders.BACK_RIGHT_CAN_CODER_OFFSET,
-    CANCoders.BACK_RIGHT_CAN_CODER_DIRECTION);
-
-  private final Pigeon2 gyro = Gyro.gyro;
-
-  private final SwerveDriveKinematics kinematics = DriveConstants.KINEMATICS;
-
+  private final SwerveModules swerveModules;
+  private final SwerveDriveKinematics kinematics;
   public final SwerveDrivePoseEstimator odometry;
 
   private Pose2d pose = new Pose2d();
   
+  private final double goStraightGain;
+  private final double maxSpeed;
+  private final double empiricalSpeed; // for comparison
 
-  public DriveSubsystem() {
+  public DriveSubsystem(RobotConfiguration config) {
+    gyro = new Pigeon2(config.GyroSensor().CanNumber());
+  
+    swerveModules = new SwerveModules(config);
+    kinematics = config.SwerveDrive().getKinematics();
+    maxSpeed = swerveModules.maxSpeed;
+    empiricalSpeed = swerveModules.empiricalSpeed;
+    
+    goStraightGain = config.SwerveDrive().getDouble("goStraightGain");
 
     this.odometry = new SwerveDrivePoseEstimator(kinematics, getGyroRotation2d(), getModulePositions(), pose);
 
     reset();
-    ConfigMotorDirections();
-
-    //Logger.RegisterCanSparkMax("FL Drive", Motors.DRIVE_FRONT_LEFT);
-    //Logger.RegisterCanSparkMax("FR Drive", Motors.DRIVE_FRONT_RIGHT);
-    //Logger.RegisterCanSparkMax("RL Drive", Motors.DRIVE_BACK_LEFT);
-    //Logger.RegisterCanSparkMax("RR Drive", Motors.DRIVE_BACK_RIGHT);
-
-    //Logger.RegisterCanSparkMax("FL Turn", Motors.ANGLE_FRONT_LEFT);
-    //Logger.RegisterCanSparkMax("FR Turn", Motors.ANGLE_FRONT_RIGHT);
-    //Logger.RegisterCanSparkMax("RL Turn", Motors.ANGLE_BACK_LEFT);
-    //Logger.RegisterCanSparkMax("RR Turn", Motors.ANGLE_BACK_RIGHT);
-
-    //Logger.RegisterPigeon(Gyro.gyro);
-
-    //Logger.RegisterCanCoder("FL Abs Position", CANCoders.FRONT_LEFT_CAN_CODER);
-    //Logger.RegisterCanCoder("FR Abs Position", CANCoders.FRONT_RIGHT_CAN_CODER);
-    //Logger.RegisterCanCoder("RL Abs Position", CANCoders.BACK_LEFT_CAN_CODER);
-    //Logger.RegisterCanCoder("RR Abs Position", CANCoders.BACK_RIGHT_CAN_CODER);
-
-    //Logger.RegisterSensor("FL Drive Speed", ()->frontLeft.getVelocity());
-    //Logger.RegisterSensor("FR Drive Speed", ()->frontRight.getVelocity());
-    //Logger.RegisterSensor("RL Drive Speed", ()->backLeft.getVelocity());
-    //Logger.RegisterSensor("RR Drive Speed", ()->backRight.getVelocity());
   }
 
   private void checkInitialAngle() {
@@ -206,45 +69,13 @@ public class DriveSubsystem extends SubsystemBase{
     var currentHeading = gyro.getYaw(); 
     return( currentHeading.getValue() );
   }
-
-  private void updateDashboard(){
-    //Field Oriented inputs
-    SmartDashboard.putNumber("Field Oriented X Command (Forward)", fieldXCommand);
-    SmartDashboard.putNumber("Field Oriented Y Command (Forward)", fieldYCommand);
-    SmartDashboard.putNumber("Robot Relative Rotation Command", speedCommands.omegaRadiansPerSecond);
-
-    //Robot Relative inputs
-    SmartDashboard.putNumber("Robot Relative vX Speed Command", speedCommands.vxMetersPerSecond);
-    SmartDashboard.putNumber("Robot Relative vY Speed Command", speedCommands.vyMetersPerSecond);
-
-    SmartDashboard.putNumber("Gyro Yaw", getIMU_Yaw());
-
-    //Swerve Module info
-    SmartDashboard.putNumber("Front Left Speed Command", frontLeft.getCommandedSpeed());
-    SmartDashboard.putNumber("Front Left Angle Command", frontLeft.getCommandedAngle());
-    SmartDashboard.putNumber("Front Left Measured Speed", frontLeft.getModuleVelocity());
-    SmartDashboard.putNumber("Front Left CANcoder Angle", (frontLeft.getAbsPositionZeroed()*(180/Math.PI)));
-
-    SmartDashboard.putNumber("Front Right Speed Command", frontRight.getCommandedSpeed());
-    SmartDashboard.putNumber("Front Right Angle Command", frontRight.getCommandedAngle());
-    SmartDashboard.putNumber("Front Right Measured Speed", frontRight.getModuleVelocity());
-    SmartDashboard.putNumber("Front Right CANcoder Angle", (frontRight.getAbsPositionZeroed()*(180/Math.PI)));
-
-    SmartDashboard.putNumber("Rear Right Speed Command", backRight.getCommandedSpeed());
-    SmartDashboard.putNumber("Rear Right Angle Command", backRight.getCommandedAngle());
-    SmartDashboard.putNumber("Rear Right Measured Speed", backRight.getModuleVelocity());
-    SmartDashboard.putNumber("Rear Right CANcoder Angle", (backRight.getAbsPositionZeroed()*(180/Math.PI)));
-    SmartDashboard.putNumber("Rear Left Speed Command", backLeft.getCommandedSpeed());
-    SmartDashboard.putNumber("Rear Left Angle Command", backLeft.getCommandedAngle());
-    SmartDashboard.putNumber("Rear Left Measured Speed", backLeft.getModuleVelocity());
-    SmartDashboard.putNumber("Rear Left CANcoder Angle", (backLeft.getAbsPositionZeroed()*(180/Math.PI)));
-  }
-  
   @Override
   public void periodic() {
     checkInitialAngle();
     updateOdometry();
-    updateDashboard();
+    
+    SmartDashboard.putData(this);
+    swerveModules.send();
   }
   
   public void drive(double xSpeed, double ySpeed, double rot, boolean fieldRelative) {
@@ -265,7 +96,7 @@ public class DriveSubsystem extends SubsystemBase{
         turnCommand = rot;
       }
       else { 
-        turnCommand = (targetAngle - getIMU_Yaw()) * DriveConstants.GO_STRAIGHT_GAIN;
+        turnCommand = (targetAngle - getIMU_Yaw()) * goStraightGain;
       }
       
     }
@@ -289,7 +120,7 @@ public class DriveSubsystem extends SubsystemBase{
     //Convert from robot frame of reference (ChassisSpeeds) to swerve module frame of reference (SwerveModuleState)
     var swerveModuleStates = kinematics.toSwerveModuleStates(robotRelativeSpeeds);
     //Normalize wheel speed commands to make sure no speed is greater than the maximum achievable wheel speed.
-    SwerveDriveKinematics.desaturateWheelSpeeds(swerveModuleStates, DriveConstants.MAX_SPEED_METERS_PER_SECOND);
+    SwerveDriveKinematics.desaturateWheelSpeeds(swerveModuleStates, maxSpeed);
     //Set the speed and angle of each module
     setDesiredState(swerveModuleStates);
   }
@@ -299,45 +130,17 @@ public class DriveSubsystem extends SubsystemBase{
     return kinematics.toChassisSpeeds(getModuleStates());
   }
 
-  public void setDesiredState(SwerveModuleState[] swerveModuleStates) {
-    frontLeft.setDesiredState(swerveModuleStates[0]);
-    frontRight.setDesiredState(swerveModuleStates[1]);
-    backLeft.setDesiredState(swerveModuleStates[2]);
-    backRight.setDesiredState(swerveModuleStates[3]);
-  }
-
-  public SwerveModuleState[] getModuleStates(){
-    return new SwerveModuleState[] {
-      frontLeft.getState(),
-      frontRight.getState(),
-      backLeft.getState(),
-      backRight.getState()};
-  }
+  public SwerveModuleState[] getModuleStates(){ return swerveModules.getModuleStates(); }
+  public SwerveModulePosition[] getModulePositions() { return swerveModules.getModulePositions(); }
+  public void setDesiredState(SwerveModuleState[] swerveModuleStates) { swerveModules.setDesiredState(swerveModuleStates); }
+  public void resetModules() { swerveModules.resetModules(); }
 
   public void updateOdometry() {
-    pose = odometry.update(
-        getGyroRotation2d(),
-        new SwerveModulePosition[] {
-          frontLeft.getPosition(),
-          frontRight.getPosition(),
-          backLeft.getPosition(),
-          backRight.getPosition()
-        });
+    pose = odometry.update(getGyroRotation2d(), getModulePositions());
   }
-
 
   public void resetOdometry(Pose2d pose) {
     odometry.resetPosition(getGyroRotation2d(), getModulePositions(), pose);
-  }
-  
-  public SwerveModulePosition[] getModulePositions() {
-    //Returns 
-    return new SwerveModulePosition[] {
-      frontLeft.getPosition(),
-      frontRight.getPosition(),
-      backLeft.getPosition(),
-      backRight.getPosition()
-    };
   }
   
   public SwerveModuleState[] makeSwerveModuleState(double[] speeds, double[] angles) {
@@ -362,31 +165,8 @@ public class DriveSubsystem extends SubsystemBase{
     return odometry.getEstimatedPosition();
   }
 
-  /*public double getVelocity() {
-    return Math.sqrt(
-      Math.pow(ChassisSpeeds.fromFieldRelativeSpeeds(forwardCommand, strafeCommand, turnCommand, getGyroRotation2d()).vxMetersPerSecond, 2) + 
-      Math.pow(ChassisSpeeds.fromFieldRelativeSpeeds(forwardCommand, strafeCommand, turnCommand, getGyroRotation2d()).vyMetersPerSecond, 2)
-    );
-  }*/
-
-  /*public Rotation2d getHeading() {
-    return new Rotation2d(
-      Math.atan2(
-        Math.pow(ChassisSpeeds.fromFieldRelativeSpeeds(forwardCommand, strafeCommand, turnCommand, getGyroRotation2d()).vyMetersPerSecond, 2), 
-        Math.pow(ChassisSpeeds.fromFieldRelativeSpeeds(forwardCommand, strafeCommand, turnCommand, getGyroRotation2d()).vxMetersPerSecond, 2)
-      )
-    );
-  }*/
-
   public void resetGyro() {
     gyro.setYaw(0);
-  }
-
-  public void resetModules() {
-    frontLeft.zeroModule();
-    frontRight.zeroModule();
-    backLeft.zeroModule();
-    backRight.zeroModule();
   }
 
   public void reset() {
@@ -395,25 +175,24 @@ public class DriveSubsystem extends SubsystemBase{
     resetOdometry(pose);
   }  
 
-  public void ConfigMotorDirections() {
-    Motors.ANGLE_FRONT_LEFT.setInverted(DriveConstants.FrontLeftTurningMotorReversed);
-    Motors.ANGLE_FRONT_RIGHT.setInverted(DriveConstants.FrontRightTurningMotorReversed);
-    Motors.ANGLE_BACK_LEFT.setInverted(DriveConstants.BackLeftTurningMotorReversed);
-    Motors.ANGLE_BACK_RIGHT.setInverted(DriveConstants.BackRightTurningMotorReversed);
-    Motors.DRIVE_FRONT_LEFT.setInverted(DriveConstants.FrontLeftDriveMotorReversed);
-    Motors.DRIVE_FRONT_RIGHT.setInverted(DriveConstants.FrontRightDriveMotorReversed);
-    Motors.DRIVE_BACK_LEFT.setInverted(DriveConstants.BackLeftDriveMotorReversed);
-    Motors.DRIVE_BACK_RIGHT.setInverted(DriveConstants.BackRightDriveMotorReversed);
+  @Override
+  public void initSendable(SendableBuilder builder) {
+    super.initSendable(builder);
 
-    Motors.DRIVE_FRONT_LEFT.setIdleMode(DriveConstants.FrontLeftDriveMotorBrake);
-    Motors.DRIVE_FRONT_RIGHT.setIdleMode(DriveConstants.FrontRightDriveMotorBrake);
-    Motors.DRIVE_BACK_LEFT.setIdleMode(DriveConstants.BackLeftDriveMotorBrake);
-    Motors.DRIVE_BACK_RIGHT.setIdleMode(DriveConstants.BackRightDriveMotorBrake);
+    //Field Oriented inputs
+    builder.addDoubleProperty("Field Oriented X Command (Forward)", ()->fieldXCommand, null);
+    builder.addDoubleProperty("Field Oriented Y Command (Forward)", ()->fieldYCommand, null);
+    builder.addDoubleProperty("Robot Relative Rotation Command", ()->speedCommands.omegaRadiansPerSecond, null);
 
-    Motors.ANGLE_FRONT_LEFT.setIdleMode(DriveConstants.FrontLeftTurningMotorBrake);
-    Motors.ANGLE_FRONT_RIGHT.setIdleMode(DriveConstants.FrontRightTurningMotorBrake);
-    Motors.ANGLE_BACK_LEFT.setIdleMode(DriveConstants.BackLeftTurningMotorBrake);
-    Motors.ANGLE_BACK_RIGHT.setIdleMode(DriveConstants.BackRightTurningMotorBrake);
+    //Robot Relative inputs
+    builder.addDoubleProperty("Robot Relative vX Speed Command", ()->speedCommands.vxMetersPerSecond, null);
+    builder.addDoubleProperty("Robot Relative vY Speed Command", ()->speedCommands.vyMetersPerSecond, null);
+
+    builder.addDoubleProperty("Gyro Yaw", ()->getIMU_Yaw(), null);
+
+    SendableRegistry.addLW(swerveModules, "DriveSubsystem", "SwerveModules");
+
+
   }
 
 }
