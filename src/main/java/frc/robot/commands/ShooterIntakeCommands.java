@@ -26,8 +26,9 @@ public class ShooterIntakeCommands extends Command {
   // Called every time the scheduler runs while the command is scheduled.
   @Override
   public void execute() {
-    double speed = SmartDashboard.getNumber("Shooter Speed (RPM)", 0);
-
+    //double speed = SmartDashboard.getNumber("Shooter Speed (RPM)", 0);
+    double speed = 2500;
+    
     if(Operator.getRightTrigger() > 0.55){
       shooterIntake.setShooterSpeed(speed);
     }else if (Operator.getRightTrigger() < 0.45){
