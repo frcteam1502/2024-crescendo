@@ -88,6 +88,10 @@ public class Evaluator {
         return getValue(partName, new SwerveModule(), fn);   
     }
 
+    public SwerveDrive SwerveDrive() {
+        return SwerveDrive(d->d);   
+    }
+
     public <T extends Object> T SwerveDrive(Function<SwerveDrive, T> fn) {
         return (T)getValue("SwerveDrive", new SwerveDrive(), fn);   
     }

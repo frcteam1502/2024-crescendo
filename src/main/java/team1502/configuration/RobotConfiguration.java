@@ -3,6 +3,7 @@ package team1502.configuration;
 import java.util.function.Function;
 
 import team1502.configuration.Builders.RobotBuilder;
+import team1502.configuration.Builders.SwerveDrive;
 import team1502.configuration.Builders.Controllers.GyroSensor;
 import team1502.configuration.CAN.CanMap;
 import team1502.configuration.Factory.PartFactory;
@@ -75,5 +76,7 @@ public class RobotConfiguration {
     }
 
 
-    public GyroSensor GyroSensor(String name) {return (GyroSensor)getValue(name);}
+    public SwerveDrive SwerveDrive() { return Values().SwerveDrive(); }
+    public GyroSensor GyroSensor() { return Values().GyroSensor(); }
+    public GyroSensor GyroSensor(String name) { return (GyroSensor)getValue(name); }
 }
