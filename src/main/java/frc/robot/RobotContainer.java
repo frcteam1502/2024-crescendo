@@ -33,7 +33,7 @@ public class RobotContainer {
   */
   
   /** The container for the robot. Contains subsystems, OI devices, and commands. */
-  public RobotContainer() {
+  public RobotContainer(String radio) {
     // Configure the trigger bindings
     configureBindings();
   }
