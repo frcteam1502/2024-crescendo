@@ -4,6 +4,11 @@
 
 package frc.robot;
 
+import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Path;
+
+import edu.wpi.first.wpilibj.Filesystem;
 import edu.wpi.first.wpilibj.RobotController;
 import edu.wpi.first.wpilibj.TimedRobot;
 import edu.wpi.first.wpilibj2.command.Command;
@@ -26,12 +31,26 @@ public class Robot extends TimedRobot {
    */
   @Override
   public void robotInit() {
+    Path deployPath = Filesystem.getDeployDirectory().toPath();
+    String branch = "unknown";
+    String commit = "unknown";
+    String radio = "1502";
+    try {
+      branch = Files.readString(deployPath.resolve("branch.txt"));
+      commit = Files.readString(deployPath.resolve("commit.txt"));
+      radio = Files.readString(deployPath.resolve("wifi.txt"));
+    } 
+    catch (IOException ex) {
+
+    }
+     
+
     RobotController.setBrownoutVoltage(3);
     //Register PDP and PH Logger items
     
     // Instantiate our RobotContainer.  This will perform all our button bindings, and put our
     // autonomous chooser on the dashboard.
-    m_robotContainer = new RobotContainer();
+    m_robotContainer = new RobotContainer(radio);
 
     //Register Logger items
     //Logger.RegisterLoopTimes(this);

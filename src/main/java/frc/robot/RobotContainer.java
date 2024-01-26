@@ -36,10 +36,10 @@ public class RobotContainer {
   */
   
   /** The container for the robot. Contains subsystems, OI devices, and commands. */
-  public RobotContainer() {
-    var config = RobotConfigurations.getConfiguration("1502");
+  public RobotContainer(String radio) {
+    var config = RobotConfigurations.getConfiguration(radio);
     driveSubsystem = new DriveSubsystem(config);
-    
+
     // Configure the trigger bindings
     configureBindings();
   }
