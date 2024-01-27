@@ -4,11 +4,18 @@
 
 package frc.robot;
 
+<<<<<<< HEAD
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 
 import edu.wpi.first.wpilibj.Filesystem;
+=======
+import frc.robot.Logger;
+import edu.wpi.first.wpilibj.PneumaticHub;
+import edu.wpi.first.wpilibj.PowerDistribution;
+import edu.wpi.first.wpilibj.PowerDistribution.ModuleType;
+>>>>>>> origin/main
 import edu.wpi.first.wpilibj.RobotController;
 import edu.wpi.first.wpilibj.TimedRobot;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
@@ -26,9 +33,59 @@ public class Robot extends TimedRobot {
   private Command m_autonomousCommand;
   private RobotContainer m_robotContainer;
 
+<<<<<<< HEAD
   public String branch = "unknown";
   public String commit = "unknown";
   public String radio = "1502";
+=======
+  private Logger logger = new Logger();
+
+  private String[] pdhRealChannelNames = {
+    null,       //"0"
+    null,       //"1"
+    null,       //"2"
+    "RL Drive", //"3"
+    "RL Turn",  //"4"  
+    null,       //"5"
+    null,       //"6"
+    null,       //"7"
+    "RR Turn",  //"8"
+    "RR Drive", //"9"
+    "FR Turn",  //"10"
+    "FR Drive", //"11"
+    null,       //"12"
+    null,       //"13"
+    null,       //"14"
+    "FL Drive", //"15"
+    "FL Turn",  //"16"
+    null,       //"17"
+    null,       //"18"
+    null,       //"19"
+    null,       //"20"
+    null,       //"21"
+    null,       //"22"
+    null,       //"23"
+};
+
+private String[] pneumaticNames = {
+  null, //"0",
+  null, //"1",
+  null, //"2"
+  null, //"3"
+  null, //"4",
+  null, //"5",
+  null, //"6",
+  null, //"7",
+  null, //"8",
+  null, //"9",
+  null, //"10",
+  null, //"11",
+  null, //"12",
+  null, //"13",
+  null, //"14",
+  null, //"15",
+};
+>>>>>>> origin/main
 
   /**
    * This function is run when the robot is first started up and should be used for any
@@ -56,9 +113,9 @@ public class Robot extends TimedRobot {
 
     //Register Logger items
     //Logger.RegisterLoopTimes(this);
-    //Logger.RegisterPdp(new PowerDistribution(1, ModuleType.kRev), pdhRealChannelNames);
-    //Logger.RegisterPneumaticHub(new PneumaticHub(), pneumaticNames);
-    //logger.start();
+    Logger.RegisterPdp(new PowerDistribution(1, ModuleType.kRev), pdhRealChannelNames);
+    Logger.RegisterPneumaticHub(new PneumaticHub(), pneumaticNames);
+    logger.start();
   }
 
   /**
