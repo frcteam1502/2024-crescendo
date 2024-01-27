@@ -15,7 +15,6 @@ import edu.wpi.first.math.kinematics.SwerveModuleState;
 import edu.wpi.first.math.util.Units;
 import edu.wpi.first.util.sendable.Sendable;
 import edu.wpi.first.util.sendable.SendableBuilder;
-import edu.wpi.first.util.sendable.SendableRegistry;
 import team1502.configuration.Builders.Controllers.CANCoder;
 import team1502.configuration.Builders.Controllers.MotorController;
 
@@ -52,9 +51,6 @@ public class SwerveModule implements Sendable {
     this.drivePIDController.setI(pid.I());
     this.drivePIDController.setD(pid.D());
     this.drivePIDController.setFF(pid.FF());
-
-    //SendableRegistry.addLW(this, "DriveSubsystem", config.getName());
-
   }
 
   private CANSparkMax buildMotor(MotorController config) {

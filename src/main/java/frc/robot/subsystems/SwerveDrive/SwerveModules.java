@@ -28,8 +28,6 @@ public class SwerveModules implements Sendable {
         empiricalSpeed = swerveModule.DrivingMotor().Motor().getDouble("empiricalFreeSpeed") / 60.0
                     * swerveModule.DrivingMotor().GearBox().GearRatio()
                     * swerveModule.getDouble("wheelDiameter") * Math.PI;
-
-        //SendableRegistry.addLW(this, "DriveSubsystem", "SwerveModules");
     }
 
     public void setDesiredState(SwerveModuleState[] swerveModuleStates) {
@@ -67,7 +65,6 @@ public class SwerveModules implements Sendable {
     @Override
     public void initSendable(SendableBuilder builder) {
         builder.setSmartDashboardType("SwerveModules");
-        //builder.addDoubleProperty("Front Left Speed Command", ()->_modules[0].getCommandedSpeed(), null);
 
         SendableRegistry.addLW(_modules[0], "SwerveModules", "Front Left");
         SendableRegistry.addLW(_modules[1], "SwerveModules", "Front Right");
