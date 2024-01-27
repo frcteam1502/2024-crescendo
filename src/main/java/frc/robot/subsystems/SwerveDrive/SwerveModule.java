@@ -41,7 +41,7 @@ public class SwerveModule implements Sendable {
     driveEncoder.setPositionConversionFactor(config.getPositionConversionFactor());
     driveEncoder.setVelocityConversionFactor(config.getVelocityConversionFactor());
 
-    var pid = config.DrivingMotor().PID();
+    var pid = config.TurningMotor().PID();
     this.turningPIDController = new PIDController(pid.P(), pid.I(), pid.D());
     this.turningPIDController.enableContinuousInput(-Math.PI, Math.PI); 
 
