@@ -81,7 +81,6 @@ public final class RobotConfigurations {
                 .SwerveModule("Module#1", sm -> sm
                     .CanNumberDown(16) // 16 16 15 -- also PDP channel
                     .Encoder(e -> e.MagneticOffset(151.96))
-                    .DrivingMotor().Reversed(true) // left side reversed
                 )
                 .SwerveModule("Module#2", sm -> sm
                     .CanNumber(10) // 10 10 11
@@ -90,7 +89,6 @@ public final class RobotConfigurations {
                 .SwerveModule("Module#3", sm -> sm
                     .CanNumberDown(4) // 4 4 3
                     .Encoder(e -> e.MagneticOffset(4.83))
-                    .DrivingMotor().Reversed(true) // left side reversed
                 )
                 .SwerveModule("Module#4", sm -> sm
                     .CanNumber(8) // 8 8 9
