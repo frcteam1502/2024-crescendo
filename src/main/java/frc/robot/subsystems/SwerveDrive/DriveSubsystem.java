@@ -1,7 +1,5 @@
 package frc.robot.subsystems.SwerveDrive;
 
-import javax.swing.text.Utilities;
-
 import frc.robot.Logger;
 
 import com.ctre.phoenix6.hardware.CANcoder;
@@ -173,7 +171,7 @@ public class DriveSubsystem extends SubsystemBase{
     reset();
     ConfigMotorDirections();
     registerLoggerObjects();
-    
+
   }
 
   private void checkInitialAngle() {
