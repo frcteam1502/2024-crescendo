@@ -4,18 +4,14 @@
 
 package frc.robot;
 
-<<<<<<< HEAD
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 
 import edu.wpi.first.wpilibj.Filesystem;
-=======
-import frc.robot.Logger;
 import edu.wpi.first.wpilibj.PneumaticHub;
 import edu.wpi.first.wpilibj.PowerDistribution;
 import edu.wpi.first.wpilibj.PowerDistribution.ModuleType;
->>>>>>> origin/main
 import edu.wpi.first.wpilibj.RobotController;
 import edu.wpi.first.wpilibj.TimedRobot;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
@@ -33,11 +29,9 @@ public class Robot extends TimedRobot {
   private Command m_autonomousCommand;
   private RobotContainer m_robotContainer;
 
-<<<<<<< HEAD
   public String branch = "unknown";
   public String commit = "unknown";
   public String radio = "1502";
-=======
   private Logger logger = new Logger();
 
   private String[] pdhRealChannelNames = {
@@ -85,7 +79,6 @@ private String[] pneumaticNames = {
   null, //"14",
   null, //"15",
 };
->>>>>>> origin/main
 
   /**
    * This function is run when the robot is first started up and should be used for any
