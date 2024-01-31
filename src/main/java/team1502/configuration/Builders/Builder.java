@@ -343,7 +343,6 @@ public class Builder {
 
     
     // POWER
-/*
     public Builder PowerProfile(double peakPower) {
         _part.PowerProfile(peakPower);
         return this;
@@ -352,6 +351,7 @@ public class Builder {
         _part.PowerProfile(power);
         return this;
     }
+/*
 */    
     
     // EVAL 
@@ -364,6 +364,10 @@ public class Builder {
         return _part.getValue(valueName);
     }
     
+    public boolean getBoolean(String valueName, boolean defaultValue) {
+        var result = getBoolean(valueName);
+        return result == null ? defaultValue : result;
+    }
     public Boolean getBoolean(String valueName) {
         return (Boolean)getValue(valueName);
     }

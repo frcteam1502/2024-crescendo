@@ -30,12 +30,14 @@ public class SwerveModule extends Builder {
     }
     
     public CANCoder Encoder() {return new CANCoder(getPart(AbsoluteEncoder));}
+
     public SwerveModule Encoder(Function<CANCoder, Builder> fn) {
         fn.apply(new CANCoder(getPart(AbsoluteEncoder)));
         return this;
     }
-    public SwerveModule Encoder(Manufacturer manufacturer, Function<CANCoder, Builder> fn) {
-        Install(new CANCoder(AbsoluteEncoder, manufacturer, fn));
+    
+    public SwerveModule CANCoder(Function<CANCoder, Builder> fn) {
+        Install(new CANCoder(AbsoluteEncoder, fn));
         return this;
     }
 

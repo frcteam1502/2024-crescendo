@@ -8,7 +8,10 @@ import team1502.configuration.Builders.Motor;
 import team1502.configuration.Builders.SwerveDrive;
 import team1502.configuration.Builders.SwerveModule;
 import team1502.configuration.Builders.Controllers.GyroSensor;
+import team1502.configuration.Builders.Controllers.IMU;
 import team1502.configuration.Builders.Controllers.MotorController;
+import team1502.configuration.Builders.Controllers.PowerDistributionModule;
+import team1502.configuration.Builders.Controllers.RoboRIO;
 import team1502.configuration.CAN.Manufacturer;
 
 public class PartFactory {
@@ -67,4 +70,55 @@ public class PartFactory {
         _builderMap.put("SwerveDrive",  new SwerveDrive(fn));
         return this;
     }
+
+    // Basic Parts
+    public PartFactory RoboRIO(Function<RoboRIO, Builder> fn) {
+        _builderMap.put("RoboRIO",  new RoboRIO(fn));
+        return this;
+    }
+    public PartFactory PowerDistributionHub(Function<PowerDistributionModule, Builder> fn) {
+        _builderMap.put(PowerDistributionModule.PDH,  new PowerDistributionModule(PowerDistributionModule.PDH, Manufacturer.REVRobotics, fn));
+        return this;
+    }
+    public PartFactory PowerDistributionPanel(Function<PowerDistributionModule, Builder> fn) {
+        _builderMap.put(PowerDistributionModule.PDP,  new PowerDistributionModule(PowerDistributionModule.PDP, Manufacturer.CTRElectronics, fn));
+        return this;
+    }
+    public PartFactory Pigeon2(Function<IMU, Builder> fn) {
+        _builderMap.put("Pigeon2",  new IMU("Pigeon2", Manufacturer.CTRElectronics, fn));
+        return this;
+    }
+
+    // "part" Parts
+    public PartFactory Radio(Function<Builder, Builder> fn) {
+        return Part("Radio", fn);
+    }
+    public PartFactory RadioPowerModule(Function<Builder, Builder> fn) {
+        return Part("RadioPowerModule", fn);
+    }
+    public PartFactory RadioBarrelJack(Function<Builder, Builder> fn) {
+        return Part("RadioBarrelJack", fn);
+    }
+    public PartFactory RadioSignalLight(Function<Builder, Builder> fn) {
+        return Part("RadioSignalLight", fn);
+    }
+    public PartFactory EthernetSwitch(Function<Builder, Builder> fn) {
+        return Part("EthernetSwitch", fn);
+    }
+    public PartFactory TimeOfFlight(Function<Builder, Builder> fn) {
+        return Part("TimeOfFlight", fn);
+    }
+    public PartFactory Compressor(Function<Builder, Builder> fn) {
+        return Part("Compressor", fn);
+    }
+    public PartFactory LimeLight(Function<Builder, Builder> fn) {
+        return Part("LimeLight", fn);
+    }
+    public PartFactory RaspberryPi(Function<Builder, Builder> fn) {
+        return Part("RaspberryPi", fn);
+    }
+    public PartFactory LEDs(Function<Builder, Builder> fn) {
+        return Part("LEDs", fn);
+    }
+
 }

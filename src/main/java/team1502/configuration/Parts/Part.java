@@ -136,7 +136,6 @@ import team1502.configuration.Builders.RobotBuilder;;
         return CanInfo(fn.apply(_canInfo));
     }
 
-    /*
     private PowerProfile _powerProfile;
     public boolean hasPowerProfile() {
         return _powerProfile != null;
@@ -162,6 +161,7 @@ import team1502.configuration.Builders.RobotBuilder;;
         }
         return PowerProfile(fn.apply(_powerProfile));
     }
+    /*
 */ 
     /*
     public static void print(String msg) {

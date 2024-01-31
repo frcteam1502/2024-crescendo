@@ -2,9 +2,11 @@ package team1502.configuration;
 
 import java.util.function.Function;
 
+import team1502.configuration.Builders.Builder;
 import team1502.configuration.Builders.RobotBuilder;
 import team1502.configuration.Builders.SwerveDrive;
 import team1502.configuration.Builders.Controllers.GyroSensor;
+import team1502.configuration.Builders.Controllers.PowerDistributionModule;
 import team1502.configuration.CAN.CanMap;
 import team1502.configuration.Factory.PartFactory;
 
@@ -43,6 +45,7 @@ public class RobotConfiguration {
     }
 
     public CanMap getCanMap() {return _robotBuilder.getCanMap();}
+    public PowerDistributionModule getPowerDistributionModule() {return _robotBuilder.getPowerDistributionModule();}
 
     public RobotConfiguration Parts(Function<PartFactory, PartFactory> fn) {
         fn.apply(_partFactory);
@@ -50,6 +53,11 @@ public class RobotConfiguration {
     }
     
     public RobotConfiguration Build(Function<RobotBuilder, RobotBuilder> fn) {
+        fn.apply(getBuilder());
+        return this;
+    }
+
+    public RobotConfiguration PowerDistributionModule(Function<PowerDistributionModule, Builder> fn) {
         fn.apply(getBuilder());
         return this;
     }
