@@ -208,7 +208,7 @@ public class DriveSubsystem extends SubsystemBase{
     SmartDashboard.putNumber("Front Right Measured Speed", frontRight.getModuleVelocity());
     SmartDashboard.putNumber("Front Right CANcoder Angle", (frontRight.getAbsPositionZeroed()*(180/Math.PI)));
 
-    SmartDashboard.putNumber("Rear Right Speed Command", backRight.getCommandedSpeed());
+    SmartDashboard.putNumber("Rear Right Speed Command", (backRight.getCommandedSpeed()));
     SmartDashboard.putNumber("Rear Right Angle Command", backRight.getCommandedAngle());
     SmartDashboard.putNumber("Rear Right Measured Speed", backRight.getModuleVelocity());
     SmartDashboard.putNumber("Rear Right CANcoder Angle", (backRight.getAbsPositionZeroed()*(180/Math.PI)));

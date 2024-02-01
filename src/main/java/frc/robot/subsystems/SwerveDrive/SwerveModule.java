@@ -12,6 +12,7 @@ import com.revrobotics.SparkPIDController;
 import com.revrobotics.CANSparkBase.ControlType;
 
 import edu.wpi.first.math.controller.PIDController;
+import edu.wpi.first.math.controller.SimpleMotorFeedforward;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.kinematics.SwerveModulePosition;
 import edu.wpi.first.math.kinematics.SwerveModuleState;
@@ -32,10 +33,15 @@ final class ModuleConstants {
   public static final double MODULE_TURN_PID_CONTROLLER_D = 0;
   
   // public static final double MODULE_TURN_PID_CONTROLLER_F = 0;
-  public static final double MODULE_DRIVE_PID_CONTROLLER_P = .08;
+  public static final double MODULE_DRIVE_PID_CONTROLLER_P = 0;
   public static final double MODULE_DRIVE_PID_CONTROLLER_I = 0;
   public static final double MODULE_DRIVE_PID_CONTROLLER_D = 0;
-  public static final double MODULE_DRIVE_PID_CONTROLLER_F = 1.0;
+  
+  public static final double KS_VOLTS = .667;
+  public static final double KV_VOLT_SEC_PER_METER = 2.44;
+  public static final double KA_VOLT_SEC_PER_METER_SQ = 0.0;
+
+  public static final SimpleMotorFeedforward MODULE_DRIVE_PID_CONTROLLER_F = new SimpleMotorFeedforward(KS_VOLTS, KV_VOLT_SEC_PER_METER, KA_VOLT_SEC_PER_METER_SQ);
   
   public static final double CLOSED_LOOP_RAMP_RATE = .5;
   public static final int SMART_CURRENT_LIMIT = 30;
@@ -96,7 +102,7 @@ public class SwerveModule {
     this.drivePIDController.setP(ModuleConstants.MODULE_DRIVE_PID_CONTROLLER_P);
     this.drivePIDController.setI(ModuleConstants.MODULE_DRIVE_PID_CONTROLLER_I);
     this.drivePIDController.setD(ModuleConstants.MODULE_DRIVE_PID_CONTROLLER_D);
-    this.drivePIDController.setFF(ModuleConstants.MODULE_DRIVE_PID_CONTROLLER_F);
+    //this.drivePIDController.setFF(ModuleConstants.MODULE_DRIVE_PID_CONTROLLER_F);
   }
 
   /**
@@ -153,24 +159,29 @@ public class SwerveModule {
    * @param desiredState Desired state with speed and angle.
    */
   public void setDesiredState(SwerveModuleState desiredState) {
-    
-    //Set SmartDashboard variables
-    commandedSpeed = desiredState.speedMetersPerSecond;
-    commandedAngle = desiredState.angle.getDegrees();
 
-    if(Math.abs(desiredState.speedMetersPerSecond) < .2){
+    /*if(Math.abs(desiredState.speedMetersPerSecond) < .2){
       driveMotor.set(0);
       turningMotor.set(0);
       return;
-    }else{
+    }else{*/
       // Optimize the reference state to avoid spinning further than 90 degrees
       SwerveModuleState state = SwerveModuleState.optimize(desiredState, new Rotation2d(getAbsPositionZeroed()));
 
       // Calculate the turning motor output from the turning PID controller.
       final double turnOutput = turningPIDController.calculate(getAbsPositionZeroed(), state.angle.getRadians());
 
-      drivePIDController.setReference(state.speedMetersPerSecond, ControlType.kVelocity);
-      turningMotor.setVoltage(turnOutput);
+      //Set SmartDashboard variables
+      commandedSpeed = state.speedMetersPerSecond;
+      commandedAngle = desiredState.angle.getDegrees();
+
+      drivePIDController.setReference(
+        state.speedMetersPerSecond, 
+        CANSparkMax.ControlType.kVelocity,
+        0,
+        ModuleConstants.MODULE_DRIVE_PID_CONTROLLER_F.calculate(state.speedMetersPerSecond));
+      
+        turningMotor.setVoltage(turnOutput);
     }
-  }
+  //}
 }

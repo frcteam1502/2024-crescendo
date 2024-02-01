@@ -49,6 +49,10 @@ public class ControllerCommands extends Command {
       teleopSpeedGain = DriveConstants.MAX_TELEOP_SPEED;
       teleopRotationGain = DriveConstants.MAX_TELEOP_ROTATION;
     }
+
+    SmartDashboard.putBoolean("LeftBumper",Driver.Buttons.LEFT_BUMPER.getAsBoolean());
+    SmartDashboard.putNumber("Speed Gain", teleopSpeedGain);
+    SmartDashboard.putNumber("Rotation Gain", teleopRotationGain);
     //Need to convert joystick input (-1 to 1) into m/s!!! 100% == MAX Attainable Speed
     double forwardSpeed = ((MathUtil.applyDeadband(Driver.getLeftY(), 0.1)) * teleopSpeedGain) *
         DriveConstants.MAX_SPEED_METERS_PER_SECOND;

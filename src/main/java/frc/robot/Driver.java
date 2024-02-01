@@ -17,6 +17,8 @@ public final class Driver {
   public static double getRightX() { return CONTROLLER.getRawAxis(LogitechF310.RIGHT_X); }
   public static double getRightY() { return CONTROLLER.getRawAxis(LogitechF310.RIGHT_Y);}
   public static double getRightTrigger() { return CONTROLLER.getRawAxis(LogitechF310.RIGHT_TRIGGER);}
+
+  public static boolean getLeftBumper() { return CONTROLLER.getRawButton(LogitechF310.LEFT_BUMPER);}
   
   /*//Xbox Controller
   public static final XboxController CONTROLLER = new XboxController(OperatorConstants.kDriverControllerPort);
@@ -91,24 +93,24 @@ public final class Driver {
     //Button mapping
     public static final int LEFT_X = 0;
     public static final int LEFT_Y = 1;
-    public static final int RIGHT_X = 2;
-    public static final int RIGHT_Y= 3;
+    public static final int RIGHT_X = 4;
+    public static final int RIGHT_Y= 5;
 
-    public static final int X_BUTTON = 0;
+    public static final int X_BUTTON = 3;
     public static final int A_BUTTON = 1;
     public static final int B_BUTTON = 2;
-    public static final int Y_BUTTON = 3;
+    public static final int Y_BUTTON = 4;
     
-    public static final int LEFT_TRIGGER = 4;
-    public static final int RIGHT_TRIGGER = 5;
+    public static final int LEFT_TRIGGER = 2;
+    public static final int RIGHT_TRIGGER = 3;
 
-    public static final int LEFT_BUMPER = 6;
-    public static final int RIGHT_BUMPER = 7;
+    public static final int LEFT_BUMPER = 5;
+    public static final int RIGHT_BUMPER = 6;
 
-    public static final int BACK = 8;
-    public static final int START = 9;
+    public static final int BACK = 7;
+    public static final int START = 8;
 
-    public static final int LEFT_STICK = 10;
-    public static final int RIGHT_STICK = 11;
+    public static final int LEFT_STICK = 9;
+    public static final int RIGHT_STICK = 10;
   }
 }
