@@ -102,7 +102,7 @@ final class DriveConstants {
       public static final double MAX_ROTATION_RADIANS_PER_SECOND_PER_SECOND = Math.PI;
       */
 
-      public static final double GO_STRAIGHT_GAIN = 0.01;
+      public static final double GO_STRAIGHT_GAIN = 0.1;
 }
 
 
