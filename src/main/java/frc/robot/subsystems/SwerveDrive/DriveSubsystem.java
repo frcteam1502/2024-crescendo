@@ -202,20 +202,25 @@ public class DriveSubsystem extends SubsystemBase{
     //Swerve Module info
     SmartDashboard.putNumber("Front Left Speed Command", frontLeft.getCommandedSpeed());
     SmartDashboard.putNumber("Front Left Angle Command", frontLeft.getCommandedAngle());
+    SmartDashboard.putNumber("Front Left Speed Setpoint", frontLeft.getControllerSetpoint());
     SmartDashboard.putNumber("Front Left Measured Speed", frontLeft.getModuleVelocity());
     SmartDashboard.putNumber("Front Left CANcoder Angle", (frontLeft.getAbsPositionZeroed()*(180/Math.PI)));
 
     SmartDashboard.putNumber("Front Right Speed Command", frontRight.getCommandedSpeed());
     SmartDashboard.putNumber("Front Right Angle Command", frontRight.getCommandedAngle());
+    SmartDashboard.putNumber("Front Right Speed Setpoint", frontRight.getControllerSetpoint());
     SmartDashboard.putNumber("Front Right Measured Speed", frontRight.getModuleVelocity());
     SmartDashboard.putNumber("Front Right CANcoder Angle", (frontRight.getAbsPositionZeroed()*(180/Math.PI)));
 
     SmartDashboard.putNumber("Rear Right Speed Command", backRight.getCommandedSpeed());
     SmartDashboard.putNumber("Rear Right Angle Command", backRight.getCommandedAngle());
+    SmartDashboard.putNumber("Rear Right Speed Setpoint", backRight.getControllerSetpoint());
     SmartDashboard.putNumber("Rear Right Measured Speed", backRight.getModuleVelocity());
     SmartDashboard.putNumber("Rear Right CANcoder Angle", (backRight.getAbsPositionZeroed()*(180/Math.PI)));
+    
     SmartDashboard.putNumber("Rear Left Speed Command", backLeft.getCommandedSpeed());
     SmartDashboard.putNumber("Rear Left Angle Command", backLeft.getCommandedAngle());
+    SmartDashboard.putNumber("Rear Left Speed Setpoint", backLeft.getControllerSetpoint());
     SmartDashboard.putNumber("Rear Left Measured Speed", backLeft.getModuleVelocity());
     SmartDashboard.putNumber("Rear Left CANcoder Angle", (backLeft.getAbsPositionZeroed()*(180/Math.PI)));
   }
