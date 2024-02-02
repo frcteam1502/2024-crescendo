@@ -58,7 +58,7 @@ public class RobotConfiguration {
     }
 
     public RobotConfiguration PowerDistributionModule(Function<PowerDistributionModule, Builder> fn) {
-        fn.apply(getBuilder());
+        fn.apply(getPowerDistributionModule());
         return this;
     }
 

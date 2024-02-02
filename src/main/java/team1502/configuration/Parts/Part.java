@@ -19,46 +19,24 @@ public class Part implements ICAN {
     public String name;
     public Part() {}
 
-/*
-import team1502.configuration.Builders.RobotBuilder;;
-    private RobotBuilder _robotBuilder;
-    public Part(String name, RobotBuilder rb) {
-        this.name = name;
-        _robotBuilder = rb;
-    }
-    public void setBuilder(RobotBuilder rb) {
-        _robotBuilder=rb;
-    }
-
-    public Part Part(String name, Function<Part, Part> fn) {
-        Part part = new Part(name, _robotBuilder);
-        fn.apply(part);
-        addPart(part);
-        return this;
-    }
-    public Part Piece(String name, Function<Part, Part> fn) {
-        Part part = new Part(name, _robotBuilder);
-        fn.apply(part);
-        addPiece(part);
-        return this;
-    }
-
-    public Part Piece(Function<Part, Part> fn) {
-        Part part = new Part();
-        fn.apply(part);
-        addPiece(part);
-        return this;
-    }
-*/    
     public Part Name(String name)
     {
         this.name = name;
         return this;
     }
 
+    // /**
+    //  * e.g., Logger name
+    //  * @return
+    //  */
+    // public String FriendlyName() { return (String)getValue("friendlyName", name); }
+    // public Part FriendlyName(String name) { return setValue("friendlyName", name); }
     
     public List<Part> getPieces() {
         return _pieces;
+    }
+    public Part getPiece(int index) {
+        return _pieces.get(index);
     }
 
     public Part addPiece(Part part) {
@@ -78,6 +56,11 @@ import team1502.configuration.Builders.RobotBuilder;;
         _values.put(valueName, value);
         return this;
     }
+
+    // public Object getValue(String valueName, Object defaultValue) {
+    //     var result = getValue(valueName);
+    //     return result != null ? result : defaultValue;
+    // }
     
     public Object getValue(String valueName) {
         return _values.get(valueName);
@@ -98,6 +81,9 @@ import team1502.configuration.Builders.RobotBuilder;;
     public Part getPart(String valueName) {
         return (Part)getValue(valueName);
     }
+
+    
+    // CAN
 
     private CanInfo _canInfo;
     public boolean isCanDevice() {
@@ -136,6 +122,11 @@ import team1502.configuration.Builders.RobotBuilder;;
         return CanInfo(fn.apply(_canInfo));
     }
 
+    // POWER
+    
+    public int PowerChannel() { return hasPowerProfile() ? _powerProfile.getChannel() : -1; }
+    public double TotalPeakPower() { return hasPowerProfile() ? _powerProfile.getPeakPower() : 0.0; }
+    
     private PowerProfile _powerProfile;
     public boolean hasPowerProfile() {
         return _powerProfile != null;
@@ -145,14 +136,17 @@ import team1502.configuration.Builders.RobotBuilder;;
         return _powerProfile;
     }
     
-    public Part PowerProfile(double peakPower) {
-        _powerProfile = new PowerProfile(peakPower);
-        return this;
+    public Part PeakPower(double peakPower) {
+        return PowerProfile(p -> p.PeakPower(peakPower));
     }
     
     public Part PowerProfile(PowerProfile profile) {
         _powerProfile = profile;
         return this;
+    }
+    
+    public Part PowerChannel(int channel) {
+        return PowerProfile(p -> p.Channel(channel));
     }
     
     public Part PowerProfile(Function<PowerProfile, PowerProfile> fn) {
@@ -181,33 +175,5 @@ import team1502.configuration.Builders.RobotBuilder;;
     }
     */
     
-/*
-    
-    public Part Note(String name, String detail)
-    {
-        return this.setValue(name, detail) ;
-    }
-    public Part GearBox(Function<Part, Part> fn) {
-        // get parent name for full path
-        return Part("GearBox", fn);
-    }
-    
-    public Part Gear(String stage, int drivingTeeth, int drivenTeeth) {
-        return this.Piece("stage", s1 -> s1
-            .setValue("drivingTeeth", drivingTeeth)
-            .setValue("drivenTeeth", drivenTeeth)
-        );
-    }
-    public double getGearRatio() {
-        //double ratio = 1.0;
-        var gearBox = this.getPart("GearBox");
-        var stages = gearBox.getPart("Stages").getPieces();
-        var ratios = stages.stream().map(stage->stage.getDoubleFromInt("drivingTeeth")/stage.getDoubleFromInt("drivenTeeth"));
-        return ratios.reduce(1.0, (stageA,stageB) -> stageA * stageB);
-        //return stages.stream().reduce(1.0, (stageA,stageB) -> (stageA.getDouble("drivingTeeth")/stageA.getDouble("drivenTeeth") * stageB.getDouble("drivingTeeth")/stageB.getDouble("drivenTeeth")));
-        // stages.forEach(stage->ratio = ratio * stage.getDouble("drivingTeeth")/stage.getDouble("drivenTeeth"));
-        // return ratio;
-    }
-*/
 
 }

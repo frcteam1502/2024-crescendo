@@ -9,7 +9,7 @@ import edu.wpi.first.math.kinematics.SwerveDriveKinematics;
 import team1502.configuration.Parts.Part;
 
 public class SwerveDrive extends Builder {
-    private static final String NAME = "SwerveDrive";
+    public static final String NAME = "SwerveDrive";
     private static final String MODULE = "SwerveModule";
 
     public SwerveDrive() { super(NAME); }
@@ -45,6 +45,9 @@ public class SwerveDrive extends Builder {
     public List<SwerveModule> getModules() {
         List<Part> parts = getPieces();
         return parts.stream().map(p->new SwerveModule(p)).toList();
+    }
+    public SwerveModule SwerveModule(String name) {
+        return new SwerveModule(getPieces().stream().filter(p->p.name == name).findFirst().get());
     }
 
 }

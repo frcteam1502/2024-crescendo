@@ -17,18 +17,20 @@ public class Builder {
     private IBuild _build;
     private Part _part;
 
+    public static Builder ForPart(String buildType) { return Builder.ForPart(buildType, buildType); }
+    public static Builder ForPart(String buildType, String name) {
+        return new Builder(buildType, name, b->b);
+        // builder._part = new Part().Name(name);
+        // builder._part.setValue("buildType", buildType);
+        // return builder;
+    }
+    public static Builder ForPart(Part part) {
+        var builder = new Builder();
+        builder.setPart(part);
+        return builder;
+    }
+
     public Builder() {}
-    /*
-     * 
-     //private Builder _parent;
-     
-     public Builder(Part part, IBuild build, Function<Builder, Builder> fn){
-         _part = part;
-         _build = build;
-         fn.apply(this);
-        }
-        
-    */
 
     // Just a build function (for partFactory)
     public Builder(String name, Function<Builder, Builder> fn){
@@ -41,12 +43,6 @@ public class Builder {
         this.name = buildType; // default name can be useful for sub-parts (eval)
     }
     
-    // EVAL
-    // protected Builder(String buildType, Part part) {
-    //     this.buildType = buildType;
-    //     _part = part;
-    // }
-
     // Build Proxy
     protected Builder(String buildType, String name) {
         this.buildType = buildType;
@@ -74,61 +70,23 @@ public class Builder {
         return new Builder(buildType, name, buildFunction);
     }
 
-/*
-    protected Builder(String buildType, String name, IBuild build, Function<Builder, Builder> fn)
-    {
-        this.name = name;
-        buildFunction = fn;
-        this.buildType = buildType;
-        _build = build;
-    }
-
-    public Builder(Builder parent){
-        _parent =  parent;
-    }
-
-    public RobotBuilder getRobotBuilder() {
-        return null; //_parent == null ? (RobotBuilder)this : _parent.getRobotBuilder();
-    }
- * 
- public Part createPart(String name) {
-     return _build.createPart(name, name);
-    }
-
-    protected void install() {
-        install(_part);
-    }
-
-    protected void install(Part part) {
-        _parent.install(part);
-    }
-    */
-
-    public String getName() {
-        return  (_part != null) ? _part.name : this.name;
-    }
-
-    public Builder Name(String newName) {
+    public String getName() { return  (_part != null) ? _part.name : this.name; }
+    public Builder setName(String newName) {
         name = newName;
         if (_part != null) {
             _part.name = newName;
         }
         return this;
-    
-    }   
-    // public Builder install(IBuild build) {
-    //     build.install(this);
-    //     return this;
-    // }
-    
-    // initial part constructor, reusable with new fn for modification
-    public Builder create(IBuild build) {
-        _build = build;
-        _part = new Part().Name(name);
-        setValue("buildType", buildType);
-        build();
-        return this; //_part;
     }
+
+    public String Name() { return getName(); }
+    public Builder Name(String newName) { return setName(newName); }   
+
+    public Builder Type(String buildType) {
+        this.buildType =  buildType;
+        return this;
+    }
+
     
     public Builder create(IBuild build, Function<? extends Builder, Builder> fn) {
         create(build);
@@ -142,6 +100,9 @@ public class Builder {
         return this;
     }
 
+    // initial part constructor, reusable with new fn for modification
+    public Builder create(IBuild build) { return create(build, name); }
+    
     public Builder create(IBuild build, String name) {
         _build = build;
         _part = new Part().Name(name);
@@ -154,8 +115,7 @@ public class Builder {
         if (buildType != "" && buildType != _part.getValue("buildType")) {
             _part.addError(buildType + " expected");
         }
-        apply(buildFunction);//onBuild(_part, buildFunction);
-        //install(_part);
+        apply(buildFunction);
         return this;
     }
 
@@ -209,15 +169,11 @@ public class Builder {
     // install a part with a new name
     public Builder Install(String newName, String partName, Function<? extends Builder, Builder> fn) {
         var builder = _build.createBuilder(partName, fn);
-        // default to existing -- although likely used
-        // var builder = _build.modifyBuilder(partName, fn);
-        // if (builder == null) { // backup to part factory
-        //     builder = _build.createBuilder(partName, fn);
-        // }
         return builder
             .Name(newName)
             .addPartTo(this);
     }
+
     public Builder InstallPiece(String newName, String partName, Function<? extends Builder, Builder> fn) {
         var builder = _build.createBuilder(partName, fn);
         return builder
@@ -230,16 +186,13 @@ public class Builder {
         builder.addPieceTo(this);
         return this;
     }
+
     public Builder Install(Builder builder) {
         builder.create(_build);
         builder.addPartTo(this);
         return this;
     }
-    public <T extends Builder> Builder Install(T builder, Function<T, Builder> fn) {
 
-        return this;
-    }
-    
     // "raw" install -- need a Function the creates the builder to be installed
     public Builder Install(String newName, Function<Builder, Builder> fn) {
         var builder = fn.apply(this);
@@ -261,37 +214,13 @@ public class Builder {
         builder.addPiece(_part);
         return this;
     }
-    private void addPiece(Part part) {
+    protected void addPiece(Part part) {
         _part.addPiece(part);
     }
 
     // E.g., eval - grab a part and put it in an empty builder
     public void setPart(Part part) {
         _part = part;
-        //name = part.name;
-    }
-/*
- * 
-    public Builder Build(String deviceId, String partName, Function<Part, Part> fn)
-    {        
-        _part = createPart(partName);
-        _part.name= deviceId;
-        fn.apply(_part);
-        install(_part);
-        return this;
-    }
-
-    public Builder Build(String name, Function<Part, Part> fn)
-    {        
-        return Build(name, name, fn);
-    }    
- */
-
-    // VALUES / (EVAL?)
-    
-    public void configure(Function<Part, Part> fn)
-    {
-        fn.apply(_part);
     }
     
     protected Builder setValue(String valueName, Object value) {
@@ -299,25 +228,22 @@ public class Builder {
         return this;
     }    
 
-    public Object Value(String valueName) {
-        return getValue(valueName);
-    }
-    public Builder Value(String valueName, Object value) {
-        return setValue(valueName, value);
-    }    
-
-    public String Note(String name) {
-        return (String)Value(name);
-    }    
-    public Builder Note(String name, String detail) {        
-        return Value(name, detail);
-    }    
+    // VALUES / (EVAL?)
     
-    public Builder Type(String buildType) {
-        this.buildType =  buildType;
-        return this;
+    public void configure(Function<Part, Part> fn)
+    {
+        fn.apply(_part);
     }
 
+    public Object Value(String valueName) { return getValue(valueName); }
+    public Builder Value(String valueName, Object value) { return setValue(valueName, value); }    
+
+    public String FriendlyName() { return getString("friendlyName", Name()); }
+    public Builder FriendlyName(String name) { return Value("friendlyName", name); }
+
+    public String Note(String name) { return (String)Value(name); }    
+    public Builder Note(String name, String detail) { return Value(name, detail); }    
+    
     // CAN
     public Builder Device(DeviceType deviceType) {
         if (buildType == "") {
@@ -343,23 +269,36 @@ public class Builder {
 
     
     // POWER
-    public Builder PowerProfile(double peakPower) {
-        _part.PowerProfile(peakPower);
+    public boolean hasPowerProfile() {
+        return _part.hasPowerProfile();
+    }
+
+    public Builder PeakPower(double peakPower) {
+        _part.PeakPower(peakPower);
         return this;
     }
+
     public Builder PowerProfile(PowerProfile power) {
         _part.PowerProfile(power);
         return this;
     }
-/*
-*/    
+
+    public Builder PowerChannel(int channel) {
+        _part.PowerChannel(channel);
+        return this;
+    }
     
     // EVAL 
 
+    public String getString(String valueName, String defaultValue) {
+        return (String)getValue(valueName, defaultValue);
+    }
+    
     public Object getValue(String valueName, Object defaultValue) {
         var result = getValue(valueName);
         return result != null ? result : defaultValue;
     }
+
     public Object getValue(String valueName) {
         return _part.getValue(valueName);
     }
@@ -368,6 +307,7 @@ public class Builder {
         var result = getBoolean(valueName);
         return result == null ? defaultValue : result;
     }
+
     public Boolean getBoolean(String valueName) {
         return (Boolean)getValue(valueName);
     }
@@ -395,6 +335,16 @@ public class Builder {
     public List<Part> getPieces() {
         return _part.getPieces();
     }
+    public List<Builder> getBuilderPieces() {
+        return getPieces().stream().map(p->Builder.ForPart(p)).toList();
+    }
+
+    public Part getPiece(int index) {
+        return _part.getPiece(index);
+    }
+    public Builder getBuilderPiece(int index) {
+        return Builder.ForPart(_part.getPiece(index));
+    }
 
     // CAN
     public int getCanNumber() {
@@ -403,5 +353,11 @@ public class Builder {
     public Manufacturer getManufacturer() {
         return _part.getCanInfo().manufacturer;
     }
+
+    // POWER
+    
+    public int PowerChannel() { return _part.PowerChannel(); }
+    public double TotalPeakPower() { return _part.TotalPeakPower(); }
+
     
 }

@@ -44,4 +44,7 @@ public class PowerProfile {
         this.channel = channel;
         return this;
     }
+
+    public int getChannel() { return channel; }
+    public double getPeakPower() { return peakPower; }
 }

@@ -24,18 +24,18 @@ public final class RobotConfigurations {
 
     private static RobotConfiguration standardChassis(RobotConfiguration inventory) {
         return inventory.Parts(define -> define
-            .RoboRIO(r -> r.Version("2.0").PowerProfile(45.0)) // +RSL 0.6 ??
+            .RoboRIO(r -> r.Version("2.0").PeakPower(45.0)) // +RSL 0.6 ??
             .PowerDistributionHub(p -> p.CanNumber(1))
-            .Radio(r -> r.PowerProfile(0.79))
-            .RadioPowerModule(r -> r.PowerProfile(12.0)) // radio power module
-            .RadioBarrelJack(r -> r.PowerProfile(12.0)) // radio barrel jack
-            .RadioSignalLight(r -> r.PowerProfile(0.6)) // radio signal light
-            .EthernetSwitch(r -> r.PowerProfile(12.0))
-            .TimeOfFlight(r -> r.PowerProfile(0.02))
-            .Compressor(r -> r.PowerProfile(120.0))
-            .LimeLight(r -> r.PowerProfile(60.0))
-            .RaspberryPi(r -> r.PowerProfile(60.0)) //? + camera
-            .LEDs(r -> r.PowerProfile(25.0)) // 5V addressable LEDs - 5A max
+            .Radio(r -> r.PeakPower(0.79))
+            .RadioPowerModule(r -> r.PeakPower(12.0)) // radio power module
+            .RadioBarrelJack(r -> r.PeakPower(12.0)) // radio barrel jack
+            .RadioSignalLight(r -> r.PeakPower(0.6)) // radio signal light
+            .EthernetSwitch(r -> r.PeakPower(12.0))
+            .TimeOfFlight(r -> r.PeakPower(0.02))
+            .Compressor(r -> r.PeakPower(120.0))
+            .LimeLight(r -> r.PeakPower(60.0))
+            .RaspberryPi(r -> r.PeakPower(60.0)) //? + camera
+            .LEDs(r -> r.PeakPower(25.0)) // 5V addressable LEDs - 5A max
         );
     }
 
@@ -44,7 +44,7 @@ public final class RobotConfigurations {
         // Inventory Definitions
         return inventory.Parts(define -> define
             .Pigeon2(p -> p
-                .PowerProfile(0.4)
+                .PeakPower(0.4)
             )
             .Motor("NEO", m -> m
                 .MotorType(MotorType.kBrushless)
@@ -54,12 +54,12 @@ public final class RobotConfigurations {
                 .Note("gearing", "8mm bore pinion gears")
                 .Note("DATA SHEET", "https://www.revrobotics.com/content/docs/REV-21-1650-DS.pdf")
                 .Value("empiricalFreeSpeed", 5_676.0) // how to choose best vaule?
-                .PowerProfile(380.0)
+                .PeakPower(380.0)
             )
             .SwerveModule(sm -> sm
                 .CANCoder(cc -> cc
                     .Direction(false)
-                    .PowerProfile(0.060)
+                    .PeakPower(0.060)
                 )
                 .TurningMotor(Manufacturer.REVRobotics, mc -> mc
                     .Motor("NEO")
@@ -132,50 +132,78 @@ public final class RobotConfigurations {
             .Note("Intake is the FRONT for this configuration as all the motors drive that direction unless reversed")
             .Pigeon2("Gyro", g->g.CanNumber(14))
             .SwerveDrive(sd -> sd
-                .SwerveModule("#1-16", sm -> sm // just leaving these as numbers, since "Front" is arbitrary and undetermined at the moment
+                .SwerveModule("#1", sm -> sm // just leaving these as numbers, since "Front" is arbitrary and undetermined at the moment
                     .CanNumberDown(16) // 16 16 15 -- also PDP channel
-                    .Encoder(e -> e.MagneticOffset(151.96))
-                )
-                .SwerveModule("#2-10", sm -> sm
+                    .Encoder(e -> e.MagneticOffset(151.96)
+                    .FriendlyName("Front Left"))
+                    )
+                    .SwerveModule("#2", sm -> sm
                     .CanNumber(10) // 10 10 11
-                    .Encoder(e -> e.MagneticOffset(121.81))
-                )
-                .SwerveModule("#3-4", sm -> sm
+                    .Encoder(e -> e.MagneticOffset(121.81)
+                    .FriendlyName("Front Right"))
+                    )
+                    .SwerveModule("#3", sm -> sm
                     .CanNumberDown(4) // 4 4 3
-                    .Encoder(e -> e.MagneticOffset(4.83))
-                )
-                .SwerveModule("#4-8", sm -> sm
+                    .Encoder(e -> e.MagneticOffset(4.83)
+                    .FriendlyName("Back Left"))
+                    )
+                    .SwerveModule("#4", sm -> sm
                     .CanNumber(8) // 8 8 9
-                    .Encoder(e -> e.MagneticOffset(127.26))
+                    .Encoder(e -> e.MagneticOffset(127.26)
+                    .FriendlyName("Back Right"))
                 )
                 // miscellaneous
                 .Value("goStraightGain", 0.02)
             )
         );
     }
-    
+/*
+                .DC("DC-DC", dc -> dc
+                    .Pi("PhotonVisionone", "10.15.02.11")
+                    .Pi("PhotonVisiontwo", "10.15.02.12")
+                )
+                
+ */    
     private static RobotConfiguration pdpAssignments(RobotConfiguration robot) {
+        robot.Build(hw->hw
+            .MiniPowerModule("RM-PDP", mpm -> mpm
+                .Ch(0, 10, robot.Values().SwerveDrive().SwerveModule("#4-8").Encoder())
+                .Ch(1, 10, robot.Values().SwerveDrive().SwerveModule("#2-10").Encoder()))
+
+            .MiniPowerModule("LM-PDP", mpm -> mpm
+                .Ch(0, 10, robot.Values().GyroSensor())
+                .Ch(3, 10, robot.Values().SwerveDrive().SwerveModule("#1-16").Encoder())
+                .Ch(4, 10, robot.Values()
+                    .EthernetSwitch(/*eth->eth // also provides POE
+                        .Radio()
+                            .RadioPowerModule()
+                            .RadioBarrelJack()
+                    */)
+                )
+                .Ch(5, 10, robot.Values().SwerveDrive().SwerveModule("#3-4").Encoder()))
+        );
+                            
         return robot.PowerDistributionModule(pdh -> pdh
         // LEFT SIDE                                RIGHT SIDE
         //======================================    ======================================
-        .Ch(10, 30, "DC-DC")                        .Ch(9, 10, "PCM")
+        .Ch(10, 30, "DC-DC")                        .Ch(9, 10, robot.Values().PCM())
         .Ch(11)                                     .Ch(7)
-        .Ch(12, 30, "RM-PDP")                       .Ch(8)
-        .Ch(13, 30, "LM-PDP")                       .Ch(6)
-        .Ch(14, 40, "X-ARM")                        .Ch(5)
-        .Ch(15, 40, "L-ARM")                        .Ch(4, 40, "R-ARM")
-        .Ch(16, 40, "RLD")                          .Ch(3, 40, "FRD")
-        .Ch(17, 40, "RLT")                          .Ch(2, 40, "FRT")
-        .Ch(18, 40, "RRD")                          .Ch(1, 40, "FLD")
-        .Ch(19, 40, "RRT")                          .Ch(0, 40, "FLT")
+        .Ch(12, 30, robot.Values().MPM("LM-PDP"))   .Ch(8)
+        .Ch(13, 30, robot.Values().MPM("RM-PDP"))   .Ch(6)
+        .Ch(14, 40)                                 .Ch(5)
+        .Ch(15, 40)                                 .Ch(4, 40)
+        .Ch(16, 40)                                 .Ch(3, 40)
+        .Ch(17, 40)                                 .Ch(2, 40)
+        .Ch(18, 40)                                 .Ch(1, 40)
+        .Ch(19, 40)                                 .Ch(0, 40)
 
-        .Ch(20, 10, "RIO") // + LEDs?
-        .Ch(21, 10, "RPM") // these two are
-        .Ch(22, 10, "RBJ") // redundant power sources
+        .Ch(20, 10, robot.Values().RoboRIO()) // + LEDs?
+        .Ch(21, 10, robot.Values().RadioPowerModule()) // these two are
+        .Ch(22, 10, robot.Values().RadioBarrelJack())  // redundant power sources
         .Ch(22) // switchable
-    );
-
+        );
     }
+
     private static RobotConfiguration addEvalHelpers(RobotConfiguration robot) {
         // Configuration Values
         return robot.Values(k -> k

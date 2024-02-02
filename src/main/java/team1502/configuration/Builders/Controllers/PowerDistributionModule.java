@@ -12,15 +12,32 @@ import team1502.configuration.CAN.Manufacturer;
  * see, https://docs.wpilib.org/en/stable/docs/software/can-devices/power-distribution-module.html
  */
 public class PowerDistributionModule extends Controller {
-     private static final DeviceType Type = DeviceType.PowerDistributionModule;
+    private static final DeviceType Type = DeviceType.PowerDistributionModule;
     public static final String PDP = "PDP"; // CTRE
     public static final String PDH = "PDH"; // REV - 23 channels: 0-22
+    
+    /**
+     * https://www.revrobotics.com/rev-11-1956/
+     */
+    public static final String MPM = "MPM"; // REV -  6 channels: 0-5  Mini Power Module (not a "Controller"?)
 
     public PowerDistributionModule(String name, Function<? extends PowerDistributionModule, Builder> fn) {
         super(name, Type, fn);
     }
     public PowerDistributionModule(String name, Manufacturer manufacturer, Function<? extends PowerDistributionModule, Builder> fn) {
         super(name, Type, manufacturer, fn);
+        int channels = 23; // REV PDH
+        if (manufacturer == Manufacturer.REVRobotics) { // PDP
+            if (name == MPM) {
+                channels = 6;
+            }
+        } 
+        else if (manufacturer == Manufacturer.CTRElectronics) { // PDP
+            channels = 16; // ??
+        }
+        for (int ch = 0; ch < channels; ch++) {
+            InstallPiece(createChannel(ch));
+        }
     }
         
     public PowerDistributionModule(Function<? extends PowerDistributionModule, Builder> buildFunction) {
@@ -36,10 +53,15 @@ public class PowerDistributionModule extends Controller {
         return new PowerDistributionModule((Function<PowerDistributionModule, Builder>)buildFunction);
     }
    
-    public PowerDistributionModule Ch(Integer channel, String name) {
+    public PowerDistributionModule Ch(Integer channel, Integer fuze) {
+        updateChannel(channel, fuze);
         return this;
     }
-    public PowerDistributionModule Ch(Integer channel, int fuze, String name) {
+    public PowerDistributionModule Ch(Integer channel, Integer fuze, String name) {
+        return this;
+    }
+    public PowerDistributionModule Ch(Integer channel, Integer fuze, Builder part) {
+        updateChannel(fuze, fuze, part);
         return this;
     }
     public PowerDistributionModule Ch(Integer channel) { // empty
@@ -56,4 +78,47 @@ public class PowerDistributionModule extends Controller {
         examplePD.setSwitchableChannel(true);
         examplePD.setSwitchableChannel(false);
      */
+
+    public void tryAddPart(Builder part) {
+        if (part.hasPowerProfile()) {
+            updateChannel(part);
+        }
+    }
+
+    private Builder createChannel(Integer channelNumber) {
+        return Builder.ForPart("Channel", "Ch " + (channelNumber < 10 ? " " : "") + channelNumber.toString());
+    }
+
+    private void updateChannel(Integer channelNumber, Integer fuze, Builder part) {
+        updateChannel(channelNumber, fuze);
+        updateChannel(channelNumber, part);
+    }
+
+    private void updateChannel(Integer channelNumber, Integer fuze) {
+        if (channelNumber >= 0) {
+            Builder ch = getBuilderPiece(channelNumber);
+            ch.Value("fuze", fuze);            
+        }
+    }
+    private void updateChannel(Integer channelNumber, Builder part) {
+        if (channelNumber >= 0) {
+            Builder ch = getBuilderPiece(channelNumber);
+            ch.Value("part", part);
+            ch.Value("name", part.FriendlyName());
+        }
+    }
+    private void updateChannel(Builder part) {
+        int channelNumber = part.PowerChannel();
+        updateChannel(channelNumber, part);
+    }
+
+    private class ChannelInfo {
+        public int channel;
+        public int fuze;
+        public Builder part;
+    }
+
+    public String[] ChannelNames() {
+        return getBuilderPieces().stream().map(ch->ch.getString("name", "")).toArray(String[]::new);
+    }
 }

@@ -3,6 +3,7 @@ package team1502.configuration;
 import java.util.HashMap;
 import java.util.function.Function;
 
+import edu.wpi.first.wpilibj.PneumaticsControlModule;
 import team1502.configuration.Builders.Builder;
 import team1502.configuration.Builders.Motor;
 import team1502.configuration.Builders.RobotBuilder;
@@ -10,6 +11,9 @@ import team1502.configuration.Builders.SwerveDrive;
 import team1502.configuration.Builders.SwerveModule;
 import team1502.configuration.Builders.Controllers.GyroSensor;
 import team1502.configuration.Builders.Controllers.MotorController;
+import team1502.configuration.Builders.Controllers.PneumaticsController;
+import team1502.configuration.Builders.Controllers.PowerDistributionModule;
+import team1502.configuration.Builders.Controllers.RoboRIO;
 
 public class Evaluator {
     private HashMap<String, EvaluatorArgs> _valueMap = new HashMap<>(); 
@@ -87,13 +91,31 @@ public class Evaluator {
     public Object SwerveModule(String partName, Function<SwerveModule, Object> fn) {
         return getValue(partName, new SwerveModule(), fn);   
     }
+    public PowerDistributionModule MPM(String partName) {
+        return (PowerDistributionModule)getValue(partName, new PowerDistributionModule(), p->p);   
+    }
+    public RoboRIO RoboRIO() {
+        return (RoboRIO)getValue(RoboRIO.NAME, new RoboRIO(), p->p);   
+    }
+    public Builder EthernetSwitch() {
+        return (Builder)getValue("EthernetSwitch", new Builder(), p->p);   
+    }
+    public Builder RadioPowerModule() {
+        return (Builder)getValue("RadioPowerModule", new Builder(), p->p);   
+    }
+    public Builder RadioBarrelJack() {
+        return (Builder)getValue("RadioBarrelJack", new Builder(), p->p);   
+    }
+    public PneumaticsController PCM() {
+        return (PneumaticsController)getValue(PneumaticsController.PCM, new PneumaticsController(), p->p);   
+    }
 
     public SwerveDrive SwerveDrive() {
         return SwerveDrive(d->d);   
     }
 
     public <T extends Object> T SwerveDrive(Function<SwerveDrive, T> fn) {
-        return (T)getValue("SwerveDrive", new SwerveDrive(), fn);   
+        return (T)getValue(SwerveDrive.NAME, new SwerveDrive(), fn);   
     }
 
 }
