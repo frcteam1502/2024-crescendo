@@ -167,12 +167,12 @@ public final class RobotConfigurations {
     private static RobotConfiguration pdpAssignments(RobotConfiguration robot) {
         robot.Build(hw->hw
             .MiniPowerModule("RM-PDP", mpm -> mpm
-                .Ch(0, 10, robot.Values().SwerveDrive().SwerveModule("#4-8").Encoder())
-                .Ch(1, 10, robot.Values().SwerveDrive().SwerveModule("#2-10").Encoder()))
+                .Ch(0, 10, robot.Values().SwerveDrive().SwerveModule("#4").Encoder())
+                .Ch(1, 10, robot.Values().SwerveDrive().SwerveModule("#2").Encoder()))
 
             .MiniPowerModule("LM-PDP", mpm -> mpm
                 .Ch(0, 10, robot.Values().GyroSensor())
-                .Ch(3, 10, robot.Values().SwerveDrive().SwerveModule("#1-16").Encoder())
+                .Ch(3, 10, robot.Values().SwerveDrive().SwerveModule("#1").Encoder())
                 .Ch(4, 10, robot.Values()
                     .EthernetSwitch(/*eth->eth // also provides POE
                         .Radio()
@@ -180,7 +180,7 @@ public final class RobotConfigurations {
                             .RadioBarrelJack()
                     */)
                 )
-                .Ch(5, 10, robot.Values().SwerveDrive().SwerveModule("#3-4").Encoder()))
+                .Ch(5, 10, robot.Values().SwerveDrive().SwerveModule("#3").Encoder()))
         );
                             
         return robot.PowerDistributionModule(pdh -> pdh

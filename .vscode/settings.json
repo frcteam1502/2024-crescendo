@@ -28,5 +28,6 @@
   "java.test.defaultConfig": "WPIlibUnitTests",
   "java.inlayHints.parameterNames.exclusions": [
     "team1502.configuration.Builders.Controllers.PowerDistributionModule.Ch(*)"
-  ]
+  ],
+  "java.dependency.packagePresentation": "hierarchical"
 }

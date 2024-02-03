@@ -22,22 +22,34 @@ public class PowerDistributionModule extends Controller {
     public static final String MPM = "MPM"; // REV -  6 channels: 0-5  Mini Power Module (not a "Controller"?)
 
     public PowerDistributionModule(String name, Function<? extends PowerDistributionModule, Builder> fn) {
-        super(name, Type, fn);
+        super(name, Type,  c -> ((PowerDistributionModule)c)
+            .initializeChannels(6)
+            .Apply(fn));
     }
     public PowerDistributionModule(String name, Manufacturer manufacturer, Function<? extends PowerDistributionModule, Builder> fn) {
-        super(name, Type, manufacturer, fn);
-        int channels = 23; // REV PDH
+        super(name, Type, manufacturer, c -> ((PowerDistributionModule)c)
+            .initializeChannels(manufacturer)
+            .Apply(fn));
+    }
+
+    private PowerDistributionModule initializeChannels(Manufacturer manufacturer) {
+        int channels = 1; // unknown
         if (manufacturer == Manufacturer.REVRobotics) { // PDP
-            if (name == MPM) {
-                channels = 6;
-            }
+            channels = 23;
+            // if (name == MPM) {
+                //     channels = 6;
+            // }
         } 
         else if (manufacturer == Manufacturer.CTRElectronics) { // PDP
             channels = 16; // ??
         }
+        return initializeChannels(channels);
+    }
+    private PowerDistributionModule initializeChannels(int channels) {
         for (int ch = 0; ch < channels; ch++) {
             InstallPiece(createChannel(ch));
         }
+        return this;
     }
         
     public PowerDistributionModule(Function<? extends PowerDistributionModule, Builder> buildFunction) {
