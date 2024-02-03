@@ -7,6 +7,7 @@ import com.ctre.phoenix6.signals.AbsoluteSensorRangeValue;
 import com.ctre.phoenix6.signals.SensorDirectionValue;
 
 import com.revrobotics.CANSparkMax;
+import com.revrobotics.CANSparkBase;
 import com.revrobotics.RelativeEncoder;
 import com.revrobotics.SparkPIDController;
 import com.revrobotics.CANSparkBase.ControlType;
@@ -16,6 +17,7 @@ import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.kinematics.SwerveModulePosition;
 import edu.wpi.first.math.kinematics.SwerveModuleState;
 import edu.wpi.first.math.util.Units;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 
 final class ModuleConstants {
  
@@ -32,13 +34,15 @@ final class ModuleConstants {
   public static final double MODULE_TURN_PID_CONTROLLER_D = 0;
   
   // public static final double MODULE_TURN_PID_CONTROLLER_F = 0;
-  public static final double MODULE_DRIVE_PID_CONTROLLER_P = .08;
+  public static final double MODULE_DRIVE_PID_CONTROLLER_P = .0005;
   public static final double MODULE_DRIVE_PID_CONTROLLER_I = 0;
   public static final double MODULE_DRIVE_PID_CONTROLLER_D = 0;
   public static final double MODULE_DRIVE_PID_CONTROLLER_F = 1.0;
   
   public static final double CLOSED_LOOP_RAMP_RATE = .5;
   public static final int SMART_CURRENT_LIMIT = 30;
+
+  public static final double MAX_SPEED_METERS_PER_SECOND = 4.6;
 
   /*
   public static final double MAX_METERS_PER_SECOND = 4.4; //5600 * DRIVE_ENCODER_MPS_PER_REV;
@@ -147,6 +151,10 @@ public class SwerveModule {
     return commandedAngle;
   }
 
+  public double getControllerSetpoint(){
+    return driveMotor.get();
+  }
+
   /**
    * Sets the desired state for the module.
    *
@@ -166,10 +174,18 @@ public class SwerveModule {
       // Optimize the reference state to avoid spinning further than 90 degrees
       SwerveModuleState state = SwerveModuleState.optimize(desiredState, new Rotation2d(getAbsPositionZeroed()));
 
+      //Set SmartDashboard variables
+      commandedSpeed = desiredState.speedMetersPerSecond;
+      commandedAngle = desiredState.angle.getDegrees();
+
       // Calculate the turning motor output from the turning PID controller.
       final double turnOutput = turningPIDController.calculate(getAbsPositionZeroed(), state.angle.getRadians());
 
-      drivePIDController.setReference(state.speedMetersPerSecond, ControlType.kVelocity);
+      var desiredSpeed = state.speedMetersPerSecond/ModuleConstants.MAX_SPEED_METERS_PER_SECOND;
+      //drivePIDController.setReference(state.speedMetersPerSecond, CANSparkMax.ControlType.kVelocity);
+      drivePIDController.setReference(desiredSpeed, CANSparkMax.ControlType.kVelocity);
+
+      //driveMotor.set(desiredSpeed);
       turningMotor.setVoltage(turnOutput);
     }
   }

@@ -4,7 +4,7 @@ import java.util.function.BooleanSupplier;
 
 import javax.swing.text.Utilities;
 
-//import frc.robot.Logger;
+import frc.robot.Logger;
 
 import com.ctre.phoenix6.hardware.CANcoder;
 import com.ctre.phoenix6.hardware.Pigeon2;
@@ -78,8 +78,8 @@ final class DriveConstants {
   //Drive Motors
   public static final boolean FrontLeftDriveMotorReversed = true;
   public static final boolean BackLeftDriveMotorReversed = true;
-  public static final boolean FrontRightDriveMotorReversed = false;
-  public static final boolean BackRightDriveMotorReversed = false;
+  public static final boolean FrontRightDriveMotorReversed = true;
+  public static final boolean BackRightDriveMotorReversed = true;
 
   public static final CANSparkMax.IdleMode FrontLeftDriveMotorBrake = IdleMode.kBrake;
   public static final CANSparkMax.IdleMode BackLeftDriveMotorBrake = IdleMode.kBrake;
@@ -110,7 +110,7 @@ final class DriveConstants {
       public static final double MAX_ROTATION_RADIANS_PER_SECOND_PER_SECOND = Math.PI;
       */
 
-      public static final double GO_STRAIGHT_GAIN = 0.01;
+      public static final double GO_STRAIGHT_GAIN = 0.1;
 }
 
 
@@ -182,30 +182,9 @@ public class DriveSubsystem extends SubsystemBase{
 
     reset();
     ConfigMotorDirections();
-
-    //Logger.RegisterCanSparkMax("FL Drive", Motors.DRIVE_FRONT_LEFT);
-    //Logger.RegisterCanSparkMax("FR Drive", Motors.DRIVE_FRONT_RIGHT);
-    //Logger.RegisterCanSparkMax("RL Drive", Motors.DRIVE_BACK_LEFT);
-    //Logger.RegisterCanSparkMax("RR Drive", Motors.DRIVE_BACK_RIGHT);
-
-    //Logger.RegisterCanSparkMax("FL Turn", Motors.ANGLE_FRONT_LEFT);
-    //Logger.RegisterCanSparkMax("FR Turn", Motors.ANGLE_FRONT_RIGHT);
-    //Logger.RegisterCanSparkMax("RL Turn", Motors.ANGLE_BACK_LEFT);
-    //Logger.RegisterCanSparkMax("RR Turn", Motors.ANGLE_BACK_RIGHT);
-
-    //Logger.RegisterPigeon(Gyro.gyro);
-
-    //Logger.RegisterCanCoder("FL Abs Position", CANCoders.FRONT_LEFT_CAN_CODER);
-    //Logger.RegisterCanCoder("FR Abs Position", CANCoders.FRONT_RIGHT_CAN_CODER);
-    //Logger.RegisterCanCoder("RL Abs Position", CANCoders.BACK_LEFT_CAN_CODER);
-    //Logger.RegisterCanCoder("RR Abs Position", CANCoders.BACK_RIGHT_CAN_CODER);
-
-    //Logger.RegisterSensor("FL Drive Speed", ()->frontLeft.getVelocity());
-    //Logger.RegisterSensor("FR Drive Speed", ()->frontRight.getVelocity());
-    //Logger.RegisterSensor("RL Drive Speed", ()->backLeft.getVelocity());
-    //Logger.RegisterSensor("RR Drive Speed", ()->backRight.getVelocity());
-
     configAutoBuilder();
+    registerLoggerObjects();
+    
   }
 
   private void checkInitialAngle() {
@@ -234,20 +213,25 @@ public class DriveSubsystem extends SubsystemBase{
     //Swerve Module info
     SmartDashboard.putNumber("Front Left Speed Command", frontLeft.getCommandedSpeed());
     SmartDashboard.putNumber("Front Left Angle Command", frontLeft.getCommandedAngle());
+    SmartDashboard.putNumber("Front Left Speed Setpoint", frontLeft.getControllerSetpoint());
     SmartDashboard.putNumber("Front Left Measured Speed", frontLeft.getModuleVelocity());
     SmartDashboard.putNumber("Front Left CANcoder Angle", (frontLeft.getAbsPositionZeroed()*(180/Math.PI)));
 
     SmartDashboard.putNumber("Front Right Speed Command", frontRight.getCommandedSpeed());
     SmartDashboard.putNumber("Front Right Angle Command", frontRight.getCommandedAngle());
+    SmartDashboard.putNumber("Front Right Speed Setpoint", frontRight.getControllerSetpoint());
     SmartDashboard.putNumber("Front Right Measured Speed", frontRight.getModuleVelocity());
     SmartDashboard.putNumber("Front Right CANcoder Angle", (frontRight.getAbsPositionZeroed()*(180/Math.PI)));
 
     SmartDashboard.putNumber("Rear Right Speed Command", backRight.getCommandedSpeed());
     SmartDashboard.putNumber("Rear Right Angle Command", backRight.getCommandedAngle());
+    SmartDashboard.putNumber("Rear Right Speed Setpoint", backRight.getControllerSetpoint());
     SmartDashboard.putNumber("Rear Right Measured Speed", backRight.getModuleVelocity());
     SmartDashboard.putNumber("Rear Right CANcoder Angle", (backRight.getAbsPositionZeroed()*(180/Math.PI)));
+    
     SmartDashboard.putNumber("Rear Left Speed Command", backLeft.getCommandedSpeed());
     SmartDashboard.putNumber("Rear Left Angle Command", backLeft.getCommandedAngle());
+    SmartDashboard.putNumber("Rear Left Speed Setpoint", backLeft.getControllerSetpoint());
     SmartDashboard.putNumber("Rear Left Measured Speed", backLeft.getModuleVelocity());
     SmartDashboard.putNumber("Rear Left CANcoder Angle", (backLeft.getAbsPositionZeroed()*(180/Math.PI)));
   }
@@ -446,8 +430,30 @@ public class DriveSubsystem extends SubsystemBase{
       this); //Reference to this subsystem to set 
   }
 
-  public void dummyAction(){
+  public void dummyAction(){}
 
+  private void registerLoggerObjects(){
+    Logger.RegisterCanSparkMax("FL Drive", Motors.DRIVE_FRONT_LEFT);
+    Logger.RegisterCanSparkMax("FR Drive", Motors.DRIVE_FRONT_RIGHT);
+    Logger.RegisterCanSparkMax("RL Drive", Motors.DRIVE_BACK_LEFT);
+    Logger.RegisterCanSparkMax("RR Drive", Motors.DRIVE_BACK_RIGHT);
+
+    Logger.RegisterCanSparkMax("FL Turn", Motors.ANGLE_FRONT_LEFT);
+    Logger.RegisterCanSparkMax("FR Turn", Motors.ANGLE_FRONT_RIGHT);
+    Logger.RegisterCanSparkMax("RL Turn", Motors.ANGLE_BACK_LEFT);
+    Logger.RegisterCanSparkMax("RR Turn", Motors.ANGLE_BACK_RIGHT);
+
+    Logger.RegisterPigeon(Gyro.gyro);
+
+    Logger.RegisterCanCoder("FL Abs Position", CANCoders.FRONT_LEFT_CAN_CODER);
+    Logger.RegisterCanCoder("FR Abs Position", CANCoders.FRONT_RIGHT_CAN_CODER);
+    Logger.RegisterCanCoder("RL Abs Position", CANCoders.BACK_LEFT_CAN_CODER);
+    Logger.RegisterCanCoder("RR Abs Position", CANCoders.BACK_RIGHT_CAN_CODER);
+
+    Logger.RegisterSensor("FL Drive Speed", ()->frontLeft.getVelocity());
+    Logger.RegisterSensor("FR Drive Speed", ()->frontRight.getVelocity());
+    Logger.RegisterSensor("RL Drive Speed", ()->backLeft.getVelocity());
+    Logger.RegisterSensor("RR Drive Speed", ()->backRight.getVelocity());
   }
 
 }
