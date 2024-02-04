@@ -127,6 +127,7 @@ public final class RobotConfigurations {
         );
     }
     private static RobotConfiguration buildCompetitionBot(RobotConfiguration parts) {
+        buildStandardElectronics(parts);
         // Top-Level Parts
         return parts.Build(hw -> hw
             .Note("Intake is the FRONT for this configuration as all the motors drive that direction unless reversed")

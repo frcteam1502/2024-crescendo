@@ -17,12 +17,11 @@ public class Builder {
     private IBuild _build;
     private Part _part;
 
-    public static Builder ForPart(String buildType) { return Builder.ForPart(buildType, buildType); }
+    public static Builder ForPart(String buildType) { 
+        return Builder.ForPart(buildType, buildType); 
+    }
     public static Builder ForPart(String buildType, String name) {
         return new Builder(buildType, name, b->b);
-        // builder._part = new Part().Name(name);
-        // builder._part.setValue("buildType", buildType);
-        // return builder;
     }
     public static Builder ForPart(Part part) {
         var builder = new Builder();
@@ -66,6 +65,8 @@ public class Builder {
         return builder;
     }
 
+
+    // @Override this for subclasses
     public Builder createBuilder() {
         return new Builder(buildType, name, buildFunction);
     }
@@ -119,10 +120,12 @@ public class Builder {
         return this;
     }
 
+    /*
     protected void onBuild(Part part, Function<Builder, Builder> fn) {
         apply(fn);
     }
-
+    */
+    
     // (intended) empty builder (e.g., of another subclass) to do the work
     protected <T extends Builder> Object eval(Function<T, ? extends Object> fn, Part part) {
         _part = part;
@@ -273,8 +276,8 @@ public class Builder {
         return _part.hasPowerProfile();
     }
 
-    public Builder PeakPower(double peakPower) {
-        _part.PeakPower(peakPower);
+    public Builder PeakPower(double peakWatts) {
+        _part.PeakPower(peakWatts);
         return this;
     }
 

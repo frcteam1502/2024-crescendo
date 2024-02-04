@@ -16,21 +16,33 @@ import team1502.configuration.CAN.Manufacturer;
 
 public class PartFactory {
     private HashMap<String, Builder> _builderMap = new HashMap<>(); 
-       
-    public PartFactory Part(String name, Function<Builder, Builder> fn) {
-        _builderMap.put(name,  new Builder(name, fn));
+
+    public PartFactory addTemplate(String name, Builder builder) {
+        _builderMap.put(name,  builder);
         return this;
+    }
+    
+    public boolean hasTemplate(String partName) {
+        return _builderMap.containsKey(partName);
+    }
+
+    public Builder getTemplate(String partName) {
+        return _builderMap.get(partName);
+    }
+
+    public PartFactory Part(String name, Function<Builder, Builder> fn) {
+        return addTemplate(name,  new Builder(name, fn));
     }
 
     public void useBuilder(String partName, Builder builder) {
-        var template = _builderMap.get(partName);
+        var template = getTemplate(partName);
         if (template != null) {
             template.createBuilder(builder);
         }
     }
     
     public Builder getBuilder(String name) {
-        var template = _builderMap.get(name);
+        var template = getTemplate(name);
         return template.createBuilder();
     }
 
@@ -38,8 +50,7 @@ public class PartFactory {
         return Motor("Motor", fn);
     }
     public PartFactory Motor(String name, Function<Motor, Builder> fn) {
-        _builderMap.put(name,  new Motor(name, fn));
-        return this;
+        return addTemplate(name,  new Motor(name, fn));
     }
     
     // MOTOR CONTROLLER
@@ -47,46 +58,37 @@ public class PartFactory {
         return MotorController("MotorController", fn);
     }
     public PartFactory MotorController(String name, Manufacturer manufacturer, Function<MotorController, Builder> fn) {
-        _builderMap.put(name,  new MotorController(name, manufacturer, fn));
-        return this;
+        return addTemplate(name,  new MotorController(name, manufacturer, fn));
     }
     public PartFactory MotorController(String name, Function<MotorController, Builder> fn) {
-        _builderMap.put(name,  new MotorController(name, fn));
-        return this;
+        return addTemplate(name,  new MotorController(name, fn));
     }
 
     // GYRO SENSOR
     public PartFactory GyroSensor(String name, Manufacturer manufacturer, Function<GyroSensor, Builder> fn) {
-        _builderMap.put(name,  new GyroSensor(name, manufacturer, fn));
-        return this;
+        return addTemplate(name,  new GyroSensor(name, manufacturer, fn));
     }
 
 
     public PartFactory SwerveModule(Function<SwerveModule, Builder> fn) {
-        _builderMap.put("SwerveModule",  new SwerveModule(fn));
-        return this;
+        return addTemplate("SwerveModule",  new SwerveModule(fn));
     }
     public PartFactory SwerveDrive(Function<SwerveDrive, Builder> fn) {
-        _builderMap.put("SwerveDrive",  new SwerveDrive(fn));
-        return this;
+        return addTemplate("SwerveDrive",  new SwerveDrive(fn));
     }
 
     // Basic Parts
     public PartFactory RoboRIO(Function<RoboRIO, Builder> fn) {
-        _builderMap.put("RoboRIO",  new RoboRIO(fn));
-        return this;
+        return addTemplate("RoboRIO",  new RoboRIO(fn));
     }
     public PartFactory PowerDistributionHub(Function<PowerDistributionModule, Builder> fn) {
-        _builderMap.put(PowerDistributionModule.PDH,  new PowerDistributionModule(PowerDistributionModule.PDH, Manufacturer.REVRobotics, fn));
-        return this;
+        return addTemplate(PowerDistributionModule.PDH,  new PowerDistributionModule(PowerDistributionModule.PDH, Manufacturer.REVRobotics, fn));
     }
     public PartFactory PowerDistributionPanel(Function<PowerDistributionModule, Builder> fn) {
-        _builderMap.put(PowerDistributionModule.PDP,  new PowerDistributionModule(PowerDistributionModule.PDP, Manufacturer.CTRElectronics, fn));
-        return this;
+        return addTemplate(PowerDistributionModule.PDP,  new PowerDistributionModule(PowerDistributionModule.PDP, Manufacturer.CTRElectronics, fn));
     }
     public PartFactory Pigeon2(Function<IMU, Builder> fn) {
-        _builderMap.put("Pigeon2",  new IMU("Pigeon2", Manufacturer.CTRElectronics, fn));
-        return this;
+        return addTemplate("Pigeon2",  new IMU("Pigeon2", Manufacturer.CTRElectronics, fn));
     }
 
     // "part" Parts

@@ -26,6 +26,7 @@ public class PowerDistributionModule extends Controller {
             .initializeChannels(6)
             .Apply(fn));
     }
+ 
     public PowerDistributionModule(String name, Manufacturer manufacturer, Function<? extends PowerDistributionModule, Builder> fn) {
         super(name, Type, manufacturer, c -> ((PowerDistributionModule)c)
             .initializeChannels(manufacturer)

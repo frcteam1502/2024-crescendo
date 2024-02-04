@@ -32,7 +32,7 @@ public class SwerveModule extends Builder {
     public CANCoder Encoder() {return new CANCoder(getPart(AbsoluteEncoder));}
 
     public SwerveModule Encoder(Function<CANCoder, Builder> fn) {
-        fn.apply(new CANCoder(getPart(AbsoluteEncoder)));
+        fn.apply(Encoder());
         return this;
     }
     

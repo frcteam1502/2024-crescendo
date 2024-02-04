@@ -73,6 +73,27 @@ public class RobotBuilder implements IBuild /*extends Builder*/{
         return builder;
     }
 
+    /*
+    private <T extends Builder> T installBuilder(
+        String name,
+        String partName,
+        T builder,
+        Function<IBuild, T> ctor,
+        Function<T, Builder> fn) {
+        
+        if (_partFactory.hasPart(partName)) {
+            builder.Name(name);
+            builder.create((IBuild)this, fn);
+            return (T)installBuilder(builder);
+            
+        } else {
+            builder = ctor.apply((IBuild)this);
+            builder.create((IBuild)this, name);
+            return (T)installBuilder(builder);
+        }
+    }
+    */
+
     private Builder installBuilder(String name, String partName, Builder builder, Function<? extends Builder, Builder> fn) {
         _partFactory.useBuilder(partName, builder);
         builder.Name(name);
@@ -139,6 +160,11 @@ public class RobotBuilder implements IBuild /*extends Builder*/{
         return this;
     }
     public RobotBuilder MiniPowerModule(String name, Function<PowerDistributionModule, Builder> fn) {
+        if (!_partFactory.hasTemplate(PowerDistributionModule.MPM)) {
+            _partFactory.Part(PowerDistributionModule.MPM, PowerDistributionModule.ctorMPM);
+        }
+
+        //Function<String, PowerDistributionModule> create = (n)->new PowerDistributionModule(n, fn);
         installBuilder(name, PowerDistributionModule.MPM, new PowerDistributionModule(), fn);
         return this;
     }
