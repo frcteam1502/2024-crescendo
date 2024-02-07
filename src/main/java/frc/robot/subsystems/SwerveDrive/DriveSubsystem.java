@@ -14,6 +14,7 @@ import com.pathplanner.lib.util.HolonomicPathFollowerConfig;
 import com.pathplanner.lib.util.PIDConstants;
 import com.pathplanner.lib.util.ReplanningConfig;
 
+import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 
 import com.revrobotics.CANSparkMax;
@@ -43,21 +44,25 @@ final class CANCoders {
   //Front Left CANCoder
   public static final CANcoder FRONT_LEFT_CAN_CODER = new CANcoder(16);
   public static final SensorDirectionValue FRONT_LEFT_CAN_CODER_DIRECTION = SensorDirectionValue.CounterClockwise_Positive;
+  //public static final SensorDirectionValue FRONT_LEFT_CAN_CODER_DIRECTION = SensorDirectionValue.Clockwise_Positive;
   public static final double FRONT_LEFT_CAN_CODER_OFFSET = 151.96;
 
   //Front Right CANCoder
   public static final CANcoder FRONT_RIGHT_CAN_CODER = new CANcoder(10);
   public static final SensorDirectionValue FRONT_RIGHT_CAN_CODER_DIRECTION = SensorDirectionValue.CounterClockwise_Positive;
+  //public static final SensorDirectionValue FRONT_RIGHT_CAN_CODER_DIRECTION = SensorDirectionValue.Clockwise_Positive;
   public static final double FRONT_RIGHT_CAN_CODER_OFFSET = 121.81;
 
   //Back Left CANCoder
   public static final CANcoder BACK_LEFT_CAN_CODER = new CANcoder(4);
   public static final SensorDirectionValue BACK_LEFT_CAN_CODER_DIRECTION = SensorDirectionValue.CounterClockwise_Positive;
+  //public static final SensorDirectionValue BACK_LEFT_CAN_CODER_DIRECTION = SensorDirectionValue.Clockwise_Positive;
   public static final double BACK_LEFT_CAN_CODER_OFFSET = 4.83;
 
   //Back Right CANCoder
   public static final CANcoder BACK_RIGHT_CAN_CODER = new CANcoder(8);
   public static final SensorDirectionValue BACK_RIGHT_CAN_CODER_DIRECTION = SensorDirectionValue.CounterClockwise_Positive;
+  //public static final SensorDirectionValue BACK_RIGHT_CAN_CODER_DIRECTION = SensorDirectionValue.Clockwise_Positive;
   public static final double BACK_RIGHT_CAN_CODER_OFFSET = 127.26;
 }
 
@@ -76,10 +81,10 @@ final class DriveConstants {
   public static final CANSparkMax.IdleMode BackRightTurningMotorBrake = IdleMode.kBrake;
 
   //Drive Motors
-  public static final boolean FrontLeftDriveMotorReversed = true;
-  public static final boolean BackLeftDriveMotorReversed = true;
+  public static final boolean FrontLeftDriveMotorReversed  = true;
+  public static final boolean BackLeftDriveMotorReversed   = true;
   public static final boolean FrontRightDriveMotorReversed = true;
-  public static final boolean BackRightDriveMotorReversed = true;
+  public static final boolean BackRightDriveMotorReversed  = true;
 
   public static final CANSparkMax.IdleMode FrontLeftDriveMotorBrake = IdleMode.kBrake;
   public static final CANSparkMax.IdleMode BackLeftDriveMotorBrake = IdleMode.kBrake;
@@ -89,7 +94,7 @@ final class DriveConstants {
   //Wheel Base
   public static final double WHEEL_BASE_WIDTH = Units.inchesToMeters(23.25);
   public static final double WHEEL_BASE_LENGTH = Units.inchesToMeters(23.25);
-  public static final double WHEEL_BASE_DIAMETER = Units.inchesToMeters(16.44);
+  public static final double WHEEL_BASE_DIAMETER = Units.inchesToMeters(32.880);
 
 
   public static final Translation2d FRONT_LEFT_MODULE = new Translation2d(WHEEL_BASE_LENGTH/2, WHEEL_BASE_WIDTH/2);
@@ -140,6 +145,7 @@ public class DriveSubsystem extends SubsystemBase{
   public double fieldYCommand = 0;
 
   ChassisSpeeds speedCommands = new ChassisSpeeds(0, 0, 0);
+  ChassisSpeeds relativeCommands = new ChassisSpeeds(0,0,0);
 
   private final SwerveModule frontLeft = new SwerveModule(
     Motors.DRIVE_FRONT_LEFT, Motors.ANGLE_FRONT_LEFT, 
@@ -173,7 +179,7 @@ public class DriveSubsystem extends SubsystemBase{
 
   private Pose2d pose = new Pose2d();
 
-  private final BooleanSupplier isPathFlipped = ()-> true;
+  private final BooleanSupplier isPathFlipped = ()-> false;
   
 
   public DriveSubsystem() {
@@ -182,9 +188,10 @@ public class DriveSubsystem extends SubsystemBase{
 
     reset();
     ConfigMotorDirections();
-    configAutoBuilder();
     registerLoggerObjects();
-    
+
+    //Configure Auto Builder last!
+    configAutoBuilder(); 
   }
 
   private void checkInitialAngle() {
@@ -202,11 +209,15 @@ public class DriveSubsystem extends SubsystemBase{
     //Field Oriented inputs
     SmartDashboard.putNumber("Field Oriented X Command (Forward)", fieldXCommand);
     SmartDashboard.putNumber("Field Oriented Y Command (Forward)", fieldYCommand);
-    SmartDashboard.putNumber("Robot Relative Rotation Command", speedCommands.omegaRadiansPerSecond);
 
     //Robot Relative inputs
     SmartDashboard.putNumber("Robot Relative vX Speed Command", speedCommands.vxMetersPerSecond);
     SmartDashboard.putNumber("Robot Relative vY Speed Command", speedCommands.vyMetersPerSecond);
+    SmartDashboard.putNumber("Robot Relative Rotation Command", speedCommands.omegaRadiansPerSecond);
+
+    SmartDashboard.putNumber("Drive Robot Relative vX Speed Command", relativeCommands.vxMetersPerSecond);
+    SmartDashboard.putNumber("Drive Robot Relative vY Speed Command", relativeCommands.vyMetersPerSecond);
+    SmartDashboard.putNumber("Drive Robot Relative Rotation Command", relativeCommands.omegaRadiansPerSecond);
 
     SmartDashboard.putNumber("Gyro Yaw", getIMU_Yaw());
 
@@ -234,6 +245,12 @@ public class DriveSubsystem extends SubsystemBase{
     SmartDashboard.putNumber("Rear Left Speed Setpoint", backLeft.getControllerSetpoint());
     SmartDashboard.putNumber("Rear Left Measured Speed", backLeft.getModuleVelocity());
     SmartDashboard.putNumber("Rear Left CANcoder Angle", (backLeft.getAbsPositionZeroed()*(180/Math.PI)));
+
+    //Pose Info
+    SmartDashboard.putString("FMS Alliance", DriverStation.getAlliance().toString());
+    SmartDashboard.putNumber("Pose2D X", pose.getX());
+    SmartDashboard.putNumber("Pose2D Y", pose.getY());
+    SmartDashboard.putNumber("Pose2D Rotation", pose.getRotation().getDegrees());
   }
   
   @Override
@@ -282,16 +299,31 @@ public class DriveSubsystem extends SubsystemBase{
 
   public void driveRobotRelative(ChassisSpeeds robotRelativeSpeeds){
     //This method is a consumer of ChassisSpeed and sets the corresponding module states.  This is required for PathPlanner 2024
+    //Save off to SmartDashboard
+    relativeCommands.vxMetersPerSecond = robotRelativeSpeeds.vxMetersPerSecond;
+    relativeCommands.vyMetersPerSecond = robotRelativeSpeeds.vyMetersPerSecond;
+    relativeCommands.omegaRadiansPerSecond = robotRelativeSpeeds.omegaRadiansPerSecond;
+    
     //Convert from robot frame of reference (ChassisSpeeds) to swerve module frame of reference (SwerveModuleState)
     var swerveModuleStates = kinematics.toSwerveModuleStates(robotRelativeSpeeds);
     //Normalize wheel speed commands to make sure no speed is greater than the maximum achievable wheel speed.
     SwerveDriveKinematics.desaturateWheelSpeeds(swerveModuleStates, DriveConstants.MAX_SPEED_METERS_PER_SECOND);
+
+    /*for (int i = 0; i<=3; i++){
+      swerveModuleStates[i].speedMetersPerSecond *= -1;
+    }*/
     //Set the speed and angle of each module
     setDesiredState(swerveModuleStates);
   }
 
   public ChassisSpeeds getRobotRelativeSpeeds(){
     //This method is a supplier of ChassisSpeeds as determined by the module states.  This is required for PathPlanner 2024
+    /*var robotSpeeds = kinematics.toChassisSpeeds(getModuleStates());
+    robotSpeeds.vxMetersPerSecond *= -1;
+    robotSpeeds.vyMetersPerSecond *= -1;
+    robotSpeeds.omegaRadiansPerSecond *= -1;
+    return robotSpeeds;*/
+
     return kinematics.toChassisSpeeds(getModuleStates());
   }
 
@@ -310,6 +342,8 @@ public class DriveSubsystem extends SubsystemBase{
       backRight.getState()};
   }
 
+  int count = 0;
+
   public void updateOdometry() {
     pose = odometry.update(
         getGyroRotation2d(),
@@ -319,6 +353,11 @@ public class DriveSubsystem extends SubsystemBase{
           backLeft.getPosition(),
           backRight.getPosition()
         });
+    if(count==0){
+      System.out.println(pose.getX());
+      System.out.println(pose.getY());
+      count = 1;
+    }
   }
 
 
@@ -430,7 +469,8 @@ public class DriveSubsystem extends SubsystemBase{
       this); //Reference to this subsystem to set 
   }
 
-  public void dummyAction(){}
+  public void dummyAction1(){System.out.println("Drivetrain Command 1!");}
+  public void dummyAction2(){System.out.println("Drivetrain Command 2!");}
 
   private void registerLoggerObjects(){
     Logger.RegisterCanSparkMax("FL Drive", Motors.DRIVE_FRONT_LEFT);

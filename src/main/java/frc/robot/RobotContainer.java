@@ -5,18 +5,16 @@
 package frc.robot;
 
 import frc.robot.subsystems.PowerManagement.MockDetector;
-import frc.robot.commands.Autos;
 import frc.robot.commands.ControllerCommands;
 import frc.robot.subsystems.SwerveDrive.DriveSubsystem;
-import frc.robot.subsystems.ExampleSubsystem;
 
 import com.pathplanner.lib.auto.AutoBuilder;
 import com.pathplanner.lib.auto.NamedCommands;
+import com.pathplanner.lib.commands.PathPlannerAuto;
 
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
-import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
@@ -31,9 +29,10 @@ public class RobotContainer {
   // The robot's subsystems and commands are defined here...
   public final DriveSubsystem driveSubsystem = new DriveSubsystem();
   //private final PdpSubsystem pdpSubsystem = new PdpSubsystem();
-  private final ExampleSubsystem m_exampleSubsystem = new ExampleSubsystem();
+  //private final ExampleSubsystem m_exampleSubsystem = new ExampleSubsystem();
 
   private final SendableChooser<Command> autoChooser; 
+
   /* sample
 
   // Replace with CommandPS4Controller or CommandJoystick if needed
@@ -48,9 +47,13 @@ public class RobotContainer {
     configureBindings();
 
     //Register named commands. Must register all commands we want Pathplanner to execute.
-    NamedCommands.registerCommand("Dummy Command", new InstantCommand(driveSubsystem::dummyAction));
+    NamedCommands.registerCommand("Dummy Command 1", new InstantCommand(driveSubsystem::dummyAction1));
+    NamedCommands.registerCommand("Dummy Command 2", new InstantCommand(driveSubsystem::dummyAction2));
 
     //Build an Autochooser from SmartDashboard selection.  Default will be Commands.none()
+
+    new PathPlannerAuto("Test Pathplanner");
+
     autoChooser = AutoBuilder.buildAutoChooser();
     SmartDashboard.putData("Auto Chooser", autoChooser);
   }
