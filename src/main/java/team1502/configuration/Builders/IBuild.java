@@ -1,11 +1,11 @@
-package team1502.configuration.Builders;
+package team1502.configuration.builders;
 
 import java.util.function.Function;
 
-import team1502.configuration.Parts.Part;
+import team1502.configuration.factory.PartBuilder;
 
 public interface IBuild {
-    Builder createBuilder(String partName, Function<? extends Builder, Builder> fn);
-    Builder modifyBuilder(String partName, Function<? extends Builder, Builder> fn);
+    <T extends Builder> PartBuilder<?> getTemplate(String partName, Function<IBuild, T> createFunction, Function<T, Builder> buildFunction);
     void register(Part part);
+    Builder getInstalled(String name);
 }

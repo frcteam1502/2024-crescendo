@@ -1,19 +1,19 @@
-package team1502.configuration;
+package team1502.configuration.factory;
 
+import java.util.ArrayList;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.function.Function;
 
-import edu.wpi.first.wpilibj.PneumaticsControlModule;
-import team1502.configuration.Builders.Builder;
-import team1502.configuration.Builders.Motor;
-import team1502.configuration.Builders.RobotBuilder;
-import team1502.configuration.Builders.SwerveDrive;
-import team1502.configuration.Builders.SwerveModule;
-import team1502.configuration.Builders.Controllers.GyroSensor;
-import team1502.configuration.Builders.Controllers.MotorController;
-import team1502.configuration.Builders.Controllers.PneumaticsController;
-import team1502.configuration.Builders.Controllers.PowerDistributionModule;
-import team1502.configuration.Builders.Controllers.RoboRIO;
+import team1502.configuration.builders.Builder;
+import team1502.configuration.builders.RoboRIO;
+import team1502.configuration.builders.motors.Motor;
+import team1502.configuration.builders.motors.MotorController;
+import team1502.configuration.builders.motors.SwerveDrive;
+import team1502.configuration.builders.motors.SwerveModule;
+import team1502.configuration.builders.pneumatics.PneumaticsController;
+import team1502.configuration.builders.power.PowerDistributionModule;
+import team1502.configuration.builders.sensors.GyroSensor;
 
 public class Evaluator {
     private HashMap<String, EvaluatorArgs> _valueMap = new HashMap<>(); 
@@ -54,7 +54,12 @@ public class Evaluator {
         args.partName = partName;
         return Eval(args);
     }
-
+    public ArrayList<String> GetValueKeys() {
+        var list = new ArrayList<String>(_valueMap.keySet());
+        Collections.sort(list);
+        return list;
+        
+    }
     public Object getValue(String valueName) {
         return Eval(_valueMap.get(valueName));
     }
@@ -63,9 +68,10 @@ public class Evaluator {
         return _configuration.getInstalled(partName);
     }
 
-    private <T extends Builder> Object getValue(String partName, T builder, Function<T, ? extends Object> fn) {
+    private <T extends Builder> Object getValue(String partName, Function<Builder, T> wrapper, Function<T, ? extends Object> fn) {
         var susBuilder = getInstalled(partName);
-        return susBuilder.evalWith(fn, builder);
+        var builder = wrapper.apply(susBuilder);
+        return fn.apply(builder);
     
     }
     // private <T extends Builder> Object getValue(String partName, Function<T, ? extends Object> fn) {
@@ -73,49 +79,48 @@ public class Evaluator {
     //     return fn.apply((T)builder);
     // }
 
+    public Builder Part(String partName) {
+        return (Builder)getValue(partName, b->Builder.Wrap(b), b->b);   
+    }
     public Object Part(String partName, Function<Builder, Object> fn) {
-        return getValue(partName, new Builder(), fn);   
+        return getValue(partName, b->Builder.Wrap(b), fn);   
     }
     public GyroSensor GyroSensor() {
-        return (GyroSensor)getValue("Gyro", new GyroSensor(), g->(GyroSensor)g);   
+        return (GyroSensor)getValue(GyroSensor.Gyro, b->GyroSensor.Wrap(b), g->(GyroSensor)g);   
     }
     public Object GyroSensor(String partName, Function<GyroSensor, Object> fn) {
-        return getValue(partName, new GyroSensor(), fn);   
+        return getValue(partName, b->GyroSensor.Wrap(b), fn);   
     }
     public Object Motor(String partName, Function<Motor, Object> fn) {
-        return getValue(partName, new Motor(), fn);   
+        return getValue(partName, b->Motor.Wrap(b), fn);   
     }
     public Object MotorController(String partName, Function<MotorController, Object> fn) {
-        return getValue(partName, new MotorController(), fn);   
+        return getValue(partName, b->MotorController.Wrap(b), fn);   
     }
     public Object SwerveModule(String partName, Function<SwerveModule, Object> fn) {
-        return getValue(partName, new SwerveModule(), fn);   
+        return getValue(partName, b->SwerveModule.Wrap(b), fn);   
     }
     public PowerDistributionModule MPM(String partName) {
-        return (PowerDistributionModule)getValue(partName, new PowerDistributionModule(), p->p);   
+        return (PowerDistributionModule)getValue(partName, b->PowerDistributionModule.Wrap(b), p->p);   
     }
     public RoboRIO RoboRIO() {
-        return (RoboRIO)getValue(RoboRIO.NAME, new RoboRIO(), p->p);   
+        return (RoboRIO)getValue(RoboRIO.NAME, b->RoboRIO.Wrap(b), p->p);   
     }
-    public Builder EthernetSwitch() {
-        return (Builder)getValue("EthernetSwitch", new Builder(), p->p);   
-    }
-    public Builder RadioPowerModule() {
-        return (Builder)getValue("RadioPowerModule", new Builder(), p->p);   
-    }
-    public Builder RadioBarrelJack() {
-        return (Builder)getValue("RadioBarrelJack", new Builder(), p->p);   
-    }
+    public Builder EthernetSwitch() {return Part("EthernetSwitch"); }
+    public Builder RadioPowerModule() { return Part("RadioPowerModule"); }
+    public Builder RadioBarrelJack() { return Part("RadioBarrelJack"); }
+
     public PneumaticsController PCM() {
-        return (PneumaticsController)getValue(PneumaticsController.PCM, new PneumaticsController(), p->p);   
+        return (PneumaticsController)getValue(PneumaticsController.PCM, b->PneumaticsController.Wrap(b), p->p);   
+    }
+    public PowerDistributionModule PDH() {
+        return (PowerDistributionModule)getValue(PowerDistributionModule.PDH, b->PowerDistributionModule.Wrap(b), p->p);
     }
 
-    public SwerveDrive SwerveDrive() {
-        return SwerveDrive(d->d);   
-    }
+    public SwerveDrive SwerveDrive() {return SwerveDrive(d->d); }
 
     public <T extends Object> T SwerveDrive(Function<SwerveDrive, T> fn) {
-        return (T)getValue(SwerveDrive.NAME, new SwerveDrive(), fn);   
+        return (T)getValue(SwerveDrive.NAME, b->SwerveDrive.Wrap(b), fn);   
     }
 
 }

@@ -25,9 +25,13 @@
       }
     },
   ],
+  // "editor.inlayHints.enabled": "offUnlessPressed",
   "java.test.defaultConfig": "WPIlibUnitTests",
   "java.inlayHints.parameterNames.exclusions": [
-    "team1502.configuration.Builders.Controllers.PowerDistributionModule.Ch(*)"
+    "*.Ch(*)",
+    "*.Ch(*,*)",
+    "*.Ch(*,*,*)",
+    "*.MPM(*)",
   ],
   "java.dependency.packagePresentation": "hierarchical"
 }

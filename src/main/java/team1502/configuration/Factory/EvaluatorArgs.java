@@ -1,4 +1,4 @@
-package team1502.configuration;
+package team1502.configuration.factory;
 
 import java.util.function.Function;
 

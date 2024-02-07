@@ -1,10 +1,10 @@
-package team1502.configuration.Factory;
+package team1502.configuration.factory;
 
 import java.util.function.Function;
 
-import team1502.configuration.Builders.Builder;
-import team1502.configuration.Builders.IBuild;
-import team1502.configuration.Parts.Part;
+import team1502.configuration.builders.Builder;
+import team1502.configuration.builders.IBuild;
+import team1502.configuration.builders.Part;
 
 public class PartBuilder<T extends Builder>  {
     private PartBuilder(String name, Function<IBuild, T> createFunction, Function<T, Builder> buildFunction, Function<T, Builder> modifyFunction) {

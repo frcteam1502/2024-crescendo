@@ -15,8 +15,8 @@ import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Subsystem;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Robot;
-import team1502.configuration.RobotConfiguration;
 import team1502.configuration.annotations.*;
+import team1502.configuration.factory.RobotConfiguration;
 
 public class RobotFactory {
     public static Class<SubsystemInfo> subsystemAnnotation = SubsystemInfo.class;

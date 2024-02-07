@@ -3,9 +3,8 @@ package team1502.injection;
 import java.lang.reflect.Constructor;
 
 import edu.wpi.first.util.sendable.Sendable;
-
-import team1502.configuration.RobotConfiguration;
 import team1502.configuration.annotations.SubsystemInfo;
+import team1502.configuration.factory.RobotConfiguration;
 
 public class RobotPart {
     public static Class<SubsystemInfo> subsystemAnnotation = SubsystemInfo.class;

@@ -1,4 +1,4 @@
-package team1502.configuration.Builders;
+package team1502.configuration.builders;
 
 import java.util.function.Function;
 
@@ -7,37 +7,36 @@ import edu.wpi.first.math.util.Units;
 
 public class Chassis extends Builder {
   private static final String NAME = "Chassis";
+  private static final String chassisLayout = "chassisLayout";
+  private static final String wheelBaseWidth = "wheelBaseWidth";
+  private static final String wheelBaseLength = "wheelBaseLength";
+  private static final String wheelDiameter = "wheelDiameter";
 
-    public Chassis(Function<Chassis, Builder> fn) {
-        super(NAME, NAME, fn);
-    }
+  public static Function<IBuild, Chassis> Define = build->new Chassis(build);
+  public static Chassis Wrap(Builder builder) { return new Chassis(builder.getIBuild(), builder.getPart()); }
+  public static Chassis WrapPart(Builder builder) { return WrapPart(builder, NAME); }
+  public static Chassis WrapPart(Builder builder, String partName) { return Wrap(builder.getPart(partName)); }
 
-    public Chassis(Builder parent) {
-        setPart(parent.getPart(NAME));
-    }
+  public Chassis(IBuild build) { super(build, NAME); }
+  public Chassis(IBuild build, Part part) { super(build, part); }
 
-    @Override
-    public Builder createBuilder() {
-        return new Chassis((Function<Chassis, Builder>)buildFunction);
-    }
-
-    public Chassis Square(double inches) {
-        Value("chassisLayout", "square");
-        Value("wheelBaseWidth", inches);
-        Value("wheelBaseLength", inches);
-        return this;
-    }
-    public Chassis Rectangular(double inchesWidth, double inchesLength) {
-        Value("chassisLayout", "rectangular");
-        Value("wheelBaseWidth", inchesWidth);
-        Value("wheelBaseLength", inchesLength);
-        return this;
-    }
-
-    public double WheelDiameter() { return Units.inchesToMeters(getDouble("wheelDiameter")); }
-    public Chassis WheelDiameter(double inches) {
-      Value("wheelDiameter", inches);
+  public Chassis Square(double inches) {
+      Value(chassisLayout, "square");
+      Value(wheelBaseWidth, inches);
+      Value(wheelBaseLength, inches);
       return this;
+  }
+  public Chassis Rectangular(double inchesWidth, double inchesLength) {
+      Value(chassisLayout, "rectangular");
+      Value(wheelBaseWidth, inchesWidth);
+      Value(wheelBaseLength, inchesLength);
+      return this;
+  }
+
+  public double WheelDiameter() { return Units.inchesToMeters(getDouble(wheelDiameter)); }
+  public Chassis WheelDiameter(double inches) {
+    Value(wheelDiameter, inches);
+    return this;
   }
 
     /**
@@ -46,11 +45,11 @@ public class Chassis extends Builder {
      * @return
      */
     public Translation2d getModuleLocation(int moduleNumber) {
-      double halfX = Units.inchesToMeters(getDouble("wheelBaseWidth"))/2;
+      double halfX = Units.inchesToMeters(getDouble(wheelBaseWidth))/2;
       if (moduleNumber == 3 || moduleNumber == 4) {// the back row
         halfX = -halfX;
       }
-      double halfY = Units.inchesToMeters(getDouble("wheelBaseLength"))/2;
+      double halfY = Units.inchesToMeters(getDouble(wheelBaseLength))/2;
       if (moduleNumber == 2 || moduleNumber == 4) {// the right side
         halfY = -halfY;
       }
@@ -60,14 +59,6 @@ public class Chassis extends Builder {
 
 /*
   
-  public static final double WHEEL_BASE_WIDTH = Units.inchesToMeters(23.25);
-  public static final double WHEEL_BASE_LENGTH = Units.inchesToMeters(23.25);
-
-
-  public static final Translation2d FRONT_LEFT_MODULE = new Translation2d(WHEEL_BASE_LENGTH/2, WHEEL_BASE_WIDTH/2);
-  public static final Translation2d FRONT_RIGHT_MODULE = new Translation2d(WHEEL_BASE_LENGTH/2, -WHEEL_BASE_WIDTH/2);
-  public static final Translation2d BACK_LEFT_MODULE = new Translation2d(-WHEEL_BASE_LENGTH/2, WHEEL_BASE_WIDTH/2);
-  public static final Translation2d BACK_RIGHT_MODULE = new Translation2d(-WHEEL_BASE_LENGTH/2, -WHEEL_BASE_WIDTH/2);
 
 NOTE: THIS ORIENTATION IS ROTATED CCW 90deg
 
