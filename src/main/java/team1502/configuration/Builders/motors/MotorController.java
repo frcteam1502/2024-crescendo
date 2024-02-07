@@ -69,7 +69,7 @@ public class MotorController extends Builder {
         return (MotorController)addPart(PID.Define, pid->pid.P(p).I(i).D(d).FF(ff));
     }
 
-    public CANSparkMax buildSparkMax(MotorController config) {
+    public CANSparkMax buildSparkMax() {
         var motor = CANSparkMax(new CANSparkMax(CanNumber(), Motor().MotorType()));
         motor.setIdleMode(IdleMode());
         motor.setInverted(Reversed());
