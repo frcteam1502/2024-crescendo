@@ -4,6 +4,7 @@ import java.util.function.BiConsumer;
 import java.util.function.Consumer;
 import java.util.function.Function;
 
+import com.ctre.phoenix6.hardware.CANcoder;
 import com.revrobotics.CANSparkMax;
 
 import team1502.configuration.CAN.CanMap;
@@ -105,7 +106,7 @@ public class RobotConfiguration {
 
     public void RegisterCanSparkMaxs(
             BiConsumer<String, CANSparkMax> motorLogger,
-            BiConsumer<String, CANSparkMax> encoderLogger
+            BiConsumer<String, CANcoder> encoderLogger
         ) {
 
         for (SwerveModule sm : SwerveDrive().getModules()) {
@@ -118,7 +119,7 @@ public class RobotConfiguration {
         }
         for (SwerveModule sm : SwerveDrive().getModules()) {
             var drive = sm.Encoder();
-            motorLogger.accept(drive.FriendlyName() + " Abs", drive.CANCoder());    
+            encoderLogger.accept(drive.FriendlyName() + " Abs", drive.CANcoder());    
         }
     }
 
