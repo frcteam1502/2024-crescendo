@@ -50,7 +50,7 @@ public class CANCoder extends Builder{ // Accelerometer {
         return this;
     }
 
-    public CANcoder buildSparkMax(MotorController config) {
+    public CANcoder buildCANcoder() {
         var encoder = CANcoder(new CANcoder(CanNumber()));
         encoder.getConfigurator().apply(
             new CANcoderConfiguration().MagnetSensor
