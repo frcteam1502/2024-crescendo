@@ -1,5 +1,6 @@
 package team1502.configuration.CAN;
 
+// see https://docs.wpilib.org/en/stable/docs/software/can-devices/can-addressing.html
 public enum Manufacturer {
     NI                  ("NI", 1),
     LuminaryMicro       ("Luminary Micro", 2),
@@ -14,7 +15,9 @@ public enum Manufacturer {
     PlayingWithFusion   ("Playing With Fusion", 11),
     Studica             ("Studica", 12),
     TheThriftyBot       ("The Thrifty Bot", 13),
-    ReduxRobotics       ("Redux Robotics", 14);
+    ReduxRobotics       ("Redux Robotics", 14),
+    AndyMark            ("AndyMark", 15),
+    VividHosting        ("Vivid Hosting", 16);
 
     public String ManufacturerName;
     public int ManufacturerID;

@@ -1,70 +1,129 @@
-package team1502.configuration.Factory;
+package team1502.configuration.factory;
 
 import java.util.HashMap;
 import java.util.function.Function;
 
-import team1502.configuration.Builders.Builder;
-import team1502.configuration.Builders.Motor;
-import team1502.configuration.Builders.SwerveDrive;
-import team1502.configuration.Builders.SwerveModule;
-import team1502.configuration.Builders.Controllers.GyroSensor;
-import team1502.configuration.Builders.Controllers.MotorController;
 import team1502.configuration.CAN.Manufacturer;
+import team1502.configuration.builders.Builder;
+import team1502.configuration.builders.IBuild;
+import team1502.configuration.builders.RoboRIO;
+import team1502.configuration.builders.motors.Motor;
+import team1502.configuration.builders.motors.MotorController;
+import team1502.configuration.builders.motors.SwerveDrive;
+import team1502.configuration.builders.motors.SwerveModule;
+import team1502.configuration.builders.power.PowerDistributionModule;
+import team1502.configuration.builders.sensors.GyroSensor;
+import team1502.configuration.builders.sensors.IMU;
 
 public class PartFactory {
-    private HashMap<String, Builder> _builderMap = new HashMap<>(); 
-       
-    public PartFactory Part(String name, Function<Builder, Builder> fn) {
-        _builderMap.put(name,  new Builder(name, fn));
+    private HashMap<String, PartBuilder<?>> _builderMap = new HashMap<>();
+    private IBuild _build;
+
+    public PartFactory(IBuild build) {
+        _build = build;
+    }
+    public IBuild getIBuild() {return _build; }
+
+    public <T extends Builder> PartFactory addTemplate(String name, Function<IBuild, T> createFunction, Function<T, Builder> buildFunction)  {
+        _builderMap.put(name,  new PartBuilder<T>(name, createFunction, buildFunction));
         return this;
     }
+    
+    public boolean hasTemplate(String partName) {
+        return _builderMap.containsKey(partName);
+    }
 
-    public void useBuilder(String partName, Builder builder) {
-        var template = _builderMap.get(partName);
+    public PartBuilder<? extends Builder> getTemplate(String partName) {
+        return _builderMap.get(partName);
+    }
+
+    public Builder createBuilder(String partName) {
+        var partBuilder =  _builderMap.get(partName);
+        return partBuilder.creatBuilder(getIBuild());
+    }
+
+    public <T extends Builder> PartBuilder<?> getTemplate(String partName, Function<IBuild, T> createFunction, Function<T, Builder> buildFunction) {
+        var template = (PartBuilder<T>)getTemplate(partName);
         if (template != null) {
-            template.createBuilder(builder);
+            return template.WithModification(buildFunction);
+        } else {
+            return new PartBuilder(partName, createFunction, buildFunction);
         }
     }
-    
-    public Builder getBuilder(String name) {
-        var template = _builderMap.get(name);
-        return template.createBuilder();
+
+    public PartFactory Part(String name, Function<Builder, Builder> fn) {
+        return addTemplate(name,  b->new Builder(b, name), fn);
     }
 
     public PartFactory Motor(Function<Motor, Builder> fn) {
-        return Motor("Motor", fn);
+        return Motor(Motor.NAME, fn);
     }
     public PartFactory Motor(String name, Function<Motor, Builder> fn) {
-        _builderMap.put(name,  new Motor(name, fn));
-        return this;
+        return addTemplate(name, Motor.Define, fn);
     }
     
-    // MOTOR CONTROLLER
-    public PartFactory MotorController(Function<MotorController, Builder> fn) {
-        return MotorController("MotorController", fn);
-    }
     public PartFactory MotorController(String name, Manufacturer manufacturer, Function<MotorController, Builder> fn) {
-        _builderMap.put(name,  new MotorController(name, manufacturer, fn));
-        return this;
-    }
-    public PartFactory MotorController(String name, Function<MotorController, Builder> fn) {
-        _builderMap.put(name,  new MotorController(name, fn));
-        return this;
+        return addTemplate(name, MotorController.Define(manufacturer), fn);
     }
 
-    // GYRO SENSOR
     public PartFactory GyroSensor(String name, Manufacturer manufacturer, Function<GyroSensor, Builder> fn) {
-        _builderMap.put(name,  new GyroSensor(name, manufacturer, fn));
-        return this;
+        return addTemplate(name,  GyroSensor.Define(manufacturer), fn);
     }
 
-
-    public PartFactory SwerveModule(Function<SwerveModule, Builder> fn) {
-        _builderMap.put("SwerveModule",  new SwerveModule(fn));
-        return this;
-    }
     public PartFactory SwerveDrive(Function<SwerveDrive, Builder> fn) {
-        _builderMap.put("SwerveDrive",  new SwerveDrive(fn));
-        return this;
+        return addTemplate(SwerveDrive.NAME, SwerveDrive.Define, fn);
     }
+    public PartFactory SwerveModule(Function<SwerveModule, Builder> fn) {
+        return addTemplate(SwerveModule.NAME,  SwerveModule.Define, fn);
+    }
+
+    // Basic Parts
+    public PartFactory RoboRIO(Function<RoboRIO, Builder> fn) {
+        return addTemplate(RoboRIO.NAME,  RoboRIO.Define, fn);
+    }
+    public PartFactory PowerDistributionHub(Function<PowerDistributionModule, Builder> fn) {
+        return addTemplate(PowerDistributionModule.PDH,  PowerDistributionModule.DefinePDH, fn);
+    }
+    public PartFactory PowerDistributionPanel(Function<PowerDistributionModule, Builder> fn) {
+        return addTemplate(PowerDistributionModule.PDP,  PowerDistributionModule.DefinePDP, fn);
+    }
+    public PartFactory Pigeon2(Function<IMU, Builder> fn) {
+        return addTemplate(IMU.Pigeon2,  IMU.Define(Manufacturer.CTRElectronics), fn);
+    }
+
+    // "part" Parts
+    public PartFactory DC(Function<Builder, Builder> fn) {
+        return Part("DC-DC", fn);
+    }
+    public PartFactory Radio(Function<Builder, Builder> fn) {
+        return Part("Radio", fn);
+    }
+    public PartFactory RadioPowerModule(Function<Builder, Builder> fn) {
+        return Part("RadioPowerModule", fn);
+    }
+    public PartFactory RadioBarrelJack(Function<Builder, Builder> fn) {
+        return Part("RadioBarrelJack", fn);
+    }
+    public PartFactory RadioSignalLight(Function<Builder, Builder> fn) {
+        return Part("RadioSignalLight", fn);
+    }
+    public PartFactory EthernetSwitch(Function<Builder, Builder> fn) {
+        return Part("EthernetSwitch", fn);
+    }
+    public PartFactory TimeOfFlight(Function<Builder, Builder> fn) {
+        return Part("TimeOfFlight", fn);
+    }
+    public PartFactory Compressor(Function<Builder, Builder> fn) {
+        return Part("Compressor", fn);
+    }
+    public PartFactory LimeLight(Function<Builder, Builder> fn) {
+        return Part("LimeLight", fn);
+    }
+    public PartFactory RaspberryPi(Function<Builder, Builder> fn) {
+        return Part("RaspberryPi", fn);
+    }
+    public PartFactory LEDs(Function<Builder, Builder> fn) {
+        return Part("LEDs", fn);
+    }
+
 }

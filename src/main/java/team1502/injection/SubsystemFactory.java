@@ -6,8 +6,7 @@ import java.lang.reflect.InvocationTargetException;
 import edu.wpi.first.util.sendable.SendableRegistry;
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
 import edu.wpi.first.wpilibj2.command.Subsystem;
-
-import team1502.configuration.RobotConfiguration;
+import team1502.configuration.factory.RobotConfiguration;
 
 public class SubsystemFactory extends RobotPart {
     public static boolean isSubsystem(Class<?> candidate) {
