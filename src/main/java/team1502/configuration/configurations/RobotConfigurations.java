@@ -245,7 +245,7 @@ public final class RobotConfigurations {
             .Eval("SwerveModule.getPositionConversionFactor", e -> e
                     .SwerveDrive().SwerveModule("#1").getPositionConversionFactor())
             .Eval("SwerveDrive.DriveBaseRadius", e -> e
-                    .SwerveDrive().Chassis().DriveBaseRadius())
+                    .SwerveDrive().Chassis().getDriveBaseRadius())
             .Eval("SwerveDrive.calculateMaxSpeed", e -> e
                     .SwerveDrive().calculateMaxSpeed())
             .Eval("SwerveModule.calculateMaxSpeed", e -> e

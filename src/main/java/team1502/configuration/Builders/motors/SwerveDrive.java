@@ -23,7 +23,7 @@ public class SwerveDrive extends Builder {
     public SwerveDrive SwerveModule(String name, Function<SwerveModule, Builder> fn) {
         var module = addPiece(SwerveModule.Define, name, SwerveModule.NAME, fn);
         module.Value(SwerveModule.location, getKinematic(getPieces().size()));
-        module.Value(SwerveModule.wheelDiameter, Chassis().WheelDiameter());
+        module.Value(SwerveModule.wheelDiameter, Chassis().getWheelDiameter());
         return this;
     }
 
