@@ -15,8 +15,8 @@ import edu.wpi.first.math.kinematics.SwerveModuleState;
 import edu.wpi.first.math.util.Units;
 import edu.wpi.first.util.sendable.Sendable;
 import edu.wpi.first.util.sendable.SendableBuilder;
-import team1502.configuration.Builders.Controllers.CANCoder;
-import team1502.configuration.Builders.Controllers.MotorController;
+import team1502.configuration.builders.motors.CANCoder;
+import team1502.configuration.builders.motors.MotorController;
 
 public class SwerveModule implements Sendable {
   private final CANSparkMax driveMotor;
@@ -29,10 +29,11 @@ public class SwerveModule implements Sendable {
   private double commandedSpeed;
   private double commandedAngle;
 
-  public SwerveModule(team1502.configuration.Builders.SwerveModule config) {
-    this.driveMotor = buildMotor(config.DrivingMotor());
-    this.turningMotor = buildMotor(config.TurningMotor());
-    this.absEncoder = buildEncoder(config.Encoder());
+  public SwerveModule(team1502.configuration.builders.motors.SwerveModule config) {
+    config.setSwerveModuleInstance(this); // for logging
+    this.driveMotor = config.DrivingMotor().buildSparkMax();
+    this.turningMotor = config.TurningMotor().buildSparkMax();
+    this.absEncoder = config.Encoder().buildCANcoder();
 
     driveMotor.setClosedLoopRampRate(config.getDouble("closedLoopRampRate"));
     driveMotor.setSmartCurrentLimit(config.getInt("smartCurrentLimit"));
@@ -53,6 +54,7 @@ public class SwerveModule implements Sendable {
     this.drivePIDController.setFF(pid.FF());
   }
 
+/*
   private CANSparkMax buildMotor(MotorController config) {
     var motor = new CANSparkMax(config.CanNumber(), config.Motor().MotorType());
     motor.setIdleMode(config.IdleMode());
@@ -70,6 +72,7 @@ public class SwerveModule implements Sendable {
           .withAbsoluteSensorRange(AbsoluteSensorRangeValue.Unsigned_0To1));
     return encoder;
   }
+ */
 
   /**
    * Returns the current state of the module.

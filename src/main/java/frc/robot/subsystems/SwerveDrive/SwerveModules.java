@@ -6,10 +6,11 @@ import edu.wpi.first.util.sendable.Sendable;
 import edu.wpi.first.util.sendable.SendableBuilder;
 import edu.wpi.first.util.sendable.SendableRegistry;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
-import team1502.configuration.RobotConfiguration;
+import team1502.configuration.factory.RobotConfiguration;
 
 public class SwerveModules implements Sendable {
     private SwerveModule[] _modules;
+    private String[] _moduleNames;
     public final double maxSpeed;
     public final double empiricalSpeed; // for comparison
   
@@ -19,6 +20,10 @@ public class SwerveModules implements Sendable {
         _modules = modules.stream()
                     .map(m->new SwerveModule(m))
                     .toArray(SwerveModule[]::new);
+
+        _moduleNames = modules.stream()
+                    .map(m->m.FriendlyName())
+                    .toArray(String[]::new);
 
         var swerveModule = modules.get(0); 
         maxSpeed = swerveModule.DrivingMotor().Motor().FreeSpeedRPM() / 60.0
@@ -66,17 +71,16 @@ public class SwerveModules implements Sendable {
     public void initSendable(SendableBuilder builder) {
         builder.setSmartDashboardType("SwerveModules");
 
-        SendableRegistry.addLW(_modules[0], "SwerveModules", "Front Left");
-        SendableRegistry.addLW(_modules[1], "SwerveModules", "Front Right");
-        SendableRegistry.addLW(_modules[2], "SwerveModules", "Rear Left");
-        SendableRegistry.addLW(_modules[3], "SwerveModules", "Rear Right");
-
+        for(int i = 0; i < 4; i++) {
+            SendableRegistry.addLW(_modules[i], "SwerveModules", _moduleNames[i] );
+        }
     }
-     public void send() {
+    
+    public void send() {
         SmartDashboard.putData(this);
         SmartDashboard.putData(_modules[0]);
         SmartDashboard.putData(_modules[1]);
         SmartDashboard.putData(_modules[2]);
         SmartDashboard.putData(_modules[3]);
-     }
+    }
 }

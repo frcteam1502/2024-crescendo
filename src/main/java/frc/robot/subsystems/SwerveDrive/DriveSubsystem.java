@@ -1,10 +1,8 @@
 package frc.robot.subsystems.SwerveDrive;
 
-import javax.swing.text.Utilities;
-
+import frc.robot.GameState;
 import frc.robot.Logger;
 
-import com.ctre.phoenix6.hardware.CANcoder;
 import com.ctre.phoenix6.hardware.Pigeon2;
 
 import edu.wpi.first.math.estimator.SwerveDrivePoseEstimator;
@@ -19,10 +17,7 @@ import edu.wpi.first.util.sendable.SendableBuilder;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 
-import frc.robot.GameState;
-
-import team1502.configuration.RobotConfiguration;
-
+import team1502.configuration.factory.RobotConfiguration;
 
 public class DriveSubsystem extends SubsystemBase{
   
@@ -49,7 +44,7 @@ public class DriveSubsystem extends SubsystemBase{
   private final double empiricalSpeed; // for comparison
 
   public DriveSubsystem(RobotConfiguration config) {
-    gyro = new Pigeon2(config.GyroSensor().CanNumber());
+    gyro = config.Pigeon2().buildPigeon2();
   
     swerveModules = new SwerveModules(config);
     kinematics = config.SwerveDrive().getKinematics();
@@ -61,8 +56,7 @@ public class DriveSubsystem extends SubsystemBase{
     this.odometry = new SwerveDrivePoseEstimator(kinematics, getGyroRotation2d(), getModulePositions(), pose);
 
     reset();
-    registerLoggerObjects();
-    
+    registerLoggerObjects(config);   
   }
 
   private void checkInitialAngle() {
@@ -75,6 +69,7 @@ public class DriveSubsystem extends SubsystemBase{
     var currentHeading = gyro.getYaw(); 
     return( currentHeading.getValue() );
   }
+  
   @Override
   public void periodic() {
     checkInitialAngle();
@@ -199,28 +194,13 @@ public class DriveSubsystem extends SubsystemBase{
     addChild("SwerveModules", swerveModules);
   }
 
-  private void registerLoggerObjects(){
-    Logger.RegisterCanSparkMax("FL Drive", Motors.DRIVE_FRONT_LEFT);
-    Logger.RegisterCanSparkMax("FR Drive", Motors.DRIVE_FRONT_RIGHT);
-    Logger.RegisterCanSparkMax("RL Drive", Motors.DRIVE_BACK_LEFT);
-    Logger.RegisterCanSparkMax("RR Drive", Motors.DRIVE_BACK_RIGHT);
-
-    Logger.RegisterCanSparkMax("FL Turn", Motors.ANGLE_FRONT_LEFT);
-    Logger.RegisterCanSparkMax("FR Turn", Motors.ANGLE_FRONT_RIGHT);
-    Logger.RegisterCanSparkMax("RL Turn", Motors.ANGLE_BACK_LEFT);
-    Logger.RegisterCanSparkMax("RR Turn", Motors.ANGLE_BACK_RIGHT);
-
-    Logger.RegisterPigeon(Gyro.gyro);
-
-    Logger.RegisterCanCoder("FL Abs Position", CANCoders.FRONT_LEFT_CAN_CODER);
-    Logger.RegisterCanCoder("FR Abs Position", CANCoders.FRONT_RIGHT_CAN_CODER);
-    Logger.RegisterCanCoder("RL Abs Position", CANCoders.BACK_LEFT_CAN_CODER);
-    Logger.RegisterCanCoder("RR Abs Position", CANCoders.BACK_RIGHT_CAN_CODER);
-
-    Logger.RegisterSensor("FL Drive Speed", ()->frontLeft.getVelocity());
-    Logger.RegisterSensor("FR Drive Speed", ()->frontRight.getVelocity());
-    Logger.RegisterSensor("RL Drive Speed", ()->backLeft.getVelocity());
-    Logger.RegisterSensor("RR Drive Speed", ()->backRight.getVelocity());
+  private void registerLoggerObjects(RobotConfiguration config){
+    config.registerLoggerObjects(
+        (n, r)->Logger.RegisterCanSparkMax(n,r),
+        p->Logger.RegisterPigeon(p),
+        (n, r)->Logger.RegisterCanCoder(n,r),
+        (n, d)->Logger.RegisterSensor(n,d)
+      );
   }
 
 }

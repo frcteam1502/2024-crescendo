@@ -9,7 +9,9 @@ import frc.robot.commands.Autos;
 import frc.robot.commands.ControllerCommands;
 import frc.robot.subsystems.SwerveDrive.DriveSubsystem;
 import frc.robot.subsystems.ExampleSubsystem;
-
+import edu.wpi.first.wpilibj.PneumaticHub;
+import edu.wpi.first.wpilibj.PowerDistribution;
+import edu.wpi.first.wpilibj.PowerDistribution.ModuleType;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
@@ -23,6 +25,8 @@ import team1502.configuration.configurations.RobotConfigurations;
  * subsystems, commands, and trigger mappings) should be declared here.
  */
 public class RobotContainer {
+  private final Logger logger = new Logger();
+
   // The robot's subsystems and commands are defined here...
   public final DriveSubsystem driveSubsystem;
   //private final PdpSubsystem pdpSubsystem = new PdpSubsystem();
@@ -42,6 +46,11 @@ public class RobotContainer {
 
     // Configure the trigger bindings
     configureBindings();
+
+    Logger.RegisterPdp(new PowerDistribution(1, ModuleType.kRev), config.PDH().ChannelNames());
+    Logger.RegisterPneumaticHub(new PneumaticHub(), config.PCM().ChannelNames());
+    logger.start();
+
   }
 
   /**

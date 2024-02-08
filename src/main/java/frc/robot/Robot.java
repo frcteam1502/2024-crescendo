@@ -32,34 +32,6 @@ public class Robot extends TimedRobot {
   public String branch = "unknown";
   public String commit = "unknown";
   public String radio = "1502";
-  private Logger logger = new Logger();
-
-  private String[] pdhRealChannelNames = {
-    null,       //"0"
-    null,       //"1"
-    null,       //"2"
-    "RL Drive", //"3"
-    "RL Turn",  //"4"  
-    null,       //"5"
-    null,       //"6"
-    null,       //"7"
-    "RR Turn",  //"8"
-    "RR Drive", //"9"
-    "FR Turn",  //"10"
-    "FR Drive", //"11"
-    null,       //"12"
-    null,       //"13"
-    null,       //"14"
-    "FL Drive", //"15"
-    "FL Turn",  //"16"
-    null,       //"17"
-    null,       //"18"
-    null,       //"19"
-    null,       //"20"
-    null,       //"21"
-    null,       //"22"
-    null,       //"23"
-};
 
 private String[] pneumaticNames = {
   null, //"0",
@@ -103,12 +75,6 @@ private String[] pneumaticNames = {
     // Instantiate our RobotContainer.  This will perform all our button bindings, and put our
     // autonomous chooser on the dashboard.
     m_robotContainer = new RobotContainer(radio);
-
-    //Register Logger items
-    //Logger.RegisterLoopTimes(this);
-    Logger.RegisterPdp(new PowerDistribution(1, ModuleType.kRev), pdhRealChannelNames);
-    Logger.RegisterPneumaticHub(new PneumaticHub(), pneumaticNames);
-    logger.start();
   }
 
   /**
