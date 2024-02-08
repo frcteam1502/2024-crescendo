@@ -5,7 +5,6 @@
 package frc.robot;
 
 import frc.robot.subsystems.PowerManagement.MockDetector;
-import frc.robot.commands.Autos;
 import frc.robot.commands.ControllerCommands;
 import frc.robot.subsystems.SwerveDrive.DriveSubsystem;
 import frc.robot.subsystems.ExampleSubsystem;
@@ -13,7 +12,13 @@ import frc.robot.subsystems.ExampleSubsystem;
 import edu.wpi.first.wpilibj.PneumaticHub;
 import edu.wpi.first.wpilibj.PowerDistribution;
 import edu.wpi.first.wpilibj.PowerDistribution.ModuleType;
+import com.pathplanner.lib.auto.AutoBuilder;
+import com.pathplanner.lib.auto.NamedCommands;
+
+import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
+import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
 
@@ -31,14 +36,16 @@ public class RobotContainer {
   // The robot's subsystems and commands are defined here...
   public final DriveSubsystem driveSubsystem;
   //private final PdpSubsystem pdpSubsystem = new PdpSubsystem();
-  
   private final ExampleSubsystem m_exampleSubsystem = new ExampleSubsystem();
+
+  private final SendableChooser<Command> autoChooser; 
   /* sample
 
   // Replace with CommandPS4Controller or CommandJoystick if needed
   private final CommandXboxController m_driverController =
       new CommandXboxController(OperatorConstants.kDriverControllerPort);
   */
+
   
   /** The container for the robot. Contains subsystems, OI devices, and commands. */
   public RobotContainer(String radio) {
@@ -52,6 +59,12 @@ public class RobotContainer {
     Logger.RegisterPneumaticHub(new PneumaticHub(), config.PCM().ChannelNames());
     logger.start();
 
+    //Register named commands. Must register all commands we want Pathplanner to execute.
+    NamedCommands.registerCommand("Dummy Command", new InstantCommand(driveSubsystem::dummyAction));
+
+    //Build an Autochooser from SmartDashboard selection.  Default will be Commands.none()
+    autoChooser = AutoBuilder.buildAutoChooser();
+    SmartDashboard.putData("Auto Chooser", autoChooser);
   }
 
   /**
@@ -84,6 +97,6 @@ public class RobotContainer {
    */
   public Command getAutonomousCommand() {
     // An example command will be run in autonomous
-    return Autos.exampleAuto(m_exampleSubsystem);
+    return autoChooser.getSelected();
   }
 }

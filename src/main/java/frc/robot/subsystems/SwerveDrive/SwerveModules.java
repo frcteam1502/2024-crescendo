@@ -13,7 +13,6 @@ import team1502.configuration.factory.RobotConfiguration;
 public class SwerveModules implements Sendable {
     private SwerveModule[] _modules;
     private String[] _moduleNames;
-    public final double maxSpeed;
   
     public SwerveModules(RobotConfiguration config)
     {
@@ -25,9 +24,6 @@ public class SwerveModules implements Sendable {
         _moduleNames = modules.stream()
                     .map(m->m.FriendlyName())
                     .toArray(String[]::new);
-
-        var swerveModule = modules.get(0); 
-        maxSpeed = swerveModule.calculateMaxSpeed();
     }
 
     public void setDesiredState(SwerveModuleState[] swerveModuleStates) {

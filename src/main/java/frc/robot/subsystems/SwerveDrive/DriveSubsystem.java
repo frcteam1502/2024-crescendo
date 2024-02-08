@@ -1,9 +1,21 @@
 package frc.robot.subsystems.SwerveDrive;
 
 import frc.robot.GameState;
+import java.util.function.BooleanSupplier;
 import frc.robot.Logger;
 
 import com.ctre.phoenix6.hardware.Pigeon2;
+import com.ctre.phoenix6.signals.SensorDirectionValue;
+import com.pathplanner.lib.auto.AutoBuilder;
+import com.pathplanner.lib.util.HolonomicPathFollowerConfig;
+import com.pathplanner.lib.util.PIDConstants;
+import com.pathplanner.lib.util.ReplanningConfig;
+
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
+
+import com.revrobotics.CANSparkMax;
+import com.revrobotics.CANSparkLowLevel;
+import com.revrobotics.CANSparkBase.IdleMode;
 
 import edu.wpi.first.math.estimator.SwerveDrivePoseEstimator;
 import edu.wpi.first.math.geometry.Pose2d;
@@ -14,7 +26,6 @@ import edu.wpi.first.math.kinematics.SwerveModulePosition;
 import edu.wpi.first.math.kinematics.SwerveModuleState;
 import edu.wpi.first.math.util.Units;
 import edu.wpi.first.util.sendable.SendableBuilder;
-import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 
 import team1502.configuration.factory.RobotConfiguration;
@@ -38,9 +49,12 @@ public class DriveSubsystem extends SubsystemBase{
   public final SwerveDrivePoseEstimator odometry;
 
   private Pose2d pose = new Pose2d();
+
+  private final BooleanSupplier isPathFlipped = ()-> true;
   
   private final double goStraightGain;
   private final double maxSpeed;
+  private final double driveBaseRadius;
 
   public DriveSubsystem(RobotConfiguration config) {
     gyro = config.Pigeon2().buildPigeon2();
@@ -48,13 +62,16 @@ public class DriveSubsystem extends SubsystemBase{
     swerveModules = new SwerveModules(config);
     kinematics = config.SwerveDrive().getKinematics();
     maxSpeed = config.SwerveDrive().calculateMaxSpeed();
+    driveBaseRadius = config.SwerveDrive().driveBaseRadius();
     
     goStraightGain = config.SwerveDrive().getDouble("goStraightGain");
 
     this.odometry = new SwerveDrivePoseEstimator(kinematics, getGyroRotation2d(), getModulePositions(), pose);
 
     reset();
-    registerLoggerObjects(config);   
+    configAutoBuilder();
+    registerLoggerObjects(config);
+    
   }
 
   private void checkInitialAngle() {
@@ -200,5 +217,25 @@ public class DriveSubsystem extends SubsystemBase{
         (n, d)->Logger.RegisterSensor(n,d)
       );
   }
+
+  private void configAutoBuilder(){
+    //Wraper for AutoBuilder.configureHolonomic, must be called from DriveTrain config....
+
+    AutoBuilder.configureHolonomic(
+      this::getPose2d, //Robot pose supplier
+      this::resetOdometry, //Method to reset odometry (will be called if the robot has a starting pose)
+      this::getRobotRelativeSpeeds, //ChassisSpeeds provider.  MUST BE ROBOT RELATIVE!!! 
+      this::driveRobotRelative, //ChassisSpeeds consumer.  MUST BE ROBOT RELATIVE!!!
+      new HolonomicPathFollowerConfig(
+        new PIDConstants(5.0, 0, 0), //Translation PID constants
+        new PIDConstants(5.0, 0, 0), //Rotation PID constants
+        maxSpeed, 
+        driveBaseRadius,
+        new ReplanningConfig()), //HolonomicPathFollowerConfig
+      isPathFlipped,//Supplier which determines if paths should be flipped to the other side of the field (Blue Alliance origin)
+      this); //Reference to this subsystem to set 
+  }
+
+  public void dummyAction(){}
 
 }
