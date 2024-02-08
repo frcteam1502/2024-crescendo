@@ -23,7 +23,7 @@ public class SwerveDrive extends Builder {
     public SwerveDrive SwerveModule(String name, Function<SwerveModule, Builder> fn) {
         var module = addPiece(SwerveModule.Define, name, SwerveModule.NAME, fn);
         module.Value(SwerveModule.location, getKinematic(getPieces().size()));
-        module.Value(SwerveModule.wheelDiameter, Chassis().WheelDiameter());
+        module.Value(SwerveModule.wheelDiameter, Chassis().getWheelDiameter());
         return this;
     }
 
@@ -32,10 +32,12 @@ public class SwerveDrive extends Builder {
          return (SwerveDrive)addPart(Chassis.Define, fn);
     }
 
+    /** max speed (m/s) based on reported free-speed */
     public double calculateMaxSpeed() { 
         return SwerveModule.Wrap(getPiece(0)).calculateMaxSpeed();
     }
 
+    /** offset (m) */
     public Translation2d getKinematic(int moduleNumber) {
         return Chassis().getModuleLocation(moduleNumber);
     }

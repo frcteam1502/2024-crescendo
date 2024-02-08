@@ -4,8 +4,6 @@ import java.util.function.Function;
 
 import com.revrobotics.CANSparkBase.IdleMode;
 
-import edu.wpi.first.math.controller.PIDController;
-
 import com.revrobotics.CANSparkMax;
 import com.revrobotics.SparkPIDController;
 
@@ -44,7 +42,6 @@ public class MotorController extends Builder {
         addPart(Motor.Define, Motor.NAME, partName, fn);
         return this;
     }
-
 
     public IdleMode IdleMode() { return (IdleMode)getValue(Motor.idleMode); }
     public MotorController IdleMode(IdleMode value) {

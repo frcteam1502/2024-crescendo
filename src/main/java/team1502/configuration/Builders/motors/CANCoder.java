@@ -29,15 +29,16 @@ public class CANCoder extends Builder{ // Accelerometer {
     }
     public CANCoder(IBuild build, Part part) { super(build, part); }
     
+    /** CounterClockwise_Positive (default) or Clockwise_Positive (if reversed) */
     public SensorDirectionValue Direction() {
         var result = getBoolean(isReversed, false);
         return result
             ? SensorDirectionValue.Clockwise_Positive
             : SensorDirectionValue.CounterClockwise_Positive;
     }
-    /**
-      False (default) means positive rotation occurs when magnet
-      is spun counter-clockwise when observer is facing the LED side of CANCoder.
+    /** CounterClockwise_Positive (default, false) or Clockwise_Positive (if reversed, true) 
+        False (default) means positive rotation occurs when magnet
+        is spun counter-clockwise when observer is facing the LED side of CANCoder.
    */
     public CANCoder Direction(boolean value) {
         setValue(isReversed, value);

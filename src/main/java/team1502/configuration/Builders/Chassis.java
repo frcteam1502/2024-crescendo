@@ -8,10 +8,16 @@ import edu.wpi.first.math.util.Units;
 public class Chassis extends Builder {
   private static final String NAME = "Chassis";
   private static final String chassisLayout = "chassisLayout";
+
+  /** Wheel Base Width (in) */
   private static final String wheelBaseWidth = "wheelBaseWidth";
+  /** Wheel Base Length (in) */
   private static final String wheelBaseLength = "wheelBaseLength";
-  private static final String wheelDiameter = "wheelDiameter";
+  /** Wheel Base Radius (in) */
   private static final String driveBaseRadius = "driveBaseRadius";
+
+  /** Wheel Diameter (in) */
+  private static final String wheelDiameter = "wheelDiameter";
 
   public static Function<IBuild, Chassis> Define = build->new Chassis(build);
   public static Chassis Wrap(Builder builder) { return new Chassis(builder.getIBuild(), builder.getPart()); }
@@ -36,13 +42,19 @@ public class Chassis extends Builder {
       return this;
   }
 
-  public double WheelDiameter() { return Units.inchesToMeters(getDouble(wheelDiameter)); }
+  /** Wheel Diameter (m) */
+  public double getWheelDiameter() { return Units.inchesToMeters(getDouble(wheelDiameter)); }
+  /** Wheel Diameter (in)  */
+  public double WheelDiameter() { return getDouble(wheelDiameter); }
   public Chassis WheelDiameter(double inches) {
     Value(wheelDiameter, inches);
     return this;
   }
 
-  public double DriveBaseRadius() { return Units.inchesToMeters(getDouble(driveBaseRadius)); }
+  /** Radius The radius of the drive base in meters. For swerve drive, this is the distance from the center of the robot to the furthest module. For mecanum, this is the drive base width / 2 */
+  public double getDriveBaseRadius() { return Units.inchesToMeters(getDouble(driveBaseRadius)); }
+  /** radius of drive base in inches */
+  public double DriveBaseRadius() { return getDouble(driveBaseRadius); }
   public Chassis DriveBaseRadius(double inches) {
     Value(driveBaseRadius, inches);
     return this;
@@ -52,7 +64,7 @@ public class Chassis extends Builder {
   /**
    * Assumes four modules
    * @param moduleNumber
-   * @return
+   * @return offset in meters
    */
   public Translation2d getModuleLocation(int moduleNumber) {
     double halfX = Units.inchesToMeters(getDouble(wheelBaseWidth))/2;

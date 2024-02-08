@@ -26,6 +26,7 @@ public class Motor extends Builder {
         return (Motor)Value(Motor.motorType, motorType);
     }      
     
+    /** reported free-speed (revolutions per minute) */
     public double FreeSpeedRPM() { return (double)getValue(Motor.freeSpeedRPM); }          
     public Motor FreeSpeedRPM(double speed) {
         return (Motor)Value(Motor.freeSpeedRPM, speed);
