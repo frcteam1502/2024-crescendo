@@ -208,7 +208,7 @@ public final class RobotConfigurations {
                         .MPM(1, "BR1"))
                 )
                 // miscellaneous
-                .Value("goStraightGain", 0.02)
+                .Value("goStraightGain", 0.1)
             )
         );
     }
