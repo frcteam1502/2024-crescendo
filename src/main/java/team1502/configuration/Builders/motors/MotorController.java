@@ -3,7 +3,11 @@ package team1502.configuration.builders.motors;
 import java.util.function.Function;
 
 import com.revrobotics.CANSparkBase.IdleMode;
+
+import edu.wpi.first.math.controller.PIDController;
+
 import com.revrobotics.CANSparkMax;
+import com.revrobotics.SparkPIDController;
 
 import team1502.configuration.CAN.DeviceType;
 import team1502.configuration.CAN.Manufacturer;
@@ -68,6 +72,10 @@ public class MotorController extends Builder {
     }
     public MotorController PID(double p, double i, double d, double ff) {
         return (MotorController)addPart(PID.Define, pid->pid.P(p).I(i).D(d).FF(ff));
+    }
+
+    public SparkPIDController createPIDController() {
+        return PID().setPIDController(CANSparkMax());
     }
 
     public CANSparkMax buildSparkMax() {
