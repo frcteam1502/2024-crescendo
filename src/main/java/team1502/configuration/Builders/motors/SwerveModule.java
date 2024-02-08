@@ -43,12 +43,14 @@ public class SwerveModule extends Builder {
 
     public MotorController TurningMotor() { return MotorController.WrapPart(this, TurningMotor); }
     public SwerveModule TurningMotor(Manufacturer manufacturer, Function<MotorController, Builder> fn) {
-        return (SwerveModule)addPart(MotorController.Define(manufacturer), TurningMotor, fn);
+        addPart(MotorController.Define(manufacturer), TurningMotor, fn);
+        return this;
     }
     
     public MotorController DrivingMotor() { return MotorController.WrapPart(this, DrivingMotor); }
     public SwerveModule DrivingMotor(Manufacturer manufacturer, Function<MotorController, Builder> fn) {
-        return (SwerveModule)addPart(MotorController.Define(manufacturer), DrivingMotor, fn);
+        addPart(MotorController.Define(manufacturer), DrivingMotor, fn);
+        return this;
     }
 
     public boolean Reversed()  {return getBoolean(isReversed, false); }

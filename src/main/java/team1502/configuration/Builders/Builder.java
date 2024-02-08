@@ -75,15 +75,18 @@ public class Builder {
      * @return
      */
     public Builder Part(String partName, Function<Builder, Builder> fn) {
-        return addPart(partName, fn);
+        return installPart(partName, fn);
+    }
+    public Builder installPart(String partName, Function<Builder, Builder> fn) {
+        addPart(Builder.Define, partName, partName, fn);
+        return this;
     }
 
     //public Builder Install(PartBuilder<?> partBuilder) { return addPart(partBuilder); }
     public Builder addPart(String newName, PartBuilder<?> partBuilder) {
         var builder = partBuilder.creatBuilder(getIBuild());
         builder.Name(newName);
-        addPart(builder);
-        return this;
+        return addPart(builder);
     }
     public Builder addPart(PartBuilder<?> partBuilder) {
         var builder = partBuilder.creatBuilder(getIBuild());
@@ -93,17 +96,15 @@ public class Builder {
     public <T extends Builder> Builder addPart(Function<IBuild, T> define, Function<T, Builder> fn) {
         return addPart(new PartBuilder<T>("", define, fn));
     }
-    public Builder addPart(String partName, Function<Builder, Builder> fn) {
-        return addPart(Builder.Define, partName, partName, fn);
-    }
     public <T extends Builder> Builder addPart(Function<IBuild, T> define, String newName, String partName, Function<T, Builder> fn) {
         return addPart(newName, getIBuild().getTemplate(partName, define, fn));
     }
     public <T extends Builder> Builder addPart(Function<IBuild, T> define, String newName, Function<T, Builder> fn) {
         return addPart(newName, new PartBuilder(define, fn));
     }
-    private void addPart(Builder part) {
+    private Builder addPart(Builder part) {
         addPart(part.getPart());
+        return part;
     }
     protected Part addPart(Part part) {
         _part.addPart(part);
@@ -111,25 +112,34 @@ public class Builder {
     }
     
     // ---- Pieces --------------
+    /**
+     * Install and move on, use addPiece to return the piece
+     * @param <T>
+     * @param define
+     * @param newName
+     * @param fn
+     * @return the INSTALLER
+     */
+    public <T extends Builder> Builder InstallPiece(Function<IBuild, T> define, String newName, Function<T, Builder> fn) {
+        addPiece(newName, new PartBuilder(define, fn));
+        return this;
+    }
+
     public Builder addPiece(PartBuilder<?> partBuilder) {
         var builder = partBuilder.creatBuilder(getIBuild());
-        addPiece(builder);
-        return this;
+        return addPiece(builder);
     }
     public <T extends Builder> Builder addPiece(Function<IBuild, T> define, String newName, String partName, Function<T, Builder> fn) {
         return addPiece(newName, getIBuild().getTemplate(partName, define, fn));
     }
-    public <T extends Builder> Builder addPiece(Function<IBuild, T> define, String newName, Function<T, Builder> fn) {
-        return addPiece(newName, new PartBuilder(define, fn));
-    }
     public Builder addPiece(String newName, PartBuilder<?> partBuilder) {
         var builder = partBuilder.creatBuilder(getIBuild());
         builder.Name(newName);
-        addPiece(builder);
-        return this;
+        return addPiece(builder);
     }
-    protected void addPiece(Builder part) {
+    protected Builder addPiece(Builder part) {
         addPiece(part.getPart());
+        return part;
     }
     protected void addPiece(Part part) {
         _part.addPiece(part);

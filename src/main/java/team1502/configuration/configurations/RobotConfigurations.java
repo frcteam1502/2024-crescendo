@@ -243,6 +243,8 @@ public final class RobotConfigurations {
         // Configuration Values
         return robot.Values(k -> k
             .Eval("Pigeon2", e->e.Pigeon2().CanNumber())
+            .Eval("SwerveModule.getPositionConversionFactor", e -> e
+                    .SwerveDrive().SwerveModule("#1").getPositionConversionFactor())
             .Eval("SwerveModule.TurningMotor.Motor.MotorType", e -> e
                     .SwerveDrive().SwerveModule("#1").TurningMotor().Motor().MotorType())
             .Eval("SwerveModule.TurningMotor.Motor.PowerChannel", e -> e
