@@ -109,7 +109,7 @@ public class RobotConfiguration {
 
     public void RegisterCanSparkMaxs(
             BiConsumer<String, CANSparkMax> motorLogger,
-            BiConsumer<String, Pigeon2> pigeonLogger,
+            Consumer<Pigeon2> pigeonLogger,
             BiConsumer<String, CANcoder> encoderLogger,
             BiConsumer<String, DoubleSupplier> sensorLogger
         ) {
@@ -123,7 +123,7 @@ public class RobotConfiguration {
             motorLogger.accept(drive.FriendlyName() + " Turn", drive.CANSparkMax());    
         }
         
-        pigeonLogger.accept(Pigeon2().FriendlyName(), Pigeon2().Pigeon2());
+        pigeonLogger.accept(Pigeon2().Pigeon2());
 
         for (SwerveModule sm : SwerveDrive().getModules()) {
             var drive = sm.Encoder();
