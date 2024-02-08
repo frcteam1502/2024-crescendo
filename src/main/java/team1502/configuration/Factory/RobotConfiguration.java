@@ -107,7 +107,7 @@ public class RobotConfiguration {
     public Builder EthernetSwitch() { return Values().EthernetSwitch(); }
     public PneumaticsController PCM() { return Values().PCM(); }
 
-    public void RegisterCanSparkMaxs(
+    public void registerLoggerObjects(
             BiConsumer<String, CANSparkMax> motorLogger,
             Consumer<Pigeon2> pigeonLogger,
             BiConsumer<String, CANcoder> encoderLogger,
