@@ -1,0 +1,31 @@
+{
+  "version": 1.0,
+  "startingPose": null,
+  "command": {
+    "type": "sequential",
+    "data": {
+      "commands": [
+        {
+          "type": "path",
+          "data": {
+            "pathName": "RightStart-RightNote"
+          }
+        },
+        {
+          "type": "path",
+          "data": {
+            "pathName": "RightNote-NoteMiddle"
+          }
+        },
+        {
+          "type": "path",
+          "data": {
+            "pathName": "RightNoteMiddle-AMP"
+          }
+        }
+      ]
+    }
+  },
+  "folder": null,
+  "choreoAuto": false
+}

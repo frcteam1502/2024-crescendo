@@ -1,0 +1,69 @@
+{
+  "version": 1.0,
+  "waypoints": [
+    {
+      "anchor": {
+        "x": 0.7319122330552369,
+        "y": 6.778589711025576
+      },
+      "prevControl": null,
+      "nextControl": {
+        "x": 1.3535296301361848,
+        "y": 7.005529395674177
+      },
+      "isLocked": false,
+      "linkedName": null
+    },
+    {
+      "anchor": {
+        "x": 2.1724858834333065,
+        "y": 7.005529395674177
+      },
+      "prevControl": {
+        "x": 1.6396709716496372,
+        "y": 7.015396338484985
+      },
+      "nextControl": null,
+      "isLocked": false,
+      "linkedName": null
+    }
+  ],
+  "rotationTargets": [
+    {
+      "waypointRelativePos": 0,
+      "rotationDegrees": 60.64224645720881,
+      "rotateFast": false
+    }
+  ],
+  "constraintZones": [],
+  "eventMarkers": [
+    {
+      "name": "Print Message",
+      "waypointRelativePos": 0.05,
+      "command": {
+        "type": "sequential",
+        "data": {
+          "commands": []
+        }
+      }
+    }
+  ],
+  "globalConstraints": {
+    "maxVelocity": 2.0,
+    "maxAcceleration": 3.0,
+    "maxAngularVelocity": 540.0,
+    "maxAngularAcceleration": 720.0
+  },
+  "goalEndState": {
+    "velocity": 0,
+    "rotation": -0.7638984609299253,
+    "rotateFast": false
+  },
+  "reversed": false,
+  "folder": "LeftSpotStart",
+  "previewStartingState": {
+    "rotation": 60.0,
+    "velocity": 0.0
+  },
+  "useDefaultConstraints": false
+}

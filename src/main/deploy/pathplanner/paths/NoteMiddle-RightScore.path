@@ -3,80 +3,63 @@
   "waypoints": [
     {
       "anchor": {
-        "x": 1.4,
-        "y": 5.5
+        "x": 7.61,
+        "y": 2.45
       },
       "prevControl": null,
       "nextControl": {
-        "x": 2.897939596952539,
-        "y": 6.307712527768525
+        "x": 6.794753499554608,
+        "y": 2.015385500033913
       },
       "isLocked": false,
       "linkedName": null
     },
     {
       "anchor": {
-        "x": 3.7911234319785283,
-        "y": 6.60855704537885
+        "x": 4.265319715049857,
+        "y": 1.9037928330704696
       },
       "prevControl": {
-        "x": 3.0127822688561308,
-        "y": 6.329529081240632
+        "x": 5.664670290330932,
+        "y": 1.3085466928389684
       },
       "nextControl": {
-        "x": 4.526669736301185,
-        "y": 6.872243456362444
+        "x": 2.6038288958163456,
+        "y": 2.610546390505619
       },
       "isLocked": false,
       "linkedName": null
     },
     {
       "anchor": {
-        "x": 5.85,
-        "y": 6.9
+        "x": 1.314313633127649,
+        "y": 4.557218469756825
       },
       "prevControl": {
-        "x": 4.807316555062448,
-        "y": 6.870628635353873
+        "x": 2.5790305253800243,
+        "y": 3.06931624357756
       },
       "nextControl": null,
       "isLocked": false,
       "linkedName": null
     }
   ],
-  "rotationTargets": [
-    {
-      "waypointRelativePos": 0,
-      "rotationDegrees": 0,
-      "rotateFast": false
-    }
-  ],
+  "rotationTargets": [],
   "constraintZones": [],
-  "eventMarkers": [
-    {
-      "name": "Print Message",
-      "waypointRelativePos": 1.0,
-      "command": {
-        "type": "sequential",
-        "data": {
-          "commands": []
-        }
-      }
-    }
-  ],
+  "eventMarkers": [],
   "globalConstraints": {
-    "maxVelocity": 2.0,
+    "maxVelocity": 3.0,
     "maxAcceleration": 3.0,
     "maxAngularVelocity": 540.0,
     "maxAngularAcceleration": 720.0
   },
   "goalEndState": {
     "velocity": 0,
-    "rotation": 0,
+    "rotation": -51.546290783351,
     "rotateFast": false
   },
   "reversed": false,
-  "folder": null,
+  "folder": "RightSpotStart",
   "previewStartingState": null,
   "useDefaultConstraints": false
 }
