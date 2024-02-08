@@ -465,7 +465,17 @@ public class DriveSubsystem extends SubsystemBase{
                 DriveConstants.MAX_SPEED_METERS_PER_SECOND, 
                 DriveConstants.WHEEL_BASE_DIAMETER,
                 new ReplanningConfig()), //HolonomicPathFollowerConfig
-      isPathFlipped,//Supplier which determines if paths should be flipped to the other side of the field (Blue Alliance origin)
+      () -> {
+        // Boolean supplier that controls when the path will be mirrored for the red alliance
+        // This will flip the path being followed to the red side of the field.
+        // THE ORIGIN WILL REMAIN ON THE BLUE SIDE
+    
+          var alliance = DriverStation.getAlliance();
+          if (alliance.isPresent()) {
+                return alliance.get() == DriverStation.Alliance.Red;
+            }
+              return false;
+          },
       this); //Reference to this subsystem to set 
   }
 
