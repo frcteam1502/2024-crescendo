@@ -244,6 +244,8 @@ public final class RobotConfigurations {
             .Eval("Pigeon2", e->e.Pigeon2().CanNumber())
             .Eval("SwerveModule.getPositionConversionFactor", e -> e
                     .SwerveDrive().SwerveModule("#1").getPositionConversionFactor())
+            .Eval("SwerveDrive.DriveBaseRadius", e -> e
+                    .SwerveDrive().Chassis().DriveBaseRadius())
             .Eval("SwerveDrive.calculateMaxSpeed", e -> e
                     .SwerveDrive().calculateMaxSpeed())
             .Eval("SwerveModule.calculateMaxSpeed", e -> e
