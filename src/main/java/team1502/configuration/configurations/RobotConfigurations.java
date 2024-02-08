@@ -245,6 +245,8 @@ public final class RobotConfigurations {
             .Eval("Pigeon2", e->e.Pigeon2().CanNumber())
             .Eval("SwerveModule.getPositionConversionFactor", e -> e
                     .SwerveDrive().SwerveModule("#1").getPositionConversionFactor())
+            .Eval("SwerveModule.calculateMaxSpeed", e -> e
+                    .SwerveDrive().SwerveModule("#1").calculateMaxSpeed())
             .Eval("SwerveModule.TurningMotor.Motor.MotorType", e -> e
                     .SwerveDrive().SwerveModule("#1").TurningMotor().Motor().MotorType())
             .Eval("SwerveModule.TurningMotor.Motor.PowerChannel", e -> e

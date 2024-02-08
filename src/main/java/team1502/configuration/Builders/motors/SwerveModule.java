@@ -108,4 +108,9 @@ public class SwerveModule extends Builder {
         return this;
     }
 
+    public double calculateMaxSpeed() {
+        return DrivingMotor().Motor().FreeSpeedRPM() / 60.0
+        * DrivingMotor().GearBox().GearRatio()
+        * getDouble(wheelDiameter) * Math.PI; 
+    }
 }
