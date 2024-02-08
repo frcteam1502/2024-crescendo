@@ -8,10 +8,16 @@ import edu.wpi.first.math.util.Units;
 public class Chassis extends Builder {
   private static final String NAME = "Chassis";
   private static final String chassisLayout = "chassisLayout";
+
+  /** Wheel Base Width (in) */
   private static final String wheelBaseWidth = "wheelBaseWidth";
+  /** Wheel Base Length (in) */
   private static final String wheelBaseLength = "wheelBaseLength";
-  private static final String wheelDiameter = "wheelDiameter";
+  /** Wheel Base Radius (in) */
   private static final String driveBaseRadius = "driveBaseRadius";
+
+  /** Wheel Diameter (in) */
+  private static final String wheelDiameter = "wheelDiameter";
 
   public static Function<IBuild, Chassis> Define = build->new Chassis(build);
   public static Chassis Wrap(Builder builder) { return new Chassis(builder.getIBuild(), builder.getPart()); }

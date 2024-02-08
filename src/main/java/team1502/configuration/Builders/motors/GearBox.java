@@ -22,6 +22,7 @@ public class GearBox extends Builder{
             .DrivenTeeth(drivenTeeth));
     }
     
+    /** all stages driving-teeth / driven-teeth */
     public double GearRatio() {
         var stages = getPieces();
         var ratios = stages.stream().map(stage->stage.getDoubleFromInt(Gear.drivingTeeth)/stage.getDoubleFromInt(Gear.drivenTeeth));

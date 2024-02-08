@@ -2,8 +2,6 @@ package team1502.configuration.builders.motors;
 
 import java.util.function.Function;
 
-import com.ctre.phoenix6.hardware.CANcoder;
-
 import team1502.configuration.CAN.Manufacturer;
 import team1502.configuration.builders.Builder;
 import team1502.configuration.builders.IBuild;
@@ -12,7 +10,9 @@ import team1502.configuration.builders.power.PowerDistributionModule;
 
 public class SwerveModule extends Builder {
     public static final String NAME = "SwerveModule";
+    /** offset (m) */
     public static final String location = "location";
+    /** Wheel Diameter (m) */
     public static final String wheelDiameter = "wheelDiameter";
     private static final String AbsoluteEncoder = "Encoder";
     private static final String TurningMotor = "TurningMotor";
