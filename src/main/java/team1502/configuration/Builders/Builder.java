@@ -167,7 +167,7 @@ public class Builder {
     
     
     // == VALUES / (EVAL?) ==========
-
+    public boolean hasValue(String valueName) { return _part == null ? false : _part.hasValue(valueName); }
     public Object getValue(String valueName) { return _part.getValue(valueName); }
     protected Builder setValue(String valueName, Object value) {
         _part.setValue(valueName, value);

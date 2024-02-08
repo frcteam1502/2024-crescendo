@@ -33,6 +33,8 @@ public class Part {
         return this;
     }
     
+    
+    public boolean hasValue(String valueName) { return _values.containsKey(valueName); }
     public Object getValue(String valueName) { return _values.get(valueName);  }
     public Part setValue(String valueName, Object value) {
         _values.put(valueName, value);

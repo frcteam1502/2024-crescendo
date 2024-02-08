@@ -2,6 +2,10 @@ package team1502.configuration.builders.motors;
 
 import java.util.function.Function;
 
+import com.revrobotics.CANSparkMax;
+import com.revrobotics.SparkPIDController;
+
+import edu.wpi.first.math.controller.PIDController;
 import team1502.configuration.builders.Builder;
 import team1502.configuration.builders.IBuild;
 import team1502.configuration.builders.Part;
@@ -27,4 +31,25 @@ public class PID extends Builder {
 
     public double FF() {return getDouble("ff"); }
     public PID FF(double p) {return (PID)setValue("ff", p); }
+
+    public PIDController createPIDController() {
+        return new PIDController(P(), I(), D());
+    }
+
+    public SparkPIDController setPIDController(CANSparkMax motor) {
+        var pidController = motor.getPIDController();
+        setPIDController(pidController);
+        return pidController;
+    }
+    
+    public void setPIDController(SparkPIDController pidController) {
+        pidController.setP(P());
+        pidController.setI(I());
+        pidController.setD(D());
+        if (hasValue("ff")) {
+            pidController.setFF(FF());
+        }
+    
+    }
+
 }
