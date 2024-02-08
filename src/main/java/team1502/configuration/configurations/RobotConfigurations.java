@@ -174,7 +174,7 @@ public final class RobotConfigurations {
         // Top-Level Parts
         return parts.Build(hw -> hw
             .Note("Intake is the FRONT for this configuration as all the motors drive that direction unless reversed")
-            .Pigeon2("Gyro", g->g.CanNumber(14))
+            .Pigeon2(g->g.CanNumber(14))
             .SwerveDrive(sd -> sd
                 .SwerveModule("#1", sm -> sm // just leaving these as numbers, since "Front" is arbitrary and undetermined at the moment
                     .Wrap(sw->sw.FriendlyName("Front Left").Abbreviation("FL"))
@@ -235,14 +235,14 @@ public final class RobotConfigurations {
         .Ch(20, 10,   robot.RoboRIO())
         .Ch(21, 10,   robot.PCM())
         .Ch(22, 10,   robot.RadioPowerModule())
-        .Ch(23, 10,   robot.GyroSensor()) // switchable
+        .Ch(23, 10,   robot.Pigeon2()) // switchable
         );
     }
 
     private static RobotConfiguration addEvalHelpers(RobotConfiguration robot) {
         // Configuration Values
         return robot.Values(k -> k
-            .Eval("Pigeon2", e->e.GyroSensor().CanNumber())
+            .Eval("Pigeon2", e->e.Pigeon2().CanNumber())
             .Eval("SwerveModule.TurningMotor.Motor.MotorType", e -> e
                     .SwerveDrive().SwerveModule("#1").TurningMotor().Motor().MotorType())
             .Eval("SwerveModule.TurningMotor.Motor.PowerChannel", e -> e
