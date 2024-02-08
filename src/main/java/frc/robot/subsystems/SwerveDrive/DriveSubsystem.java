@@ -47,7 +47,7 @@ public class DriveSubsystem extends SubsystemBase{
   
     swerveModules = new SwerveModules(config);
     kinematics = config.SwerveDrive().getKinematics();
-    maxSpeed = swerveModules.maxSpeed;
+    maxSpeed = config.SwerveDrive().calculateMaxSpeed();
     
     goStraightGain = config.SwerveDrive().getDouble("goStraightGain");
 
