@@ -9,9 +9,6 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 
 import edu.wpi.first.wpilibj.Filesystem;
-import edu.wpi.first.wpilibj.PneumaticHub;
-import edu.wpi.first.wpilibj.PowerDistribution;
-import edu.wpi.first.wpilibj.PowerDistribution.ModuleType;
 import edu.wpi.first.wpilibj.RobotController;
 import edu.wpi.first.wpilibj.TimedRobot;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
@@ -29,9 +26,9 @@ public class Robot extends TimedRobot {
   private Command m_autonomousCommand;
   private RobotContainer m_robotContainer;
 
-  public String branch = "unknown";
-  public String commit = "unknown";
-  public String radio = "1502";
+  private String branch = "unknown";
+  private String commit = "unknown";
+  private String radio = "1502";
 
   /**
    * This function is run when the robot is first started up and should be used for any
@@ -49,9 +46,7 @@ public class Robot extends TimedRobot {
 
     }
      
-
     RobotController.setBrownoutVoltage(3);
-    //Register PDP and PH Logger items
     
     // Instantiate our RobotContainer.  This will perform all our button bindings, and put our
     // autonomous chooser on the dashboard.

@@ -1,8 +1,6 @@
 package frc.robot.subsystems.SwerveDrive;
 
-import com.ctre.phoenix6.configs.CANcoderConfiguration;
 import com.ctre.phoenix6.hardware.CANcoder;
-import com.ctre.phoenix6.signals.AbsoluteSensorRangeValue;
 import com.revrobotics.CANSparkMax;
 import com.revrobotics.RelativeEncoder;
 import com.revrobotics.SparkPIDController;
@@ -15,8 +13,6 @@ import edu.wpi.first.math.kinematics.SwerveModuleState;
 import edu.wpi.first.math.util.Units;
 import edu.wpi.first.util.sendable.Sendable;
 import edu.wpi.first.util.sendable.SendableBuilder;
-import team1502.configuration.builders.motors.CANCoder;
-import team1502.configuration.builders.motors.MotorController;
 
 public class SwerveModule implements Sendable {
   private final CANSparkMax driveMotor;
@@ -42,16 +38,10 @@ public class SwerveModule implements Sendable {
     driveEncoder.setPositionConversionFactor(config.getPositionConversionFactor());
     driveEncoder.setVelocityConversionFactor(config.getVelocityConversionFactor());
 
-    var pid = config.TurningMotor().PID();
-    this.turningPIDController = new PIDController(pid.P(), pid.I(), pid.D());
+    this.turningPIDController = config.TurningMotor().PID().createPIDController();
     this.turningPIDController.enableContinuousInput(-Math.PI, Math.PI); 
 
-    pid = config.DrivingMotor().PID();
-    this.drivePIDController = this.driveMotor.getPIDController();
-    this.drivePIDController.setP(pid.P());
-    this.drivePIDController.setI(pid.I());
-    this.drivePIDController.setD(pid.D());
-    this.drivePIDController.setFF(pid.FF());
+    this.drivePIDController = config.DrivingMotor().createPIDController();
   }
 
   /**
