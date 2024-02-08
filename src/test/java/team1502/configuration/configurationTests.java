@@ -10,6 +10,7 @@ public class configurationTests {
     public void buildRobotTest() {
         var config = RobotConfigurations.getConfiguration("");
         var channelNames = config.PDH().ChannelNames();
+        var pneumaticChannelNames = config.PCM().ChannelNames();
         var evals = config.Values().GetValueKeys();
         for (String valueName : evals) {
             System.out.println(valueName + ": " + config.Values().getValue(valueName).toString());
@@ -23,6 +24,9 @@ public class configurationTests {
         part1.PeakPower(1_000.0);
         var m1 = part1.Manufacturer();
         var pp1 = part1.TotalPeakPower();
+
+        //var gyro = config.Pigeon2().buildPigeon2();
+
 
     }
 
