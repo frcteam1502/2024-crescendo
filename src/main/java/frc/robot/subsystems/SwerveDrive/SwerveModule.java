@@ -4,8 +4,6 @@ import com.ctre.phoenix6.hardware.CANcoder;
 import com.revrobotics.CANSparkMax;
 import com.revrobotics.RelativeEncoder;
 import com.revrobotics.SparkPIDController;
-import com.revrobotics.CANSparkBase.ControlType;
-
 import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.kinematics.SwerveModulePosition;
@@ -21,12 +19,16 @@ public class SwerveModule implements Sendable {
   private final CANcoder absEncoder;
   private final SparkPIDController drivePIDController;
   private final PIDController turningPIDController;
+  public final double maxSpeed;
 
   private double commandedSpeed;
   private double commandedAngle;
 
   public SwerveModule(team1502.configuration.builders.motors.SwerveModule config) {
     config.setSwerveModuleInstance(this); // for logging
+    
+    maxSpeed = config.calculateMaxSpeed();
+
     this.driveMotor = config.DrivingMotor().buildSparkMax();
     this.turningMotor = config.TurningMotor().buildSparkMax();
     this.absEncoder = config.Encoder().buildCANcoder();
@@ -92,6 +94,10 @@ public class SwerveModule implements Sendable {
     return commandedAngle;
   }
 
+  public double getControllerSetpoint(){
+    return driveMotor.get();
+  }
+
   /**
    * Sets the desired state for the module.
    *
@@ -114,7 +120,11 @@ public class SwerveModule implements Sendable {
       // Calculate the turning motor output from the turning PID controller.
       final double turnOutput = turningPIDController.calculate(getAbsPositionZeroed(), state.angle.getRadians());
 
-      drivePIDController.setReference(state.speedMetersPerSecond, ControlType.kVelocity);
+      var desiredSpeed = state.speedMetersPerSecond/maxSpeed;
+      //drivePIDController.setReference(state.speedMetersPerSecond, CANSparkMax.ControlType.kVelocity);
+      drivePIDController.setReference(desiredSpeed, CANSparkMax.ControlType.kVelocity);
+
+      //driveMotor.set(desiredSpeed);
       turningMotor.setVoltage(turnOutput);
     }
   }

@@ -41,7 +41,6 @@ public class DriveSubsystem extends SubsystemBase{
   
   private final double goStraightGain;
   private final double maxSpeed;
-  private final double empiricalSpeed; // for comparison
 
   public DriveSubsystem(RobotConfiguration config) {
     gyro = config.Pigeon2().buildPigeon2();
@@ -49,7 +48,6 @@ public class DriveSubsystem extends SubsystemBase{
     swerveModules = new SwerveModules(config);
     kinematics = config.SwerveDrive().getKinematics();
     maxSpeed = swerveModules.maxSpeed;
-    empiricalSpeed = swerveModules.empiricalSpeed;
     
     goStraightGain = config.SwerveDrive().getDouble("goStraightGain");
 
