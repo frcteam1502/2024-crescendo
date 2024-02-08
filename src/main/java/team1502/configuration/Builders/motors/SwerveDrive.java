@@ -32,6 +32,10 @@ public class SwerveDrive extends Builder {
          return (SwerveDrive)addPart(Chassis.Define, fn);
     }
 
+    public double calculateMaxSpeed() { 
+        return SwerveModule.Wrap(getPiece(0)).calculateMaxSpeed();
+    }
+
     public Translation2d getKinematic(int moduleNumber) {
         return Chassis().getModuleLocation(moduleNumber);
     }

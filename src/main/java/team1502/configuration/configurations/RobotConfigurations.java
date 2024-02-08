@@ -76,7 +76,7 @@ public final class RobotConfigurations {
                         .Gear("Stage2", 10, 60)
                         .Note("MK4i Standard", "150/7:1")
                     )
-                    .PID(3.5, 0.0, 0.0)
+                    .PID(3.4, 0.0, 0.0)
                     .Reversed(true) // all turn motors are reversed
                 )
                 .DrivingMotor(Manufacturer.REVRobotics, mc -> mc
@@ -88,11 +88,10 @@ public final class RobotConfigurations {
                         .Gear("Stage3", 15, 45)
                         .Note("Mk4i Option", "L2 = 6.75:1")
                     )
-                    .PID(.08, 0.0, 0.0, 1.0)
-                    // no drive motors were reversed, but now left (?)
+                    .PID(.0005, 0.0, 0.0, 1.0)
                 )
-                .Value("closedLoopRampRate", .25)
-                .Value("smartCurrentLimit", 40)
+                .Value("closedLoopRampRate", .5)
+                .Value("smartCurrentLimit", 30)
             )
             .SwerveDrive(sd -> sd
                 .Chassis(c -> c
@@ -245,6 +244,8 @@ public final class RobotConfigurations {
             .Eval("Pigeon2", e->e.Pigeon2().CanNumber())
             .Eval("SwerveModule.getPositionConversionFactor", e -> e
                     .SwerveDrive().SwerveModule("#1").getPositionConversionFactor())
+            .Eval("SwerveDrive.calculateMaxSpeed", e -> e
+                    .SwerveDrive().calculateMaxSpeed())
             .Eval("SwerveModule.calculateMaxSpeed", e -> e
                     .SwerveDrive().SwerveModule("#1").calculateMaxSpeed())
             .Eval("SwerveModule.TurningMotor.Motor.MotorType", e -> e
