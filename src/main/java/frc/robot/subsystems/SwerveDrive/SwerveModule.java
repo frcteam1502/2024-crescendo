@@ -54,26 +54,6 @@ public class SwerveModule implements Sendable {
     this.drivePIDController.setFF(pid.FF());
   }
 
-/*
-  private CANSparkMax buildMotor(MotorController config) {
-    var motor = new CANSparkMax(config.CanNumber(), config.Motor().MotorType());
-    motor.setIdleMode(config.IdleMode());
-    motor.setInverted(config.Reversed());
-    return motor;
-  }
-
-  private CANcoder buildEncoder(CANCoder config) {
-    var encoder = new CANcoder(config.CanNumber());
-    //Set absolute encoder magnet configuration
-    encoder.getConfigurator().apply(
-      new CANcoderConfiguration().MagnetSensor
-          .withMagnetOffset(-config.MagneticOffset()/360.0)
-          .withSensorDirection(config.Direction())
-          .withAbsoluteSensorRange(AbsoluteSensorRangeValue.Unsigned_0To1));
-    return encoder;
-  }
- */
-
   /**
    * Returns the current state of the module.
    *
