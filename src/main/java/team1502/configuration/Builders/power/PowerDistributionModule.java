@@ -89,7 +89,7 @@ public class PowerDistributionModule extends Builder {
     }
 
     private void createChannel(Integer channelNumber) {
-        addPiece(Builder.Define, "Ch " + (channelNumber < 10 ? " " : "") + channelNumber.toString(), c->c
+        InstallPiece(Builder.Define, "Ch " + (channelNumber < 10 ? " " : "") + channelNumber.toString(), c->c
             .Value("Channel", channelNumber));        
     }
 

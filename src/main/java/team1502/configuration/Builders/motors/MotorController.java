@@ -37,7 +37,8 @@ public class MotorController extends Builder {
         return Motor(partName, null);
     }
     public MotorController Motor(String partName, Function<Motor, Builder> fn) {
-        return (MotorController)addPart(Motor.Define, Motor.NAME, partName, fn);
+        addPart(Motor.Define, Motor.NAME, partName, fn);
+        return this;
     }
 
 
