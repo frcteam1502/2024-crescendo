@@ -7,13 +7,10 @@ import java.util.function.Function;
 
 import team1502.configuration.builders.Builder;
 import team1502.configuration.builders.RoboRIO;
-import team1502.configuration.builders.motors.Motor;
-import team1502.configuration.builders.motors.MotorController;
-import team1502.configuration.builders.motors.SwerveDrive;
-import team1502.configuration.builders.motors.SwerveModule;
-import team1502.configuration.builders.pneumatics.PneumaticsController;
-import team1502.configuration.builders.power.PowerDistributionModule;
-import team1502.configuration.builders.sensors.GyroSensor;
+import team1502.configuration.builders.motors.*;
+import team1502.configuration.builders.pneumatics.*;
+import team1502.configuration.builders.power.*;
+import team1502.configuration.builders.sensors.*;
 
 public class Evaluator {
     private HashMap<String, EvaluatorArgs> _valueMap = new HashMap<>(); 
@@ -84,6 +81,9 @@ public class Evaluator {
     }
     public Object Part(String partName, Function<Builder, Object> fn) {
         return getValue(partName, b->Builder.Wrap(b), fn);   
+    }
+    public IMU Pigeon2() {
+        return (IMU)getValue(IMU.Pigeon2, b->IMU.Wrap(b), g->(IMU)g);   
     }
     public GyroSensor GyroSensor() {
         return (GyroSensor)getValue(GyroSensor.Gyro, b->GyroSensor.Wrap(b), g->(GyroSensor)g);   

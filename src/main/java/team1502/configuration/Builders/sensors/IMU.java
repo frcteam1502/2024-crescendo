@@ -2,6 +2,9 @@ package team1502.configuration.builders.sensors;
 
 import java.util.function.Function;
 
+import com.ctre.phoenix6.hardware.Pigeon2;
+import com.revrobotics.CANSparkMax;
+
 import team1502.configuration.CAN.DeviceType;
 import team1502.configuration.CAN.Manufacturer;
 import team1502.configuration.builders.Builder;
@@ -39,6 +42,17 @@ public class IMU extends Builder {
     public double YAxisGyroError = 0;
     public double ZAxisGyroError = 0;
 */
+    public Pigeon2 buildPigeon2() {
+        var imu = Pigeon2(new Pigeon2(CanNumber()));
+        return imu;
+    }
+    public Pigeon2 Pigeon2() {
+        return (Pigeon2)Value(IMU.Pigeon2);
+    }
+    public Pigeon2 Pigeon2(Pigeon2 imu) {
+        Value(IMU.Pigeon2, imu);
+        return imu;
+    }
 
     
 }

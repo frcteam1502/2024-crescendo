@@ -138,7 +138,7 @@ public final class RobotConfigurations {
 
 
 
-        /*
+        /* from CAN scan:
          * NI Robot Controller 0
          * REV Robotics Pneumatics Controller        1
          * REV Robotics Power Distribution Module    1
@@ -168,9 +168,7 @@ public final class RobotConfigurations {
                 .Ch(5, 10)
                 .PDH(0, "MPM0")
             )
-            // .MiniPowerModule("RM-PDP", mpm->mpm)  // from 2023
-            // .MiniPowerModule("LM-PDP", mpm->mpm)
-            );//
+        );
 
         buildStandardElectronics(parts);
         // Top-Level Parts
@@ -217,21 +215,7 @@ public final class RobotConfigurations {
     }
                 
    
-    private static RobotConfiguration pdpAssignments(RobotConfiguration robot) {
-        // robot.Build(hw->hw
-        //     .MiniPowerModule("RM-PDP", mpm -> mpm
-        //         .Ch(0, 10, robot.SwerveModule("#4").Encoder())
-        //         .Ch(1, 10, robot.SwerveModule("#2").Encoder()))
-
-        //     .MiniPowerModule("LM-PDP", mpm -> mpm
-        //         .Ch(0, 10, robot.GyroSensor())
-        //         .Ch(3, 10, robot.SwerveModule("#1").Encoder())
-        //         .Ch(4, 10, robot.EthernetSwitch())
-        //         .Ch(5, 10, robot.SwerveModule("#3").Encoder()))
-        // );
-        
-        int EMPTY = 0;               
-        
+    private static RobotConfiguration pdpAssignments(RobotConfiguration robot) {      
         return robot.PowerDistributionModule(pdh -> pdh
         // LEFT SIDE                                RIGHT SIDE
         //======================================    ======================================
