@@ -1,4 +1,6 @@
 package team1502.configuration;
+import java.util.Collections;
+
 import org.junit.jupiter.api.Test;
 
 import team1502.configuration.builders.power.PowerDistributionModule;
@@ -12,6 +14,7 @@ public class configurationTests {
         var channelNames = config.PDH().ChannelNames();
         var pneumaticChannelNames = config.PCM().ChannelNames();
         var evals = config.Values().GetValueKeys();
+        Collections.sort(evals);
         for (String valueName : evals) {
             System.out.println(valueName + ": " + config.Values().getValue(valueName).toString());
         };

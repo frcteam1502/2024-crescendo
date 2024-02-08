@@ -94,6 +94,7 @@ public class RobotConfiguration {
     public Builder Part(String name) { return Values().Part(name); }
 
 
+    public Chassis Chassis() { return Values().SwerveDrive().Chassis(); }
     public SwerveDrive SwerveDrive() { return Values().SwerveDrive(); }
     public SwerveModule SwerveModule(String name) { return Values().SwerveDrive().SwerveModule(name); }
     public PowerDistributionModule MPM(String name) { return Values().MPM(name); }
