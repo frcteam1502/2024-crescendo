@@ -2,6 +2,8 @@ package team1502.configuration.builders.motors;
 
 import java.util.function.Function;
 
+import com.ctre.phoenix6.hardware.CANcoder;
+
 import team1502.configuration.CAN.Manufacturer;
 import team1502.configuration.builders.Builder;
 import team1502.configuration.builders.IBuild;
@@ -96,5 +98,12 @@ public class SwerveModule extends Builder {
         return getPositionConversionFactor()/60; // mpr * 60 = position/minute (like rpm)
     }
 
-    
+    public frc.robot.subsystems.SwerveDrive.SwerveModule getSwerveModuleInstance() {
+        return (frc.robot.subsystems.SwerveDrive.SwerveModule)Value("getSwerveModuleInstance");
+    }
+    public SwerveModule setSwerveModuleInstance(frc.robot.subsystems.SwerveDrive.SwerveModule sm) {
+        Value("getSwerveModuleInstance", sm);
+        return this;
+    }
+
 }

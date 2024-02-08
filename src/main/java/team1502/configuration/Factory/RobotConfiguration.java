@@ -2,9 +2,11 @@ package team1502.configuration.factory;
 
 import java.util.function.BiConsumer;
 import java.util.function.Consumer;
+import java.util.function.DoubleSupplier;
 import java.util.function.Function;
 
 import com.ctre.phoenix6.hardware.CANcoder;
+import com.ctre.phoenix6.hardware.Pigeon2;
 import com.revrobotics.CANSparkMax;
 
 import team1502.configuration.CAN.CanMap;
@@ -96,6 +98,7 @@ public class RobotConfiguration {
     public SwerveModule SwerveModule(String name) { return Values().SwerveDrive().SwerveModule(name); }
     public PowerDistributionModule MPM(String name) { return Values().MPM(name); }
     public PowerDistributionModule PDH() { return Values().PDH(); }
+    public IMU Pigeon2() { return Values().Pigeon2(); }
     public GyroSensor GyroSensor() { return Values().GyroSensor(); }
     public GyroSensor GyroSensor(String name) { return (GyroSensor)getValue(name); }
     public Builder RadioPowerModule() { return Values().RadioPowerModule(); }
@@ -106,7 +109,9 @@ public class RobotConfiguration {
 
     public void RegisterCanSparkMaxs(
             BiConsumer<String, CANSparkMax> motorLogger,
-            BiConsumer<String, CANcoder> encoderLogger
+            BiConsumer<String, Pigeon2> pigeonLogger,
+            BiConsumer<String, CANcoder> encoderLogger,
+            BiConsumer<String, DoubleSupplier> sensorLogger
         ) {
 
         for (SwerveModule sm : SwerveDrive().getModules()) {
@@ -117,9 +122,16 @@ public class RobotConfiguration {
             var drive = sm.TurningMotor();
             motorLogger.accept(drive.FriendlyName() + " Turn", drive.CANSparkMax());    
         }
+        
+        pigeonLogger.accept(Pigeon2().FriendlyName(), Pigeon2().Pigeon2());
+
         for (SwerveModule sm : SwerveDrive().getModules()) {
             var drive = sm.Encoder();
             encoderLogger.accept(drive.FriendlyName() + " Abs", drive.CANcoder());    
+        }
+
+        for (SwerveModule sm : SwerveDrive().getModules()) {
+            sensorLogger.accept(sm.Abbreviation() + " Drive Speed", ()->sm.getSwerveModuleInstance().getVelocity());    
         }
     }
 
