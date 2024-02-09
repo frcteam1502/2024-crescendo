@@ -1,7 +1,5 @@
 package frc.robot.subsystems.SwerveDrive;
 
-import java.util.function.BooleanSupplier;
-
 import frc.robot.GameState;
 import frc.robot.Logger;
 
@@ -28,14 +26,11 @@ import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import team1502.configuration.factory.RobotConfiguration;
 
 public class DriveSubsystem extends SubsystemBase {
-  
-  public static boolean isTeleOp = false;
-
-  public boolean isTurning = false;
-  public double targetAngle = 0.0;
-  public double turnCommand = 0.0;
-  public double fieldXCommand = 0;
-  public double fieldYCommand = 0;
+  private boolean isTurning = false;
+  private double targetAngle = 0.0;
+  private double turnCommand = 0.0;
+  private double fieldXCommand = 0;
+  private double fieldYCommand = 0;
 
   ChassisSpeeds speedCommands = new ChassisSpeeds(0, 0, 0);
   ChassisSpeeds relativeCommands = new ChassisSpeeds(0,0,0);
@@ -44,7 +39,7 @@ public class DriveSubsystem extends SubsystemBase {
 
   private final SwerveModules swerveModules;
   private final SwerveDriveKinematics kinematics;
-  public final SwerveDrivePoseEstimator odometry;
+  private final SwerveDrivePoseEstimator odometry;
 
   private Pose2d pose = new Pose2d();
 
@@ -59,15 +54,14 @@ public class DriveSubsystem extends SubsystemBase {
     kinematics = config.SwerveDrive().getKinematics();
     maxSpeed = config.SwerveDrive().calculateMaxSpeed();
     driveBaseRadius = config.SwerveDrive().Chassis().getDriveBaseRadius();
-    
-    goStraightGain = config.SwerveDrive().getDouble("goStraightGain");
+    goStraightGain = config.SwerveDrive().GoStraightGain();
 
     this.odometry = new SwerveDrivePoseEstimator(kinematics, getGyroRotation2d(), getModulePositions(), pose);
 
     reset();
     registerLoggerObjects(config);
 
-    //Configure Auto Builder last!
+    //Configure Auto Builder last! -- why?
     configAutoBuilder(); 
   }
 
@@ -143,18 +137,16 @@ public class DriveSubsystem extends SubsystemBase {
     setDesiredState(swerveModuleStates);
   }
 
-
   public ChassisSpeeds getRobotRelativeSpeeds() { return kinematics.toChassisSpeeds(getModuleStates()); }
   public SwerveModuleState[] getModuleStates(){ return swerveModules.getModuleStates(); }
   public SwerveModulePosition[] getModulePositions() { return swerveModules.getModulePositions(); }
   public void setDesiredState(SwerveModuleState[] swerveModuleStates) { swerveModules.setDesiredState(swerveModuleStates); }
   public void resetModules() { swerveModules.resetModules(); }
 
-  private int count = 0;
-
   public void updateOdometry() {
     pose = odometry.update(getGyroRotation2d(), getModulePositions());
-    if(count++ == 0){
+
+    if(GameState.isFirst()){
       System.out.println(pose.getX());
       System.out.println(pose.getY());
     }
@@ -203,11 +195,16 @@ public class DriveSubsystem extends SubsystemBase {
     //Field Oriented inputs
     builder.addDoubleProperty("Field Oriented X Command (Forward)", ()->fieldXCommand, null);
     builder.addDoubleProperty("Field Oriented Y Command (Forward)", ()->fieldYCommand, null);
-    builder.addDoubleProperty("Robot Relative Rotation Command", ()->speedCommands.omegaRadiansPerSecond, null);
 
     //Robot Relative inputs
     builder.addDoubleProperty("Robot Relative vX Speed Command", ()->speedCommands.vxMetersPerSecond, null);
     builder.addDoubleProperty("Robot Relative vY Speed Command", ()->speedCommands.vyMetersPerSecond, null);
+    builder.addDoubleProperty("Robot Relative Rotation Command", ()->speedCommands.omegaRadiansPerSecond, null);
+    
+    builder.addDoubleProperty("DriveRobot Relative vX Speed Command", ()->relativeCommands.vxMetersPerSecond, null);
+    builder.addDoubleProperty("DriveRobot Relative vY Speed Command", ()->relativeCommands.vyMetersPerSecond, null);
+    builder.addDoubleProperty("DriveRobot Relative Rotation Command", ()->relativeCommands.omegaRadiansPerSecond, null);
+    
 
     builder.addDoubleProperty("Gyro Yaw", ()->getIMU_Yaw(), null);
 
