@@ -30,8 +30,9 @@ public class configurationTests {
 
         //var gyro = config.Pigeon2().buildPigeon2();
         // var pid1 = config.SwerveModule("#1").TurningMotor().PID().createPIDController();
-        // var mtr1 = config.SwerveModule("#1").DrivingMotor().buildSparkMax();
-        // var pid2 = config.SwerveModule("#1").DrivingMotor().createPIDController();
+        var mtr1 = config.SwerveModule("#1").DrivingMotor().buildSparkMax();
+        var pid2 = config.SwerveModule("#1").DrivingMotor().createPIDController();
+        var rel1 = config.SwerveModule("#1").DrivingMotor().buildRelativeEncoder();
 
     }
 

@@ -89,9 +89,9 @@ public final class RobotConfigurations {
                         .Note("Mk4i Option", "L2 = 6.75:1")
                     )
                     .PID(.0005, 0.0, 0.0, 1.0)
+                    .ClosedLoopRampRate(.5)
+                    .SmartCurrentLimit(30)
                 )
-                .Value("closedLoopRampRate", .5)
-                .Value("smartCurrentLimit", 30)
             )
             .SwerveDrive(sd -> sd
                 .Chassis(c -> c
@@ -208,7 +208,7 @@ public final class RobotConfigurations {
                         .MPM(1, "BR1"))
                 )
                 // miscellaneous
-                .Value("goStraightGain", 0.1)
+                .GoStraightGain(0.1)
             )
         );
     }
@@ -248,8 +248,16 @@ public final class RobotConfigurations {
                     .SwerveDrive().Chassis().getDriveBaseRadius())
             .Eval("SwerveDrive.calculateMaxSpeed", e -> e
                     .SwerveDrive().calculateMaxSpeed())
+            .Eval("SwerveDrive.GoStraightGain", e -> e
+                    .SwerveDrive().GoStraightGain())
             .Eval("SwerveModule.calculateMaxSpeed", e -> e
                     .SwerveDrive().SwerveModule("#1").calculateMaxSpeed())
+            .Eval("SwerveModule.ClosedLoopRampRate", e -> e
+                    .SwerveDrive().SwerveModule("#1").DrivingMotor().ClosedLoopRampRate())
+            .Eval("SwerveModule.SmartCurrentLimit", e -> e
+                    .SwerveDrive().SwerveModule("#1").DrivingMotor().SmartCurrentLimit())
+            .Eval("SwerveModule.getPositionConversionFactor", e -> e
+                    .SwerveDrive().SwerveModule("#1").DrivingMotor().getPositionConversionFactor())
             .Eval("SwerveModule.TurningMotor.Motor.MotorType", e -> e
                     .SwerveDrive().SwerveModule("#1").TurningMotor().Motor().MotorType())
             .Eval("SwerveModule.TurningMotor.Motor.PowerChannel", e -> e

@@ -1,6 +1,9 @@
 package team1502.configuration.builders;
 
 import java.util.function.Function;
+
+import edu.wpi.first.wpilibj.shuffleboard.BuiltInLayouts;
+
 import java.util.List;
 
 import team1502.configuration.CAN.CanInfo;
@@ -28,6 +31,7 @@ public class Builder {
         register();
     }
     
+    public Builder parent; // e.g., the "wrapper"; a way to get info from higher up?
     private Builder wrap(Part part) { return new Builder(getIBuild(), part); }
     
     /**
