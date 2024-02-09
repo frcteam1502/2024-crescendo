@@ -5,6 +5,7 @@ import java.util.function.Function;
 import com.revrobotics.CANSparkBase.IdleMode;
 
 import com.revrobotics.CANSparkMax;
+import com.revrobotics.RelativeEncoder;
 import com.revrobotics.SparkPIDController;
 
 import team1502.configuration.CAN.DeviceType;
@@ -16,6 +17,8 @@ import team1502.configuration.builders.Part;
 public class MotorController extends Builder {
     private static final DeviceType deviceType = DeviceType.MotorController; 
     private static final String isReversed = "isReversed";
+    private static final String closedLoopRampRate = "closedLoopRampRate";
+    private static final String smartCurrentLimit = "smartCurrentLimit";
     public static final String NAME = "MotorController";
     public static final Function<IBuild, MotorController> Define(Manufacturer manufacturer) {
         return build->new MotorController(build,manufacturer);
@@ -71,6 +74,19 @@ public class MotorController extends Builder {
         return (MotorController)addPart(PID.Define, pid->pid.P(p).I(i).D(d).FF(ff));
     }
 
+    /** Time in seconds to go from 0 to full throttle. */
+    public Double ClosedLoopRampRate() { return getDouble(closedLoopRampRate); }
+    public MotorController ClosedLoopRampRate(double rate) {
+        Value(closedLoopRampRate, rate);
+        return this;
+    }
+    /** The current limit in Amps. */
+    public Integer SmartCurrentLimit() { return getInt(smartCurrentLimit); }
+    public MotorController SmartCurrentLimit(Integer limit) {
+        Value(smartCurrentLimit, limit);
+        return this;
+    }
+
     public SparkPIDController createPIDController() {
         return PID().setPIDController(CANSparkMax());
     }
@@ -79,6 +95,12 @@ public class MotorController extends Builder {
         var motor = CANSparkMax(new CANSparkMax(CanNumber(), Motor().MotorType()));
         motor.setIdleMode(IdleMode());
         motor.setInverted(Reversed());
+        if (hasValue(closedLoopRampRate)) {
+            motor.setClosedLoopRampRate(ClosedLoopRampRate());
+        }
+        if (hasValue(smartCurrentLimit)) {
+            motor.setSmartCurrentLimit(SmartCurrentLimit());
+        }
         return motor;
     }
     public CANSparkMax CANSparkMax() {
@@ -87,5 +109,38 @@ public class MotorController extends Builder {
     public CANSparkMax CANSparkMax(CANSparkMax motor) {
         Value("CANSparkMax", motor);
         return motor;
+    }
+
+    public RelativeEncoder getRelativeEncoder() {
+        return CANSparkMax().getEncoder();
+    }
+
+    public RelativeEncoder buildRelativeEncoder() {
+        var encoder = getRelativeEncoder();
+        if (parent != null) {
+            if (parent.Value(Builder.BUILD_TYPE) == SwerveModule.NAME) {
+                encoder.setPositionConversionFactor(((SwerveModule)parent).getPositionConversionFactor());
+                encoder.setVelocityConversionFactor(((SwerveModule)parent).getVelocityConversionFactor());
+            }
+        }
+        return encoder;
+    }
+
+    public Double getPositionConversionFactor() {
+        if (parent != null) {
+            if (parent.Value(Builder.BUILD_TYPE) == SwerveModule.NAME) {
+                return ((SwerveModule)parent).getPositionConversionFactor();
+            }
+        }
+        return null;
+    }
+    
+    public Double getVelocityConversionFactor() {
+        if (parent != null) {
+            if (parent.Value(Builder.BUILD_TYPE) == SwerveModule.NAME) {
+                return ((SwerveModule)parent).getVelocityConversionFactor();
+            }
+        }
+        return null;
     }
 }

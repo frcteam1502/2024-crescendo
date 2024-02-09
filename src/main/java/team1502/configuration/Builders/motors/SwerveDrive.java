@@ -12,6 +12,7 @@ import team1502.configuration.builders.Part;
 
 public class SwerveDrive extends Builder {
     public static final String NAME = "SwerveDrive";
+    public static final String goStraightGain = "goStraightGain";
     public static Function<IBuild, SwerveDrive> Define = build->new SwerveDrive(build);
     public static SwerveDrive Wrap(Builder builder) { return new SwerveDrive(builder.getIBuild(), builder.getPart()); }
     public static SwerveDrive WrapPart(Builder builder) { return WrapPart(builder, NAME); }
@@ -32,6 +33,13 @@ public class SwerveDrive extends Builder {
          return (SwerveDrive)addPart(Chassis.Define, fn);
     }
 
+    /** How fast to track target angle when not turning */
+    public Double GoStraightGain() { return getDouble(goStraightGain); }
+    public SwerveDrive GoStraightGain(double gain) {
+        Value(goStraightGain, gain);
+        return this;
+    }
+    
     /** max speed (m/s) based on reported free-speed */
     public double calculateMaxSpeed() { 
         return SwerveModule.Wrap(getPiece(0)).calculateMaxSpeed();

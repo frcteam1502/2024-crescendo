@@ -41,25 +41,30 @@ public class SwerveModule extends Builder {
         return this;
     }
 
+    private MotorController Wrapped(MotorController builder) {
+        builder.parent = this;
+        return builder;
+    }
+    
     public MotorController TurningMotor() { return MotorController.WrapPart(this, TurningMotor); }
     public SwerveModule TurningMotor(Manufacturer manufacturer, Function<MotorController, Builder> fn) {
         addPart(MotorController.Define(manufacturer), TurningMotor, fn);
         return this;
     }
     
-    public MotorController DrivingMotor() { return MotorController.WrapPart(this, DrivingMotor); }
+    public MotorController DrivingMotor() { return Wrapped(MotorController.WrapPart(this, DrivingMotor)); }
     public SwerveModule DrivingMotor(Manufacturer manufacturer, Function<MotorController, Builder> fn) {
         addPart(MotorController.Define(manufacturer), DrivingMotor, fn);
         return this;
     }
 
-    public boolean Reversed()  {return getBoolean(isReversed, false); }
+    public boolean Reversed() { return getBoolean(isReversed, false); }
     public SwerveModule Reversed(boolean value) {
         TurningMotor().Reversed(value);
         DrivingMotor().Reversed(value);
         return this;
     }
-
+    
     /**
      * Root number of standard convention of CAN number and PDH channel
      */
