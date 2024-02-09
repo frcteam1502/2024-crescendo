@@ -3,41 +3,41 @@
   "waypoints": [
     {
       "anchor": {
-        "x": 1.9113560946263224,
-        "y": 6.946327738809324
+        "x": 7.61,
+        "y": 2.45
       },
       "prevControl": null,
       "nextControl": {
-        "x": 3.3647088331743777,
-        "y": 6.922026842264776
+        "x": 6.794753499554608,
+        "y": 2.015385500033913
       },
       "isLocked": false,
       "linkedName": null
     },
     {
       "anchor": {
-        "x": 6.40517488548394,
-        "y": 5.9623870231640295
+        "x": 4.265319715049857,
+        "y": 1.9037928330704696
       },
       "prevControl": {
-        "x": 5.299098093723917,
-        "y": 7.189116328143212
+        "x": 5.664670290330932,
+        "y": 1.3085466928389684
       },
       "nextControl": {
-        "x": 7.352189217482927,
-        "y": 4.912070949313621
+        "x": 2.6038288958163456,
+        "y": 2.610546390505619
       },
       "isLocked": false,
       "linkedName": null
     },
     {
       "anchor": {
-        "x": 7.359744236483107,
-        "y": 0.7783411631223989
+        "x": 1.314313633127649,
+        "y": 4.557218469756825
       },
       "prevControl": {
-        "x": 7.38171777953574,
-        "y": 2.3189642050124917
+        "x": 2.5790305253800243,
+        "y": 3.06931624357756
       },
       "nextControl": null,
       "isLocked": false,
@@ -46,25 +46,7 @@
   ],
   "rotationTargets": [],
   "constraintZones": [],
-  "eventMarkers": [
-    {
-      "name": "New Event Marker",
-      "waypointRelativePos": 0,
-      "command": {
-        "type": "parallel",
-        "data": {
-          "commands": [
-            {
-              "type": "named",
-              "data": {
-                "name": "Dummy Command"
-              }
-            }
-          ]
-        }
-      }
-    }
-  ],
+  "eventMarkers": [],
   "globalConstraints": {
     "maxVelocity": 3.0,
     "maxAcceleration": 3.0,
@@ -73,11 +55,11 @@
   },
   "goalEndState": {
     "velocity": 0,
-    "rotation": 0,
+    "rotation": -51.546290783351,
     "rotateFast": false
   },
   "reversed": false,
-  "folder": null,
+  "folder": "RightSpotStart",
   "previewStartingState": null,
   "useDefaultConstraints": false
 }

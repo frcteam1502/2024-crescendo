@@ -1,0 +1,31 @@
+{
+  "version": 1.0,
+  "startingPose": null,
+  "command": {
+    "type": "sequential",
+    "data": {
+      "commands": [
+        {
+          "type": "path",
+          "data": {
+            "pathName": "LeftStart-LeftNote"
+          }
+        },
+        {
+          "type": "path",
+          "data": {
+            "pathName": "LeftNote-NoteMiddle"
+          }
+        },
+        {
+          "type": "path",
+          "data": {
+            "pathName": "LeftNoteMiddle-AMP"
+          }
+        }
+      ]
+    }
+  },
+  "folder": null,
+  "choreoAuto": false
+}

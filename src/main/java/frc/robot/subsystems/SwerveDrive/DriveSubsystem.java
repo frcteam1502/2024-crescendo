@@ -21,6 +21,7 @@ import edu.wpi.first.math.kinematics.SwerveModulePosition;
 import edu.wpi.first.math.kinematics.SwerveModuleState;
 import edu.wpi.first.math.util.Units;
 import edu.wpi.first.util.sendable.SendableBuilder;
+import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 
@@ -37,6 +38,7 @@ public class DriveSubsystem extends SubsystemBase {
   public double fieldYCommand = 0;
 
   ChassisSpeeds speedCommands = new ChassisSpeeds(0, 0, 0);
+  ChassisSpeeds relativeCommands = new ChassisSpeeds(0,0,0);
 
   private final Pigeon2 gyro;
 
@@ -46,8 +48,6 @@ public class DriveSubsystem extends SubsystemBase {
 
   private Pose2d pose = new Pose2d();
 
-  private final BooleanSupplier isPathFlipped = ()-> true;
-  
   private final double goStraightGain;
   private final double maxSpeed;
   private final double driveBaseRadius;
@@ -65,9 +65,10 @@ public class DriveSubsystem extends SubsystemBase {
     this.odometry = new SwerveDrivePoseEstimator(kinematics, getGyroRotation2d(), getModulePositions(), pose);
 
     reset();
-    configAutoBuilder();
     registerLoggerObjects(config);
-    
+
+    //Configure Auto Builder last!
+    configAutoBuilder(); 
   }
 
   private void checkInitialAngle() {
@@ -129,6 +130,11 @@ public class DriveSubsystem extends SubsystemBase {
 
   public void driveRobotRelative(ChassisSpeeds robotRelativeSpeeds){
     //This method is a consumer of ChassisSpeed and sets the corresponding module states.  This is required for PathPlanner 2024
+    //Save off to SmartDashboard
+    relativeCommands.vxMetersPerSecond = robotRelativeSpeeds.vxMetersPerSecond;
+    relativeCommands.vyMetersPerSecond = robotRelativeSpeeds.vyMetersPerSecond;
+    relativeCommands.omegaRadiansPerSecond = robotRelativeSpeeds.omegaRadiansPerSecond;
+    
     //Convert from robot frame of reference (ChassisSpeeds) to swerve module frame of reference (SwerveModuleState)
     var swerveModuleStates = kinematics.toSwerveModuleStates(robotRelativeSpeeds);
     //Normalize wheel speed commands to make sure no speed is greater than the maximum achievable wheel speed.
@@ -137,18 +143,21 @@ public class DriveSubsystem extends SubsystemBase {
     setDesiredState(swerveModuleStates);
   }
 
-  public ChassisSpeeds getRobotRelativeSpeeds(){
-    //This method is a supplier of ChassisSpeeds as determined by the module states.  This is required for PathPlanner 2024
-    return kinematics.toChassisSpeeds(getModuleStates());
-  }
 
+  public ChassisSpeeds getRobotRelativeSpeeds() { return kinematics.toChassisSpeeds(getModuleStates()); }
   public SwerveModuleState[] getModuleStates(){ return swerveModules.getModuleStates(); }
   public SwerveModulePosition[] getModulePositions() { return swerveModules.getModulePositions(); }
   public void setDesiredState(SwerveModuleState[] swerveModuleStates) { swerveModules.setDesiredState(swerveModuleStates); }
   public void resetModules() { swerveModules.resetModules(); }
 
+  private int count = 0;
+
   public void updateOdometry() {
     pose = odometry.update(getGyroRotation2d(), getModulePositions());
+    if(count++ == 0){
+      System.out.println(pose.getX());
+      System.out.println(pose.getY());
+    }
   }
 
   public void resetOdometry(Pose2d pose) {
@@ -228,10 +237,21 @@ public class DriveSubsystem extends SubsystemBase {
         maxSpeed, 
         driveBaseRadius,
         new ReplanningConfig()), //HolonomicPathFollowerConfig
-      isPathFlipped,//Supplier which determines if paths should be flipped to the other side of the field (Blue Alliance origin)
+        () -> {
+          // Boolean supplier that controls when the path will be mirrored for the red alliance
+          // This will flip the path being followed to the red side of the field.
+          // THE ORIGIN WILL REMAIN ON THE BLUE SIDE
+      
+          var alliance = DriverStation.getAlliance();
+          if (alliance.isPresent()) {
+                return alliance.get() == DriverStation.Alliance.Red;
+            }
+              return false;
+          },
       this); //Reference to this subsystem to set 
   }
 
-  public void dummyAction(){}
+  public void dummyAction1(){System.out.println("Drivetrain Command 1!");}
+  public void dummyAction2(){System.out.println("Drivetrain Command 2!");}
 
 }
