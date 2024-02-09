@@ -1,10 +1,13 @@
 package frc.robot.subsystems.SwerveDrive;
 
+
 import java.util.function.BooleanSupplier;
 
 import javax.swing.text.Utilities;
 
 import frc.robot.Logger;
+import frc.robot.LimelightHelpers.LimelightResults;
+import frc.robot.LimelightHelpers;
 
 import com.ctre.phoenix6.hardware.CANcoder;
 import com.ctre.phoenix6.hardware.Pigeon2;
@@ -251,6 +254,17 @@ public class DriveSubsystem extends SubsystemBase{
     SmartDashboard.putNumber("Pose2D X", pose.getX());
     SmartDashboard.putNumber("Pose2D Y", pose.getY());
     SmartDashboard.putNumber("Pose2D Rotation", pose.getRotation().getDegrees());
+
+    //Limelight Info
+    LimelightResults llresults = LimelightHelpers.getLatestResults("");
+    int numAprilTags = llresults.targetingResults.targets_Fiducials.length;
+
+    SmartDashboard.putNumber("Number of AprilTags",numAprilTags);
+    SmartDashboard.putNumber("Tag ID", LimelightHelpers.getFiducialID(""));
+    SmartDashboard.putNumber("Limelight TX", LimelightHelpers.getTX(""));
+    SmartDashboard.putNumber("Limelight TY", LimelightHelpers.getTY(""));
+    SmartDashboard.putNumber("Limelight TA", LimelightHelpers.getTA(""));
+
   }
   
   @Override
@@ -397,22 +411,6 @@ public class DriveSubsystem extends SubsystemBase{
     return odometry.getEstimatedPosition();
   }
 
-  /*public double getVelocity() {
-    return Math.sqrt(
-      Math.pow(ChassisSpeeds.fromFieldRelativeSpeeds(forwardCommand, strafeCommand, turnCommand, getGyroRotation2d()).vxMetersPerSecond, 2) + 
-      Math.pow(ChassisSpeeds.fromFieldRelativeSpeeds(forwardCommand, strafeCommand, turnCommand, getGyroRotation2d()).vyMetersPerSecond, 2)
-    );
-  }*/
-
-  /*public Rotation2d getHeading() {
-    return new Rotation2d(
-      Math.atan2(
-        Math.pow(ChassisSpeeds.fromFieldRelativeSpeeds(forwardCommand, strafeCommand, turnCommand, getGyroRotation2d()).vyMetersPerSecond, 2), 
-        Math.pow(ChassisSpeeds.fromFieldRelativeSpeeds(forwardCommand, strafeCommand, turnCommand, getGyroRotation2d()).vxMetersPerSecond, 2)
-      )
-    );
-  }*/
-
   public void resetGyro() {
     gyro.setYaw(0);
   }
@@ -463,7 +461,7 @@ public class DriveSubsystem extends SubsystemBase{
                 new PIDConstants(5.0, 0, 0), //Translation PID constants
                 new PIDConstants(5.0, 0, 0), //Rotation PID constants
                 DriveConstants.MAX_SPEED_METERS_PER_SECOND, 
-                DriveConstants.WHEEL_BASE_DIAMETER,
+                (DriveConstants.WHEEL_BASE_DIAMETER/2),
                 new ReplanningConfig()), //HolonomicPathFollowerConfig
       () -> {
         // Boolean supplier that controls when the path will be mirrored for the red alliance
