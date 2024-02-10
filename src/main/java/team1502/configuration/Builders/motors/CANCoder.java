@@ -40,8 +40,12 @@ public class CANCoder extends Builder{ // Accelerometer {
         False (default) means positive rotation occurs when magnet
         is spun counter-clockwise when observer is facing the LED side of CANCoder.
    */
-    public CANCoder Direction(boolean value) {
-        setValue(isReversed, value);
+    public CANCoder CounterClockwise_Positive() {
+        setValue(isReversed, false);
+        return this;
+    }
+    public CANCoder Clockwise_Positive() {
+        setValue(isReversed, true);
         return this;
     }
 

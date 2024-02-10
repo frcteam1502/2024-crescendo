@@ -52,10 +52,13 @@ public class MotorController extends Builder {
         return this;
     }
     
-    public boolean Reversed() {
+    public boolean IsReversed() {
         var result = getBoolean(isReversed);
         return result == null ? false : result;
     }
+    
+    /** invert the direction of a speed controller */
+    public MotorController Reversed() { return Reversed(true); }
     public MotorController Reversed(boolean value) {
         setValue(isReversed, value);
         return this;
@@ -94,7 +97,7 @@ public class MotorController extends Builder {
     public CANSparkMax buildSparkMax() {
         var motor = CANSparkMax(new CANSparkMax(CanNumber(), Motor().MotorType()));
         motor.setIdleMode(IdleMode());
-        motor.setInverted(Reversed());
+        motor.setInverted(IsReversed());
         if (hasValue(closedLoopRampRate)) {
             motor.setClosedLoopRampRate(ClosedLoopRampRate());
         }
@@ -134,7 +137,7 @@ public class MotorController extends Builder {
         }
         return null;
     }
-    
+
     public Double getVelocityConversionFactor() {
         if (parent != null) {
             if (parent.Value(Builder.BUILD_TYPE) == SwerveModule.NAME) {

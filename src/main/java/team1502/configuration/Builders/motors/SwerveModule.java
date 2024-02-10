@@ -45,7 +45,7 @@ public class SwerveModule extends Builder {
         builder.parent = this;
         return builder;
     }
-    
+
     public MotorController TurningMotor() { return MotorController.WrapPart(this, TurningMotor); }
     public SwerveModule TurningMotor(Manufacturer manufacturer, Function<MotorController, Builder> fn) {
         addPart(MotorController.Define(manufacturer), TurningMotor, fn);
@@ -113,6 +113,7 @@ public class SwerveModule extends Builder {
         return this;
     }
 
+    /** in meters per second */
     public double calculateMaxSpeed() {
         return DrivingMotor().Motor().FreeSpeedRPM() / 60.0
         * DrivingMotor().GearBox().GearRatio()

@@ -39,10 +39,14 @@ public class SwerveDrive extends Builder {
         Value(goStraightGain, gain);
         return this;
     }
-    
+
     /** max speed (m/s) based on reported free-speed */
     public double calculateMaxSpeed() { 
         return SwerveModule.Wrap(getPiece(0)).calculateMaxSpeed();
+    }
+
+    public double calculateMaxRotationSpeed() { 
+        return calculateMaxSpeed() / Chassis().getDriveBaseRadius();
     }
 
     /** offset (m) */
