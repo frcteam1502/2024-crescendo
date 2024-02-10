@@ -75,8 +75,10 @@ public class SwerveModule extends Builder {
     public int CanNumberDrivingMotor() { return DrivingMotor().CanNumber(); }
     public SwerveModule CanNumbers(int absoluteEncoder, int turningMotor, int drivingMotor) {
         Encoder().CanNumber(absoluteEncoder);
-        TurningMotor().CanNumber(turningMotor); TurningMotor().PowerChannel(turningMotor);
+        TurningMotor().CanNumber(turningMotor); TurningMotor().PowerChannel(turningMotor); 
+        TurningMotor().PowerProfile().Label(turningMotor + " " + turningMotor + " " + turningMotor + " ");
         DrivingMotor().CanNumber(drivingMotor); DrivingMotor().PowerChannel(drivingMotor);
+        DrivingMotor().PowerProfile().Label(drivingMotor + " " + drivingMotor + " " + drivingMotor + " ");
 
         // TODO: HACK -- hard-coded PDH
         PowerDistributionModule pdm = PowerDistributionModule.Wrap(getIBuild().getInstalled(PowerDistributionModule.PDH));
