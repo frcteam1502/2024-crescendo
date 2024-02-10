@@ -173,7 +173,7 @@ public class DriveSubsystem extends SubsystemBase {
     setDesiredState(moduleStates);
   }
 
-  public void alignToSpeaker(){
+  /*public void alignToSpeaker(){
     LimelightResults llresults = LimelightHelpers.getLatestResults("");
     int numAprilTags = llresults.targetingResults.targets_Fiducials.length;
     boolean validTarget = llresults.targetingResults.valid;
@@ -204,7 +204,7 @@ public class DriveSubsystem extends SubsystemBase {
       driveRobotRelative(speedCommands);
     }else
 
-  }
+  }*/
 
   public Rotation2d getGyroRotation2d() {
     return new Rotation2d(Units.degreesToRadians(getIMU_Yaw()));
