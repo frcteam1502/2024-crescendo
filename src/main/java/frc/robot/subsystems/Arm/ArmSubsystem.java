@@ -6,6 +6,7 @@ import com.revrobotics.CANSparkBase.IdleMode;
 import com.revrobotics.RelativeEncoder;
 import com.revrobotics.SparkPIDController;
 
+import edu.wpi.first.wpilibj.DutyCycleEncoder;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
@@ -16,12 +17,17 @@ final class Motors{
   public static final CANSparkMax.IdleMode ARM_MOTOR_IDLE_MODE = IdleMode.kBrake;
 }
 
+final class AbsEncoder{
+  public static final int ARM_ABS_ENCODER_CHANNEL = 0;
+  public static final DutyCycleEncoder ARM_ABS_ENCODER = new DutyCycleEncoder(ARM_ABS_ENCODER_CHANNEL);
+}
+
 final class ArmConstants{
   //Rotation bounds
   public static final double MAX_ROTATE = 120;
   public static final double MIN_ROTATE = -7;
 
-  public static final double DEGREES_PER_ROTATION = 360 / 28.5; 
+  public static final double ARM_DEGREES_PER_ENCODER_ROTATION = 360 / 100; 
   public static final double MAX_ROTATE_FEEDFORWARD = .06; //TODO: increase?
   
   public static final double ROTATE_CHANGE = .3; 
@@ -46,33 +52,37 @@ public class ArmSubsystem extends SubsystemBase {
 
   public final RelativeEncoder rotateRelativeEncoder;
 
+  public final DutyCycleEncoder rotateAbsEncoder;
+
   private double goalRotate = 0;
 
   public ArmSubsystem() {
+    //Initialize Motors
     rotate = Motors.ARM_LEAD;
     rotateFollower = Motors.ARM_FOLLOW;
-
     rotateFollower.follow(rotate, true);
-
     rotate.setIdleMode(Motors.ARM_MOTOR_IDLE_MODE);
-
     rotate.setSmartCurrentLimit(40);
     rotateFollower.setSmartCurrentLimit(40);
-
+    
+    //Initialize Relative Encoder
     rotateRelativeEncoder = rotate.getEncoder();
+    rotateRelativeEncoder.setPositionConversionFactor(ArmConstants.ARM_DEGREES_PER_ENCODER_ROTATION);
 
-    rotateRelativeEncoder.setPositionConversionFactor(ArmConstants.DEGREES_PER_ROTATION);
-    rotateRelativeEncoder.setPosition(0);//TODO: Set relative encoder based on REV encoder
-
+    //Initialize Absolute Encoder
+    rotateAbsEncoder = AbsEncoder.ARM_ABS_ENCODER;
+    
+    //Initialize PID controller
     rotatePID = rotate.getPIDController();
-
     rotatePID.setFeedbackDevice(rotateRelativeEncoder);
-
     rotatePID.setP(.7); //TODO: Get PID values
     rotatePID.setI(0);
     rotatePID.setD(.9);
     //rotatePID.setFF(MAX_ROTATE_FEEDFORWARD);
     rotatePID.setOutputRange((-ArmConstants.MAX_ROTATION_SPEED / 4), ArmConstants.MAX_ROTATION_SPEED);
+    
+    //Reset the subsystem
+    reset();
   }
 
    // For Testing
@@ -95,7 +105,18 @@ public class ArmSubsystem extends SubsystemBase {
     if((max != rotatePID.getOutputMax()) || (min != rotatePID.getOutputMin())) { 
       rotatePID.setOutputRange(min, max); 
     }
-    
+
+    SmartDashboard.putNumber("Arm Absolute Encoder Angle", getArmAbsPositionDegrees());
+  }
+
+  private final void reset(){
+    //Set Arm relative Position to absolute position
+    double armAbsPosition = getArmAbsPositionDegrees();
+    rotateRelativeEncoder.setPosition(armAbsPosition);
+  }
+
+  private final double getArmAbsPositionDegrees(){
+    return rotateAbsEncoder.getAbsolutePosition()*360;
   }
 
   public void rotateArm(double Pose) {
@@ -150,6 +171,7 @@ public class ArmSubsystem extends SubsystemBase {
 
   @Override
   public void periodic() {
+    updateDashboard();
     checkMaxAndMin();
     rotatePID.setReference(goalRotate, CANSparkMax.ControlType.kPosition);
   }
