@@ -23,6 +23,7 @@ import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
 
 import team1502.configuration.configurations.RobotConfigurations;
+import team1502.configuration.factory.RobotConfiguration;
 
 /**
  * This class is where the bulk of the robot should be declared. Since Command-based is a
@@ -54,7 +55,7 @@ public class RobotContainer {
     driveSubsystem = new DriveSubsystem(config);
 
     // Configure the trigger bindings
-    configureBindings();
+    configureBindings(config);
 
     Logger.RegisterPdp(new PowerDistribution(1, ModuleType.kRev), config.PDH().ChannelNames());
     Logger.RegisterPneumaticHub(new PneumaticHub(), config.PCM().ChannelNames());
@@ -81,8 +82,8 @@ public class RobotContainer {
    * PS4} controllers or {@link edu.wpi.first.wpilibj2.command.button.CommandJoystick Flight
    * joysticks}.
    */
-  private void configureBindings() {
-    driveSubsystem.setDefaultCommand(new ControllerCommands(driveSubsystem, new MockDetector())); //USES THE LEFT BUMPER TO SLOW DOWN
+  private void configureBindings(RobotConfiguration config) {
+    driveSubsystem.setDefaultCommand(new ControllerCommands(config, driveSubsystem, new MockDetector())); //USES THE LEFT BUMPER TO SLOW DOWN
 
     /* sample code
     // Schedule `ExampleCommand` when `exampleCondition` changes to `true`
