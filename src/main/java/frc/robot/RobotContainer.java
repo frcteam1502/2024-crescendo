@@ -4,8 +4,10 @@
 
 package frc.robot;
 
+import frc.robot.subsystems.Arm.ArmSubsystem;
 import frc.robot.subsystems.PowerManagement.MockDetector;
 import frc.robot.commands.ControllerCommands;
+import frc.robot.commands.ArmCommands;
 import frc.robot.subsystems.SwerveDrive.DriveSubsystem;
 
 import com.pathplanner.lib.auto.AutoBuilder;
@@ -28,6 +30,7 @@ import edu.wpi.first.wpilibj2.command.button.Trigger;
 public class RobotContainer {
   // The robot's subsystems and commands are defined here...
   public final DriveSubsystem driveSubsystem = new DriveSubsystem();
+  public final ArmSubsystem armSubsystem = new ArmSubsystem();
   //private final PdpSubsystem pdpSubsystem = new PdpSubsystem();
   //private final ExampleSubsystem m_exampleSubsystem = new ExampleSubsystem();
 
@@ -70,7 +73,13 @@ public class RobotContainer {
    * joysticks}.
    */
   private void configureBindings() {
+    //Drivetrain
     driveSubsystem.setDefaultCommand(new ControllerCommands(driveSubsystem, new MockDetector())); //USES THE LEFT BUMPER TO SLOW DOWN
+
+    //Arm
+    armSubsystem.setDefaultCommand(new ArmCommands(armSubsystem));
+
+    //ShooterIntake
 
     /* sample code
     // Schedule `ExampleCommand` when `exampleCondition` changes to `true`
