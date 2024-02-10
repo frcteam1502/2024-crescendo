@@ -1,10 +1,13 @@
 package frc.robot.subsystems.SwerveDrive;
 
+
 import java.util.function.BooleanSupplier;
 
 import javax.swing.text.Utilities;
 
 import frc.robot.Logger;
+import frc.robot.LimelightHelpers.LimelightResults;
+import frc.robot.LimelightHelpers;
 
 import com.ctre.phoenix6.hardware.CANcoder;
 import com.ctre.phoenix6.hardware.Pigeon2;
@@ -116,6 +119,7 @@ final class DriveConstants {
       */
 
       public static final double GO_STRAIGHT_GAIN = 0.1;
+      public static final double MIN_ALIGN_SPEED = 0.05;
 }
 
 
@@ -178,10 +182,7 @@ public class DriveSubsystem extends SubsystemBase{
   public final SwerveDrivePoseEstimator odometry;
 
   private Pose2d pose = new Pose2d();
-
-  private final BooleanSupplier isPathFlipped = ()-> false;
   
-
   public DriveSubsystem() {
 
     this.odometry = new SwerveDrivePoseEstimator(kinematics, getGyroRotation2d(), getModulePositions(), pose);
@@ -251,6 +252,17 @@ public class DriveSubsystem extends SubsystemBase{
     SmartDashboard.putNumber("Pose2D X", pose.getX());
     SmartDashboard.putNumber("Pose2D Y", pose.getY());
     SmartDashboard.putNumber("Pose2D Rotation", pose.getRotation().getDegrees());
+
+    //Limelight Info
+    LimelightResults llresults = LimelightHelpers.getLatestResults("");
+    int numAprilTags = llresults.targetingResults.targets_Fiducials.length;
+
+    SmartDashboard.putNumber("Number of AprilTags",numAprilTags);
+    SmartDashboard.putNumber("Tag ID", LimelightHelpers.getFiducialID(""));
+    SmartDashboard.putNumber("Limelight TX", LimelightHelpers.getTX(""));
+    SmartDashboard.putNumber("Limelight TY", LimelightHelpers.getTY(""));
+    SmartDashboard.putNumber("Limelight TA", LimelightHelpers.getTA(""));
+
   }
   
   @Override
@@ -389,6 +401,39 @@ public class DriveSubsystem extends SubsystemBase{
     setDesiredState(moduleStates);
   }
 
+  public void alignToSpeaker(){
+    LimelightResults llresults = LimelightHelpers.getLatestResults("");
+    int numAprilTags = llresults.targetingResults.targets_Fiducials.length;
+    boolean validTarget = llresults.targetingResults.valid;
+
+    double tx = 0;
+    boolean targetFound = false;
+    ChassisSpeeds speedCommands = new ChassisSpeeds(0,0,0);
+
+    //Determine if any AprilTags are present
+    if(validTarget){
+      //Parse through the JSON fiducials and see if speaker tags are present
+      for(int i=0;i<numAprilTags;i++){
+        int tagID = (int)llresults.targetingResults.targets_Fiducials[i].fiducialID;
+        
+        if((tagID == 7)||(tagID == 4)){
+          //Center Tag
+          tx = llresults.targetingResults.targets_Fiducials[i].tx;
+          targetFound = true;
+        }else{
+          targetFound = false;
+        }
+      }
+
+      double turnCommand = (tx - getIMU_Yaw())*DriveConstants.GO_STRAIGHT_GAIN;
+
+      ChassisSpeeds speedCommands = new ChassisSpeeds(0,0,turnCommand);
+
+      driveRobotRelative(speedCommands);
+    }else
+
+  }
+
   public Rotation2d getGyroRotation2d() {
     return new Rotation2d(Units.degreesToRadians(getIMU_Yaw()));
   }
@@ -396,22 +441,6 @@ public class DriveSubsystem extends SubsystemBase{
   public Pose2d getPose2d() {
     return odometry.getEstimatedPosition();
   }
-
-  /*public double getVelocity() {
-    return Math.sqrt(
-      Math.pow(ChassisSpeeds.fromFieldRelativeSpeeds(forwardCommand, strafeCommand, turnCommand, getGyroRotation2d()).vxMetersPerSecond, 2) + 
-      Math.pow(ChassisSpeeds.fromFieldRelativeSpeeds(forwardCommand, strafeCommand, turnCommand, getGyroRotation2d()).vyMetersPerSecond, 2)
-    );
-  }*/
-
-  /*public Rotation2d getHeading() {
-    return new Rotation2d(
-      Math.atan2(
-        Math.pow(ChassisSpeeds.fromFieldRelativeSpeeds(forwardCommand, strafeCommand, turnCommand, getGyroRotation2d()).vyMetersPerSecond, 2), 
-        Math.pow(ChassisSpeeds.fromFieldRelativeSpeeds(forwardCommand, strafeCommand, turnCommand, getGyroRotation2d()).vxMetersPerSecond, 2)
-      )
-    );
-  }*/
 
   public void resetGyro() {
     gyro.setYaw(0);
@@ -463,7 +492,7 @@ public class DriveSubsystem extends SubsystemBase{
                 new PIDConstants(5.0, 0, 0), //Translation PID constants
                 new PIDConstants(5.0, 0, 0), //Rotation PID constants
                 DriveConstants.MAX_SPEED_METERS_PER_SECOND, 
-                DriveConstants.WHEEL_BASE_DIAMETER,
+                (DriveConstants.WHEEL_BASE_DIAMETER/2),
                 new ReplanningConfig()), //HolonomicPathFollowerConfig
       () -> {
         // Boolean supplier that controls when the path will be mirrored for the red alliance
