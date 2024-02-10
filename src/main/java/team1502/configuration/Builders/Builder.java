@@ -2,6 +2,7 @@ package team1502.configuration.builders;
 
 import java.util.function.Function;
 
+import edu.wpi.first.math.util.Units;
 import edu.wpi.first.wpilibj.shuffleboard.BuiltInLayouts;
 
 import java.util.List;
@@ -333,6 +334,9 @@ public class Builder {
     }
     public Double getDouble(String valueName) {
         return (Double)getValue(valueName);
+    }
+    public Double getMeters(String valueName) {
+        return Units.inchesToMeters(getDouble(valueName));
     }
 
     public Integer getInt(String valueName) {

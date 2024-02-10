@@ -65,7 +65,6 @@ public final class RobotConfigurations {
             )
             .SwerveModule(sm -> sm
                 .CANCoder(cc -> cc
-                    .Direction(false)
                     .PeakPower(0.060)
                 )
                 .TurningMotor(Manufacturer.REVRobotics, mc -> mc
@@ -77,7 +76,7 @@ public final class RobotConfigurations {
                         .Note("MK4i Standard", "150/7:1")
                     )
                     .PID(3.4, 0.0, 0.0)
-                    .Reversed(true) // all turn motors are reversed
+                    .Reversed() // all turn motors are reversed
                 )
                 .DrivingMotor(Manufacturer.REVRobotics, mc -> mc
                     .Motor("NEO")
@@ -248,6 +247,8 @@ public final class RobotConfigurations {
                     .SwerveDrive().Chassis().getDriveBaseRadius())
             .Eval("SwerveDrive.calculateMaxSpeed", e -> e
                     .SwerveDrive().calculateMaxSpeed())
+            .Eval("SwerveDrive.calculateMaxRotationSpeed", e -> e
+                    .SwerveDrive().calculateMaxRotationSpeed())
             .Eval("SwerveDrive.GoStraightGain", e -> e
                     .SwerveDrive().GoStraightGain())
             .Eval("SwerveModule.calculateMaxSpeed", e -> e
