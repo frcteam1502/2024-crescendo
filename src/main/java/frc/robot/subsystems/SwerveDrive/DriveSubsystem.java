@@ -33,7 +33,6 @@ public class DriveSubsystem extends SubsystemBase {
   private double turnCommand = 0.0;
   private double fieldXCommand = 0;
   private double fieldYCommand = 0;
-  private static final double MIN_ALIGN_SPEED = 0.05;
 
   ChassisSpeeds speedCommands = new ChassisSpeeds(0, 0, 0);
   ChassisSpeeds relativeCommands = new ChassisSpeeds(0,0,0);
@@ -78,14 +77,22 @@ public class DriveSubsystem extends SubsystemBase {
     var currentHeading = gyro.getYaw(); 
     return( currentHeading.getValue() );
   }
+
+  private int numAprilTags;
+  private void updateDashBoard() {
+        //Limelight Info
+    LimelightResults llresults = LimelightHelpers.getLatestResults("");
+    numAprilTags = llresults.targetingResults.targets_Fiducials.length;
+    SmartDashboard.putData(this);
+    swerveModules.send();
+
+  }
   
   @Override
   public void periodic() {
     checkInitialAngle();
     updateOdometry();
-    
-    SmartDashboard.putData(this);
-    swerveModules.send();
+    updateDashBoard();
   }
   
   public void drive(double xSpeed, double ySpeed, double rot, boolean fieldRelative) {
@@ -247,20 +254,16 @@ public class DriveSubsystem extends SubsystemBase {
     addChild("SwerveModules", swerveModules);
 
         //Pose Info
-    SmartDashboard.putString("FMS Alliance", DriverStation.getAlliance().toString());
-    SmartDashboard.putNumber("Pose2D X", pose.getX());
-    SmartDashboard.putNumber("Pose2D Y", pose.getY());
-    SmartDashboard.putNumber("Pose2D Rotation", pose.getRotation().getDegrees());
+    builder.addStringProperty("FMS Alliance", ()->DriverStation.getAlliance().toString(), null);
+    builder.addDoubleProperty("Pose2D X", ()->pose.getX(), null);
+    builder.addDoubleProperty("Pose2D Y", ()->pose.getY(), null);
+    builder.addDoubleProperty("Pose2D Rotation", ()->pose.getRotation().getDegrees(), null);
 
-    //Limelight Info
-    LimelightResults llresults = LimelightHelpers.getLatestResults("");
-    int numAprilTags = llresults.targetingResults.targets_Fiducials.length;
-
-    SmartDashboard.putNumber("Number of AprilTags",numAprilTags);
-    SmartDashboard.putNumber("Tag ID", LimelightHelpers.getFiducialID(""));
-    SmartDashboard.putNumber("Limelight TX", LimelightHelpers.getTX(""));
-    SmartDashboard.putNumber("Limelight TY", LimelightHelpers.getTY(""));
-    SmartDashboard.putNumber("Limelight TA", LimelightHelpers.getTA(""));
+    builder.addIntegerProperty("Number of AprilTags", ()->numAprilTags, null);
+    builder.addDoubleProperty("Tag ID", ()->LimelightHelpers.getFiducialID(""), null);
+    builder.addDoubleProperty("Limelight TX", ()->LimelightHelpers.getTX(""), null);
+    builder.addDoubleProperty("Limelight TY", ()->LimelightHelpers.getTY(""), null);
+    builder.addDoubleProperty("Limelight TA", ()->LimelightHelpers.getTA(""), null);
 
   }
 
