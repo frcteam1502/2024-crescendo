@@ -119,6 +119,7 @@ final class DriveConstants {
       */
 
       public static final double GO_STRAIGHT_GAIN = 0.1;
+      public static final double MIN_ALIGN_SPEED = 0.05;
 }
 
 
@@ -181,10 +182,7 @@ public class DriveSubsystem extends SubsystemBase{
   public final SwerveDrivePoseEstimator odometry;
 
   private Pose2d pose = new Pose2d();
-
-  private final BooleanSupplier isPathFlipped = ()-> false;
   
-
   public DriveSubsystem() {
 
     this.odometry = new SwerveDrivePoseEstimator(kinematics, getGyroRotation2d(), getModulePositions(), pose);
@@ -401,6 +399,39 @@ public class DriveSubsystem extends SubsystemBase{
     double[] angles = {90, 90, 90, 90};
     SwerveModuleState[] moduleStates = makeSwerveModuleState(speeds, angles);
     setDesiredState(moduleStates);
+  }
+
+  public void alignToSpeaker(){
+    LimelightResults llresults = LimelightHelpers.getLatestResults("");
+    int numAprilTags = llresults.targetingResults.targets_Fiducials.length;
+    boolean validTarget = llresults.targetingResults.valid;
+
+    double tx = 0;
+    boolean targetFound = false;
+    ChassisSpeeds speedCommands = new ChassisSpeeds(0,0,0);
+
+    //Determine if any AprilTags are present
+    if(validTarget){
+      //Parse through the JSON fiducials and see if speaker tags are present
+      for(int i=0;i<numAprilTags;i++){
+        int tagID = (int)llresults.targetingResults.targets_Fiducials[i].fiducialID;
+        
+        if((tagID == 7)||(tagID == 4)){
+          //Center Tag
+          tx = llresults.targetingResults.targets_Fiducials[i].tx;
+          targetFound = true;
+        }else{
+          targetFound = false;
+        }
+      }
+
+      double turnCommand = (tx - getIMU_Yaw())*DriveConstants.GO_STRAIGHT_GAIN;
+
+      ChassisSpeeds speedCommands = new ChassisSpeeds(0,0,turnCommand);
+
+      driveRobotRelative(speedCommands);
+    }else
+
   }
 
   public Rotation2d getGyroRotation2d() {
