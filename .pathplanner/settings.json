@@ -3,12 +3,15 @@
   "robotLength": 0.9144,
   "holonomicMode": true,
   "pathFolders": [
-    "MiddleSpotStart",
     "LeftSpotStart",
+    "MiddleSpotStart",
+    "PathsForDefenceBotAlliance",
     "RightSpotStart"
   ],
-  "autoFolders": [],
-  "defaultMaxVel": 3.0,
+  "autoFolders": [
+    "AMP3Note"
+  ],
+  "defaultMaxVel": 4.0,
   "defaultMaxAccel": 3.0,
   "defaultMaxAngVel": 540.0,
   "defaultMaxAngAccel": 720.0,
