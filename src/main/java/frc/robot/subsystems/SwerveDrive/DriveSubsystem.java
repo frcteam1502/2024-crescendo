@@ -2,6 +2,8 @@ package frc.robot.subsystems.SwerveDrive;
 
 import frc.robot.GameState;
 import frc.robot.Logger;
+import frc.robot.LimelightHelpers.LimelightResults;
+import frc.robot.LimelightHelpers;
 
 import com.ctre.phoenix6.hardware.Pigeon2;
 
@@ -209,6 +211,23 @@ public class DriveSubsystem extends SubsystemBase {
     builder.addDoubleProperty("Gyro Yaw", ()->getIMU_Yaw(), null);
 
     addChild("SwerveModules", swerveModules);
+
+        //Pose Info
+    SmartDashboard.putString("FMS Alliance", DriverStation.getAlliance().toString());
+    SmartDashboard.putNumber("Pose2D X", pose.getX());
+    SmartDashboard.putNumber("Pose2D Y", pose.getY());
+    SmartDashboard.putNumber("Pose2D Rotation", pose.getRotation().getDegrees());
+
+    //Limelight Info
+    LimelightResults llresults = LimelightHelpers.getLatestResults("");
+    int numAprilTags = llresults.targetingResults.targets_Fiducials.length;
+
+    SmartDashboard.putNumber("Number of AprilTags",numAprilTags);
+    SmartDashboard.putNumber("Tag ID", LimelightHelpers.getFiducialID(""));
+    SmartDashboard.putNumber("Limelight TX", LimelightHelpers.getTX(""));
+    SmartDashboard.putNumber("Limelight TY", LimelightHelpers.getTY(""));
+    SmartDashboard.putNumber("Limelight TA", LimelightHelpers.getTA(""));
+
   }
 
   private void registerLoggerObjects(RobotConfiguration config){
