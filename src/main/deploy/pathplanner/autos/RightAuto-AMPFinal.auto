@@ -1,6 +1,12 @@
 {
   "version": 1.0,
-  "startingPose": null,
+  "startingPose": {
+    "position": {
+      "x": 0.7401886415755699,
+      "y": 4.286166175756032
+    },
+    "rotation": -60.068488159492205
+  },
   "command": {
     "type": "sequential",
     "data": {
@@ -20,7 +26,13 @@
         {
           "type": "path",
           "data": {
-            "pathName": "RightNoteMiddle-AMP"
+            "pathName": "NoteMiddle-RightScore"
+          }
+        },
+        {
+          "type": "path",
+          "data": {
+            "pathName": "RightScore-AMP"
           }
         }
       ]
