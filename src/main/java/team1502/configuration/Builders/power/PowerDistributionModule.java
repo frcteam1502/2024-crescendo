@@ -1,5 +1,6 @@
 package team1502.configuration.builders.power;
 
+import java.util.List;
 import java.util.function.Function;
 
 import team1502.configuration.CAN.DeviceType;
@@ -34,7 +35,6 @@ public class PowerDistributionModule extends Builder {
     public static final Function<IBuild, PowerDistributionModule> DefinePDH = build->new PowerDistributionModule(build, 24, Manufacturer.REVRobotics);
     public static final Function<IBuild, PowerDistributionModule> DefinePDP = build->new PowerDistributionModule(build, 18, Manufacturer.CTRElectronics);
     public static final Function<IBuild, PowerDistributionModule> DefineMPM = build->new PowerDistributionModule(build, 6);
-    //public static PowerDistributionModule WrapPart(Builder builder) { return WrapPart(builder, NAME); }
     public static PowerDistributionModule Wrap(Builder builder) { return new PowerDistributionModule(builder.getIBuild(), builder.getPart()); }
     public static PowerDistributionModule WrapPart(Builder builder, String partName) { return Wrap(builder.getPart(partName)); }
     
@@ -55,12 +55,12 @@ public class PowerDistributionModule extends Builder {
         }
         return this;
     }
+    private void createChannel(Integer channelNumber) {
+        addPiece(PowerChannel.Define(channelNumber));
+    }
         
     public PowerDistributionModule Ch(Integer channel, Integer fuze) {
         updateChannel(channel, fuze);
-        return this;
-    }
-    public PowerDistributionModule Ch(Integer channel, Integer fuze, String name) {
         return this;
     }
     public PowerDistributionModule Ch(Integer channel, Integer fuze, Builder part) {
@@ -68,47 +68,31 @@ public class PowerDistributionModule extends Builder {
         return this;
     }
     public PowerDistributionModule Ch(Integer channel) { // empty
+        // assume already created when initialized
         return this;
     }
-    public PowerDistributionModule Module(String module, String ... sub) {
-        return this;
-    }
-    public PowerDistributionModule Module(String module, Function<PowerDistributionModule,PowerDistributionModule> fn) {
-        return this;
-    }
-    /*
-     * The REV PDH has one channel (23) that can be switched on or off to control custom circuits.
-        examplePD.setSwitchableChannel(true);
-        examplePD.setSwitchableChannel(false);
-     */
 
-    public void tryAddPart(Builder part) {
-        if (part.hasPowerProfile()) {
-            updateChannel(part);
-        }
+    public List<PowerChannel> getChannels() {
+        return getPieces().stream().map(ch->PowerChannel.Wrap(ch)).toList();
     }
 
-    private void createChannel(Integer channelNumber) {
-        InstallPiece(Builder.Define, "Ch " + (channelNumber < 10 ? " " : "") + channelNumber.toString(), c->c
-            .Value("Channel", channelNumber));        
+    public PowerChannel getChannel(int channelNumber) {
+        return  PowerChannel.Wrap(getPiece(channelNumber));
     }
-
     private void updateChannel(Integer channelNumber, Integer fuze, Builder part) {
-        updateChannel(channelNumber, fuze);
-        updateChannel(channelNumber, part);
+        if (channelNumber >= 0) {
+            getChannel(channelNumber).Part(part).Fuze(fuze);
+        }
     }
 
     private void updateChannel(Integer channelNumber, Integer fuze) {
         if (channelNumber >= 0) {
-            Builder ch = getPiece(channelNumber);
-            ch.Value("fuze", fuze);            
+            getChannel(channelNumber).Fuze(fuze);            
         }
     }
     public void updateChannel(Integer channelNumber, Builder part) {
         if (channelNumber >= 0) {
-            Builder ch = getPiece(channelNumber);
-            ch.Value("part", part);
-            ch.Value(Part.BUILD_NAME, part.ShortName());
+            getChannel(channelNumber).Part(part);
         }
     }
     public void updateChannel(Builder part) {
@@ -120,3 +104,25 @@ public class PowerDistributionModule extends Builder {
         return getPieces().stream().map(ch->ch.Name()).toArray(String[]::new);
     }
 }
+
+    /*
+    public PowerDistributionModule Ch(Integer channel, Integer fuze, String name) {
+        return this;
+    }
+    public PowerDistributionModule Module(String module, String ... sub) {
+        return this;
+    }
+    public PowerDistributionModule Module(String module, Function<PowerDistributionModule,PowerDistributionModule> fn) {
+        return this;
+    }
+     * The REV PDH has one channel (23) that can be switched on or off to control custom circuits.
+        examplePD.setSwitchableChannel(true);
+        examplePD.setSwitchableChannel(false);
+
+    public void tryAddPart(Builder part) {
+        if (part.hasPowerProfile()) {
+            updateChannel(part);
+        }
+    }
+     */
+        
