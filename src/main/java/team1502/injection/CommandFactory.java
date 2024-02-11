@@ -7,9 +7,10 @@ public class CommandFactory extends RobotPart {
         return Command.class.isAssignableFrom(candidate);
     }
 
-    public CommandFactory(Class<Command> subsystemClass) {
-        super(subsystemClass);
-        //TODO Auto-generated constructor stub
+    public Command getCommand() {return (Command)part;}
+
+    public CommandFactory(Class<Command> commandClass) {
+        super(commandClass);
     }
     
 }
