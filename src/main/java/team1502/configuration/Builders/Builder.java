@@ -153,6 +153,7 @@ public class Builder {
         _part.addPiece(part);
     }
 
+    public Builder Part(String valueName) { return getPart(valueName);  }
     public Builder getPart(String valueName) { return wrap((Part)getValue(valueName));  }
     public Part getPart() { return _part;  }
     public void setPart(Part part) {
@@ -274,6 +275,8 @@ public class Builder {
     public Builder PDH(int channel, String wireLabel) { return PDM(PowerDistributionModule.PDH, channel, wireLabel); }
     public Builder MPM(int channel, String wireLabel) { return PDM(PowerDistributionModule.MPM, channel, wireLabel); }
     public Builder MPM(int channel) { return PDM(PowerDistributionModule.MPM, channel); }
+    public Builder PDH(int channel) { return PDM(PowerDistributionModule.PDH, channel); }
+    public Builder MPM(String mpm, int channel) { return PDM(mpm, channel); }
     
     /**
      * Any of the Power Dstribution Modules

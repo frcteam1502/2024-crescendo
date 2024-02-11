@@ -11,6 +11,7 @@ public final class RobotConfigurations {
     public static RobotConfiguration getConfiguration(String radio) {
         switch(radio) {
             case "1502": return RobotConfiguration.Create("robot_2024_1502", r->createRobot2024(r));
+            case "1502_practice": return RobotConfiguration.Create("robot_2024_1502_practice", r->practiceRobot2024(r));
             default: return RobotConfiguration.Create("robot_2024_1502", r->createRobot2024(r));
         }
     }
@@ -18,6 +19,12 @@ public final class RobotConfigurations {
     private static RobotConfiguration createRobot2024(RobotConfiguration configuration) {
         buildCompetitionBot(standardSwerveChassis(configuration));
         pdpAssignments(configuration);
+        addEvalHelpers(configuration);
+        return configuration;
+    }
+    private static RobotConfiguration practiceRobot2024(RobotConfiguration configuration) {
+        buildPracticeBot(standardSwerveChassis(configuration));
+        pdpPracticeAssignments(configuration);
         addEvalHelpers(configuration);
         return configuration;
     }
@@ -120,18 +127,9 @@ public final class RobotConfigurations {
             )
 
             .EthernetSwitch(eth->eth  // also provides POE
-                .PDH(18, "??")
                 .Part("POE", p->p
                     .Note("Description", "Power-Over-Ethernet")
-                    .Note("Device", "OONO CZH-LABS.com")
-                    .PDH(17, "??"))
-            )
-
-            .Compressor(p->p)
-            .PCM(ph -> ph
-                .Powers(hw.Compressor())
-                //.Solenoid(15, 0, "SOL")
-                .CanNumber(1)
+                    .Note("Device", "OONO CZH-LABS.com"))
             )
 
 
@@ -147,9 +145,111 @@ public final class RobotConfigurations {
          */
         );
     }
+    
     private static RobotConfiguration buildCompetitionBot(RobotConfiguration parts) {
-        parts.PowerDistributionModule(pdh -> pdh);
+        buildStandardElectronics(parts);
+
+        parts.PowerDistributionModule(pdh -> pdh
+            .Ch(20, parts.RoboRIO())
+            .Ch(21, parts.RadioPowerModule())
+        );
         parts.Build(hw->hw
+            .MiniPowerModule("MPM1", mpm->mpm
+                .Ch(0, 10)
+                .Ch(1, 10)
+                .Ch(2, 10, parts.EthernetSwitch().Part("POE"))
+                .Ch(3, 10, parts.EthernetSwitch()) // CONFIRM
+                .Ch(4, 10)
+                .Ch(5, 10)
+                .PDH(14, "MPM1")
+            )
+            .MiniPowerModule("MPM2", mpm->mpm
+                .Ch(0, 10)
+                .Ch(1, 10)
+                .Ch(2, 10)
+                .Ch(3, 10)
+                .Ch(4, 10)
+                .Ch(5, 10)
+                .PDH(19, "MPM2")
+            )
+
+            .Compressor(p->p)
+            .PCM(ph -> ph
+                .DoubleSolenoid(15, 0, "SOL")
+                .PowerChannel(7)
+                .Powers(hw.Compressor())
+                .CanNumber(1)
+            )
+        );
+
+        // Top-Level Parts
+        parts.Build(arm -> arm
+            .MotorController("ARM1", c->c
+                .Motor("NEO 550", m->m)
+                .PDH(1)
+                .CanNumber(1)
+            )
+            .MotorController("ARM2", c->c
+                .Motor("NEO 550", m->m)
+                .PDH(6)
+                .CanNumber(6)
+            )
+        );
+
+        return parts.Build(swerve -> swerve
+            .Note("Intake is the FRONT for this configuration as all the motors drive that direction unless reversed")
+            .Pigeon2(g->g
+                .CanNumber(14)
+                .MPM("MPM1", 0))
+            .SwerveDrive(sd -> sd
+                .SwerveModule("#1", sm -> sm // just leaving these as numbers, since "Front" is arbitrary and undetermined at the moment
+                    .Wrap(sw->sw.FriendlyName("Front Left").Abbreviation("FL"))
+                    .CanNumber(16) // 16 16 17 -- also PDP channel
+                    .Encoder(e -> e
+                        .MagneticOffset(151.96)
+                        .Abbreviation(sm.Abbreviation()+"E")
+                        .MPM("MPM2", 0))
+                )
+                .SwerveModule("#2", sm -> sm
+                    .Wrap(sw->sw.FriendlyName("Front Right").Abbreviation("FR"))
+                    .CanNumber(10) // 10 10 11
+                    .Encoder(e -> e
+                        .MagneticOffset(121.81)
+                        .Abbreviation(sm.Abbreviation()+"E")
+                        .MPM("MPM1", 1))
+                )
+                .SwerveModule("#3", sm -> sm
+                    .Wrap(sw->sw.FriendlyName("Back Left").Abbreviation("BL"))
+                    .CanNumber(4) // 4 4 5
+                    .Encoder(e -> e
+                        .MagneticOffset(4.83)
+                        .Abbreviation(sm.Abbreviation()+"E")
+                        .MPM("MPM2", 1))
+                )
+                .SwerveModule("#4", sm -> sm
+                    .Wrap(sw->sw.FriendlyName("Back Right").Abbreviation("BR"))
+                    .CanNumber(8) // 8 8 9
+                    .Encoder(e -> e
+                        .MagneticOffset(127.26)
+                        .Abbreviation(sm.Abbreviation()+"E")
+                        .MPM("MPM1", 5))
+                )
+                // miscellaneous
+                .GoStraightGain(0.1)
+            )
+        );
+    }
+                
+     private static RobotConfiguration buildPracticeBot(RobotConfiguration parts) {
+        parts.PowerDistributionModule(pdh -> pdh
+            .Ch(17, parts.EthernetSwitch().Part("POE"))
+            .Ch(18, parts.EthernetSwitch())
+        );
+        
+        parts.Build(hw->hw
+            .PCM(pcm->pcm.PowerChannel(21))
+            .RadioPowerModule(rpm->rpm.PowerChannel(22))
+            .Pigeon2(gyro->gyro.PowerChannel(23))
             .DC(dc -> dc // 60W PIs + camera
             /*                  .Pi("PhotonVisionone", "10.15.02.11")
                                 .Pi("PhotonVisiontwo", "10.15.02.12")
@@ -212,8 +312,32 @@ public final class RobotConfigurations {
         );
     }
                 
-   
+  
     private static RobotConfiguration pdpAssignments(RobotConfiguration robot) {      
+        return robot.PowerDistributionModule(pdh -> pdh
+        // LEFT SIDE                                RIGHT SIDE
+        //======================================    ======================================
+        //  CH  FUZE  EQUIPMENT                         CH FUZE EQUIPMENT
+        //======================================    ======================================
+        .Ch(10, 40)                                 .Ch(9, 40)
+        .Ch(11, 40)                                 .Ch(8, 40)
+        .Ch(12)                                     .Ch(7, 10)
+        .Ch(13)                                     .Ch(6, 40)
+        .Ch(14, 20)                                 .Ch(5, 40)
+        .Ch(15, 40)                                 .Ch(4, 40)
+        .Ch(16, 40)                                 .Ch(3)
+        .Ch(17, 40)                                 .Ch(2)
+        .Ch(18)                                     .Ch(1, 40)
+        .Ch(19, 20)                                 .Ch(0)
+
+        .Ch(20, 10)
+        .Ch(21, 10)
+        .Ch(22, 10)
+        .Ch(23, 10) // switchable
+        );
+    }
+
+    private static RobotConfiguration pdpPracticeAssignments(RobotConfiguration robot) {      
         return robot.PowerDistributionModule(pdh -> pdh
         // LEFT SIDE                                RIGHT SIDE
         //======================================    ======================================
@@ -231,9 +355,9 @@ public final class RobotConfigurations {
         .Ch(19)                                     .Ch(0, 30)
 
         .Ch(20, 10,   robot.RoboRIO())
-        .Ch(21, 10,   robot.PCM())
-        .Ch(22, 10,   robot.RadioPowerModule())
-        .Ch(23, 10,   robot.Pigeon2()) // switchable
+        .Ch(21, 10)
+        .Ch(22, 10)
+        .Ch(23, 10) // switchable
         );
     }
 

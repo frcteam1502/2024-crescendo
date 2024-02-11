@@ -90,6 +90,10 @@ public class PowerDistributionModule extends Builder {
             getChannel(channelNumber).Fuze(fuze);            
         }
     }
+    public PowerDistributionModule Ch(Integer channelNumber, Builder part) {
+        updateChannel(channelNumber, part);
+        return this;
+    }
     public void updateChannel(Integer channelNumber, Builder part) {
         if (channelNumber >= 0) {
             getChannel(channelNumber).Part(part);
