@@ -137,6 +137,9 @@ public class Builder {
     public <T extends Builder> Builder addPiece(Function<IBuild, T> define, String newName, String partName, Function<T, Builder> fn) {
         return addPiece(newName, getIBuild().getTemplate(partName, define, fn));
     }
+    protected <T extends Builder> Builder addPiece(Function<IBuild, T> define) {
+        return addPiece(define.apply(getIBuild()));
+    }
     public Builder addPiece(String newName, PartBuilder<?> partBuilder) {
         var builder = partBuilder.creatBuilder(getIBuild());
         builder.Name(newName);
@@ -150,6 +153,7 @@ public class Builder {
         _part.addPiece(part);
     }
 
+    public Builder Part(String valueName) { return getPart(valueName);  }
     public Builder getPart(String valueName) { return wrap((Part)getValue(valueName));  }
     public Part getPart() { return _part;  }
     public void setPart(Part part) {
@@ -235,7 +239,7 @@ public class Builder {
     
     // == POWER ========
 
-    private PowerProfile PowerProfile() { return PowerProfile.WrapPart(this); }
+    public PowerProfile PowerProfile() { return PowerProfile.WrapPart(this); }
     protected PowerProfile ensurePowerProfile() {
         ensurePart(PowerProfile.powerProfile);
         return PowerProfile.WrapPart(this);
@@ -271,6 +275,8 @@ public class Builder {
     public Builder PDH(int channel, String wireLabel) { return PDM(PowerDistributionModule.PDH, channel, wireLabel); }
     public Builder MPM(int channel, String wireLabel) { return PDM(PowerDistributionModule.MPM, channel, wireLabel); }
     public Builder MPM(int channel) { return PDM(PowerDistributionModule.MPM, channel); }
+    public Builder PDH(int channel) { return PDM(PowerDistributionModule.PDH, channel); }
+    public Builder MPM(String mpm, int channel) { return PDM(mpm, channel); }
     
     /**
      * Any of the Power Dstribution Modules
@@ -307,6 +313,7 @@ public class Builder {
         }
         return shortName;
     }
+
     public String getString(String valueName, String defaultValue) {
         return (String)getValue(valueName, defaultValue);
     }
@@ -335,9 +342,6 @@ public class Builder {
     public Double getDouble(String valueName) {
         return (Double)getValue(valueName);
     }
-    public Double getMeters(String valueName) {
-        return Units.inchesToMeters(getDouble(valueName));
-    }
 
     public Integer getInt(String valueName) {
         return (Integer)getValue(valueName);
@@ -347,5 +351,7 @@ public class Builder {
         return ((Integer)getValue(valueName)).doubleValue();
     }
     
-    
+    public Double getMeters(String valueName) {
+        return Units.inchesToMeters(getDouble(valueName));
+    }
 }

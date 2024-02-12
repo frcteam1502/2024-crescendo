@@ -45,6 +45,7 @@ public class SwerveDrive extends Builder {
         return SwerveModule.Wrap(getPiece(0)).calculateMaxSpeed();
     }
 
+    /** max rotation speed (rad/s) based on reported free-speed */
     public double calculateMaxRotationSpeed() { 
         return calculateMaxSpeed() / Chassis().getDriveBaseRadius();
     }
