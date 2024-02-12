@@ -41,7 +41,7 @@ public class RobotFactory {
     private List<CommandFactory> commandFactories;
 
     private void start(RobotConfiguration config) {
-        gather();
+        gatherSubsystems();
         build(config);    
     }
 
@@ -58,6 +58,10 @@ public class RobotFactory {
             addPart(subsystemFactory);
         }
     }
+
+    // It should be noted that "commands" aren't necessarily created at the beginning
+    // e.g., a drive controller would be the default controller for the drive subsystem
+    // but there could be other "task" based commands, triggered by some event
     public void gatherCommands() {
         commandFactories = getCommandFactories();
         for (CommandFactory commandFactory : commandFactories) {
@@ -83,14 +87,15 @@ public class RobotFactory {
     private RobotPart getPart(Class<?> partClass) {
         return partMap.get(partClass.getSimpleName());
     }
-
+    int systemSize;
     private void build(RobotConfiguration config) {
+        systemSize = parts.size(); // just iterate over the subsytems
         addPart(new RobotPart(config));
         buildParts();
     }
     private void buildParts() {
-        int systems = parts.size(); // just iterate over the commands and subytems
-        for (int i = 0; i < systems; i++) {
+        gatherCommands();;
+        for (int i = 0; i < systemSize; i++) {
             var part = parts.get(i);
             buildPart(part);
         }
