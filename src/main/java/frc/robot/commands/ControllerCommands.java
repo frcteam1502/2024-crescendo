@@ -3,6 +3,7 @@ package frc.robot.commands;
 import frc.robot.Driver;
 import frc.robot.subsystems.PowerManagement.AdaptiveSpeedController;
 import frc.robot.subsystems.PowerManagement.IBrownOutDetector;
+import frc.robot.subsystems.PowerManagement.MockDetector;
 import frc.robot.subsystems.SwerveDrive.DriveSubsystem;
 
 import edu.wpi.first.wpilibj2.command.Command;
@@ -28,7 +29,7 @@ public class ControllerCommands extends Command {
 
   private SlewRateLimiter turnLimiter = new SlewRateLimiter(5);
   
-  public ControllerCommands(RobotConfiguration config, DriveSubsystem drive, IBrownOutDetector brownOutDetector) {
+  public ControllerCommands(RobotConfiguration config, DriveSubsystem drive, MockDetector brownOutDetector) {
     this.drive = drive;
     this.maxSpeed = config.SwerveDrive().calculateMaxSpeed();
     this.maxRotationSpeed = config.SwerveDrive().calculateMaxRotationSpeed();

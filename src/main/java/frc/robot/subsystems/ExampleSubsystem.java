@@ -5,8 +5,11 @@
 package frc.robot.subsystems;
 
 import edu.wpi.first.wpilibj2.command.Command;
+import edu.wpi.first.wpilibj2.command.Subsystem;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
+import team1502.configuration.annotations.SubsystemInfo;
 
+@SubsystemInfo(disabled = true)
 public class ExampleSubsystem extends SubsystemBase {
   /** Creates a new ExampleSubsystem. */
   public ExampleSubsystem() {}

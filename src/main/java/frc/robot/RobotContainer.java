@@ -24,6 +24,7 @@ import edu.wpi.first.wpilibj2.command.button.Trigger;
 
 import team1502.configuration.configurations.RobotConfigurations;
 import team1502.configuration.factory.RobotConfiguration;
+import team1502.injection.RobotFactory;
 
 /**
  * This class is where the bulk of the robot should be declared. Since Command-based is a
@@ -34,27 +35,13 @@ import team1502.configuration.factory.RobotConfiguration;
 public class RobotContainer {
   private final Logger logger = new Logger();
 
-  // The robot's subsystems and commands are defined here...
-  public final DriveSubsystem driveSubsystem;
-  //private final PdpSubsystem pdpSubsystem = new PdpSubsystem();
-  //private final ExampleSubsystem m_exampleSubsystem = new ExampleSubsystem();
-
   private final SendableChooser<Command> autoChooser; 
-
-  /* sample
-
-  // Replace with CommandPS4Controller or CommandJoystick if needed
-  private final CommandXboxController m_driverController =
-      new CommandXboxController(OperatorConstants.kDriverControllerPort);
-  */
-
   
   /** The container for the robot. Contains subsystems, OI devices, and commands. */
   public RobotContainer(String radio) {
     var config = RobotConfigurations.getConfiguration(radio);
-    driveSubsystem = new DriveSubsystem(config);
+    RobotFactory.Create(config);
 
-    // Configure the trigger bindings
     configureBindings(config);
 
     Logger.RegisterPdp(new PowerDistribution(1, ModuleType.kRev), config.PDH().ChannelNames());
@@ -62,8 +49,8 @@ public class RobotContainer {
     logger.start();
 
     //Register named commands. Must register all commands we want Pathplanner to execute.
-    NamedCommands.registerCommand("Dummy Command 1", new InstantCommand(driveSubsystem::dummyAction1));
-    NamedCommands.registerCommand("Dummy Command 2", new InstantCommand(driveSubsystem::dummyAction2));
+    // NamedCommands.registerCommand("Dummy Command 1", new InstantCommand(driveSubsystem::dummyAction1));
+    // NamedCommands.registerCommand("Dummy Command 2", new InstantCommand(driveSubsystem::dummyAction2));
 
     //Build an Autochooser from SmartDashboard selection.  Default will be Commands.none()
 
@@ -85,7 +72,7 @@ public class RobotContainer {
    * joysticks}.
    */
   private void configureBindings(RobotConfiguration config) {
-    driveSubsystem.setDefaultCommand(new ControllerCommands(config, driveSubsystem, new MockDetector())); //USES THE LEFT BUMPER TO SLOW DOWN
+    //driveSubsystem.setDefaultCommand(new ControllerCommands(config, driveSubsystem, new MockDetector())); //USES THE LEFT BUMPER TO SLOW DOWN
 
     /* sample code
     // Schedule `ExampleCommand` when `exampleCondition` changes to `true`

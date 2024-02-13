@@ -3,6 +3,7 @@ package frc.robot.subsystems.SwerveDrive;
 import frc.robot.GameState;
 import frc.robot.Logger;
 import frc.robot.LimelightHelpers.LimelightResults;
+import frc.robot.commands.ControllerCommands;
 import frc.robot.LimelightHelpers;
 
 import com.ctre.phoenix6.hardware.Pigeon2;
@@ -20,14 +21,18 @@ import edu.wpi.first.math.kinematics.SwerveDriveKinematics;
 import edu.wpi.first.math.kinematics.SwerveModulePosition;
 import edu.wpi.first.math.kinematics.SwerveModuleState;
 import edu.wpi.first.math.util.Units;
+import edu.wpi.first.util.sendable.Sendable;
 import edu.wpi.first.util.sendable.SendableBuilder;
+import edu.wpi.first.util.sendable.SendableRegistry;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
-import edu.wpi.first.wpilibj2.command.SubsystemBase;
-
+import edu.wpi.first.wpilibj2.command.Subsystem;
+import edu.wpi.first.wpilibj2.command.button.CommandStadiaController;
+import team1502.configuration.annotations.*;
 import team1502.configuration.factory.RobotConfiguration;
 
-public class DriveSubsystem extends SubsystemBase {
+@DefaultCommand(command = ControllerCommands.class)
+public class DriveSubsystem implements Subsystem, Sendable {
   private boolean isTurning = false;
   private double targetAngle = 0.0;
   private double turnCommand = 0.0;
@@ -233,7 +238,8 @@ public class DriveSubsystem extends SubsystemBase {
 
   @Override
   public void initSendable(SendableBuilder builder) {
-    super.initSendable(builder);
+    //super.initSendable(builder);
+    builder.setSmartDashboardType("Subsystem");
 
     //Field Oriented inputs
     builder.addDoubleProperty("Field Oriented X Command (Forward)", ()->fieldXCommand, null);
@@ -251,7 +257,8 @@ public class DriveSubsystem extends SubsystemBase {
 
     builder.addDoubleProperty("Gyro Yaw", ()->getIMU_Yaw(), null);
 
-    addChild("SwerveModules", swerveModules);
+    //addChild("SwerveModules", swerveModules);
+    SendableRegistry.addLW(swerveModules, SendableRegistry.getSubsystem(this), "SwerveModule");
 
         //Pose Info
     builder.addStringProperty("FMS Alliance", ()->DriverStation.getAlliance().toString(), null);
