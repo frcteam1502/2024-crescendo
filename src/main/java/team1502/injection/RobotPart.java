@@ -4,11 +4,13 @@ import java.lang.reflect.Constructor;
 import java.lang.reflect.InvocationTargetException;
 
 import edu.wpi.first.util.sendable.Sendable;
-import team1502.configuration.annotations.SubsystemInfo;
+import edu.wpi.first.wpilibj2.command.Command;
+import team1502.configuration.annotations.*;
 import team1502.configuration.factory.RobotConfiguration;
 
 public class RobotPart {
     public static Class<SubsystemInfo> subsystemAnnotation = SubsystemInfo.class;
+    public static Class<DefaultCommand> defaultCommandAnnotation = DefaultCommand.class;
 
     public static boolean isSendable(Class<?> candidate) {
         return Sendable.class.isAssignableFrom(candidate);
@@ -37,7 +39,8 @@ public class RobotPart {
     }
 
     private final Class<?> partClass;
-    private final SubsystemInfo annotation;
+    private final SubsystemInfo subsystemInfo;
+    private final DefaultCommand defaultCommand;
     private boolean disabled;
     protected Object part;
 
@@ -50,8 +53,9 @@ public class RobotPart {
         this.partClass = partClass;
         simpleName = partClass.getSimpleName();
         name = partClass.getName(); // simpleName.substring(simpleName.lastIndexOf('.') + 1);     
-        annotation = partClass.getDeclaredAnnotation(subsystemAnnotation);
-        disabled = annotation == null ? false : annotation.disabled();
+        subsystemInfo = partClass.getDeclaredAnnotation(subsystemAnnotation);
+        defaultCommand = partClass.getDeclaredAnnotation(defaultCommandAnnotation);
+        disabled = subsystemInfo == null ? false : subsystemInfo.disabled();
         ctor = getConstructor(partClass);
         dependencies = ctor.getParameterTypes();
     }
@@ -61,22 +65,26 @@ public class RobotPart {
         partClass = part.getClass();
         simpleName = partClass.getSimpleName();
         name = partClass.getName(); // simpleName.substring(simpleName.lastIndexOf('.') + 1);     
-        annotation = partClass.getDeclaredAnnotation(subsystemAnnotation);
-        disabled = annotation == null ? false : annotation.disabled();
+        subsystemInfo = partClass.getDeclaredAnnotation(subsystemAnnotation);
+        defaultCommand = partClass.getDeclaredAnnotation(defaultCommandAnnotation);
+        disabled = subsystemInfo == null ? false : subsystemInfo.disabled();
     }
 
     public String getName() {return name; };
+    
     public boolean isEnabled() { return !disabled; }
     public boolean isDisabled() { return disabled; }
     public void Disable() { disabled = true; }
+
     public boolean isSendable() { return isSendable(partClass); }
     public Sendable Sendable() { return (Sendable)part; }
 
     public boolean isBuilt() { return part != null; }
     protected void setPart(Object part) { this.part = part; }
     public Object getPart() { return part; }
-
-    public  Class<?>[] getDependencies() { return dependencies; }
+    public boolean hasDefaultCommand() { return defaultCommand != null; }
+    public Class<? extends Command> getDefaultCommand() { return defaultCommand.command(); }
+    public Class<?>[] getDependencies() { return dependencies; }
     
     public Object Build(Object... args) { // throws InstantiationException, IllegalAccessException, IllegalArgumentException, InvocationTargetException {
         try {
@@ -92,4 +100,7 @@ public class RobotPart {
     }
 
     protected void onBuilt() { }
+
+    protected void afterBuilt() {
+    }
 }
