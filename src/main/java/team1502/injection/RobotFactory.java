@@ -85,7 +85,7 @@ public class RobotFactory {
     }
 
     private RobotPart getPart(Class<?> partClass) {
-        return partMap.get(partClass.getSimpleName());
+        return partMap.get(partClass.getName());
     }
     
     int systemSize;
