@@ -4,10 +4,6 @@
 
 package frc.robot;
 
-import frc.robot.subsystems.PowerManagement.MockDetector;
-import frc.robot.commands.ControllerCommands;
-import frc.robot.subsystems.SwerveDrive.DriveSubsystem;
-
 import edu.wpi.first.wpilibj.PneumaticHub;
 import edu.wpi.first.wpilibj.PowerDistribution;
 import edu.wpi.first.wpilibj.PowerDistribution.ModuleType;
@@ -18,9 +14,6 @@ import com.pathplanner.lib.commands.PathPlannerAuto;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
-import edu.wpi.first.wpilibj2.command.InstantCommand;
-import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
-import edu.wpi.first.wpilibj2.command.button.Trigger;
 
 import team1502.configuration.configurations.RobotConfigurations;
 import team1502.configuration.factory.RobotConfiguration;
@@ -48,7 +41,7 @@ public class RobotContainer {
     Logger.RegisterPneumaticHub(new PneumaticHub(), config.PCM().ChannelNames());
     logger.start();
 
-    //Register named commands. Must register all commands we want Pathplanner to execute.
+    //TODO: Register named commands. Must register all commands we want Pathplanner to execute.
     // NamedCommands.registerCommand("Dummy Command 1", new InstantCommand(driveSubsystem::dummyAction1));
     // NamedCommands.registerCommand("Dummy Command 2", new InstantCommand(driveSubsystem::dummyAction2));
 
@@ -62,27 +55,7 @@ public class RobotContainer {
     SmartDashboard.putData("Auto Chooser", autoChooser);
   }
 
-  /**
-   * Use this method to define your trigger->command mappings. Triggers can be created via the
-   * {@link Trigger#Trigger(java.util.function.BooleanSupplier)} constructor with an arbitrary
-   * predicate, or via the named factories in {@link
-   * edu.wpi.first.wpilibj2.command.button.CommandGenericHID}'s subclasses for {@link
-   * CommandXboxController Xbox}/{@link edu.wpi.first.wpilibj2.command.button.CommandPS4Controller
-   * PS4} controllers or {@link edu.wpi.first.wpilibj2.command.button.CommandJoystick Flight
-   * joysticks}.
-   */
   private void configureBindings(RobotConfiguration config) {
-    //driveSubsystem.setDefaultCommand(new ControllerCommands(config, driveSubsystem, new MockDetector())); //USES THE LEFT BUMPER TO SLOW DOWN
-
-    /* sample code
-    // Schedule `ExampleCommand` when `exampleCondition` changes to `true`
-    new Trigger(m_exampleSubsystem::exampleCondition)
-        .onTrue(new ExampleCommand(m_exampleSubsystem));
-
-    // Schedule `exampleMethodCommand` when the Xbox controller's B button is pressed,
-    // cancelling on release.
-    m_driverController.b().whileTrue(m_exampleSubsystem.exampleMethodCommand());
-    */
   }
 
   /**
