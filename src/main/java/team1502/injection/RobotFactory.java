@@ -91,6 +91,12 @@ public class RobotFactory {
     private RobotPart getPart(Class<?> partClass) {
         return partMap.get(partClass.getName());
     }
+
+    @SuppressWarnings("unchecked")
+    public <T> T getInstance(Class<T> partClass) {
+        var part = getPart(partClass);
+        return part == null ? null : (T)part.getPart();
+    }
     
     int systemSize;
     private void build() {
