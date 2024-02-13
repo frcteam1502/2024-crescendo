@@ -243,6 +243,8 @@ public final class RobotConfigurations {
      private static RobotConfiguration buildPracticeBot(RobotConfiguration parts) {
         parts.DisableSubsystem("frc.robot.subsystems.Arm.ArmSubsystem");
 
+        buildStandardElectronics(parts);
+
         parts.PowerDistributionModule(pdh -> pdh
             .Ch(17, parts.EthernetSwitch().Part("POE"))
             .Ch(18, parts.EthernetSwitch())
@@ -270,7 +272,6 @@ public final class RobotConfigurations {
             )
         );
 
-        buildStandardElectronics(parts);
         // Top-Level Parts
         return parts.Build(hw -> hw
             .Note("Intake is the FRONT for this configuration as all the motors drive that direction unless reversed")
