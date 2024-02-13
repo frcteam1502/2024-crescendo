@@ -1,5 +1,6 @@
 package team1502.configuration.factory;
 
+import java.util.HashMap;
 import java.util.function.BiConsumer;
 import java.util.function.Consumer;
 import java.util.function.DoubleSupplier;
@@ -34,6 +35,15 @@ public class RobotConfiguration {
 
     }
 
+    private HashMap<String, String> disabledMap = new HashMap<>();
+    public RobotConfiguration DisableSubsystem(String className) {
+        disabledMap.put(className, className);
+        return this;
+    }
+    public boolean isDisabled(String clsName) {
+        return disabledMap.containsKey(clsName);
+    }
+    
     private RobotBuilder getBuilder() {
         if (_robotBuilder == null) {
             _robotBuilder = RobotBuilder.Create();

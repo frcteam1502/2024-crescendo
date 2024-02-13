@@ -39,10 +39,11 @@ public class RobotFactory {
     private HashMap<String, CommandFactory> commandMap = new HashMap<>();
     private List<SubsystemFactory> subsystemFactories;
     private List<CommandFactory> commandFactories;
-
+    private RobotConfiguration configuration;
     private void start(RobotConfiguration config) {
+        configuration = config;
         gatherSubsystems();
-        build(config);    
+        build();    
     }
 
     public void gather() {
@@ -74,6 +75,9 @@ public class RobotFactory {
     private RobotPart addPart(RobotPart part) {
         parts.add(part);
         partMap.put(part.getName(), part);
+        if (configuration.isDisabled(part.getName())) {
+            part.Disable();
+        }
         return part;
     }
 
@@ -89,9 +93,9 @@ public class RobotFactory {
     }
     
     int systemSize;
-    private void build(RobotConfiguration config) {
+    private void build() {
         systemSize = parts.size(); // just iterate over the subsytems
-        addPart(new RobotPart(config));
+        addPart(new RobotPart(configuration));
         buildParts();
     }
 

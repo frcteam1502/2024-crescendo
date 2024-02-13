@@ -241,6 +241,8 @@ public final class RobotConfigurations {
     }
                 
      private static RobotConfiguration buildPracticeBot(RobotConfiguration parts) {
+        parts.DisableSubsystem("frc.robot.subsystems.Arm.ArmSubsystem");
+
         parts.PowerDistributionModule(pdh -> pdh
             .Ch(17, parts.EthernetSwitch().Part("POE"))
             .Ch(18, parts.EthernetSwitch())
