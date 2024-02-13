@@ -40,10 +40,16 @@ public class RobotFactory {
     private List<SubsystemFactory> subsystemFactories;
     private List<CommandFactory> commandFactories;
     private RobotConfiguration configuration;
+
     private void start(RobotConfiguration config) {
         configuration = config;
+        System.out.println("FACTORY: Start");
         gatherSubsystems();
-        build();    
+        System.out.println("FACTORY: " + parts.size() + " Subsystems found");
+        build();
+        for (var part : parts) {
+            System.out.println("FACTORY: " + part.getName() + (part.isBuilt() ? "built" : "not built"));
+        }
     }
 
     public void gather() {
@@ -91,7 +97,12 @@ public class RobotFactory {
     public RobotPart getPart(Class<?> partClass) {
         return partMap.get(partClass.getName());
     }
-    
+
+    @SuppressWarnings("unchecked")
+    public <T> T getInstance(Class<T> partClass) {
+        return (T)getPart(partClass).getPart();
+    }
+
     int systemSize;
     private void build() {
         systemSize = parts.size(); // just iterate over the subsytems
@@ -195,6 +206,7 @@ public class RobotFactory {
         try {
             return loader.loadClass(name);
         } catch (ClassNotFoundException e) {
+            System.err.println("FACTORY :: unable to load: " + name);
             return null;
         }
     }
