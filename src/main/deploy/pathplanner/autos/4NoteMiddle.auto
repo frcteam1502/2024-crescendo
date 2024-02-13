@@ -2,8 +2,8 @@
   "version": 1.0,
   "startingPose": {
     "position": {
-      "x": 1.37,
-      "y": 5.52
+      "x": 1.34,
+      "y": 5.54
     },
     "rotation": 0
   },
@@ -14,54 +14,36 @@
         {
           "type": "path",
           "data": {
-            "pathName": "Move1"
+            "pathName": "4NoteMiddle1"
           }
         },
         {
           "type": "path",
           "data": {
-            "pathName": "Move2"
+            "pathName": "4NoteMidle2"
           }
         },
         {
           "type": "path",
           "data": {
-            "pathName": "Move3"
+            "pathName": "4NoteMiddle3"
           }
         },
         {
           "type": "path",
           "data": {
-            "pathName": "Move4"
+            "pathName": "4NoteMiddle4"
           }
         },
         {
           "type": "path",
           "data": {
-            "pathName": "Move5"
-          }
-        },
-        {
-          "type": "path",
-          "data": {
-            "pathName": "Move6"
-          }
-        },
-        {
-          "type": "path",
-          "data": {
-            "pathName": "Move7"
-          }
-        },
-        {
-          "type": "path",
-          "data": {
-            "pathName": "Move8"
+            "pathName": "4NoteMiddle5"
           }
         }
       ]
     }
   },
-  "folder": null,
+  "folder": "Shot4Note",
   "choreoAuto": false
 }
