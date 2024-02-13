@@ -90,6 +90,7 @@ private String[] pneumaticNames = {
     Logger.RegisterPdp(new PowerDistribution(1, ModuleType.kRev), pdhRealChannelNames);
     Logger.RegisterPneumaticHub(new PneumaticHub(), pneumaticNames);
     logger.start();
+    
 
     
   }
