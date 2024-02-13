@@ -88,7 +88,7 @@ private String[] pneumaticNames = {
     //Register Logger items
     //Logger.RegisterLoopTimes(this);
     Logger.RegisterPdp(new PowerDistribution(1, ModuleType.kRev), pdhRealChannelNames);
-    Logger.RegisterPneumaticHub(new PneumaticHub(), pneumaticNames);
+    //Logger.RegisterPneumaticHub(new PneumaticHub(), pneumaticNames);
     logger.start();
 
     

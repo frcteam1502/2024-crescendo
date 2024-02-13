@@ -24,10 +24,10 @@ final class AbsEncoder{
 
 final class ArmConstants{
   //Rotation bounds
-  public static final double MAX_ROTATE = 120;
-  public static final double MIN_ROTATE = -7;
+  public static final double MAX_ROTATE = 5;
+  public static final double MIN_ROTATE = -30;
 
-  public static final double ARM_DEGREES_PER_ENCODER_ROTATION = 360 / 100; 
+  public static final double ARM_DEGREES_PER_ENCODER_ROTATION = 360.0 / 100.0; 
   public static final double MAX_ROTATE_FEEDFORWARD = .06; //TODO: increase?
   
   public static final double ROTATE_CHANGE = .3; 
@@ -37,10 +37,10 @@ final class ArmConstants{
   public static final double[] POSITION_TABLE = 
   {
     0.0,  //Intake
-    18.0, //Shoot Close
-    20.1, //Shoot Far
-    90.0,   //Stow/Start
-    110.0,  //Amp/Trap
+    -9, //Shoot Close
+    -13.5, //Shoot Far
+    -18,   //Stow/Start
+    -22.5,  //Amp/Trap
   };
 }
 
@@ -75,11 +75,11 @@ public class ArmSubsystem extends SubsystemBase {
     //Initialize PID controller
     rotatePID = rotate.getPIDController();
     rotatePID.setFeedbackDevice(rotateRelativeEncoder);
-    rotatePID.setP(.7); //TODO: Get PID values
+    rotatePID.setP(.05); //TODO: Get PID values
     rotatePID.setI(0);
-    rotatePID.setD(.9);
+    rotatePID.setD(0);
     //rotatePID.setFF(MAX_ROTATE_FEEDFORWARD);
-    rotatePID.setOutputRange((-ArmConstants.MAX_ROTATION_SPEED / 4), ArmConstants.MAX_ROTATION_SPEED);
+    rotatePID.setOutputRange((-ArmConstants.MAX_ROTATION_SPEED), ArmConstants.MAX_ROTATION_SPEED);
     
     //Reset the subsystem
     reset();
@@ -88,7 +88,7 @@ public class ArmSubsystem extends SubsystemBase {
    // For Testing
    public void updateDashboard(){ 
     // read PID coefficients from SmartDashboard
-    double p =         SmartDashboard.getNumber("ANGLE P Gain", 0);
+    /*double p =         SmartDashboard.getNumber("ANGLE P Gain", 0);
     double i =         SmartDashboard.getNumber("ANGLE I Gain", 0);
     double d =         SmartDashboard.getNumber("ANGLE D Gain", 0);
     double iz =        SmartDashboard.getNumber("ANGLE I Zone", 0);
@@ -104,23 +104,27 @@ public class ArmSubsystem extends SubsystemBase {
     if((ff != rotatePID.getFF())) { rotatePID.setFF(ff); }
     if((max != rotatePID.getOutputMax()) || (min != rotatePID.getOutputMin())) { 
       rotatePID.setOutputRange(min, max); 
-    }
+    }*/
 
     SmartDashboard.putNumber("Arm Absolute Encoder Angle", getArmAbsPositionDegrees());
+    SmartDashboard.putNumber("Arm Relative Encoder", rotateRelativeEncoder.getPosition());
+    SmartDashboard.putNumber("Rotation Goal", goalRotate);
   }
 
   private final void reset(){
     //Set Arm relative Position to absolute position
     double armAbsPosition = getArmAbsPositionDegrees();
-    rotateRelativeEncoder.setPosition(armAbsPosition);
+    rotateRelativeEncoder.setPosition(0);
+    //goalRotate = rotateRelativeEncoder.getPosition();
+    goalRotate = 0;
   }
 
   private final double getArmAbsPositionDegrees(){
     return rotateAbsEncoder.getAbsolutePosition()*360;
   }
 
-  public void rotateArm(double Pose) {
-    goalRotate = Pose;
+  public void rotateArm(double position) {
+    goalRotate = position;
   }
 
   public void rotateToIntake() {
@@ -147,13 +151,14 @@ public class ArmSubsystem extends SubsystemBase {
     double change = Math.signum(input) * ArmConstants.ROTATE_CHANGE;
     if(input > .8) change *= 2;
     rotateArm(goalRotate + change);
+    //goalRotate = input;
   }
 
   public void checkMaxAndMin() {
     if(rotateRelativeEncoder.getPosition() > ArmConstants.MAX_ROTATE){
-      goalRotate -= ArmConstants.ROTATE_CHANGE * 5;}
+      goalRotate -= ArmConstants.ROTATE_CHANGE * 2;}
     else if(rotateRelativeEncoder.getPosition() < ArmConstants.MIN_ROTATE) {
-      goalRotate += ArmConstants.ROTATE_CHANGE * 5;}
+      goalRotate += ArmConstants.ROTATE_CHANGE * 2;}
   }
 
   /**
@@ -174,5 +179,6 @@ public class ArmSubsystem extends SubsystemBase {
     updateDashboard();
     checkMaxAndMin();
     rotatePID.setReference(goalRotate, CANSparkMax.ControlType.kPosition);
+    //rotate.set(goalRotate);
   }
 }
