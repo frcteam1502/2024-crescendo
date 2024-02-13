@@ -88,7 +88,7 @@ public class RobotFactory {
             : addPart(new RobotPart(partClass));        
     }
 
-    private RobotPart getPart(Class<?> partClass) {
+    public RobotPart getPart(Class<?> partClass) {
         return partMap.get(partClass.getName());
     }
     

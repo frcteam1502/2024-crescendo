@@ -4,7 +4,6 @@ import java.util.Collections;
 import org.junit.jupiter.api.Test;
 
 import team1502.configuration.builders.power.PowerDistributionModule;
-import team1502.configuration.configurations.RobotConfigurations;
 
 public class configurationTests {
 

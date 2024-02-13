@@ -1,4 +1,4 @@
-package team1502.configuration.configurations;
+package team1502.configuration;
 
 import com.revrobotics.CANSparkBase.IdleMode;
 import com.revrobotics.CANSparkLowLevel.MotorType;
