@@ -87,14 +87,16 @@ public class RobotFactory {
     private RobotPart getPart(Class<?> partClass) {
         return partMap.get(partClass.getSimpleName());
     }
+    
     int systemSize;
     private void build(RobotConfiguration config) {
         systemSize = parts.size(); // just iterate over the subsytems
         addPart(new RobotPart(config));
         buildParts();
     }
+
     private void buildParts() {
-        gatherCommands();;
+        gatherCommands();
         for (int i = 0; i < systemSize; i++) {
             var part = parts.get(i);
             buildPart(part);
@@ -121,6 +123,11 @@ public class RobotFactory {
             // check for null args??
             if (part.isEnabled()) { 
                 instance = part.Build(args);
+                if (part.hasDefaultCommand()) {
+                    var command = (Command)buildPart(needPart(part.getDefaultCommand()));
+                    var subsystem = (Subsystem)instance;
+                    subsystem.setDefaultCommand(command);
+                }
             }
         }
         return instance;
