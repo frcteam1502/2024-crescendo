@@ -10,6 +10,8 @@ import edu.wpi.first.wpilibj.DutyCycleEncoder;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
+import frc.robot.commands.ArmCommands;
+import team1502.configuration.annotations.DefaultCommand;
 
 final class Motors{
   public static final CANSparkMax ARM_LEAD = new CANSparkMax(1, CANSparkLowLevel.MotorType.kBrushless);
@@ -44,6 +46,7 @@ final class ArmConstants{
   };
 }
 
+@DefaultCommand(command = ArmCommands.class)
 public class ArmSubsystem extends SubsystemBase {
   private final CANSparkMax rotate;
   private final CANSparkMax rotateFollower;
