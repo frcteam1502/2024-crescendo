@@ -27,11 +27,12 @@ import edu.wpi.first.util.sendable.SendableRegistry;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Subsystem;
+import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import team1502.configuration.annotations.*;
 import team1502.configuration.factory.RobotConfiguration;
 
 @DefaultCommand(command = ControllerCommands.class)
-public class DriveSubsystem implements Subsystem, Sendable {
+public class DriveSubsystem extends SubsystemBase { //implements Subsystem, Sendable {
   private boolean isTurning = false;
   private double targetAngle = 0.0;
   private double turnCommand = 0.0;
@@ -84,12 +85,12 @@ public class DriveSubsystem implements Subsystem, Sendable {
 
   private int numAprilTags;
   private void updateDashBoard() {
-        //Limelight Info
+    //Limelight Info
     LimelightResults llresults = LimelightHelpers.getLatestResults("");
     numAprilTags = llresults.targetingResults.targets_Fiducials.length;
+    
     SmartDashboard.putData(this);
     swerveModules.send();
-
   }
   
   @Override
@@ -237,8 +238,8 @@ public class DriveSubsystem implements Subsystem, Sendable {
 
   @Override
   public void initSendable(SendableBuilder builder) {
-    //super.initSendable(builder);
-    builder.setSmartDashboardType("Subsystem");
+    super.initSendable(builder);
+    //builder.setSmartDashboardType("Subsystem");
 
     //Field Oriented inputs
     builder.addDoubleProperty("Field Oriented X Command (Forward)", ()->fieldXCommand, null);
@@ -256,8 +257,8 @@ public class DriveSubsystem implements Subsystem, Sendable {
 
     builder.addDoubleProperty("Gyro Yaw", ()->getIMU_Yaw(), null);
 
-    //addChild("SwerveModules", swerveModules);
-    SendableRegistry.addLW(swerveModules, SendableRegistry.getSubsystem(this), "SwerveModule");
+    addChild("SwerveModules", swerveModules);
+    //SendableRegistry.addLW(swerveModules, SendableRegistry.getSubsystem(this), "SwerveModule");
 
         //Pose Info
     builder.addStringProperty("FMS Alliance", ()->DriverStation.getAlliance().toString(), null);

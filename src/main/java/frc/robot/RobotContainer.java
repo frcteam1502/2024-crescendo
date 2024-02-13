@@ -14,8 +14,10 @@ import com.pathplanner.lib.commands.PathPlannerAuto;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
-
-import team1502.configuration.configurations.RobotConfigurations;
+import edu.wpi.first.wpilibj2.command.InstantCommand;
+import frc.robot.commands.ControllerCommands;
+import frc.robot.subsystems.PowerManagement.MockDetector;
+import frc.robot.subsystems.SwerveDrive.DriveSubsystem;
 import team1502.configuration.factory.RobotConfiguration;
 import team1502.injection.RobotFactory;
 
@@ -33,17 +35,26 @@ public class RobotContainer {
   /** The container for the robot. Contains subsystems, OI devices, and commands. */
   public RobotContainer(String radio) {
     var config = RobotConfigurations.getConfiguration(radio);
-    RobotFactory.Create(config);
-
+    var factory = RobotFactory.Create(config);
+    DriveSubsystem driveSubsystem = (DriveSubsystem)factory.getPart(DriveSubsystem.class).getPart();
+    if (driveSubsystem == null) { //BACKUP METHOD if factory failed on roboRIO
+      System.err.println("ROBOT FACTORY FAILED");
+      driveSubsystem = new DriveSubsystem(config);
+      driveSubsystem.setDefaultCommand(new ControllerCommands(config, driveSubsystem, new MockDetector()));
+      if (!config.isDisabled("frc.robot.subsystems.Arm.ArmSubsystem")) {
+        var armSubsystem = new frc.robot.subsystems.Arm.ArmSubsystem();
+        armSubsystem.setDefaultCommand(new frc.robot.commands.ArmCommands(armSubsystem));
+      }
+    }
     configureBindings(config);
 
     Logger.RegisterPdp(new PowerDistribution(1, ModuleType.kRev), config.PDH().ChannelNames());
     Logger.RegisterPneumaticHub(new PneumaticHub(), config.PCM().ChannelNames());
     logger.start();
 
-    //TODO: Register named commands. Must register all commands we want Pathplanner to execute.
-    // NamedCommands.registerCommand("Dummy Command 1", new InstantCommand(driveSubsystem::dummyAction1));
-    // NamedCommands.registerCommand("Dummy Command 2", new InstantCommand(driveSubsystem::dummyAction2));
+    //Register named commands. Must register all commands we want Pathplanner to execute.
+    NamedCommands.registerCommand("Dummy Command 1", new InstantCommand(driveSubsystem::dummyAction1));
+    NamedCommands.registerCommand("Dummy Command 2", new InstantCommand(driveSubsystem::dummyAction2));
 
     //Build an Autochooser from SmartDashboard selection.  Default will be Commands.none()
 
