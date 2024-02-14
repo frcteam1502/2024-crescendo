@@ -100,9 +100,10 @@ public class RobotFactory {
 
     @SuppressWarnings("unchecked")
     public <T> T getInstance(Class<T> partClass) {
-        return (T)getPart(partClass).getPart();
+        var part = getPart(partClass);
+        return part == null ? null : (T)part.getPart();
     }
-
+    
     int systemSize;
     private void build() {
         systemSize = parts.size(); // just iterate over the subsytems
