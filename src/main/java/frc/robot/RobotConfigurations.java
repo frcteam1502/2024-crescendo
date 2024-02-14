@@ -67,6 +67,10 @@ public final class RobotConfigurations {
             .Motor("NEO 550", m->m)
             .IdleMode(IdleMode.kBrake)
             .SmartCurrentLimit(40) // encoder, PID
+            .GearBox(g-> g
+                .Gear("5:1", 1, 5)
+                .Gear("5:1", 1, 5)
+                .Gear("Chain", 1, 4))
             .PDH(1)
             .CanNumber(1))
         .MotorController("armFollow", c->c // DutyCycleEncoder(0) .DIO(0)
@@ -74,6 +78,10 @@ public final class RobotConfigurations {
             .Reversed()
             .IdleMode(IdleMode.kCoast)
             .SmartCurrentLimit(40)
+            .GearBox(g-> g
+                .Gear("5:1", 1, 5)
+                .Gear("5:1", 1, 5)
+                .Gear("Chain", 1, 4))
             .PDH(6)
             .CanNumber(6))
         
@@ -129,7 +137,9 @@ public final class RobotConfigurations {
         .PCM(pcm->pcm.PowerChannel(21))
         .RadioPowerModule(rpm->rpm.PowerChannel(22))
         .Pigeon2(gyro->gyro.PowerChannel(23).CanNumber(14))
-        .DC(dc -> dc.PDH(1, "??"))        
+        .DC(dc -> dc.PDH(1, "??"))
+        // limelight 10.15.2.23:5800
+        // PIs?
         .MiniPowerModule(mpm->mpm
             .Ch(0, 10)
             .Ch(1, 10)
@@ -226,17 +236,18 @@ public final class RobotConfigurations {
                 .TurningMotor(Manufacturer.REVRobotics, mc -> mc
                     .Motor("NEO")
                     .IdleMode(IdleMode.kCoast)
+                    .Reversed() // all turn motors are reversed
                     .GearBox(g-> g
                         .Gear("Stage1", 14, 50)
                         .Gear("Stage2", 10, 60)
                         .Note("MK4i Standard", "150/7:1")
                     )
                     .PID(3.4, 0.0, 0.0)
-                    .Reversed() // all turn motors are reversed
                 )
                 .DrivingMotor(Manufacturer.REVRobotics, mc -> mc
                     .Motor("NEO")
                     .IdleMode(IdleMode.kBrake)
+                    .Reversed() // all drive motors are reversed
                     .GearBox(g-> g
                         .Gear("Stage1", 14, 50)
                         .Gear("Stage2", 27, 17)

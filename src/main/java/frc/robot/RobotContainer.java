@@ -36,7 +36,7 @@ public class RobotContainer {
   public RobotContainer(String radio) {
     var config = RobotConfigurations.getConfiguration(radio);
     var factory = RobotFactory.Create(config);
-    DriveSubsystem driveSubsystem = (DriveSubsystem)factory.getPart(DriveSubsystem.class).getPart();
+    DriveSubsystem driveSubsystem = factory.getInstance(DriveSubsystem.class);
     if (driveSubsystem == null) { //BACKUP METHOD if factory failed on roboRIO
       System.err.println("ROBOT FACTORY FAILED");
       driveSubsystem = new DriveSubsystem(config);
