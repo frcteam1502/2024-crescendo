@@ -1,0 +1,49 @@
+{
+  "version": 1.0,
+  "startingPose": {
+    "position": {
+      "x": 0.72,
+      "y": 4.37
+    },
+    "rotation": 0
+  },
+  "command": {
+    "type": "sequential",
+    "data": {
+      "commands": [
+        {
+          "type": "path",
+          "data": {
+            "pathName": "4NoteRight1"
+          }
+        },
+        {
+          "type": "path",
+          "data": {
+            "pathName": "4NoteRight2"
+          }
+        },
+        {
+          "type": "path",
+          "data": {
+            "pathName": "4NoteRight3"
+          }
+        },
+        {
+          "type": "path",
+          "data": {
+            "pathName": "4NoteRight4"
+          }
+        },
+        {
+          "type": "path",
+          "data": {
+            "pathName": "4NoteRight5"
+          }
+        }
+      ]
+    }
+  },
+  "folder": "Shot4Note",
+  "choreoAuto": false
+}
