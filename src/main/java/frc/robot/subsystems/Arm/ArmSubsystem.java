@@ -24,8 +24,8 @@ final class AbsEncoder{
 
 final class ArmConstants{
   //Rotation bounds
-  public static final double MAX_ROTATE = 0;
-  public static final double MIN_ROTATE = -80;
+  public static final double MAX_ROTATE = 5;
+  public static final double MIN_ROTATE = -95;
 
   public static final double ARM_DEGREES_PER_ENCODER_ROTATION = 360.0 / 100.0; 
   public static final double MAX_ROTATE_FEEDFORWARD = .06; //TODO: increase?
@@ -34,7 +34,7 @@ final class ArmConstants{
 
   public static final double MAX_ROTATION_SPEED = .3;
 
-  public static final boolean ABS_ENCODER_INVERTED = true;
+  public static final double ABS_OFFSET = -4.65;//This is unique for the robot!
 
   public static final double[] POSITION_TABLE = 
   {
@@ -110,16 +110,16 @@ public class ArmSubsystem extends SubsystemBase {
     }*/
 
     SmartDashboard.putNumber("Arm Absolute Encoder Angle", getArmAbsPositionDegrees());
-    //SmartDashboard.putNumber("Arm Relative Encoder", rotateRelativeEncoder.getPosition());
+    SmartDashboard.putNumber("Arm Relative Encoder", rotateRelativeEncoder.getPosition());
     SmartDashboard.putNumber("Rotation Goal", goalRotate);
   }
 
   private final void reset(){
     //Set Arm relative Position to absolute position
-    double armAbsPosition = getArmAbsPositionDegrees();
-    rotateRelativeEncoder.setPosition(0);
-    //goalRotate = rotateRelativeEncoder.getPosition();
-    goalRotate = 0;
+    double zeroedArmAbsPosition = getArmAbsPositionDegrees();
+
+    rotateRelativeEncoder.setPosition(-zeroedArmAbsPosition);
+    goalRotate = -zeroedArmAbsPosition;
   }
 
   private final double getArmAbsPositionDegrees(){
@@ -128,8 +128,7 @@ public class ArmSubsystem extends SubsystemBase {
 
     angleDegrees = angleDegrees - 360;
 
-
-    return (angleDegrees % 360);
+    return (angleDegrees - ArmConstants.ABS_OFFSET);
   }
 
   public void rotateArm(double position) {
