@@ -82,6 +82,7 @@ public class RobotPart {
     public boolean isBuilt() { return part != null; }
     protected void setPart(Object part) { this.part = part; }
     public Object getPart() { return part; }
+    public Class<?> getPartClass() { return partClass; }
     public boolean hasDefaultCommand() { return defaultCommand != null; }
     public Class<? extends Command> getDefaultCommand() { return defaultCommand.command(); }
     public Class<?>[] getDependencies() { return dependencies; }

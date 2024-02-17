@@ -27,7 +27,7 @@ public class SubsystemFactory extends RobotPart {
     @Override
     public void onBuilt() {
         if (isBuilt()) {
-            if (!isSubsystemBase(this.getClass())) { // do the standard thing base does
+            if (!isSubsystemBase(this.getPartClass())) { // do the standard thing base does
                 CommandScheduler.getInstance().registerSubsystem(getSubsystem());
                 if (isSendable()) {
                     SendableRegistry.addLW(Sendable(), getName(), getName());
