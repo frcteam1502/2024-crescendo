@@ -4,11 +4,18 @@
 
 package frc.robot;
 
+import frc.robot.Logger;
+
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 
+import edu.wpi.first.networktables.NetworkTableEntry;
 import edu.wpi.first.wpilibj.Filesystem;
+import edu.wpi.first.wpilibj.PneumaticHub;
+import edu.wpi.first.wpilibj.PowerDistribution;
+import edu.wpi.first.wpilibj.PowerDistribution.ModuleType;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj.RobotController;
 import edu.wpi.first.wpilibj.TimedRobot;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
@@ -73,7 +80,31 @@ public class Robot extends TimedRobot {
       SmartDashboard.putString("Configuration (radio)", radio);
     }
     GameState.robotPeriodic();
+    Double v = testdouble.getValue();
+    System.out.print(v);
+    }
+
+
+
+    PresisdentDouble testdouble = new PresisdentDouble("testDouble", 71.3);
+
+  private class PresisdentDouble{
+    
+      private NetworkTableEntry entry;
+    
+    public PresisdentDouble(String name, double defaultValue){
+     entry = SmartDashboard.getEntry(name);
+     
+      entry.setDefaultNumber(defaultValue);
+      entry.setPersistent();  
+    }
+
+    public double getValue(){
+      return entry.getDouble(0);
+    }
+  
   }
+
 
   /** This function is called once each time the robot enters Disabled mode. */
   @Override

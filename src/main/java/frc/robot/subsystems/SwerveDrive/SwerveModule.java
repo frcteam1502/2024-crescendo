@@ -88,6 +88,11 @@ public class SwerveModule implements Sendable {
       // Optimize the reference state to avoid spinning further than 90 degrees
       SwerveModuleState state = SwerveModuleState.optimize(desiredState, new Rotation2d(getAbsPositionZeroed()));
 
+      //Set SmartDashboard variables
+      commandedSpeed = desiredState.speedMetersPerSecond;
+      commandedAngle = desiredState.angle.getDegrees();
+
+
       // Calculate the turning motor output from the turning PID controller.
       final double turnOutput = turningPIDController.calculate(getAbsPositionZeroed(), state.angle.getRadians());
       turningMotor.setVoltage(turnOutput);
