@@ -18,7 +18,6 @@ public class SubsystemFactory extends RobotPart {
             : SubsystemBase.class.isAssignableFrom(candidate);
     }
 
-
     public Subsystem getSubsystem() { return (Subsystem)part; }
 
     public SubsystemFactory(Class<Subsystem> subsystemClass) {

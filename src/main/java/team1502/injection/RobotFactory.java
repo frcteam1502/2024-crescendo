@@ -29,13 +29,20 @@ public class RobotFactory {
     public static RobotFactory Create() throws ClassNotFoundException {
         return new RobotFactory();
     }
+
     public static RobotFactory Create(RobotConfiguration config) {
-        var factory = new RobotFactory();
-        factory.start(config);
+        var factory = new RobotFactory(config);
+        factory.start();
         return factory;        
     }
 
     private RobotFactory() {}
+
+    private RobotFactory(RobotConfiguration config) {
+        configuration = config;
+    }
+
+    public RobotConfiguration getRobotConfiguration() { return configuration; }
 
     private ArrayList<RobotPart> parts = new ArrayList<>();
     private HashMap<String, RobotPart> partMap = new HashMap<>();
@@ -46,11 +53,14 @@ public class RobotFactory {
     private RobotConfiguration configuration;
     private final File jarFile = new File(getClass().getProtectionDomain().getCodeSource().getLocation().getPath());
 
-
-    private void start(RobotConfiguration config) {
-        configuration = config;
+    private void start() {
+        System.out.println("FACTORY: Start");
         gatherSubsystems();
-        build();    
+        System.out.println("FACTORY: " + parts.size() + " Subsystems found");
+        build();
+        for (var part : parts) {
+            System.out.println("FACTORY: " + part.getName() + (part.isBuilt() ? "built" : "not built"));
+        }
     }
 
     public void gather() {
@@ -95,7 +105,7 @@ public class RobotFactory {
             : addPart(new RobotPart(partClass));        
     }
 
-    private RobotPart getPart(Class<?> partClass) {
+    public RobotPart getPart(Class<?> partClass) {
         return partMap.get(partClass.getName());
     }
 
@@ -216,6 +226,7 @@ public class RobotFactory {
         try {
             return loader.loadClass(name);
         } catch (ClassNotFoundException e) {
+            System.err.println("FACTORY :: unable to load: " + name);
             return null;
         }
     }
