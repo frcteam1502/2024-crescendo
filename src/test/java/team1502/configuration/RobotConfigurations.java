@@ -1,4 +1,4 @@
-package team1502.configuration.configurations;
+package team1502.configuration;
 
 import com.revrobotics.CANSparkBase.IdleMode;
 import com.revrobotics.CANSparkLowLevel.MotorType;
@@ -43,13 +43,6 @@ public final class RobotConfigurations {
             .LimeLight(r -> r.PeakPower(60.0))
             .RaspberryPi(r -> r.PeakPower(60.0)) //? + camera
             .LEDs(r -> r.PeakPower(25.0)) // 5V addressable LEDs - 5A max
-        );
-    }
-
-    private static RobotConfiguration standardSwerveChassis(RobotConfiguration inventory) {
-        standardChassis(inventory);
-        // Inventory Definitions
-        return inventory.Parts(define -> define
             .Pigeon2(p -> p
                 .PeakPower(0.4)
             )
@@ -70,6 +63,13 @@ public final class RobotConfigurations {
                 .Note("Reference", "https://www.revrobotics.com/rev-21-1651/")
                 .PeakPower(279.0) // ~265 @ 40A
             )
+        );
+    }
+
+    private static RobotConfiguration standardSwerveChassis(RobotConfiguration inventory) {
+        standardChassis(inventory);
+        // Inventory Definitions
+        return inventory.Parts(define -> define
             .SwerveModule(sm -> sm
                 .CANCoder(cc -> cc
                     .PeakPower(0.060)
@@ -320,7 +320,7 @@ public final class RobotConfigurations {
         return robot.PowerDistributionModule(pdh -> pdh
         // LEFT SIDE                                RIGHT SIDE
         //======================================    ======================================
-        //  CH  FUZE  EQUIPMENT                         CH FUZE EQUIPMENT
+        //  CH  FUSE  EQUIPMENT                         CH FUSE EQUIPMENT
         //======================================    ======================================
         .Ch(10, 40)                                 .Ch(9, 40)
         .Ch(11, 40)                                 .Ch(8, 40)
@@ -344,7 +344,7 @@ public final class RobotConfigurations {
         return robot.PowerDistributionModule(pdh -> pdh
         // LEFT SIDE                                RIGHT SIDE
         //======================================    ======================================
-        //  CH  FUZE  EQUIPMENT                         CH FUZE EQUIPMENT
+        //  CH  FUSE  EQUIPMENT                         CH FUSE EQUIPMENT
         //======================================    ======================================
         .Ch(10, 40)                                 .Ch(9, 40)
         .Ch(11, 40)                                 .Ch(8, 40)

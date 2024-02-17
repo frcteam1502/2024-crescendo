@@ -3,7 +3,6 @@ package team1502.configuration;
 import org.junit.jupiter.api.Test;
 
 import team1502.configuration.builders.power.PowerDistributionModule;
-import team1502.configuration.configurations.RobotConfigurations;
 
 public class Robot2024Test {
     
@@ -40,7 +39,7 @@ public class Robot2024Test {
         for (var value : pdh.getChannels()){
             formatter.AddRow(
                 value.Channel().toString(),
-                value.hasFuze() ? value.Fuze().toString() : "",
+                value.hasFuse() ? value.Fuse().toString() : "",
                 value.WireLabel(),
                 value.hasPart() ? value.Part().ShortName() : "",
                 value.hasPart() ? value.Part().FriendlyName() : "",
