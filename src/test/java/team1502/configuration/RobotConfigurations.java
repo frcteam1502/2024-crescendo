@@ -182,17 +182,29 @@ public final class RobotConfigurations {
             )
         );
 
+        // 
+        parts.Parts(inventory -> inventory
+            .MotorController("Arm Motor", Manufacturer.REVRobotics, c->c
+                .Motor("NEO 550", m->m)
+                .IdleMode(IdleMode.kBrake)
+                .SmartCurrentLimit(40) // encoder, PID
+                .GearBox(g-> g
+                    .Gear("5:1", 1, 5)
+                    .Gear("5:1", 1, 5)
+                    .Gear("Chain", 1, 4)))
+
+        );
         // Top-Level Parts
         parts.Build(arm -> arm
-            .MotorController("ARM1", c->c
-                .Motor("NEO 550", m->m)
-                .PDH(1)
-                .CanNumber(1)
-            )
-            .MotorController("ARM2", c->c
-                .Motor("NEO 550", m->m)
-                .PDH(6)
-                .CanNumber(6)
+            .Subsystem("Arm", s -> s
+                .MotorController("ARM1", "Arm Motor", c->c
+                    .PDH(1)
+                    .CanNumber(1)
+                )
+                .MotorController("ARM2", "arm Motor", c->c
+                    .PDH(6)
+                    .CanNumber(6)
+                )
             )
         );
 

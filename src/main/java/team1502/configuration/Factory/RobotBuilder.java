@@ -92,6 +92,11 @@ public class RobotBuilder implements IBuild /*extends Builder*/{
         return installBuilder(name, partName, b->new Builder(b, partName), fn);
     }
 
+    public Builder Subsystem(String partName) { return getInstalled(partName); }
+    public RobotBuilder Subsystem(String partName, Function<RobotBuilder, RobotBuilder> fn) {
+        return Part(partName, partName, fn);
+    }
+
     public RobotBuilder GyroSensor(String partName, Function<GyroSensor, Builder> fn) {        
         return GyroSensor(partName, partName, fn);
     }
