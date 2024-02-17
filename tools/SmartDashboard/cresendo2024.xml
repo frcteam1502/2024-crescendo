@@ -1,5 +1,11 @@
 <xml version="1.0">
 <dashboard>
+	<widget field="Rotation Goal" type="Number" class="edu.wpi.first.smartdashboard.gui.elements.TextBox">
+		<location x="995" y="314"/>
+	</widget>
+	<widget field="Arm Relative Encoder" type="Number" class="edu.wpi.first.smartdashboard.gui.elements.TextBox">
+		<location x="958" y="340"/>
+	</widget>
 	<widget field="Limelight TA" type="Number" class="edu.wpi.first.smartdashboard.gui.elements.TextBox">
 		<location x="1002" y="241"/>
 	</widget>

@@ -16,6 +16,7 @@ import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
 import frc.robot.commands.ControllerCommands;
+import frc.robot.subsystems.Arm.ArmSubsystem;
 import frc.robot.subsystems.PowerManagement.MockDetector;
 import frc.robot.subsystems.SwerveDrive.DriveSubsystem;
 import team1502.configuration.factory.RobotConfiguration;
@@ -42,7 +43,7 @@ public class RobotContainer {
       driveSubsystem = doFactoryBackupMethod(config);
     }
     
-    configureBindings(config);
+    configureBindings(factory);
 
     Logger.RegisterPdp(new PowerDistribution(1, ModuleType.kRev), config.PDH().ChannelNames());
     Logger.RegisterPneumaticHub(new PneumaticHub(), config.PCM().ChannelNames());
@@ -62,7 +63,19 @@ public class RobotContainer {
     SmartDashboard.putData("Auto Chooser", autoChooser);
   }
 
-  private void configureBindings(RobotConfiguration config) {
+  private void configureBindings(RobotFactory factory) {
+    //Drivetrain
+
+    ArmSubsystem armSubsystem = factory.getInstance(ArmSubsystem.class);
+    //Arm
+    Operator.XboxButtons.Y.onTrue(new InstantCommand(armSubsystem::rotateToAmpTrap));
+    Operator.XboxButtons.B.onTrue(new InstantCommand(armSubsystem::rotateToShootFar));
+    Operator.XboxButtons.A.onTrue(new InstantCommand(armSubsystem::rotateToShootClose));
+    Operator.XboxButtons.X.onTrue(new InstantCommand(armSubsystem::rotateToIntake));
+    Operator.XboxButtons.LeftBumper.onTrue(new InstantCommand(armSubsystem::rotateToStart));
+
+    //ShooterIntake
+
   }
 
   /**
