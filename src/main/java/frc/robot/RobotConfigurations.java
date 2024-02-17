@@ -31,6 +31,11 @@ public final class RobotConfigurations {
             .Ch(20, parts.RoboRIO())
             .Ch(21, parts.RadioPowerModule()));
 
+        parts.Parts(inventory->inventory
+            .Part("REV through-bore Encoder", e->e
+            .Note("Reference", "https://www.revrobotics.com/rev-11-1271/")
+            )
+        );
         return parts.Build(hw -> hw
         .MiniPowerModule("MPM1", mpm->mpm
             .Ch(0, 10)
@@ -92,7 +97,7 @@ public final class RobotConfigurations {
                 .Wrap(sw->sw.FriendlyName("Front Left").Abbreviation("FL"))
                 .CanNumber(16) // 16 16 17 -- also PDP channel
                 .Encoder(e -> e
-                    .MagneticOffset(151.96)
+                    .MagneticOffset(0.0)
                     .Abbreviation(sm.Abbreviation()+"E")
                     .MPM("MPM2", 0))
             )
@@ -100,7 +105,7 @@ public final class RobotConfigurations {
                 .Wrap(sw->sw.FriendlyName("Front Right").Abbreviation("FR"))
                 .CanNumber(10) // 10 10 11
                 .Encoder(e -> e
-                    .MagneticOffset(121.81)
+                    .MagneticOffset(0.0)
                     .Abbreviation(sm.Abbreviation()+"E")
                     .MPM("MPM1", 1))
             )
@@ -108,7 +113,7 @@ public final class RobotConfigurations {
                 .Wrap(sw->sw.FriendlyName("Back Left").Abbreviation("BL"))
                 .CanNumber(4) // 4 4 5
                 .Encoder(e -> e
-                    .MagneticOffset(4.83)
+                    .MagneticOffset(0.0)
                     .Abbreviation(sm.Abbreviation()+"E")
                     .MPM("MPM2", 1))
             )
@@ -116,7 +121,7 @@ public final class RobotConfigurations {
                 .Wrap(sw->sw.FriendlyName("Back Right").Abbreviation("BR"))
                 .CanNumber(8) // 8 8 9
                 .Encoder(e -> e
-                    .MagneticOffset(127.26)
+                    .MagneticOffset(0.0)
                     .Abbreviation(sm.Abbreviation()+"E")
                     .MPM("MPM1", 5))
             )
@@ -298,7 +303,7 @@ public final class RobotConfigurations {
         return robot.PowerDistributionModule(pdh -> pdh
         // LEFT SIDE                                RIGHT SIDE
         //======================================    ======================================
-        //  CH  FUZE  EQUIPMENT                         CH FUZE EQUIPMENT
+        //  CH  FUSE  EQUIPMENT                         CH FUSE EQUIPMENT
         //======================================    ======================================
         .Ch(10, 40)                                 .Ch(9, 40)
         .Ch(11, 40)                                 .Ch(8, 40)
@@ -322,7 +327,7 @@ public final class RobotConfigurations {
         return robot.PowerDistributionModule(pdh -> pdh
         // LEFT SIDE                                RIGHT SIDE
         //======================================    ======================================
-        //  CH  FUZE  EQUIPMENT                         CH FUZE EQUIPMENT
+        //  CH  FUSE  EQUIPMENT                         CH FUSE EQUIPMENT
         //======================================    ======================================
         .Ch(10, 40)                                 .Ch(9, 40)
         .Ch(11, 40)                                 .Ch(8, 40)

@@ -9,7 +9,7 @@ import team1502.configuration.builders.Part;
 public class PowerChannel extends Builder {
     private static final String NAME = "PowerChannel";
     private static final String channel = "channel";
-    private static final String fuze = "fuze";
+    private static final String fuse = "fuse";
     private static final String part = "part";
     public static Function<IBuild, PowerChannel> Define(Integer channelNumber) { return b->new PowerChannel(b, channelNumber); };
     public static PowerChannel Wrap(Builder builder) { return new PowerChannel(builder.getIBuild(), builder.getPart()); }
@@ -29,10 +29,10 @@ public class PowerChannel extends Builder {
         return this; 
     }
     
-    public boolean hasFuze() {return hasValue(fuze); }
-    public Integer Fuze() { return getInt(fuze); }
-    public PowerChannel Fuze(Integer amps) {
-        Value(fuze, amps);
+    public boolean hasFuse() {return hasValue(fuse); }
+    public Integer Fuse() { return getInt(fuse); }
+    public PowerChannel Fuse(Integer amps) {
+        Value(fuse, amps);
         return this; 
     }
     

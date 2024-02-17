@@ -1,13 +1,17 @@
 package team1502.injection;
 
 import java.io.BufferedReader;
+import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.util.ArrayList;
+import java.util.Enumeration;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Set;
+import java.util.jar.JarEntry;
+import java.util.jar.JarFile;
 import java.util.stream.Collectors;
 
 import edu.wpi.first.wpilibj2.command.Command;
@@ -40,6 +44,8 @@ public class RobotFactory {
     private List<SubsystemFactory> subsystemFactories;
     private List<CommandFactory> commandFactories;
     private RobotConfiguration configuration;
+    private final File jarFile = new File(getClass().getProtectionDomain().getCodeSource().getLocation().getPath());
+
 
     private void start(RobotConfiguration config) {
         configuration = config;
@@ -170,7 +176,11 @@ public class RobotFactory {
         ArrayList<String> classes = new ArrayList<>();
         
         try {
-            findClassesIn(subsystemPackageName, loader, classes);
+            if(jarFile.isFile()) {  // Run with JAR file
+                getClasses(subsystemPackageName, classes);
+            } else {
+                findClassesIn(subsystemPackageName, loader, classes);
+            }
         } catch (IOException e) {
             // TODO Auto-generated catch block
             e.printStackTrace();
@@ -189,7 +199,11 @@ public class RobotFactory {
         ArrayList<String> classes = new ArrayList<>();
         
         try {
-            findClassesIn(commandPackageName, loader, classes);
+            if(jarFile.isFile()) {  // Run with JAR file
+                getClasses(commandPackageName, classes);
+            } else {
+                findClassesIn(commandPackageName, loader, classes);
+            }
         } catch (IOException e) {
             // TODO Auto-generated catch block
             e.printStackTrace();
@@ -226,4 +240,20 @@ public class RobotFactory {
             }
         }        
     }
+
+    private void getClasses(String path, ArrayList<String> classes) throws IOException {
+        if(jarFile.isFile()) {  // Run with JAR file
+            final JarFile jar = new JarFile(jarFile);
+            final Enumeration<JarEntry> entries = jar.entries(); //gives ALL entries in jar
+            while(entries.hasMoreElements()) {
+                final String name = entries.nextElement().getName();
+                if (name.startsWith(path + "/") && name.endsWith(".class")) {
+                    classes.add(name.substring(0, name.length()-6)
+                                    .replaceAll("[/]", "."));
+                }
+            }
+            jar.close();
+        }
+    }
+
 }

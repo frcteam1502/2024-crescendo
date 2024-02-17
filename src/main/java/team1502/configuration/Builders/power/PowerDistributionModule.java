@@ -59,12 +59,12 @@ public class PowerDistributionModule extends Builder {
         addPiece(PowerChannel.Define(channelNumber));
     }
         
-    public PowerDistributionModule Ch(Integer channel, Integer fuze) {
-        updateChannel(channel, fuze);
+    public PowerDistributionModule Ch(Integer channel, Integer fuse) {
+        updateChannel(channel, fuse);
         return this;
     }
-    public PowerDistributionModule Ch(Integer channel, Integer fuze, Builder part) {
-        updateChannel(channel, fuze, part);
+    public PowerDistributionModule Ch(Integer channel, Integer fuse, Builder part) {
+        updateChannel(channel, fuse, part);
         return this;
     }
     public PowerDistributionModule Ch(Integer channel) { // empty
@@ -79,15 +79,15 @@ public class PowerDistributionModule extends Builder {
     public PowerChannel getChannel(int channelNumber) {
         return  PowerChannel.Wrap(getPiece(channelNumber));
     }
-    private void updateChannel(Integer channelNumber, Integer fuze, Builder part) {
+    private void updateChannel(Integer channelNumber, Integer fuse, Builder part) {
         if (channelNumber >= 0) {
-            getChannel(channelNumber).Part(part).Fuze(fuze);
+            getChannel(channelNumber).Part(part).Fuse(fuse);
         }
     }
 
-    private void updateChannel(Integer channelNumber, Integer fuze) {
+    private void updateChannel(Integer channelNumber, Integer fuse) {
         if (channelNumber >= 0) {
-            getChannel(channelNumber).Fuze(fuze);            
+            getChannel(channelNumber).Fuse(fuse);            
         }
     }
     public PowerDistributionModule Ch(Integer channelNumber, Builder part) {
@@ -110,7 +110,7 @@ public class PowerDistributionModule extends Builder {
 }
 
     /*
-    public PowerDistributionModule Ch(Integer channel, Integer fuze, String name) {
+    public PowerDistributionModule Ch(Integer channel, Integer fuse, String name) {
         return this;
     }
     public PowerDistributionModule Module(String module, String ... sub) {

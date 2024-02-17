@@ -37,15 +37,11 @@ public class RobotContainer {
     var config = RobotConfigurations.getConfiguration(radio);
     var factory = RobotFactory.Create(config);
     DriveSubsystem driveSubsystem = factory.getInstance(DriveSubsystem.class);
+
     if (driveSubsystem == null) { //BACKUP METHOD if factory failed on roboRIO
-      System.err.println("ROBOT FACTORY FAILED");
-      driveSubsystem = new DriveSubsystem(config);
-      driveSubsystem.setDefaultCommand(new ControllerCommands(config, driveSubsystem, new MockDetector()));
-      if (!config.isDisabled("frc.robot.subsystems.Arm.ArmSubsystem")) {
-        var armSubsystem = new frc.robot.subsystems.Arm.ArmSubsystem();
-        armSubsystem.setDefaultCommand(new frc.robot.commands.ArmCommands(armSubsystem));
-      }
+      driveSubsystem = doFactoryBackupMethod(config);
     }
+    
     configureBindings(config);
 
     Logger.RegisterPdp(new PowerDistribution(1, ModuleType.kRev), config.PDH().ChannelNames());
@@ -77,5 +73,16 @@ public class RobotContainer {
   public Command getAutonomousCommand() {
     // An example command will be run in autonomous
     return autoChooser.getSelected();
+  }
+
+  private DriveSubsystem doFactoryBackupMethod(RobotConfiguration config) {
+    System.err.println("ROBOT FACTORY FAILED");
+    DriveSubsystem driveSubsystem = new DriveSubsystem(config);
+    driveSubsystem.setDefaultCommand(new ControllerCommands(config, driveSubsystem, new MockDetector()));
+    if (!config.isDisabled("frc.robot.subsystems.Arm.ArmSubsystem")) {
+      var armSubsystem = new frc.robot.subsystems.Arm.ArmSubsystem();
+      armSubsystem.setDefaultCommand(new frc.robot.commands.ArmCommands(armSubsystem));
+    }
+    return driveSubsystem;
   }
 }
