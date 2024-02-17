@@ -74,31 +74,8 @@ public class Robot extends TimedRobot {
       SmartDashboard.putString("Configuration (radio)", radio);
     }
     GameState.robotPeriodic();
-    Double v = testdouble.getValue();
-    System.out.print(v);
-    }
-
-
-
-    PresisdentDouble testdouble = new PresisdentDouble("testDouble", 71.3);
-
-  private class PresisdentDouble{
-    
-      private NetworkTableEntry entry;
-    
-    public PresisdentDouble(String name, double defaultValue){
-     entry = SmartDashboard.getEntry(name);
-     
-      entry.setDefaultNumber(defaultValue);
-      entry.setPersistent();  
-    }
-
-    public double getValue(){
-      return entry.getDouble(0);
-    }
-  
   }
-
+  
 
   /** This function is called once each time the robot enters Disabled mode. */
   @Override

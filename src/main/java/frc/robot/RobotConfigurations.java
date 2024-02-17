@@ -81,7 +81,7 @@ public final class RobotConfigurations {
         .MotorController("armFollow", c->c // DutyCycleEncoder(0) .DIO(0)
             .Motor("NEO 550", m->m)
             .Reversed()
-            .IdleMode(IdleMode.kCoast)
+            .IdleMode(IdleMode.kBrake)
             .SmartCurrentLimit(40)
             .GearBox(g-> g
                 .Gear("5:1", 1, 5)
@@ -91,13 +91,13 @@ public final class RobotConfigurations {
             .CanNumber(6))
         
         // SWERVE DRIVE
-        .Note("Intake is the FRONT for this configuration as all the motors drive that direction unless reversed")
+        .Note("YELLOW modules are the front, BLUE modules are the back")
         .SwerveDrive(sd -> sd
             .SwerveModule("#1", sm -> sm // just leaving these as numbers, since "Front" may change
                 .Wrap(sw->sw.FriendlyName("Front Left").Abbreviation("FL"))
                 .CanNumber(16) // 16 16 17 -- also PDP channel
                 .Encoder(e -> e
-                    .MagneticOffset(0.0)
+                    .MagneticOffset(103.32)
                     .Abbreviation(sm.Abbreviation()+"E")
                     .MPM("MPM2", 0))
             )
@@ -105,7 +105,7 @@ public final class RobotConfigurations {
                 .Wrap(sw->sw.FriendlyName("Front Right").Abbreviation("FR"))
                 .CanNumber(10) // 10 10 11
                 .Encoder(e -> e
-                    .MagneticOffset(0.0)
+                    .MagneticOffset(292.68)
                     .Abbreviation(sm.Abbreviation()+"E")
                     .MPM("MPM1", 1))
             )
@@ -113,7 +113,7 @@ public final class RobotConfigurations {
                 .Wrap(sw->sw.FriendlyName("Back Left").Abbreviation("BL"))
                 .CanNumber(4) // 4 4 5
                 .Encoder(e -> e
-                    .MagneticOffset(0.0)
+                    .MagneticOffset(276.48)
                     .Abbreviation(sm.Abbreviation()+"E")
                     .MPM("MPM2", 1))
             )
@@ -121,7 +121,7 @@ public final class RobotConfigurations {
                 .Wrap(sw->sw.FriendlyName("Back Right").Abbreviation("BR"))
                 .CanNumber(8) // 8 8 9
                 .Encoder(e -> e
-                    .MagneticOffset(0.0)
+                    .MagneticOffset(12.24)
                     .Abbreviation(sm.Abbreviation()+"E")
                     .MPM("MPM1", 5))
             )

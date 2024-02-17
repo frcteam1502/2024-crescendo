@@ -49,10 +49,6 @@ public class RobotContainer {
     Logger.RegisterPneumaticHub(new PneumaticHub(), config.PCM().ChannelNames());
     logger.start();
 
-    //Register named commands. Must register all commands we want Pathplanner to execute.
-    NamedCommands.registerCommand("Dummy Command 1", new InstantCommand(driveSubsystem::dummyAction1));
-    NamedCommands.registerCommand("Dummy Command 2", new InstantCommand(driveSubsystem::dummyAction2));
-
     //Build an Autochooser from SmartDashboard selection.  Default will be Commands.none()
 
     new PathPlannerAuto("MiddleAutoAMPFinal");
@@ -66,13 +62,7 @@ public class RobotContainer {
   private void configureBindings(RobotFactory factory) {
     //Drivetrain
 
-    ArmSubsystem armSubsystem = factory.getInstance(ArmSubsystem.class);
     //Arm
-    Operator.XboxButtons.Y.onTrue(new InstantCommand(armSubsystem::rotateToAmpTrap));
-    Operator.XboxButtons.B.onTrue(new InstantCommand(armSubsystem::rotateToShootFar));
-    Operator.XboxButtons.A.onTrue(new InstantCommand(armSubsystem::rotateToShootClose));
-    Operator.XboxButtons.X.onTrue(new InstantCommand(armSubsystem::rotateToIntake));
-    Operator.XboxButtons.LeftBumper.onTrue(new InstantCommand(armSubsystem::rotateToStart));
 
     //ShooterIntake
 

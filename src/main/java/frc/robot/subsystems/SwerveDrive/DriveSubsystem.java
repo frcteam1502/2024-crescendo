@@ -9,6 +9,7 @@ import frc.robot.LimelightHelpers;
 import com.ctre.phoenix6.hardware.Pigeon2;
 
 import com.pathplanner.lib.auto.AutoBuilder;
+import com.pathplanner.lib.auto.NamedCommands;
 import com.pathplanner.lib.util.HolonomicPathFollowerConfig;
 import com.pathplanner.lib.util.PIDConstants;
 import com.pathplanner.lib.util.ReplanningConfig;
@@ -26,6 +27,7 @@ import edu.wpi.first.util.sendable.SendableBuilder;
 import edu.wpi.first.util.sendable.SendableRegistry;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
+import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.Subsystem;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import team1502.configuration.annotations.*;
@@ -64,12 +66,21 @@ public class DriveSubsystem extends SubsystemBase { //implements Subsystem, Send
     goStraightGain = config.SwerveDrive().GoStraightGain();
 
     this.odometry = new SwerveDrivePoseEstimator(kinematics, getGyroRotation2d(), getModulePositions(), pose);
-
+    
+    initializeNamedCommands();
+    
     reset();
     registerLoggerObjects(config);
 
     //Configure Auto Builder last! -- why?
     configAutoBuilder(); 
+
+  }
+
+  private void initializeNamedCommands() {
+    //Register named commands. Must register all commands we want Pathplanner to execute.
+    NamedCommands.registerCommand("Dummy Command 1", new InstantCommand(this::dummyAction1));
+    NamedCommands.registerCommand("Dummy Command 2", new InstantCommand(this::dummyAction2));
   }
 
   private void checkInitialAngle() {
