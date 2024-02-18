@@ -44,7 +44,7 @@ public class RobotConfiguration {
         return disabledMap.containsKey(clsName);
     }
     
-    private RobotBuilder getBuilder() {
+    RobotBuilder getBuilder() {
         if (_robotBuilder == null) {
             _robotBuilder = RobotBuilder.Create();
         }

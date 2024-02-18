@@ -21,15 +21,21 @@ public class Builder {
     public static String BUILD_TYPE = "buildType";
     public static Builder Wrap(Builder builder) { return new Builder(builder.getIBuild(), builder.getPart()); }
     public static Function<IBuild, Builder> Define = b->new Builder(b);
+    public static Function<IBuild, Builder> DefineAs(String buildType) {
+        return build->new Builder(build, buildType);
+    }
 
     public Builder() {}
     public Builder(IBuild build, String buildType) {
-        this(build);
+        _build = build;
+        _part = new Part(buildType);
+        _build.register(_part);
         setValue(BUILD_TYPE, buildType);
     }
     public Builder(IBuild build) {
         _build = build;
-        register();
+        _part = new Part();
+        _build.register(_part);
     }
     
     public Builder parent; // e.g., the "wrapper"; a way to get info from higher up?
@@ -48,12 +54,11 @@ public class Builder {
         _part = part;
     }
     
-    private void register() {
-        _part = new Part();
-        _build.register(_part);
-    }
-
     public IBuild getIBuild() { return _build; }
+    public Builder setIBuild(IBuild build) { 
+        _build = build;
+        return this;
+     }
     public boolean isPartPresent() {return getPart() != null; }
 
     public String getName() { return  getString(Part.BUILD_NAME, ""); }
@@ -107,7 +112,8 @@ public class Builder {
     public <T extends Builder> Builder addPart(Function<IBuild, T> define, String newName, Function<T, Builder> fn) {
         return addPart(newName, new PartBuilder(define, fn));
     }
-    private Builder addPart(Builder part) {
+    
+    public Builder addPart(Builder part) {
         addPart(part.getPart());
         return part;
     }
@@ -151,6 +157,13 @@ public class Builder {
     }
     protected void addPiece(Part part) {
         _part.addPiece(part);
+    }
+    protected Builder refPiece(Builder part) {
+        refPiece(part.getPart());
+        return part;
+    }
+    protected void refPiece(Part part) {
+        _part.refPiece(part);
     }
 
     public Builder Part(String valueName) { return getPart(valueName);  }

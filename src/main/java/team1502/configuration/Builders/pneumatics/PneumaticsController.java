@@ -35,7 +35,7 @@ public class PneumaticsController extends Builder {
     }
 
     public PneumaticsController Compressor() {
-        addPart(Builder.Define, Compressor, Compressor, c -> c);
+        addPart(Builder.DefineAs(Compressor), Compressor, Compressor, c -> c);
         return this;
     }
     public PneumaticsController Solenoid(int module, int channel, String name) {
@@ -46,7 +46,7 @@ public class PneumaticsController extends Builder {
     }
 
     private void createChannel(Integer channelNumber) {
-        InstallPiece(Builder.Define, "Ch " + (channelNumber < 10 ? " " : "") + channelNumber.toString(), c->c
+        InstallPiece(Builder.DefineAs("Channel"), "Ch " + (channelNumber < 10 ? " " : "") + channelNumber.toString(), c->c
             .Value("Channel", channelNumber));        
     }
 

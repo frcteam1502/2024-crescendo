@@ -189,19 +189,16 @@ public final class RobotConfigurations {
                 .IdleMode(IdleMode.kBrake)
                 .SmartCurrentLimit(40) // encoder, PID
                 .GearBox(g-> g
-                    .Gear("5:1", 1, 5)
-                    .Gear("5:1", 1, 5)
-                    .Gear("Chain", 1, 4)))
-
-        );
-        // Top-Level Parts
-        parts.Build(arm -> arm
+                    .Gear("Cartridge #1 5:1", 1, 5)
+                    .Gear("Cartridge #2 5:1", 1, 5)
+                    .Gear("Chain 4:1", 1, 4)))
+        ).Build(arm -> arm
             .Subsystem("Arm", s -> s
-                .MotorController("ARM1", "Arm Motor", c->c
+                .MotorController("Leader", "Arm Motor", c->c
                     .PDH(1)
                     .CanNumber(1)
                 )
-                .MotorController("ARM2", "arm Motor", c->c
+                .MotorController("Follower", "Arm Motor", c->c
                     .PDH(6)
                     .CanNumber(6)
                 )

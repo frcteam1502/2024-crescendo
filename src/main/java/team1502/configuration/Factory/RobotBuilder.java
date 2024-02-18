@@ -24,7 +24,20 @@ public class RobotBuilder implements IBuild /*extends Builder*/{
         _partFactory = new PartFactory(getIBuild());
     }
     
+    private RobotBuilder _parent;
+    private Builder _part;
+    //private Part _part;
+    private RobotBuilder(RobotBuilder parent, String name) {
+        // todo, look for existing part "sub-factory"
+        _parent = parent;
+        _partFactory = new PartFactory(_parent.getPartFactory(), getIBuild());
+        _part= new Builder(_parent, "Subsystem"); // ??
+        _part.Name(name);
+        _part.setIBuild(this);
+    }
+    
     public PartFactory getPartFactory() { return _partFactory; }
+    ArrayList<Part> getParts() { return _parts; }
 
     public String Note;
 
@@ -45,12 +58,20 @@ public class RobotBuilder implements IBuild /*extends Builder*/{
     //private Builder _lastInstalled = null;
     public void install(Builder builder) {
         _buildMap.put(builder.getName(), builder);
+        if (_part != null) {
+            _part.addPart(builder);
+        }
         //_lastInstalled = builder;
     }
 
     @Override // IBuild
     public Builder getInstalled(String name) {
-        return _buildMap.get(name);
+        var installed =_buildMap.get(name);
+        return installed != null
+            ? installed
+            : _parent != null
+                ? _parent.getInstalled(name)
+                : null;
     }
 
     @Override // IBuild
@@ -62,18 +83,21 @@ public class RobotBuilder implements IBuild /*extends Builder*/{
     @Override // IBuild
     public void register(Part part) {
         _parts.add(part);
+        if (_parent != null) {
+            _parent.register(part);
+        }
     }
-
     private Builder installBuilder(Builder builder) {
         install(builder);
         return builder;
     }
 
 
+    @SuppressWarnings("unchecked")
     private <T extends Builder> RobotBuilder installBuilder(String name, String partName, Function<IBuild, T> createFunction, Function<T, Builder> buildFunction) {
-        var template = _partFactory.getTemplate(partName, createFunction, buildFunction);
+        var template = _partFactory.getTemplate(partName, createFunction, t -> buildFunction.apply(((T)t.Name(name))));
         var builder = template.creatBuilder(getIBuild());
-        builder.Name(name);
+        //builder.Name(name);
         install(builder);
         return this;
     }
@@ -94,7 +118,8 @@ public class RobotBuilder implements IBuild /*extends Builder*/{
 
     public Builder Subsystem(String partName) { return getInstalled(partName); }
     public RobotBuilder Subsystem(String partName, Function<RobotBuilder, RobotBuilder> fn) {
-        return Part(partName, partName, fn);
+        var child = new RobotBuilder(this, partName);
+        return fn.apply(child); //Part(partName, partName, fn);
     }
 
     public RobotBuilder GyroSensor(String partName, Function<GyroSensor, Builder> fn) {        
@@ -119,7 +144,10 @@ public class RobotBuilder implements IBuild /*extends Builder*/{
     }    
 
     public RobotBuilder MotorController(String name, Function<MotorController, Builder> fn) {        
-        return installBuilder(name, MotorController.NAME, MotorController.Define(Manufacturer.REVRobotics), fn);
+        return MotorController(name, MotorController.NAME, fn);
+    }    
+    public RobotBuilder MotorController(String name, String partName, Function<MotorController, Builder> fn) {        
+        return installBuilder(name, partName, MotorController.Define(Manufacturer.REVRobotics), fn);
     }    
 
     public RobotBuilder SwerveDrive(Function<SwerveDrive, Builder> fn) {        

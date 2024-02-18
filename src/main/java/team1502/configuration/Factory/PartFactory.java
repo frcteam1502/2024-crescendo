@@ -18,9 +18,14 @@ import team1502.configuration.builders.sensors.IMU;
 public class PartFactory {
     private HashMap<String, PartBuilder<?>> _builderMap = new HashMap<>();
     private IBuild _build;
+    private PartFactory _parent;
 
     public PartFactory(IBuild build) {
         _build = build;
+    }
+    public PartFactory(PartFactory parent, IBuild build) {
+        _build = build;
+        _parent = parent;
     }
     public IBuild getIBuild() {return _build; }
 
@@ -34,7 +39,12 @@ public class PartFactory {
     }
 
     public PartBuilder<? extends Builder> getTemplate(String partName) {
-        return _builderMap.get(partName);
+        var template = _builderMap.get(partName);
+        return template != null 
+            ? template
+            : _parent != null 
+                ? _parent.getTemplate(partName)
+                : null;
     }
 
     public Builder createBuilder(String partName) {
