@@ -63,7 +63,7 @@ public final class RobotConfigurations {
         .Compressor(p->p)
         .PCM(ph -> ph
             .DoubleSolenoid(15, 0, "SOL")
-            .PowerChannel(7)
+            .PDH(7)
             .Powers(hw.Compressor())
             .CanNumber(1))
 
