@@ -3,41 +3,25 @@
   "waypoints": [
     {
       "anchor": {
-        "x": 1.4,
-        "y": 5.5
+        "x": 3.64,
+        "y": 5.54
       },
       "prevControl": null,
       "nextControl": {
-        "x": 2.1756983764414763,
-        "y": 5.947701340840965
+        "x": 4.733583903687064,
+        "y": 6.640044321458116
       },
       "isLocked": false,
       "linkedName": null
     },
     {
       "anchor": {
-        "x": 3.4533527385480536,
-        "y": 6.461700222148208
+        "x": 7.883798934502291,
+        "y": 5.773442417070284
       },
       "prevControl": {
-        "x": 2.3212608511720387,
-        "y": 6.028430487473437
-      },
-      "nextControl": {
-        "x": 4.642893006716246,
-        "y": 6.916956374163195
-      },
-      "isLocked": false,
-      "linkedName": null
-    },
-    {
-      "anchor": {
-        "x": 5.85,
-        "y": 6.9
-      },
-      "prevControl": {
-        "x": 4.9495198185168245,
-        "y": 6.9
+        "x": 6.993775357022895,
+        "y": 6.956236908194216
       },
       "nextControl": null,
       "isLocked": false,
@@ -48,7 +32,7 @@
   "constraintZones": [],
   "eventMarkers": [],
   "globalConstraints": {
-    "maxVelocity": 3.0,
+    "maxVelocity": 4.0,
     "maxAcceleration": 3.0,
     "maxAngularVelocity": 540.0,
     "maxAngularAcceleration": 720.0
@@ -59,10 +43,10 @@
     "rotateFast": false
   },
   "reversed": false,
-  "folder": null,
+  "folder": "Attempt2Defence",
   "previewStartingState": {
     "rotation": 0,
     "velocity": 0
   },
-  "useDefaultConstraints": false
+  "useDefaultConstraints": true
 }
