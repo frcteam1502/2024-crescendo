@@ -46,7 +46,7 @@ public class PowerProfile extends Builder {
     }
     
     public PowerProfile AddPowered(Builder sink) {
-        addPiece(sink);
+        refPiece(sink);
         return this;
     }
 }

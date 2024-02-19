@@ -117,7 +117,7 @@ public class MdFormatter {
         return this;
     }
 
-    MdFormatter AddRow(String... text) {
+    public MdFormatter AddRow(String... text) {
         var entries = Arrays.stream(text).map(t->new Entry(t)).toArray(Entry[]::new);
         return AddRow(new Row(entries));
     }
@@ -129,7 +129,7 @@ public class MdFormatter {
         return AddRow(new Row(new Entry(text), new Entry(number)));
     }
 
-    Iterable<String> AsTable() {
+    public Iterable<String> AsTable() {
         List<String> section = new ArrayList<>();
         section.add("# " + title);
         section.add("");
@@ -144,6 +144,10 @@ public class MdFormatter {
         var seps = Arrays.stream(text).map(t->"---").toArray(String[]::new);
         return AddRow(seps);
 
+    }
+
+    public void PrintTable() {
+        AsTable().forEach(row -> System.out.println(row));
     }
     // public MdFormatter Heading(String string, String string2) {
     //     AddRow(string, string2);
