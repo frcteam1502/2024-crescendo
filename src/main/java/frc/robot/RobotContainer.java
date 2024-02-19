@@ -6,7 +6,9 @@ package frc.robot;
 
 import frc.robot.subsystems.Arm.ArmSubsystem;
 import frc.robot.subsystems.PowerManagement.MockDetector;
+import frc.robot.subsystems.ShooterIntake.ShooterIntake;
 import frc.robot.commands.ControllerCommands;
+import frc.robot.commands.ShooterIntakeCommands;
 import frc.robot.commands.ArmCommands;
 import frc.robot.subsystems.SwerveDrive.DriveSubsystem;
 
@@ -31,6 +33,7 @@ public class RobotContainer {
   // The robot's subsystems and commands are defined here...
   public final DriveSubsystem driveSubsystem = new DriveSubsystem();
   public final ArmSubsystem armSubsystem = new ArmSubsystem();
+  public final ShooterIntake shooterIntakeSubsystem = new ShooterIntake();
   //private final PdpSubsystem pdpSubsystem = new PdpSubsystem();
   //private final ExampleSubsystem m_exampleSubsystem = new ExampleSubsystem();
 
@@ -78,13 +81,20 @@ public class RobotContainer {
 
     //Arm
     armSubsystem.setDefaultCommand(new ArmCommands(armSubsystem));
-    Operator.XboxButtons.Y.onTrue(new InstantCommand(armSubsystem::rotateToAmpTrap));
+    //Operator.XboxButtons.Y.onTrue(new InstantCommand(armSubsystem::rotateToAmpTrap));
     Operator.XboxButtons.B.onTrue(new InstantCommand(armSubsystem::rotateToShootFar));
     Operator.XboxButtons.A.onTrue(new InstantCommand(armSubsystem::rotateToShootClose));
-    Operator.XboxButtons.X.onTrue(new InstantCommand(armSubsystem::rotateToIntake));
-    Operator.XboxButtons.LeftBumper.onTrue(new InstantCommand(armSubsystem::rotateToStart));
+    //Operator.XboxButtons.X.onTrue(new InstantCommand(armSubsystem::rotateToIntake));
+    //Operator.XboxButtons.LeftBumper.onTrue(new InstantCommand(armSubsystem::rotateToStart));
 
     //ShooterIntake
+    shooterIntakeSubsystem.setDefaultCommand(new ShooterIntakeCommands(shooterIntakeSubsystem));
+
+    Operator.XboxButtons.RightBumper.onTrue(new InstantCommand(shooterIntakeSubsystem::setShooterOn));
+    Operator.XboxButtons.RightBumper.onFalse(new InstantCommand(shooterIntakeSubsystem::setShooterOff));
+
+    Operator.XboxButtons.Y.onTrue(new InstantCommand(shooterIntakeSubsystem::setIntakePickup));
+    Operator.XboxButtons.Y.onFalse(new InstantCommand(shooterIntakeSubsystem::setIntakeOff));
 
     /* sample code
     // Schedule `ExampleCommand` when `exampleCondition` changes to `true`

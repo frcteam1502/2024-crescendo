@@ -5,6 +5,7 @@
 package frc.robot;
 
 import frc.robot.Logger;
+import frc.robot.subsystems.Arm.ArmSubsystem;
 import edu.wpi.first.wpilibj.PneumaticHub;
 import edu.wpi.first.wpilibj.PowerDistribution;
 import edu.wpi.first.wpilibj.PowerDistribution.ModuleType;

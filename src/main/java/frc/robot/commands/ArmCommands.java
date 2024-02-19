@@ -17,6 +17,7 @@ public class ArmCommands extends Command {
 
   @Override
   public void initialize() {
+    arm.reset();
   }
 
   @Override

@@ -1,31 +1,37 @@
 <xml version="1.0">
 <dashboard>
+	<widget field="Arm Far Angle" type="Number" class="edu.wpi.first.smartdashboard.gui.elements.TextBox">
+		<location x="918" y="146"/>
+	</widget>
+	<widget field="Arm Close Angle" type="Number" class="edu.wpi.first.smartdashboard.gui.elements.TextBox">
+		<location x="907" y="120"/>
+	</widget>
+	<widget field="Rotation In" type="Number" class="edu.wpi.first.smartdashboard.gui.elements.TextBox">
+		<location x="0" y="519"/>
+	</widget>
+	<widget field="Strafe In" type="Number" class="edu.wpi.first.smartdashboard.gui.elements.TextBox">
+		<location x="0" y="477"/>
+	</widget>
+	<widget field="Forward In" type="Number" class="edu.wpi.first.smartdashboard.gui.elements.TextBox">
+		<location x="0" y="204"/>
+	</widget>
+	<widget field="ANGLE P Gain" type="Number" class="edu.wpi.first.smartdashboard.gui.elements.TextBox">
+		<location x="921" y="187"/>
+	</widget>
+	<widget field="Intake Speed" type="Number" class="edu.wpi.first.smartdashboard.gui.elements.TextBox">
+		<location x="0" y="498"/>
+	</widget>
+	<widget field="Shooter Follow Speed" type="Number" class="edu.wpi.first.smartdashboard.gui.elements.TextBox">
+		<location x="958" y="404"/>
+	</widget>
+	<widget field="Shooter Lead Speed" type="Number" class="edu.wpi.first.smartdashboard.gui.elements.TextBox">
+		<location x="964" y="378"/>
+	</widget>
 	<widget field="Rotation Goal" type="Number" class="edu.wpi.first.smartdashboard.gui.elements.TextBox">
-		<location x="995" y="314"/>
+		<location x="920" y="91"/>
 	</widget>
 	<widget field="Arm Relative Encoder" type="Number" class="edu.wpi.first.smartdashboard.gui.elements.TextBox">
-		<location x="958" y="340"/>
-	</widget>
-	<widget field="Limelight TA" type="Number" class="edu.wpi.first.smartdashboard.gui.elements.TextBox">
-		<location x="1002" y="241"/>
-	</widget>
-	<widget field="Limelight TY" type="Number" class="edu.wpi.first.smartdashboard.gui.elements.TextBox">
-		<location x="1003" y="217"/>
-	</widget>
-	<widget field="Limelight TX" type="Number" class="edu.wpi.first.smartdashboard.gui.elements.TextBox">
-		<location x="1003" y="193"/>
-	</widget>
-	<widget field="Tag ID" type="Number" class="edu.wpi.first.smartdashboard.gui.elements.TextBox">
-		<location x="1027" y="169"/>
-	</widget>
-	<widget field="limelight_Stream" type="String" class="edu.wpi.first.smartdashboard.gui.elements.TextBox">
-		<location x="0" y="729"/>
-	</widget>
-	<widget field="limelight_Interface" type="String" class="edu.wpi.first.smartdashboard.gui.elements.TextBox">
-		<location x="0" y="708"/>
-	</widget>
-	<widget field="limelight_PipelineName" type="String" class="edu.wpi.first.smartdashboard.gui.elements.TextBox">
-		<location x="0" y="687"/>
+		<location x="883" y="64"/>
 	</widget>
 	<widget field="Drive Robot Relative Rotation Command" type="Number" class="edu.wpi.first.smartdashboard.gui.elements.TextBox">
 		<location x="0" y="42"/>
@@ -134,12 +140,10 @@
 		<location x="264" y="286"/>
 	</widget>
 	<widget field="Arm Absolute Encoder Angle" type="Number" class="edu.wpi.first.smartdashboard.gui.elements.TextBox">
-		<location x="923" y="288"/>
-	</widget>
-	<widget field="Number of AprilTags" type="Number" class="edu.wpi.first.smartdashboard.gui.elements.TextBox">
-		<location x="962" y="143"/>
+		<location x="850" y="37"/>
 	</widget>
 </dashboard>
 <live-window>
 </live-window>
+	<hidden field="Auto choices"/>
 </xml>

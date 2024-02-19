@@ -48,25 +48,25 @@ final class CANCoders {
   public static final CANcoder FRONT_LEFT_CAN_CODER = new CANcoder(16);
   public static final SensorDirectionValue FRONT_LEFT_CAN_CODER_DIRECTION = SensorDirectionValue.CounterClockwise_Positive;
   //public static final SensorDirectionValue FRONT_LEFT_CAN_CODER_DIRECTION = SensorDirectionValue.Clockwise_Positive;
-  public static final double FRONT_LEFT_CAN_CODER_OFFSET = 151.96;
+  public static final double FRONT_LEFT_CAN_CODER_OFFSET = 103.32;
 
   //Front Right CANCoder
   public static final CANcoder FRONT_RIGHT_CAN_CODER = new CANcoder(10);
   public static final SensorDirectionValue FRONT_RIGHT_CAN_CODER_DIRECTION = SensorDirectionValue.CounterClockwise_Positive;
   //public static final SensorDirectionValue FRONT_RIGHT_CAN_CODER_DIRECTION = SensorDirectionValue.Clockwise_Positive;
-  public static final double FRONT_RIGHT_CAN_CODER_OFFSET = 121.81;
+  public static final double FRONT_RIGHT_CAN_CODER_OFFSET = 292.68;
 
   //Back Left CANCoder
   public static final CANcoder BACK_LEFT_CAN_CODER = new CANcoder(4);
   public static final SensorDirectionValue BACK_LEFT_CAN_CODER_DIRECTION = SensorDirectionValue.CounterClockwise_Positive;
   //public static final SensorDirectionValue BACK_LEFT_CAN_CODER_DIRECTION = SensorDirectionValue.Clockwise_Positive;
-  public static final double BACK_LEFT_CAN_CODER_OFFSET = 4.83;
+  public static final double BACK_LEFT_CAN_CODER_OFFSET = 276.48;
 
   //Back Right CANCoder
   public static final CANcoder BACK_RIGHT_CAN_CODER = new CANcoder(8);
   public static final SensorDirectionValue BACK_RIGHT_CAN_CODER_DIRECTION = SensorDirectionValue.CounterClockwise_Positive;
   //public static final SensorDirectionValue BACK_RIGHT_CAN_CODER_DIRECTION = SensorDirectionValue.Clockwise_Positive;
-  public static final double BACK_RIGHT_CAN_CODER_OFFSET = 127.26;
+  public static final double BACK_RIGHT_CAN_CODER_OFFSET = 12.24;
 }
 
 final class DriveConstants {
@@ -125,15 +125,15 @@ final class DriveConstants {
 
 final class Motors {
   //drive
-  /*public static final CANSparkMax DRIVE_FRONT_LEFT = new CANSparkMax(17, CANSparkLowLevel.MotorType.kBrushless);
+  public static final CANSparkMax DRIVE_FRONT_LEFT = new CANSparkMax(17, CANSparkLowLevel.MotorType.kBrushless);
   public static final CANSparkMax DRIVE_FRONT_RIGHT = new CANSparkMax(11, CANSparkLowLevel.MotorType.kBrushless);
   public static final CANSparkMax DRIVE_BACK_RIGHT = new CANSparkMax(9, CANSparkLowLevel.MotorType.kBrushless);
-  public static final CANSparkMax DRIVE_BACK_LEFT = new CANSparkMax(5, CANSparkLowLevel.MotorType.kBrushless);*/
+  public static final CANSparkMax DRIVE_BACK_LEFT = new CANSparkMax(5, CANSparkLowLevel.MotorType.kBrushless);
 
-  public static final CANSparkMax DRIVE_FRONT_LEFT = new CANSparkMax(15, CANSparkLowLevel.MotorType.kBrushless);
+  /*public static final CANSparkMax DRIVE_FRONT_LEFT = new CANSparkMax(15, CANSparkLowLevel.MotorType.kBrushless);
   public static final CANSparkMax DRIVE_FRONT_RIGHT = new CANSparkMax(11, CANSparkLowLevel.MotorType.kBrushless);
   public static final CANSparkMax DRIVE_BACK_RIGHT = new CANSparkMax(9, CANSparkLowLevel.MotorType.kBrushless);
-  public static final CANSparkMax DRIVE_BACK_LEFT = new CANSparkMax(3, CANSparkLowLevel.MotorType.kBrushless);
+  public static final CANSparkMax DRIVE_BACK_LEFT = new CANSparkMax(3, CANSparkLowLevel.MotorType.kBrushless);*/
   
   //turn
   public static final CANSparkMax ANGLE_FRONT_LEFT = new CANSparkMax(16, CANSparkLowLevel.MotorType.kBrushless);
