@@ -81,20 +81,27 @@ public class RobotContainer {
 
     //Arm
     armSubsystem.setDefaultCommand(new ArmCommands(armSubsystem));
+    
+    Operator.Controller.y().onTrue(new InstantCommand(armSubsystem::rotateToAmpTrap));
+    Operator.Controller.b().onTrue(new InstantCommand(armSubsystem::rotateToShootFar));
+    Operator.Controller.a().onTrue(new InstantCommand(armSubsystem::rotateToShootClose));
+    Operator.Controller.x().onTrue(new InstantCommand(armSubsystem::rotateToIntake));
+    Operator.Controller.leftBumper().onTrue(new InstantCommand(armSubsystem::rotateToStart));
+    
     //Operator.XboxButtons.Y.onTrue(new InstantCommand(armSubsystem::rotateToAmpTrap));
-    Operator.XboxButtons.B.onTrue(new InstantCommand(armSubsystem::rotateToShootFar));
-    Operator.XboxButtons.A.onTrue(new InstantCommand(armSubsystem::rotateToShootClose));
-    Operator.XboxButtons.X.onTrue(new InstantCommand(armSubsystem::rotateToIntake));
+    //Operator.XboxButtons.B.onTrue(new InstantCommand(armSubsystem::rotateToShootFar));
+    //Operator.XboxButtons.A.onTrue(new InstantCommand(armSubsystem::rotateToShootClose));
+    //Operator.XboxButtons.X.onTrue(new InstantCommand(armSubsystem::rotateToIntake));
     //Operator.XboxButtons.LeftBumper.onTrue(new InstantCommand(armSubsystem::rotateToStart));
 
     //ShooterIntake
     shooterIntakeSubsystem.setDefaultCommand(new ShooterIntakeCommands(shooterIntakeSubsystem));
 
-    Operator.XboxButtons.RightBumper.onTrue(new InstantCommand(shooterIntakeSubsystem::setShooterOn));
-    Operator.XboxButtons.RightBumper.onFalse(new InstantCommand(shooterIntakeSubsystem::setShooterOff));
+    Operator.Controller.rightTrigger(0.5).onTrue(new InstantCommand(shooterIntakeSubsystem::setShooterOn));
+    Operator.Controller.rightTrigger(0.5).onFalse(new InstantCommand(shooterIntakeSubsystem::setShooterOff));
 
-    Operator.XboxButtons.Y.onTrue(new InstantCommand(shooterIntakeSubsystem::setIntakePickup));
-    Operator.XboxButtons.Y.onFalse(new InstantCommand(shooterIntakeSubsystem::setIntakeOff));
+    Operator.Controller.leftTrigger(.5).onTrue(new InstantCommand(shooterIntakeSubsystem::setIntakePickup));
+    Operator.Controller.leftTrigger(.5).onFalse(new InstantCommand(shooterIntakeSubsystem::setIntakeOff));
 
     /* sample code
     // Schedule `ExampleCommand` when `exampleCondition` changes to `true`
