@@ -5,11 +5,17 @@
 package frc.robot.commands;
 
 import edu.wpi.first.wpilibj2.command.Command;
+import frc.robot.subsystems.ShooterIntake.ShooterIntake;
 
 public class IntakeNote extends Command {
   /** Creates a new IntakeNote. */
-  public IntakeNote() {
+  private final ShooterIntake shooterIntake;
+
+  public IntakeNote(ShooterIntake shooterIntake) {
     // Use addRequirements() here to declare subsystem dependencies.
+    this.shooterIntake = shooterIntake;
+
+    addRequirements(shooterIntake);
   }
 
   // Called when the command is initially scheduled.

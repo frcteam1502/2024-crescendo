@@ -84,7 +84,7 @@ public class RobotContainer {
     //Operator.XboxButtons.Y.onTrue(new InstantCommand(armSubsystem::rotateToAmpTrap));
     Operator.XboxButtons.B.onTrue(new InstantCommand(armSubsystem::rotateToShootFar));
     Operator.XboxButtons.A.onTrue(new InstantCommand(armSubsystem::rotateToShootClose));
-    //Operator.XboxButtons.X.onTrue(new InstantCommand(armSubsystem::rotateToIntake));
+    Operator.XboxButtons.X.onTrue(new InstantCommand(armSubsystem::rotateToIntake));
     //Operator.XboxButtons.LeftBumper.onTrue(new InstantCommand(armSubsystem::rotateToStart));
 
     //ShooterIntake

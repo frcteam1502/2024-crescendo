@@ -1,13 +1,22 @@
 <xml version="1.0">
 <dashboard>
-	<widget field="Arm Far Angle" type="Number" class="edu.wpi.first.smartdashboard.gui.elements.TextBox">
-		<location x="918" y="146"/>
+	<widget field="Shooter PID FF" type="Number" class="edu.wpi.first.smartdashboard.gui.elements.TextBox">
+		<location x="987" y="349"/>
 	</widget>
-	<widget field="Arm Close Angle" type="Number" class="edu.wpi.first.smartdashboard.gui.elements.TextBox">
-		<location x="907" y="120"/>
+	<widget field="Intake PID FF" type="Number" class="edu.wpi.first.smartdashboard.gui.elements.TextBox">
+		<location x="1243" y="441"/>
+	</widget>
+	<widget field="Intake Pickup Speed" type="Number" class="edu.wpi.first.smartdashboard.gui.elements.TextBox">
+		<location x="1212" y="391"/>
+	</widget>
+	<widget field="Intake Applied Output Volts" type="Number" class="edu.wpi.first.smartdashboard.gui.elements.TextBox">
+		<location x="1178" y="490"/>
+	</widget>
+	<widget field="Intake Applied Output %" type="Number" class="edu.wpi.first.smartdashboard.gui.elements.TextBox">
+		<location x="1189" y="466"/>
 	</widget>
 	<widget field="Rotation In" type="Number" class="edu.wpi.first.smartdashboard.gui.elements.TextBox">
-		<location x="0" y="519"/>
+		<location x="0" y="498"/>
 	</widget>
 	<widget field="Strafe In" type="Number" class="edu.wpi.first.smartdashboard.gui.elements.TextBox">
 		<location x="0" y="477"/>
@@ -15,11 +24,35 @@
 	<widget field="Forward In" type="Number" class="edu.wpi.first.smartdashboard.gui.elements.TextBox">
 		<location x="0" y="204"/>
 	</widget>
+	<widget field="Arm Intake Angle" type="Number" class="edu.wpi.first.smartdashboard.gui.elements.TextBox">
+		<location x="900" y="134"/>
+	</widget>
+	<widget field="Shooter Follow Applied Output Volts" type="Number" class="edu.wpi.first.smartdashboard.gui.elements.TextBox">
+		<location x="890" y="512"/>
+	</widget>
+	<widget field="Shooter Follow Applied Output %" type="Number" class="edu.wpi.first.smartdashboard.gui.elements.TextBox">
+		<location x="902" y="484"/>
+	</widget>
+	<widget field="Shooter Lead Applied Output Volts" type="Number" class="edu.wpi.first.smartdashboard.gui.elements.TextBox">
+		<location x="897" y="458"/>
+	</widget>
+	<widget field="Shooter Lead Applied Output %" type="Number" class="edu.wpi.first.smartdashboard.gui.elements.TextBox">
+		<location x="909" y="432"/>
+	</widget>
+	<widget field="Shooter Set Speed" type="Number" class="edu.wpi.first.smartdashboard.gui.elements.TextBox">
+		<location x="970" y="324"/>
+	</widget>
+	<widget field="Arm Far Angle" type="Number" class="edu.wpi.first.smartdashboard.gui.elements.TextBox">
+		<location x="916" y="186"/>
+	</widget>
+	<widget field="Arm Close Angle" type="Number" class="edu.wpi.first.smartdashboard.gui.elements.TextBox">
+		<location x="906" y="160"/>
+	</widget>
 	<widget field="ANGLE P Gain" type="Number" class="edu.wpi.first.smartdashboard.gui.elements.TextBox">
-		<location x="921" y="187"/>
+		<location x="924" y="243"/>
 	</widget>
 	<widget field="Intake Speed" type="Number" class="edu.wpi.first.smartdashboard.gui.elements.TextBox">
-		<location x="0" y="498"/>
+		<location x="1245" y="415"/>
 	</widget>
 	<widget field="Shooter Follow Speed" type="Number" class="edu.wpi.first.smartdashboard.gui.elements.TextBox">
 		<location x="958" y="404"/>
@@ -146,4 +179,7 @@
 <live-window>
 </live-window>
 	<hidden field="Auto choices"/>
+	<hidden field="Intake Voltage"/>
+	<hidden field="Intake Applied Output"/>
+	<hidden field="Intake Set Speed"/>
 </xml>

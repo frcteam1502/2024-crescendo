@@ -1,5 +1,7 @@
 package frc.robot.subsystems.Arm;
 
+import frc.robot.Logger;
+
 import com.revrobotics.CANSparkMax;
 import com.revrobotics.CANSparkLowLevel;
 import com.revrobotics.CANSparkBase.IdleMode;
@@ -47,7 +49,7 @@ final class ArmConstants{
 
   public static final double[] POSITION_TABLE = 
   {
-    0.0,  //Intake
+    -2.25,  //Intake
     -26, //Shoot Close
     -45, //Shoot Far
     -18,   //Stow/Start
@@ -70,6 +72,7 @@ public class ArmSubsystem extends SubsystemBase {
   private double goalRotate = 0;
 
   private double arm_p_gain = ArmConstants.ARM_P_GAIN;
+  private double arm_intake_angle = ArmConstants.POSITION_TABLE[0];
   private double arm_close_angle = ArmConstants.POSITION_TABLE[1];
   private double arm_far_angle = ArmConstants.POSITION_TABLE[2];
 
@@ -102,11 +105,13 @@ public class ArmSubsystem extends SubsystemBase {
     rotatePID.setOutputRange((-ArmConstants.MAX_ROTATION_SPEED), ArmConstants.MAX_ROTATION_SPEED);
 
     SmartDashboard.putNumber("ANGLE P Gain", arm_p_gain);
+    SmartDashboard.putNumber("Arm Intake Angle", arm_intake_angle);
     SmartDashboard.putNumber("Arm Close Angle", arm_close_angle);
     SmartDashboard.putNumber("Arm Far Angle", arm_far_angle);
     
     //Reset the subsystem
     reset();
+    registerLoggerObjects();
   }
 
    // For Testing
@@ -132,6 +137,7 @@ public class ArmSubsystem extends SubsystemBase {
     if((max != rotatePID.getOutputMax()) || (min != rotatePID.getOutputMin())) { 
       rotatePID.setOutputRange(min, max); 
     }*/
+    arm_intake_angle = SmartDashboard.getNumber("Arm Intake Angle", 0);
     arm_close_angle = SmartDashboard.getNumber("Arm Close Angle", 0);
     arm_far_angle = SmartDashboard.getNumber("Arm Far Angle", 0);
     SmartDashboard.putNumber("Arm Far Angle", arm_far_angle);
@@ -148,7 +154,7 @@ public class ArmSubsystem extends SubsystemBase {
     goalRotate = (zeroedArmAbsPosition);
   }
 
-  private final double getArmAbsPositionDegrees(){
+  public double getArmAbsPositionDegrees(){
     //REV Encoder is CCW+
     double angleDegrees = rotateAbsEncoder.getAbsolutePosition()*360;
 
@@ -162,7 +168,7 @@ public class ArmSubsystem extends SubsystemBase {
   }
 
   public void rotateToIntake() {
-    rotateArm(ArmConstants.POSITION_TABLE[0]);
+    rotateArm(arm_intake_angle);
   }
 
   public void rotateToShootClose() {
@@ -208,6 +214,13 @@ public class ArmSubsystem extends SubsystemBase {
    */
   public double dynamicFeedForward(double currentAngle) {
     return ArmConstants.MAX_ROTATE_FEEDFORWARD * Math.cos(currentAngle);
+  }
+
+  private void registerLoggerObjects(){
+    Logger.RegisterCanSparkMax("Arm Lead", Motors.ARM_LEAD);
+    Logger.RegisterCanSparkMax("Arm Lead", Motors.ARM_FOLLOW);
+
+    Logger.RegisterSensor("Arm Absolute Sensor", ()->getArmAbsPositionDegrees());
   }
 
   @Override
