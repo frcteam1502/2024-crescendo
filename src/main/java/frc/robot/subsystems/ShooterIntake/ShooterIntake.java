@@ -150,7 +150,7 @@ public class ShooterIntake extends SubsystemBase {
   }
 
   public boolean isNotePresent(){
-    if((photoSensorNormOpen.get())||(!photoSensorNormClosed.get())){
+    if(!photoSensorNormOpen.get()){
       return true;
     }else{
       return false;
@@ -182,6 +182,9 @@ public class ShooterIntake extends SubsystemBase {
 
     SmartDashboard.putNumber("Intake Applied Output %", intake.getAppliedOutput());
     SmartDashboard.putNumber("Intake Applied Output Volts", (intake.getAppliedOutput()*intake.getBusVoltage()));
+
+    SmartDashboard.putBoolean("Note Present 1", photoSensorNormOpen.get());
+    SmartDashboard.putBoolean("Note Present 2", photoSensorNormClosed.get());
     
   }
 

@@ -1,5 +1,32 @@
 <xml version="1.0">
 <dashboard>
+	<widget field="Rotation In" type="Number" class="edu.wpi.first.smartdashboard.gui.elements.TextBox">
+		<location x="0" y="498"/>
+	</widget>
+	<widget field="Strafe In" type="Number" class="edu.wpi.first.smartdashboard.gui.elements.TextBox">
+		<location x="0" y="477"/>
+	</widget>
+	<widget field="Forward In" type="Number" class="edu.wpi.first.smartdashboard.gui.elements.TextBox">
+		<location x="0" y="204"/>
+	</widget>
+	<widget field="Note Present 2" type="Boolean" class="edu.wpi.first.smartdashboard.gui.elements.TextBox">
+		<location x="0" y="729"/>
+	</widget>
+	<widget field="Note Present 1" type="Boolean" class="edu.wpi.first.smartdashboard.gui.elements.TextBox">
+		<location x="0" y="708"/>
+	</widget>
+	<widget field="Intake Voltage" type="Number" class="edu.wpi.first.smartdashboard.gui.elements.TextBox">
+		<location x="0" y="666"/>
+	</widget>
+	<widget field="Intake Set Speed" type="Number" class="edu.wpi.first.smartdashboard.gui.elements.TextBox">
+		<location x="0" y="645"/>
+	</widget>
+	<widget field="Intake PID p" type="Number" class="edu.wpi.first.smartdashboard.gui.elements.TextBox">
+		<location x="0" y="624"/>
+	</widget>
+	<widget field="Shooter PID P" type="Number" class="edu.wpi.first.smartdashboard.gui.elements.TextBox">
+		<location x="0" y="519"/>
+	</widget>
 	<widget field="Shooter PID FF" type="Number" class="edu.wpi.first.smartdashboard.gui.elements.TextBox">
 		<location x="987" y="349"/>
 	</widget>
@@ -14,15 +41,6 @@
 	</widget>
 	<widget field="Intake Applied Output %" type="Number" class="edu.wpi.first.smartdashboard.gui.elements.TextBox">
 		<location x="1189" y="466"/>
-	</widget>
-	<widget field="Rotation In" type="Number" class="edu.wpi.first.smartdashboard.gui.elements.TextBox">
-		<location x="0" y="498"/>
-	</widget>
-	<widget field="Strafe In" type="Number" class="edu.wpi.first.smartdashboard.gui.elements.TextBox">
-		<location x="0" y="477"/>
-	</widget>
-	<widget field="Forward In" type="Number" class="edu.wpi.first.smartdashboard.gui.elements.TextBox">
-		<location x="0" y="204"/>
 	</widget>
 	<widget field="Arm Intake Angle" type="Number" class="edu.wpi.first.smartdashboard.gui.elements.TextBox">
 		<location x="900" y="134"/>
@@ -178,8 +196,4 @@
 </dashboard>
 <live-window>
 </live-window>
-	<hidden field="Auto choices"/>
-	<hidden field="Intake Voltage"/>
-	<hidden field="Intake Applied Output"/>
-	<hidden field="Intake Set Speed"/>
 </xml>

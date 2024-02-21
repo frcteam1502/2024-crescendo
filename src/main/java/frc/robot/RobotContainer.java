@@ -8,6 +8,7 @@ import frc.robot.subsystems.Arm.ArmSubsystem;
 import frc.robot.subsystems.PowerManagement.MockDetector;
 import frc.robot.subsystems.ShooterIntake.ShooterIntake;
 import frc.robot.commands.ControllerCommands;
+import frc.robot.commands.PickupNote;
 import frc.robot.commands.ShooterIntakeCommands;
 import frc.robot.commands.ArmCommands;
 import frc.robot.subsystems.SwerveDrive.DriveSubsystem;
@@ -100,8 +101,10 @@ public class RobotContainer {
     Operator.Controller.rightTrigger(0.5).onTrue(new InstantCommand(shooterIntakeSubsystem::setShooterOn));
     Operator.Controller.rightTrigger(0.5).onFalse(new InstantCommand(shooterIntakeSubsystem::setShooterOff));
 
-    Operator.Controller.leftTrigger(.5).onTrue(new InstantCommand(shooterIntakeSubsystem::setIntakePickup));
-    Operator.Controller.leftTrigger(.5).onFalse(new InstantCommand(shooterIntakeSubsystem::setIntakeOff));
+    //Operator.Controller.leftTrigger(.5).onTrue(new InstantCommand(shooterIntakeSubsystem::setIntakePickup));
+    //Operator.Controller.leftTrigger(.5).onFalse(new InstantCommand(shooterIntakeSubsystem::setIntakeOff));
+    Operator.Controller.leftTrigger(.5).whileTrue(new PickupNote(shooterIntakeSubsystem));
+
 
     /* sample code
     // Schedule `ExampleCommand` when `exampleCondition` changes to `true`
