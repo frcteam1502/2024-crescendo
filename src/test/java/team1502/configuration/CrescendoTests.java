@@ -17,6 +17,7 @@ public class CrescendoTests {
         printDetailedChannels("PDH", config.PDH());
         printDetailedChannels("MPM1", config.MPM("MPM1"));
         printDetailedChannels("MPM2", config.MPM("MPM2"));
+        printDetailedChannels("Pneumatics Hub", config.PCM());
     }
 
     private void checkValues(RobotConfiguration config) {

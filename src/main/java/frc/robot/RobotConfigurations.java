@@ -4,6 +4,7 @@ import com.revrobotics.CANSparkBase.IdleMode;
 import com.revrobotics.CANSparkLowLevel.MotorType;
 
 import team1502.configuration.CAN.Manufacturer;
+import team1502.configuration.builders.pneumatics.PneumaticsController;
 import team1502.configuration.factory.RobotConfiguration;
 
 public final class RobotConfigurations {
@@ -86,24 +87,24 @@ public final class RobotConfigurations {
             .MPM("MPM1", 0))
 
         // PNEUMATICS
-        .Compressor(p->p)
+        .Compressor(p->p.PowerChannel(PneumaticsController.CompressorPower))
         .PCM(ph -> ph
-            .DoubleSolenoid(15, 0, "SOL")
+            .Solenoid(0, 0, "Brake Solenoid")
             .PDH(7)
             .Powers(hw.Compressor())
             .CanNumber(1))
 
         // ARM
         .Subsystem("Arm", s -> s
-            .MotorController("Leader", "Arm Motor", c->c
+            .MotorController("Arm Leader", "Arm Motor", c->c
                 .PID(0.4, 0, 0)
                 .PDH(1)
-                .CanNumber(1)
+                .CanNumber(1).Abbreviation("Arm-L")
             )
-            .MotorController("Follower", "Arm Motor", c->c
+            .MotorController("Arm Follower", "Arm Motor", c->c
                 //.Reversed() automatic by .Follow()?
                 .PDH(6)
-                .CanNumber(6)
+                .CanNumber(6).Abbreviation("Arm-F")
             )
             //.Encoder(e-> e.Dio(0)) DutyCycleEncoder
             //  ABS_OFFSET = -5; also get 1:100 from motors
@@ -111,18 +112,18 @@ public final class RobotConfigurations {
         )
 
         .Subsystem("ShooterIntake", s -> s
-            .MotorController("Leader", "Shooter Motor", c->c
+            .MotorController("Shooter Leader", "Shooter Motor", c->c
                 .PDH(2)
-                .CanNumber(2)
+                .CanNumber(2).Abbreviation("Sh-Ldr")
             )
-            .MotorController("Follower", "Shooter Motor", c->c
+            .MotorController("Shooter Follower", "Shooter Motor", c->c
                 .Reversed()
                 .PDH(3)
-                .CanNumber(3)
+                .CanNumber(3).Abbreviation("Sh-Flw")
             )
             .MotorController("Intake", "Intake Motor", c->c
                 .PDH(18)
-                .CanNumber(18)
+                .CanNumber(18).Abbreviation("Intk")
             )
             // DigitalInput(PHOTO_SENSOR_NO, 1)
             // DigitalInput(PHOTO_SENSOR_NC, 2)
@@ -148,7 +149,7 @@ public final class RobotConfigurations {
                     .MPM("MPM1", 1))
             )
             .SwerveModule("#3", sm -> sm
-                .Wrap(sw->sw.FriendlyName("Back Left").Abbreviation("BL"))
+                .Wrap(sw->sw.FriendlyName("Rear Left").Abbreviation("RL"))
                 .CanNumber(4) // 4 4 5
                 .Encoder(e -> e
                     .MagneticOffset(276.48)
@@ -156,7 +157,7 @@ public final class RobotConfigurations {
                     .MPM("MPM2", 1))
             )
             .SwerveModule("#4", sm -> sm
-                .Wrap(sw->sw.FriendlyName("Back Right").Abbreviation("BR"))
+                .Wrap(sw->sw.FriendlyName("Rear Right").Abbreviation("RR"))
                 .CanNumber(8) // 8 8 9
                 .Encoder(e -> e
                     .MagneticOffset(12.24)
