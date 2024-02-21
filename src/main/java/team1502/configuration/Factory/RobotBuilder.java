@@ -119,7 +119,8 @@ public class RobotBuilder implements IBuild /*extends Builder*/{
     public Builder Subsystem(String partName) { return getInstalled(partName); }
     public RobotBuilder Subsystem(String partName, Function<RobotBuilder, RobotBuilder> fn) {
         var child = new RobotBuilder(this, partName);
-        return fn.apply(child); //Part(partName, partName, fn);
+        fn.apply(child); //Part(partName, partName, fn);
+        return this;
     }
 
     public RobotBuilder GyroSensor(String partName, Function<GyroSensor, Builder> fn) {        

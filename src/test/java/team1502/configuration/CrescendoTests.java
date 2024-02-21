@@ -5,18 +5,25 @@ import org.junit.jupiter.api.Test;
 import edu.wpi.first.wpilibj.PneumaticsControlModule;
 import team1502.configuration.builders.pneumatics.PneumaticsController;
 import team1502.configuration.builders.power.PowerDistributionModule;
+import team1502.configuration.factory.RobotConfiguration;
 
 public class CrescendoTests {
     
     @Test
     public void buildRobotTest() {
         var config = frc.robot.RobotConfigurations.getConfiguration("");
-
+        checkValues(config);
+         
         printDetailedChannels("PDH", config.PDH());
         printDetailedChannels("MPM1", config.MPM("MPM1"));
         printDetailedChannels("MPM2", config.MPM("MPM2"));
     }
 
+    private void checkValues(RobotConfiguration config) {
+        var sw = config.SwerveDrive();
+        var swm = config.SwerveDrive().getModules();
+        
+    }
     private void printChannels(PowerDistributionModule pdh) {
         var ch20 = pdh.getChannel(20);
         echo(ch20.Part().ShortName());

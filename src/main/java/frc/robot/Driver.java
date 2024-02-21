@@ -1,12 +1,11 @@
 package frc.robot;
 
 import frc.robot.Constants.OperatorConstants;
-import edu.wpi.first.wpilibj.XboxController;
-import edu.wpi.first.wpilibj2.command.button.JoystickButton;
-import edu.wpi.first.wpilibj2.command.button.POVButton;
+import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
+import edu.wpi.first.wpilibj2.command.button.Trigger;
 
 public final class Driver {
-  public static final XboxController Controller = new XboxController(OperatorConstants.kDriverControllerPort);
+  public static final CommandXboxController Controller = new CommandXboxController(OperatorConstants.kOperatorControllerPort);
 
   public static double getLeftX() { return Controller.getLeftX();}
   public static double getLeftY() { return Controller.getLeftY();}
@@ -19,13 +18,12 @@ public final class Driver {
   public static final class XboxButtons {
     
     // Left side controls
-    public static final JoystickButton LeftStick = new JoystickButton(Controller,XboxController.Button.kLeftStick.value);
-    public static final JoystickButton LeftBumper = new JoystickButton(Controller, XboxController.Button.kLeftBumper.value); 
+  public static final Trigger LeftStick = Controller.leftStick();
+  public static final Trigger LeftBumper = Controller.leftBumper();
 
-
-    // Right side controls
-    public static final JoystickButton RightStick = new JoystickButton(Controller, XboxController.Button.kRightStick.value);
-    public static final JoystickButton RightBumper = new JoystickButton(Controller, XboxController.Button.kRightBumper.value); 
+  // Right side controls
+  public static final Trigger RightStick = Controller.rightStick();
+  public static final Trigger RightBumper = Controller.rightBumper();
     
     /*  Logitech 310 Buttons
     __                      _______
@@ -37,25 +35,25 @@ public final class Driver {
     */
     
     // Action Buttons
-    public static final JoystickButton A = new JoystickButton(Controller, XboxController.Button.kA.value); 
-    public static final JoystickButton B = new JoystickButton(Controller, XboxController.Button.kB.value); 
-    public static final JoystickButton X = new JoystickButton(Controller, XboxController.Button.kX.value); 
-    public static final JoystickButton Y = new JoystickButton(Controller, XboxController.Button.kY.value); 
-    
+    public static final Trigger A = Controller.a(); 
+    public static final Trigger B = Controller.b(); 
+    public static final Trigger X = Controller.b(); 
+    public static final Trigger Y = Controller.b(); 
+      
     // Other buttons
-    public static final JoystickButton Back = new JoystickButton(Controller, XboxController.Button.kBack.value);
-    public static final JoystickButton Start = new JoystickButton(Controller, XboxController.Button.kStart.value);
+    public static final Trigger Back = Controller.back();
+    public static final Trigger Start = Controller.start();
     // "Mode" button swaps the D-pad and left stick
     // "Logitech" button is like Guide or Home
 
     // Directional Pad
-    public static final POVButton North = new POVButton(Controller, 0);
-    public static final POVButton NorthEast = new POVButton(Controller, 45);
-    public static final POVButton East = new POVButton(Controller, 90);
-    public static final POVButton SouthEast = new POVButton(Controller, 135);
-    public static final POVButton South = new POVButton(Controller, 180);
-    public static final POVButton SouthWest = new POVButton(Controller, 225);
-    public static final POVButton West = new POVButton(Controller, 270);
-    public static final POVButton NorthWest = new POVButton(Controller, 315);
-  }
+    public static final Trigger North = Controller.povUp();
+    public static final Trigger NorthEast = Controller.povUpRight();
+    public static final Trigger East = Controller.povRight();
+    public static final Trigger SouthEast = Controller.povDownRight();
+    public static final Trigger South = Controller.povDown();
+    public static final Trigger SouthWest = Controller.povDownLeft();
+    public static final Trigger West = Controller.povLeft();
+    public static final Trigger NorthWest = Controller.povUpLeft();
+    }
 }

@@ -1,5 +1,7 @@
 package frc.robot.subsystems.Arm;
 
+import frc.robot.Logger;
+
 import com.revrobotics.CANSparkMax;
 import com.revrobotics.CANSparkLowLevel;
 import com.revrobotics.CANSparkBase.IdleMode;
@@ -7,6 +9,8 @@ import com.revrobotics.RelativeEncoder;
 import com.revrobotics.SparkPIDController;
 
 import edu.wpi.first.wpilibj.DutyCycleEncoder;
+import edu.wpi.first.wpilibj.PneumaticsModuleType;
+import edu.wpi.first.wpilibj.Solenoid;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
@@ -18,6 +22,8 @@ final class Motors{
   public static final CANSparkMax ARM_LEAD = new CANSparkMax(1, CANSparkLowLevel.MotorType.kBrushless);
   public static final CANSparkMax ARM_FOLLOW = new CANSparkMax(6, CANSparkLowLevel.MotorType.kBrushless);
   public static final CANSparkMax.IdleMode ARM_MOTOR_IDLE_MODE = IdleMode.kBrake;
+
+  public static final Solenoid BRAKE_SOLENOID = new Solenoid(7,PneumaticsModuleType.REVPH, 0);
 }
 
 final class AbsEncoder{
@@ -37,13 +43,18 @@ final class ArmConstants{
 
   public static final double MAX_ROTATION_SPEED = .3;
 
-  public static final double ABS_OFFSET = -4.65;//This is unique for the robot!
+  public static final double ABS_OFFSET = -5;//This is unique for the robot!
+
+  public static final double ARM_P_GAIN = 0.4;
+  public static final double ARM_I_GAIN = 0;
+  public static final double ARM_D_GAIN = 0;
+  public static final double ARM_F_GAIN = 0;
 
   public static final double[] POSITION_TABLE = 
   {
-    0.0,  //Intake
-    -9, //Shoot Close
-    -13.5, //Shoot Far
+    -2.25,  //Intake
+    -26, //Shoot Close
+    -45, //Shoot Far
     -18,   //Stow/Start
     -22.5,  //Amp/Trap
   };
@@ -61,7 +72,14 @@ public class ArmSubsystem extends SubsystemBase {
 
   public final DutyCycleEncoder rotateAbsEncoder;
 
+  public final Solenoid brakeSolenoid;
+
   private double goalRotate = 0;
+
+  private double arm_p_gain = ArmConstants.ARM_P_GAIN;
+  private double arm_intake_angle = ArmConstants.POSITION_TABLE[0];
+  private double arm_close_angle = ArmConstants.POSITION_TABLE[1];
+  private double arm_far_angle = ArmConstants.POSITION_TABLE[2];
 
   public ArmSubsystem() {
     //Initialize Motors
@@ -73,6 +91,8 @@ public class ArmSubsystem extends SubsystemBase {
     rotateFollower.setSmartCurrentLimit(40);
     rotateFollower.setIdleMode(Motors.ARM_MOTOR_IDLE_MODE);
 
+    brakeSolenoid = Motors.BRAKE_SOLENOID;
+
     //Initialize Relative Encoder
     rotateRelativeEncoder = rotate.getEncoder();
     rotateRelativeEncoder.setPositionConversionFactor(ArmConstants.ARM_DEGREES_PER_ENCODER_ROTATION);
@@ -83,51 +103,63 @@ public class ArmSubsystem extends SubsystemBase {
     //Initialize PID controller
     rotatePID = rotate.getPIDController();
     rotatePID.setFeedbackDevice(rotateRelativeEncoder);
-    rotatePID.setP(.05); //TODO: Get PID values
+    rotatePID.setP(ArmConstants.ARM_P_GAIN); //TODO: Get PID values
     rotatePID.setI(0);
     rotatePID.setD(0);
     //rotatePID.setFF(MAX_ROTATE_FEEDFORWARD);
     rotatePID.setOutputRange((-ArmConstants.MAX_ROTATION_SPEED), ArmConstants.MAX_ROTATION_SPEED);
+
+    SmartDashboard.putNumber("ANGLE P Gain", arm_p_gain);
+    SmartDashboard.putNumber("Arm Intake Angle", arm_intake_angle);
+    SmartDashboard.putNumber("Arm Close Angle", arm_close_angle);
+    SmartDashboard.putNumber("Arm Far Angle", arm_far_angle);
     
     //Reset the subsystem
     reset();
+    registerLoggerObjects();
   }
 
    // For Testing
    public void updateDashboard(){ 
+    
     // read PID coefficients from SmartDashboard
-    /*double p =         SmartDashboard.getNumber("ANGLE P Gain", 0);
-    double i =         SmartDashboard.getNumber("ANGLE I Gain", 0);
+    arm_p_gain =         SmartDashboard.getNumber("ANGLE P Gain", 0);
+    /*double i =         SmartDashboard.getNumber("ANGLE I Gain", 0);
     double d =         SmartDashboard.getNumber("ANGLE D Gain", 0);
     double iz =        SmartDashboard.getNumber("ANGLE I Zone", 0);
     double ff =        SmartDashboard.getNumber("ANGLE Feed Forward", 0);
     double max =       SmartDashboard.getNumber("ANGLE Max Output", 0);
-    double min =       SmartDashboard.getNumber("ANGLE Min Output", 0);
+    double min =       SmartDashboard.getNumber("ANGLE Min Output", 0);*/
+
+    
 
     // if PID coefficients on SmartDashboard have changed, write new values to controller
-    if((p != rotatePID.getP())) { rotatePID.setP(p); }
-    if((i != rotatePID.getI())) { rotatePID.setI(i); }
+    if((arm_p_gain != rotatePID.getP())) { rotatePID.setP(arm_p_gain); }
+    /*if((i != rotatePID.getI())) { rotatePID.setI(i); }
     if((d != rotatePID.getD())) { rotatePID.setD(d); }
     if((iz != rotatePID.getIZone())) { rotatePID.setIZone(iz); }
     if((ff != rotatePID.getFF())) { rotatePID.setFF(ff); }
     if((max != rotatePID.getOutputMax()) || (min != rotatePID.getOutputMin())) { 
       rotatePID.setOutputRange(min, max); 
     }*/
-
+    arm_intake_angle = SmartDashboard.getNumber("Arm Intake Angle", 0);
+    arm_close_angle = SmartDashboard.getNumber("Arm Close Angle", 0);
+    arm_far_angle = SmartDashboard.getNumber("Arm Far Angle", 0);
+    SmartDashboard.putNumber("Arm Far Angle", arm_far_angle);
     SmartDashboard.putNumber("Arm Absolute Encoder Angle", getArmAbsPositionDegrees());
     SmartDashboard.putNumber("Arm Relative Encoder", rotateRelativeEncoder.getPosition());
     SmartDashboard.putNumber("Rotation Goal", goalRotate);
   }
 
-  private final void reset(){
+  public void reset(){
     //Set Arm relative Position to absolute position
     double zeroedArmAbsPosition = getArmAbsPositionDegrees();
 
-    rotateRelativeEncoder.setPosition(-zeroedArmAbsPosition);
-    goalRotate = -zeroedArmAbsPosition;
+    rotateRelativeEncoder.setPosition((zeroedArmAbsPosition));
+    goalRotate = (zeroedArmAbsPosition);
   }
 
-  private final double getArmAbsPositionDegrees(){
+  public double getArmAbsPositionDegrees(){
     //REV Encoder is CCW+
     double angleDegrees = rotateAbsEncoder.getAbsolutePosition()*360;
 
@@ -141,15 +173,17 @@ public class ArmSubsystem extends SubsystemBase {
   }
 
   public void rotateToIntake() {
-    rotateArm(ArmConstants.POSITION_TABLE[0]);
+    rotateArm(arm_intake_angle);
   }
 
   public void rotateToShootClose() {
-    rotateArm(ArmConstants.POSITION_TABLE[1]);
+    //rotateArm(ArmConstants.POSITION_TABLE[1]);
+    rotateArm(arm_close_angle);
   }
 
   public void rotateToShootFar() {
-    rotateArm(ArmConstants.POSITION_TABLE[2]);
+    //rotateArm(ArmConstants.POSITION_TABLE[2]);
+    rotateArm(arm_far_angle);
   }
 
   public void rotateToStart() {
@@ -185,6 +219,13 @@ public class ArmSubsystem extends SubsystemBase {
    */
   public double dynamicFeedForward(double currentAngle) {
     return ArmConstants.MAX_ROTATE_FEEDFORWARD * Math.cos(currentAngle);
+  }
+
+  private void registerLoggerObjects(){
+    Logger.RegisterCanSparkMax("Arm Lead", Motors.ARM_LEAD);
+    Logger.RegisterCanSparkMax("Arm Lead", Motors.ARM_FOLLOW);
+
+    Logger.RegisterSensor("Arm Absolute Sensor", ()->getArmAbsPositionDegrees());
   }
 
   @Override

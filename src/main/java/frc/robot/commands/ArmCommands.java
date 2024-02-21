@@ -7,23 +7,23 @@ import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
 
 public class ArmCommands extends Command {
-  @SuppressWarnings({ "PMD.UnusedPrivateField", "PMD.SingularField" })
   private final ArmSubsystem arm;
 
   public ArmCommands(ArmSubsystem arm) {
     this.arm = arm;
 
     addRequirements(arm);
-
   }
 
   @Override
   public void initialize() {
-    Operator.XboxButtons.Y.onTrue(new InstantCommand(arm::rotateToAmpTrap));
-    Operator.XboxButtons.B.onTrue(new InstantCommand(arm::rotateToShootFar));
-    Operator.XboxButtons.A.onTrue(new InstantCommand(arm::rotateToShootClose));
-    Operator.XboxButtons.X.onTrue(new InstantCommand(arm::rotateToIntake));
-    Operator.XboxButtons.LeftBumper.onTrue(new InstantCommand(arm::rotateToStart));
+    Operator.Y.onTrue(new InstantCommand(arm::rotateToAmpTrap));
+    Operator.B.onTrue(new InstantCommand(arm::rotateToShootFar));
+    Operator.A.onTrue(new InstantCommand(arm::rotateToShootClose));
+    Operator.X.onTrue(new InstantCommand(arm::rotateToIntake));
+    Operator.LeftBumper.onTrue(new InstantCommand(arm::rotateToStart));
+    
+    arm.reset();
   }
 
   @Override

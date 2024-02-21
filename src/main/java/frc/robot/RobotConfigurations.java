@@ -27,15 +27,41 @@ public final class RobotConfigurations {
     }
     
     private static RobotConfiguration buildCompetitionBot(RobotConfiguration parts) {
+        // PDH
         parts.PowerDistributionModule(pdh -> pdh
             .Ch(20, parts.RoboRIO())
             .Ch(21, parts.RadioPowerModule()));
 
+        // ARM and SHOOTER parts
         parts.Parts(inventory->inventory
             .Part("REV through-bore Encoder", e->e
-            .Note("Reference", "https://www.revrobotics.com/rev-11-1271/")
+                .Note("Reference", "https://www.revrobotics.com/rev-11-1271/")
+            )
+
+            .MotorController("Intake Motor", Manufacturer.REVRobotics, c->c
+                .Motor("NEO", m->m)
+                .IdleMode(IdleMode.kBrake)
+                .SmartCurrentLimit(40)
+            )
+
+            .MotorController("Shooter Motor", Manufacturer.REVRobotics, c->c
+                .Motor("NEO", m->m)
+                .IdleMode(IdleMode.kCoast)
+                .SmartCurrentLimit(40)
+                .PID(.00005, 0.0, 0.0, 0.000015)
+            )
+
+            .MotorController("Arm Motor", Manufacturer.REVRobotics, c->c
+                .Motor("NEO 550", m->m)
+                .IdleMode(IdleMode.kBrake)
+                .SmartCurrentLimit(40)
+                .GearBox(g-> g
+                    .Gear("Cartridge #1 5:1", 1, 5)
+                    .Gear("Cartridge #2 5:1", 1, 5)
+                    .Gear("Chain 4:1", 1, 4))
             )
         );
+
         return parts.Build(hw -> hw
         .MiniPowerModule("MPM1", mpm->mpm
             .Ch(0, 10)
@@ -68,28 +94,40 @@ public final class RobotConfigurations {
             .CanNumber(1))
 
         // ARM
-        .MotorController("armLead", c->c
-            .Motor("NEO 550", m->m)
-            .IdleMode(IdleMode.kBrake)
-            .SmartCurrentLimit(40) // encoder, PID
-            .GearBox(g-> g
-                .Gear("5:1", 1, 5)
-                .Gear("5:1", 1, 5)
-                .Gear("Chain", 1, 4))
-            .PDH(1)
-            .CanNumber(1))
-        .MotorController("armFollow", c->c // DutyCycleEncoder(0) .DIO(0)
-            .Motor("NEO 550", m->m)
-            .Reversed()
-            .IdleMode(IdleMode.kBrake)
-            .SmartCurrentLimit(40)
-            .GearBox(g-> g
-                .Gear("5:1", 1, 5)
-                .Gear("5:1", 1, 5)
-                .Gear("Chain", 1, 4))
-            .PDH(6)
-            .CanNumber(6))
-        
+        .Subsystem("Arm", s -> s
+            .MotorController("Leader", "Arm Motor", c->c
+                .PID(0.4, 0, 0)
+                .PDH(1)
+                .CanNumber(1)
+            )
+            .MotorController("Follower", "Arm Motor", c->c
+                //.Reversed() automatic by .Follow()?
+                .PDH(6)
+                .CanNumber(6)
+            )
+            //.Encoder(e-> e.Dio(0)) DutyCycleEncoder
+            //  ABS_OFFSET = -5; also get 1:100 from motors
+            // BrakeSolenoid -- Solenoid(7,PneumaticsModuleType.REVPH, 0)
+        )
+
+        .Subsystem("ShooterIntake", s -> s
+            .MotorController("Leader", "Shooter Motor", c->c
+                .PDH(2)
+                .CanNumber(2)
+            )
+            .MotorController("Follower", "Shooter Motor", c->c
+                .Reversed()
+                .PDH(3)
+                .CanNumber(3)
+            )
+            .MotorController("Intake", "Intake Motor", c->c
+                .PDH(18)
+                .CanNumber(18)
+            )
+            // DigitalInput(PHOTO_SENSOR_NO, 1)
+            // DigitalInput(PHOTO_SENSOR_NC, 2)
+        )
+
         // SWERVE DRIVE
         .Note("YELLOW modules are the front, BLUE modules are the back")
         .SwerveDrive(sd -> sd
@@ -225,6 +263,7 @@ public final class RobotConfigurations {
                 .Note("gearing", "8mm bore pinion gears")
                 .Note("DATA SHEET", "https://www.revrobotics.com/content/docs/REV-21-1650-DS.pdf")
                 .Value("empiricalFreeSpeed", 5_676.0) // how to choose best vaule?
+                // 40A
                 .PeakPower(380.0) // free running current 1.4A, stall 100A
             )
             .Motor("NEO 550", m -> m
@@ -232,6 +271,7 @@ public final class RobotConfigurations {
                 .FreeSpeedRPM(11_000.0) // from REV
                 .Note("NAME", "NEO 550")
                 .Note("Reference", "https://www.revrobotics.com/rev-21-1651/")
+                // current limit 20A
                 .PeakPower(279.0) // ~265 @ 40A
             )
             .SwerveModule(sm -> sm

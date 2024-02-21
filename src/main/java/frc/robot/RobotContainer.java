@@ -8,15 +8,12 @@ import edu.wpi.first.wpilibj.PneumaticHub;
 import edu.wpi.first.wpilibj.PowerDistribution;
 import edu.wpi.first.wpilibj.PowerDistribution.ModuleType;
 import com.pathplanner.lib.auto.AutoBuilder;
-import com.pathplanner.lib.auto.NamedCommands;
 import com.pathplanner.lib.commands.PathPlannerAuto;
 
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
-import edu.wpi.first.wpilibj2.command.InstantCommand;
 import frc.robot.commands.ControllerCommands;
-import frc.robot.subsystems.Arm.ArmSubsystem;
 import frc.robot.subsystems.PowerManagement.MockDetector;
 import frc.robot.subsystems.SwerveDrive.DriveSubsystem;
 import team1502.configuration.factory.RobotConfiguration;
@@ -37,11 +34,6 @@ public class RobotContainer {
   public RobotContainer(String radio) {
     var config = RobotConfigurations.getConfiguration(radio);
     var factory = RobotFactory.Create(config);
-    DriveSubsystem driveSubsystem = factory.getInstance(DriveSubsystem.class);
-
-    if (driveSubsystem == null) { //BACKUP METHOD if factory failed on roboRIO
-      driveSubsystem = doFactoryBackupMethod(config);
-    }
     
     configureBindings(factory);
 
@@ -49,8 +41,9 @@ public class RobotContainer {
     Logger.RegisterPneumaticHub(new PneumaticHub(), config.PCM().ChannelNames());
     logger.start();
 
-    //Build an Autochooser from SmartDashboard selection.  Default will be Commands.none()
+    // Path planner NamedCommands are currently in DriveSubSystem
 
+    //Build an Autochooser from SmartDashboard selection.  Default will be Commands.none()
     new PathPlannerAuto("MiddleAutoAMPFinal");
     new PathPlannerAuto("LeftAuto-AMPFinal");
     new PathPlannerAuto("RightAuto-AMPFinal");
@@ -64,6 +57,14 @@ public class RobotContainer {
   }
 
   private void configureBindings(RobotFactory factory) {
+    // can get subsystems, etc from factory for e.g., bindings
+    DriveSubsystem driveSubsystem = factory.getInstance(DriveSubsystem.class);
+    if (driveSubsystem == null) { //BACKUP METHOD if factory failed on roboRIO
+      driveSubsystem = doFactoryBackupMethod(factory.getRobotConfiguration());
+    }
+
+    // NOTE: Add Command bindings in the respective Command class
+
     //Drivetrain
 
     //Arm
