@@ -83,22 +83,22 @@ public class RobotContainer {
     //Arm
     armSubsystem.setDefaultCommand(new ArmCommands(armSubsystem));
     
-    Operator.Controller.y().onTrue(new InstantCommand(armSubsystem::rotateToAmpTrap));
+    Operator.Controller.a().onTrue(new InstantCommand(armSubsystem::rotateToAmpTrap));
     Operator.Controller.b().onTrue(new InstantCommand(armSubsystem::rotateToShootFar));
-    Operator.Controller.a().onTrue(new InstantCommand(armSubsystem::rotateToShootClose));
+    Operator.Controller.y().onTrue(new InstantCommand(armSubsystem::rotateToShootClose));
     Operator.Controller.x().onTrue(new InstantCommand(armSubsystem::rotateToIntake));
     Operator.Controller.start().onTrue(new InstantCommand(armSubsystem::rotateToStart));
 
     //ShooterIntake
     shooterIntakeSubsystem.setDefaultCommand(new ShooterIntakeCommands(shooterIntakeSubsystem));
 
-    Operator.Controller.rightTrigger(0.5).onTrue(new InstantCommand(shooterIntakeSubsystem::setShooterOn));
-    Operator.Controller.rightTrigger(0.5).onFalse(new InstantCommand(shooterIntakeSubsystem::setShooterOff));
+    Operator.Controller.rightTrigger(0.5).onTrue(new ShootNote(shooterIntakeSubsystem));
+    Operator.Controller.rightBumper().onTrue(new InstantCommand(shooterIntakeSubsystem::setShooterOn));
 
     Operator.Controller.leftTrigger(.5).whileTrue(new IntakeNote(shooterIntakeSubsystem));
 
-    Operator.Controller.back().onTrue(new InstantCommand(shooterIntakeSubsystem::setIntakeEject));
-    Operator.Controller.back().onFalse(new InstantCommand(shooterIntakeSubsystem::setIntakeOff));
+    Operator.Controller.leftBumper().onTrue(new InstantCommand(shooterIntakeSubsystem::setIntakeEject));
+    Operator.Controller.leftBumper().onFalse(new InstantCommand(shooterIntakeSubsystem::setIntakeOff));
 
 
     /* sample code
