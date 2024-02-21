@@ -11,7 +11,8 @@ public class Robot2024Test {
         var config = RobotConfigurations.getConfiguration("");
 
         printDetailedChannels(config.PDH());
-        printDetailedChannels(config.MPM(PowerDistributionModule.MPM));
+        printDetailedChannels(config.MPM("MPM1"));
+        printDetailedChannels(config.PCM());
     }
 
     private void printChannels(PowerDistributionModule pdh) {

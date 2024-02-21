@@ -4,6 +4,7 @@ import com.revrobotics.CANSparkBase.IdleMode;
 import com.revrobotics.CANSparkLowLevel.MotorType;
 
 import team1502.configuration.CAN.Manufacturer;
+import team1502.configuration.builders.pneumatics.PneumaticsController;
 import team1502.configuration.factory.RobotConfiguration;
 
 public final class RobotConfigurations {
@@ -173,10 +174,10 @@ public final class RobotConfigurations {
                 .PDH(19, "MPM2")
             )
 
-            .Compressor(p->p)
+            .Compressor(p->p.PowerChannel(PneumaticsController.CompressorPower))
             .PCM(ph -> ph
-                .DoubleSolenoid(15, 0, "SOL")
-                .PowerChannel(7)
+                .Solenoid(0, 0, "Solenoid")
+                .PDH(7)
                 .Powers(hw.Compressor())
                 .CanNumber(1)
             )

@@ -85,7 +85,7 @@ public class PowerDistributionModule extends Builder {
         }
     }
 
-    private void updateChannel(Integer channelNumber, Integer fuse) {
+    protected void updateChannel(Integer channelNumber, Integer fuse) {
         if (channelNumber >= 0) {
             getChannel(channelNumber).Fuse(fuse);            
         }
@@ -99,6 +99,16 @@ public class PowerDistributionModule extends Builder {
             getChannel(channelNumber).Part(part);
         }
     }
+
+    @Override // Builder
+    public Builder Powers(Builder builder) {
+        super.Powers(builder);
+        if (builder.hasPowerProfile() && builder.PowerProfile().Channel() != null) {
+            updateChannel(builder);
+        }
+        return this;
+    }
+
     public void updateChannel(Builder part) {
         int channelNumber = part.PowerChannel();
         updateChannel(channelNumber, part);
