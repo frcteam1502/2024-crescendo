@@ -1,5 +1,6 @@
 package team1502.configuration.builders.pneumatics;
 
+import java.util.List;
 import java.util.function.Function;
 
 import team1502.configuration.CAN.DeviceType;
@@ -7,11 +8,15 @@ import team1502.configuration.CAN.Manufacturer;
 import team1502.configuration.builders.Builder;
 import team1502.configuration.builders.IBuild;
 import team1502.configuration.builders.Part;
+import team1502.configuration.builders.power.PowerChannel;
+import team1502.configuration.builders.power.PowerDistributionModule;
 
-public class PneumaticsController extends Builder {
+public class PneumaticsController extends PowerDistributionModule {
     private static final DeviceType deviceType = DeviceType.PneumaticsController;
     public static final String PCM = "PCM";
+    public static final String RPH = "RPH"; // https://www.revrobotics.com/rev-11-1852/
     public static final String Compressor = "Compressor";
+    public static final int CompressorPower = 16;
     public static Function<IBuild, PneumaticsController> Define(Manufacturer manufacturer) {
         return build->new PneumaticsController(build,manufacturer);
     } 
@@ -21,13 +26,14 @@ public class PneumaticsController extends Builder {
 
     // Define
     public PneumaticsController(IBuild build, Manufacturer manufacturer) {
-        super(build);
+        super(build, 17);
         Device(deviceType); // also "buildType"
         Manufacturer(manufacturer);
         int channels = 16;
         for (int ch = 0; ch < channels; ch++) {
-            createChannel(ch);
+            updateChannel(ch, 1); // 200mA per solenoid
         }
+        updateChannel(CompressorPower, 50);
     }
     //Build Proxy / Eval
     public PneumaticsController(IBuild build, Part part) {
@@ -35,36 +41,61 @@ public class PneumaticsController extends Builder {
     }
 
     public PneumaticsController Compressor() {
-        addPart(Builder.DefineAs(Compressor), Compressor, Compressor, c -> c);
+        updateChannel(16, 
+            addPart(Builder.DefineAs(Compressor), Compressor, Compressor, c->c));
         return this;
     }
     public PneumaticsController Solenoid(int module, int channel, String name) {
+        updateChannel(channel, 
+            addPart(Builder.DefineAs(name), name, name, c->c));
         return this;
     }
     public PneumaticsController DoubleSolenoid(int forwardChannel, int reverseChannel, String name) {
+        updateChannel(reverseChannel, 
+            addPart(Builder.DefineAs(name), name, name, c->c));
+        return this;
+    }
+    public PneumaticsController Ch(Integer channelNumber, Builder part) {
+        updateChannel(channelNumber, part);
         return this;
     }
 
-    private void createChannel(Integer channelNumber) {
-        InstallPiece(Builder.DefineAs("Channel"), "Ch " + (channelNumber < 10 ? " " : "") + channelNumber.toString(), c->c
-            .Value("Channel", channelNumber));        
+    /*
+     * 
+    public List<PowerChannel> getChannels() {
+        return getPieces().stream().map(ch->PowerChannel.Wrap(ch)).toList();
     }
 
-    private void updateChannel(Integer channelNumber, Builder part) {
+    public PowerChannel getChannel(int channelNumber) {
+        return  PowerChannel.Wrap(getPiece(channelNumber));
+    }
+
+    private void updateChannel(Integer channelNumber, Integer fuse) {
         if (channelNumber >= 0) {
-            Builder ch = getPiece(channelNumber);
-            ch.Value("part", part);
-            ch.Value(Part.BUILD_NAME, part.FriendlyName());
+            getChannel(channelNumber).Fuse(fuse);            
         }
     }
 
-    private void updateChannel(Builder part) {
+    @Override // Builder
+    public Builder Powers(Builder builder) {
+        super.Powers(builder);
+        if (builder.hasPowerProfile() && builder.PowerProfile().Channel() != null) {
+            updateChannel(builder);
+        }
+        return this;
+    }
+    public void updateChannel(Integer channelNumber, Builder part) {
+        if (channelNumber >= 0) {
+            getChannel(channelNumber).Part(part);
+        }
+    }
+    public void updateChannel(Builder part) {
         int channelNumber = part.PowerChannel();
         updateChannel(channelNumber, part);
     }
 
     public String[] ChannelNames() {
-        return getPieces().stream().map(ch->ch.getString(Part.BUILD_NAME, "")).toArray(String[]::new);
+        return getPieces().stream().map(ch->ch.Name()).toArray(String[]::new);
     }
-
+     */
 }
