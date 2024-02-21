@@ -8,7 +8,7 @@ import frc.robot.subsystems.Arm.ArmSubsystem;
 import frc.robot.subsystems.PowerManagement.MockDetector;
 import frc.robot.subsystems.ShooterIntake.ShooterIntake;
 import frc.robot.commands.ControllerCommands;
-import frc.robot.commands.PickupNote;
+import frc.robot.commands.IntakeNote;
 import frc.robot.commands.ShooterIntakeCommands;
 import frc.robot.commands.ArmCommands;
 import frc.robot.subsystems.SwerveDrive.DriveSubsystem;
@@ -87,13 +87,7 @@ public class RobotContainer {
     Operator.Controller.b().onTrue(new InstantCommand(armSubsystem::rotateToShootFar));
     Operator.Controller.a().onTrue(new InstantCommand(armSubsystem::rotateToShootClose));
     Operator.Controller.x().onTrue(new InstantCommand(armSubsystem::rotateToIntake));
-    Operator.Controller.leftBumper().onTrue(new InstantCommand(armSubsystem::rotateToStart));
-    
-    //Operator.XboxButtons.Y.onTrue(new InstantCommand(armSubsystem::rotateToAmpTrap));
-    //Operator.XboxButtons.B.onTrue(new InstantCommand(armSubsystem::rotateToShootFar));
-    //Operator.XboxButtons.A.onTrue(new InstantCommand(armSubsystem::rotateToShootClose));
-    //Operator.XboxButtons.X.onTrue(new InstantCommand(armSubsystem::rotateToIntake));
-    //Operator.XboxButtons.LeftBumper.onTrue(new InstantCommand(armSubsystem::rotateToStart));
+    Operator.Controller.start().onTrue(new InstantCommand(armSubsystem::rotateToStart));
 
     //ShooterIntake
     shooterIntakeSubsystem.setDefaultCommand(new ShooterIntakeCommands(shooterIntakeSubsystem));
@@ -101,9 +95,10 @@ public class RobotContainer {
     Operator.Controller.rightTrigger(0.5).onTrue(new InstantCommand(shooterIntakeSubsystem::setShooterOn));
     Operator.Controller.rightTrigger(0.5).onFalse(new InstantCommand(shooterIntakeSubsystem::setShooterOff));
 
-    //Operator.Controller.leftTrigger(.5).onTrue(new InstantCommand(shooterIntakeSubsystem::setIntakePickup));
-    //Operator.Controller.leftTrigger(.5).onFalse(new InstantCommand(shooterIntakeSubsystem::setIntakeOff));
-    Operator.Controller.leftTrigger(.5).whileTrue(new PickupNote(shooterIntakeSubsystem));
+    Operator.Controller.leftTrigger(.5).whileTrue(new IntakeNote(shooterIntakeSubsystem));
+
+    Operator.Controller.back().onTrue(new InstantCommand(shooterIntakeSubsystem::setIntakeEject));
+    Operator.Controller.back().onFalse(new InstantCommand(shooterIntakeSubsystem::setIntakeOff));
 
 
     /* sample code

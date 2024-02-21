@@ -47,20 +47,11 @@ public class PickupNote extends Command {
   public boolean isFinished() {
     //Wait for inrush current
     if(pickupTimer.get() > 0.5){
-      System.out.println("Delay Complete");
-      
+
       if(shooterIntake.getIntakeCurrent() >= 20){
         return true;
       }
     }
     return false;
-    /*if(pickupTimer.get() > 0.5){
-      System.err.println("Timeout");
-      //Check for current spike due to note
-      if(shooterIntake.getIntakeCurrent() >= 15){
-        return true;
-      }
-    }
-    return false;*/
   }
 }

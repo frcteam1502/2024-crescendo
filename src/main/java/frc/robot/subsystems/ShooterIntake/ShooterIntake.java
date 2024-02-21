@@ -32,7 +32,9 @@ final class ShooterIntakeConstants{
 
   public final static double SHOOTER_DEFAULT_RPM = 5000;
   public final static double INTAKE_DEFAULT_PICK_UP_RPM = 2500;
+  public final static double INTAKE_DEFAULT_INDEX_RPM = 500;
   public final static double INTAKE_DEFAULT_EJECT_RPM = -2500;
+  public final static double INTAKE_DEFAULT_SHOOT_RPM = 3500;
 
   public final static double SHOOTER_PID_P = 0.00005;
   public final static double SHOOTER_PID_I = 0;
@@ -65,8 +67,9 @@ public class ShooterIntake extends SubsystemBase {
 
   private double shooter_speed = ShooterIntakeConstants.SHOOTER_DEFAULT_RPM;
   private double intakePickupSpeed = ShooterIntakeConstants.INTAKE_DEFAULT_PICK_UP_RPM;
-  private double intakeFwdSpeed;
-  private double intakeEjectSpeed;
+  private double intakeIndexSpeed = ShooterIntakeConstants.INTAKE_DEFAULT_INDEX_RPM;
+  private double intakeEjectSpeed = ShooterIntakeConstants.INTAKE_DEFAULT_EJECT_RPM;
+  private double intakeShootSpeed;
 
   private double shooter_ff = ShooterIntakeConstants.SHOOTER_PID_F;
   private double intake_ff = ShooterIntakeConstants.INTAKE_PID_F;
@@ -129,7 +132,7 @@ public class ShooterIntake extends SubsystemBase {
   }
 
   public void setShooterOff(){
-    shooter_lead.set(0.0);
+    shooter_controller.setReference(0.0, CANSparkMax.ControlType.kVelocity);
   }
 
   public void setIntakePickup(){
@@ -137,8 +140,14 @@ public class ShooterIntake extends SubsystemBase {
     intake_controller.setReference(intakePickupSpeed, CANSparkMax.ControlType.kVelocity);
   }
 
-  public void setIntakeFwd(){
-     intake_controller.setReference(intakeFwdSpeed, CANSparkMax.ControlType.kVelocity);
+  public void setIntakeIndex(){
+    intake_controller.setFF(intake_ff); 
+    intake_controller.setReference(intakeIndexSpeed, CANSparkMax.ControlType.kVelocity);
+  }
+
+  public void setIntakeShoot(){
+    intake_controller.setFF(intake_ff); 
+    intake_controller.setReference(intakeShootSpeed, CANSparkMax.ControlType.kVelocity);
   }
 
   public void setIntakeEject(){
