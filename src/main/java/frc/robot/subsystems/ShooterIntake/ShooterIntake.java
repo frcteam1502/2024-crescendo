@@ -70,7 +70,9 @@ public class ShooterIntake extends SubsystemBase {
 
   private double shooter_ff = ShooterIntakeConstants.SHOOTER_PID_F;
   private double intake_ff = ShooterIntakeConstants.INTAKE_PID_F;
-  
+  private double shooter_p = ShooterIntakeConstants.SHOOTER_PID_P;
+  private double intake_p = ShooterIntakeConstants.INTAKE_PID_P;
+
   private boolean isNoteLoading = false;
   
   public ShooterIntake() {
@@ -87,7 +89,7 @@ public class ShooterIntake extends SubsystemBase {
     
     //Set up intake control
     intake = Motors.INTAKE;
-    intake.setSmartCurrentLimit(40);
+    intake.setSmartCurrentLimit(60);
     intake_controller = intake.getPIDController();
     intake_controller.setFF(intake_ff);
     
@@ -106,9 +108,11 @@ public class ShooterIntake extends SubsystemBase {
 
     SmartDashboard.putNumber("Shooter PID FF", shooter_ff);
     SmartDashboard.putNumber("Shooter Set Speed",shooter_speed);
+    SmartDashboard.putNumber("Shooter PID P", shooter_p);
     
     SmartDashboard.putNumber("Intake PID FF", intake_ff);
     SmartDashboard.putNumber("Intake Pickup Speed", intakePickupSpeed);
+    SmartDashboard.putNumber("Intake PID p", intake_p);
 
     registerLoggerObjects();
   }
@@ -160,9 +164,11 @@ public class ShooterIntake extends SubsystemBase {
   private void updateDashboard(){
     shooter_ff = SmartDashboard.getNumber("Shooter PID FF", 0);
     shooter_speed = SmartDashboard.getNumber("Shooter Set Speed",0);
+    shooter_p =SmartDashboard.getNumber("Shooter PID p", 0);
     
     intake_ff = SmartDashboard.getNumber("Intake PID FF", 0);
     intakePickupSpeed = SmartDashboard.getNumber("Intake Pickup Speed", 0);
+    intake_p = SmartDashboard.getNumber("Intake PID p", 0);
 
     SmartDashboard.putNumber("Shooter Lead Speed",shooter_lead_encoder.getVelocity());
     SmartDashboard.putNumber("Shooter Follow Speed",shooter_follow_encoder.getVelocity());

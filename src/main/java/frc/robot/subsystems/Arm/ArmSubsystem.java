@@ -49,7 +49,7 @@ final class ArmConstants{
 
   public static final double[] POSITION_TABLE = 
   {
-    -2.25,  //Intake
+    -3.5,  //Intake
     -26, //Shoot Close
     -45, //Shoot Far
     -18,   //Stow/Start
