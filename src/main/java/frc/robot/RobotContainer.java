@@ -54,8 +54,18 @@ public class RobotContainer {
     configureBindings();
 
     //Register named commands. Must register all commands we want Pathplanner to execute.
-    NamedCommands.registerCommand("Dummy Command 1", new InstantCommand(driveSubsystem::dummyAction1));
-    NamedCommands.registerCommand("Dummy Command 2", new InstantCommand(driveSubsystem::dummyAction2));
+    NamedCommands.registerCommand("Rotate to amp", new InstantCommand(armSubsystem::rotateToAmpTrap));
+    NamedCommands.registerCommand("Rotate to intake", new InstantCommand(armSubsystem::rotateToIntake));
+    NamedCommands.registerCommand("Rotate to close shot", new InstantCommand(armSubsystem::rotateToShootClose));
+    NamedCommands.registerCommand("Rotate to far shot", new InstantCommand(armSubsystem::rotateToShootFar));
+    NamedCommands.registerCommand("Rotate to intake", new InstantCommand(armSubsystem::rotateToIntake));
+    NamedCommands.registerCommand("Intake on", new IntakeNote(shooterIntakeSubsystem));
+    NamedCommands.registerCommand("Intake off", new InstantCommand(shooterIntakeSubsystem::setIntakeOff));
+    NamedCommands.registerCommand("Rotate to intake", new ShootNote(shooterIntakeSubsystem));
+   
+    
+    
+    
 
     //Build an Autochooser from SmartDashboard selection.  Default will be Commands.none()
 
