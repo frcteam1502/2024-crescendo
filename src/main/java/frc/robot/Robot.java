@@ -6,6 +6,7 @@ package frc.robot;
 
 import frc.robot.Logger;
 import frc.robot.subsystems.Arm.ArmSubsystem;
+import edu.wpi.first.cameraserver.CameraServer;
 import edu.wpi.first.wpilibj.PneumaticHub;
 import edu.wpi.first.wpilibj.PowerDistribution;
 import edu.wpi.first.wpilibj.PowerDistribution.ModuleType;
@@ -79,6 +80,8 @@ private String[] pneumaticNames = {
    */
   @Override
   public void robotInit() {
+    CameraServer.startAutomaticCapture();
+    
     RobotController.setBrownoutVoltage(3);
     //Register PDP and PH Logger items
     
