@@ -69,7 +69,7 @@ public class ShooterIntake extends SubsystemBase {
   private double intakePickupSpeed = ShooterIntakeConstants.INTAKE_DEFAULT_PICK_UP_RPM;
   private double intakeIndexSpeed = ShooterIntakeConstants.INTAKE_DEFAULT_INDEX_RPM;
   private double intakeEjectSpeed = ShooterIntakeConstants.INTAKE_DEFAULT_EJECT_RPM;
-  private double intakeShootSpeed;
+  private double intakeShootSpeed = ShooterIntakeConstants.INTAKE_DEFAULT_SHOOT_RPM;
 
   private double shooter_ff = ShooterIntakeConstants.SHOOTER_PID_F;
   private double intake_ff = ShooterIntakeConstants.INTAKE_PID_F;
@@ -77,6 +77,7 @@ public class ShooterIntake extends SubsystemBase {
   private double intake_p = ShooterIntakeConstants.INTAKE_PID_P;
 
   private boolean isNoteLoading = false;
+  private boolean isShooterOn = false;
   
   public ShooterIntake() {
     //Set up shooter control
@@ -126,13 +127,23 @@ public class ShooterIntake extends SubsystemBase {
     updateDashboard();
   }
 
+  public void toggleShooter(){
+    if(isShooterOn){
+      setShooterOff();
+    }else{
+      setShooterOn();
+    }
+  }
+
   public void setShooterOn(){
     shooter_controller.setFF(shooter_ff);
     shooter_controller.setReference(shooter_speed, CANSparkMax.ControlType.kVelocity);
+    isShooterOn = true;
   }
 
   public void setShooterOff(){
     shooter_controller.setReference(0.0, CANSparkMax.ControlType.kVelocity);
+    isShooterOn = false;
   }
 
   public void setIntakePickup(){
@@ -170,6 +181,14 @@ public class ShooterIntake extends SubsystemBase {
     return(intake.getOutputCurrent());
   }
 
+  public boolean isShooterAtSpeed(){
+    double shooter_on_threshold = shooter_speed - (shooter_speed*0.05);
+    if(shooter_lead_encoder.getVelocity() >= shooter_on_threshold){
+      return true;
+    }
+    return false;
+  }
+
   private void updateDashboard(){
     shooter_ff = SmartDashboard.getNumber("Shooter PID FF", 0);
     shooter_speed = SmartDashboard.getNumber("Shooter Set Speed",0);
@@ -194,6 +213,8 @@ public class ShooterIntake extends SubsystemBase {
 
     SmartDashboard.putBoolean("Note Present 1", photoSensorNormOpen.get());
     SmartDashboard.putBoolean("Note Present 2", photoSensorNormClosed.get());
+
+    SmartDashboard.putBoolean("Is Shooter On", isShooterOn);
     
   }
 

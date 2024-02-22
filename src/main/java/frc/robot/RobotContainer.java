@@ -9,6 +9,7 @@ import frc.robot.subsystems.PowerManagement.MockDetector;
 import frc.robot.subsystems.ShooterIntake.ShooterIntake;
 import frc.robot.commands.ControllerCommands;
 import frc.robot.commands.IntakeNote;
+import frc.robot.commands.ShootNote;
 import frc.robot.commands.ShooterIntakeCommands;
 import frc.robot.commands.ArmCommands;
 import frc.robot.subsystems.SwerveDrive.DriveSubsystem;
@@ -103,7 +104,7 @@ public class RobotContainer {
     shooterIntakeSubsystem.setDefaultCommand(new ShooterIntakeCommands(shooterIntakeSubsystem));
 
     Operator.Controller.rightTrigger(0.5).onTrue(new ShootNote(shooterIntakeSubsystem));
-    Operator.Controller.rightBumper().onTrue(new InstantCommand(shooterIntakeSubsystem::setShooterOn));
+    Operator.Controller.rightBumper().toggleOnTrue(new InstantCommand(shooterIntakeSubsystem::toggleShooter));
 
     Operator.Controller.leftTrigger(.5).whileTrue(new IntakeNote(shooterIntakeSubsystem));
 
