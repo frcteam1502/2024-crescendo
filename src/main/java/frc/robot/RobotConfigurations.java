@@ -42,14 +42,15 @@ public final class RobotConfigurations {
             .MotorController("Intake Motor", Manufacturer.REVRobotics, c->c
                 .Motor("NEO", m->m)
                 .IdleMode(IdleMode.kBrake)
-                .SmartCurrentLimit(40)
+                .SmartCurrentLimit(60)
+                .GearBox(g-> g
+                    .Gear("Cartridge #1 3:1", 1, 3))
             )
 
             .MotorController("Shooter Motor", Manufacturer.REVRobotics, c->c
                 .Motor("NEO", m->m)
                 .IdleMode(IdleMode.kCoast)
                 .SmartCurrentLimit(40)
-                .PID(.00005, 0.0, 0.0, 0.000015)
             )
 
             .MotorController("Arm Motor", Manufacturer.REVRobotics, c->c
@@ -107,12 +108,21 @@ public final class RobotConfigurations {
                 .CanNumber(6).Abbreviation("Arm-F")
             )
             //.Encoder(e-> e.Dio(0)) DutyCycleEncoder
+            // MAX_ROTATE = 5;
+            // MIN_ROTATE = -95;
+            // MAX_ROTATE_FEEDFORWARD = .06; //TODO: increase?
+            // ROTATE_CHANGE = .3;           
+            // MAX_ROTATION_SPEED = .3;                    
             //  ABS_OFFSET = -5; also get 1:100 from motors
             // BrakeSolenoid -- Solenoid(7,PneumaticsModuleType.REVPH, 0)
         )
 
         .Subsystem("ShooterIntake", s -> s
             .MotorController("Shooter Leader", "Shooter Motor", c->c
+                .PID(.00005, 0.0, 0.0, 0.000180)
+                // SHOOTER_DEFAULT_RPM = 5000;
+                // INTAKE_DEFAULT_PICK_UP_RPM = 2500;
+                // INTAKE_DEFAULT_EJECT_RPM = -2500;
                 .PDH(2)
                 .CanNumber(2).Abbreviation("Sh-Ldr")
             )
@@ -122,6 +132,7 @@ public final class RobotConfigurations {
                 .CanNumber(3).Abbreviation("Sh-Flw")
             )
             .MotorController("Intake", "Intake Motor", c->c
+                .PID(.00005, 0.0, 0.0, 0.000275)
                 .PDH(18)
                 .CanNumber(18).Abbreviation("Intk")
             )

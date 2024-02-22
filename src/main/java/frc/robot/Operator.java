@@ -10,11 +10,13 @@ public final class Operator {
   public static double getLeftX() { return Controller.getLeftX();}
   public static double getLeftY() { return Controller.getLeftY();}
   public static double getLeftTrigger() { return Controller.getLeftTriggerAxis();}
+  public static Trigger leftTrigger(double threshold) { return Controller.leftTrigger(threshold); }
   
   public static double getRightX() { return Controller.getRightX();}
   public static double getRightY() { return Controller.getRightY();}
   public static double getRightTrigger() { return Controller.getRightTriggerAxis();}
-    
+  public static Trigger rightTrigger(double threshold) { return Controller.rightTrigger(threshold); }
+  
   // Left side controls
   public static final Trigger LeftStick = Controller.leftStick();
   public static final Trigger LeftBumper = Controller.leftBumper();

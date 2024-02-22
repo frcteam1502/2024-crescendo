@@ -45,7 +45,7 @@ public class ControllerCommands extends Command {
     double teleopSpeedGain;
     double teleopRotationGain;
 
-    if(Driver.XboxButtons.LeftBumper.getAsBoolean()){
+    if(Driver.LeftBumper.getAsBoolean()){
       teleopSpeedGain = MAX_FINESSE_SPEED;
       teleopRotationGain = MAX_FINESSE_ROTATION;
     }else{
@@ -68,7 +68,7 @@ public class ControllerCommands extends Command {
         forwardSpeed, // Forward
         strafeSpeed, // Strafe
         rotationSpeed, // Rotate
-        Driver.XboxButtons.LeftBumper.getAsBoolean()); // brake
+        Driver.LeftBumper.getAsBoolean()); // brake
     
       drive.drive(-speedCommand.forwardSpeed, -speedCommand.strafeSpeed, -speedCommand.rotationSpeed, true);
     }else{

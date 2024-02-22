@@ -5,7 +5,7 @@ import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
 
 public final class Driver {
-  public static final CommandXboxController Controller = new CommandXboxController(OperatorConstants.kOperatorControllerPort);
+  public static final CommandXboxController Controller = new CommandXboxController(OperatorConstants.kDriverControllerPort);
 
   public static double getLeftX() { return Controller.getLeftX();}
   public static double getLeftY() { return Controller.getLeftY();}
@@ -14,8 +14,6 @@ public final class Driver {
   public static double getRightX() { return Controller.getRightX();}
   public static double getRightY() { return Controller.getRightY();}
   public static double getRightTrigger() { return Controller.getRightTriggerAxis();}
-
-  public static final class XboxButtons {
     
     // Left side controls
   public static final Trigger LeftStick = Controller.leftStick();
@@ -55,5 +53,4 @@ public final class Driver {
     public static final Trigger SouthWest = Controller.povDownLeft();
     public static final Trigger West = Controller.povLeft();
     public static final Trigger NorthWest = Controller.povUpLeft();
-    }
 }

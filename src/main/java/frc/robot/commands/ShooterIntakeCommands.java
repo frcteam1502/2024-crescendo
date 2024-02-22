@@ -22,11 +22,10 @@ public class ShooterIntakeCommands extends Command {
   // Called when the command is initially scheduled.
   @Override
   public void initialize() {
-    Operator.Controller.rightTrigger(0.5).onTrue(new InstantCommand(shooterIntake::setShooterOn));
-    Operator.Controller.rightTrigger(0.5).onFalse(new InstantCommand(shooterIntake::setShooterOff));
+    Operator.rightTrigger(0.5).onTrue(new InstantCommand(shooterIntake::setShooterOn));
+    Operator.rightTrigger(0.5).onFalse(new InstantCommand(shooterIntake::setShooterOff));
 
-    Operator.Controller.leftTrigger(.5).onTrue(new InstantCommand(shooterIntake::setIntakePickup));
-    Operator.Controller.leftTrigger(.5).onFalse(new InstantCommand(shooterIntake::setIntakeOff));
+    Operator.leftTrigger(.5).whileTrue(new PickupNote(shooterIntake));
   }
 
   // Called every time the scheduler runs while the command is scheduled.
