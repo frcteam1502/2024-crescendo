@@ -46,12 +46,12 @@ public class IndexNote extends Command {
   public boolean isFinished() {
     
     //Hack until photosensor is working!
-    if(indexTimer.get() > .5){
-      return true;
-    }
-    /*if(shooterIntake.isNotePresent()){
+    /*if(indexTimer.get() > .5){
       return true;
     }*/
+    if(shooterIntake.isNotePresent()){
+      return true;
+    }
     return false;
   }
 }

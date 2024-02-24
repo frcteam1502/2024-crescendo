@@ -30,9 +30,10 @@ final class ShooterIntakeConstants{
   public final static DigitalInput PHOTO_SENSOR_NO = new DigitalInput(PHOTO_SENSOR_NO_CHANNEL);
   public final static DigitalInput PHOTO_SENSOR_NC = new DigitalInput(PHOTO_SENSOR_NC_CHANNEL);
 
-  public final static double SHOOTER_DEFAULT_RPM = 4500;
+  public final static double SHOOTER_DEFAULT_RPM = 4000;
+  public final static double SHOOTER_HOLD_RPM = -100;
   public final static double INTAKE_DEFAULT_PICK_UP_RPM = 2500;
-  public final static double INTAKE_DEFAULT_INDEX_RPM = 500;
+  public final static double INTAKE_DEFAULT_INDEX_RPM = 100;
   public final static double INTAKE_DEFAULT_EJECT_RPM = -1000;
   public final static double INTAKE_DEFAULT_SHOOT_RPM = 3500;
 
@@ -180,7 +181,7 @@ public class ShooterIntake extends SubsystemBase {
   }
 
   public boolean isNotePresent(){
-    if(!photoSensorNormOpen.get()){
+    if((!photoSensorNormOpen.get())||(photoSensorNormClosed.get())){
       return true;
     }else{
       return false;
@@ -221,8 +222,9 @@ public class ShooterIntake extends SubsystemBase {
     SmartDashboard.putNumber("Intake Applied Output %", intake.getAppliedOutput());
     SmartDashboard.putNumber("Intake Applied Output Volts", (intake.getAppliedOutput()*intake.getBusVoltage()));
 
-    SmartDashboard.putBoolean("Note Present 1", !photoSensorNormOpen.get());
-    SmartDashboard.putBoolean("Note Present 2", !photoSensorNormClosed.get());
+    SmartDashboard.putBoolean("Note Sensor NO", !photoSensorNormOpen.get());
+    SmartDashboard.putBoolean("Note Sensor NC", !photoSensorNormClosed.get());
+    SmartDashboard.putBoolean("Is Note Present", isNotePresent());
 
     SmartDashboard.putBoolean("Is Shooter On", isShooterOn);
     
