@@ -19,7 +19,7 @@ public class FactoryTests {
 
 
         var formatter = MdFormatter.Table("Parts Registered")
-            .Heading("Type", "Original Name", "Key");
+            .Heading("buildName", "originalName", "buidType", "Key");
 
         for (Part part : parts) {
             var key = part.getKey();
@@ -27,8 +27,9 @@ public class FactoryTests {
                 System.out.println(key + " is a duplciate");
             }
             formatter.AddRow(
-                part.hasValue(Builder.BUILD_TYPE) ? (String)part.getValue(Builder.BUILD_TYPE) : "",
+                part.hasValue(Part.BUILD_NAME) ? (String)part.getValue(Part.BUILD_NAME) : "",
                 part.hasValue(Part.ORIGINAL_NAME) ? (String)part.getValue(Part.ORIGINAL_NAME) : "",
+                part.hasValue(Builder.BUILD_TYPE) ? (String)part.getValue(Builder.BUILD_TYPE) : "",
                 part.getKey());
             //System.out.println(part.getName());
            // System.out.println(part.getKey());

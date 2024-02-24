@@ -34,6 +34,7 @@ public class RobotBuilder implements IBuild /*extends Builder*/{
         _part= new Builder(_parent, "Subsystem"); // ??
         _part.Name(name);
         _part.setIBuild(this);
+        _part.Value("robotBuilder", this);
     }
     
     public PartFactory getPartFactory() { return _partFactory; }
@@ -116,11 +117,20 @@ public class RobotBuilder implements IBuild /*extends Builder*/{
         return installBuilder(name, partName, b->new Builder(b, partName), fn);
     }
 
-    public Builder Subsystem(String partName) { return getInstalled(partName); }
+    public RobotBuilder Subsystem(String partName) { return (RobotBuilder)getInstalled(partName).Value("robotBuilder"); }
     public RobotBuilder Subsystem(String partName, Function<RobotBuilder, RobotBuilder> fn) {
         var child = new RobotBuilder(this, partName);
         return fn.apply(child); //Part(partName, partName, fn);
     }
+
+    public Builder Encoder() { return Encoder(Encoder.NAME); }
+    public Builder Encoder(String partName) { return getInstalled(partName); }
+    public RobotBuilder Encoder(String partName, Function<Encoder, Builder> fn) {        
+        return Encoder(partName, partName, fn);
+    }
+    public RobotBuilder Encoder(String name, String partName, Function<Encoder, Builder> fn) {        
+        return installBuilder(name, partName, Encoder.Define, fn);
+    }    
 
     public RobotBuilder GyroSensor(String partName, Function<GyroSensor, Builder> fn) {        
         return GyroSensor(partName, partName, fn);
@@ -173,6 +183,14 @@ public class RobotBuilder implements IBuild /*extends Builder*/{
     public RobotBuilder PCM(Function<PneumaticsController, Builder> fn) {
         return installBuilder(PneumaticsController.PCM, PneumaticsController.PCM,  PneumaticsController.Define(Manufacturer.ReduxRobotics), fn);
     }
+    public Builder Solenoid() { return Solenoid(Solenoid.NAME); }
+    public Builder Solenoid(String partName) { return getInstalled(partName); }
+    public RobotBuilder Solenoid(String partName, Function<Solenoid, Builder> fn) {        
+        return Solenoid(partName, partName, fn);
+    }
+    public RobotBuilder Solenoid(String name, String partName, Function<Solenoid, Builder> fn) {        
+        return installBuilder(name, partName, Solenoid.Define, fn);
+    }    
 
     // "part" Parts
     public RobotBuilder DC(Function<Builder, Builder> fn) {

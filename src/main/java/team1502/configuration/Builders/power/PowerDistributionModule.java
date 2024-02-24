@@ -115,7 +115,10 @@ public class PowerDistributionModule extends Builder {
     }
 
     public String[] ChannelNames() {
-        return getPieces().stream().map(ch->ch.Name()).toArray(String[]::new);
+        return getPieces().stream().map(ch->ch.FriendlyName()).toArray(String[]::new);
+    }
+    public String[] ChannelNamesAbbr() {
+        return getPieces().stream().map(ch->ch.Abbreviation()).toArray(String[]::new);
     }
 }
 

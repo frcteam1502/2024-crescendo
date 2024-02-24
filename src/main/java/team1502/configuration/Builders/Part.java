@@ -31,7 +31,7 @@ public class Part {
             : parent.getKey() + "." + getName();
     }
     
-
+    Part getParent() { return this.parent; }
     public Part setParent(Part parent) {
         if (this.parent == null ) {
             this.parent = parent;
@@ -61,6 +61,7 @@ public class Part {
     }
     
     
+    public HashMap<String,Object> getValues() { return _values;  }
     public boolean hasValue(String valueName) { return _values.containsKey(valueName); }
     public Object getValue(String valueName) { return _values.get(valueName);  }
     public Part setValue(String valueName, Object value) {

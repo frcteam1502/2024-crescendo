@@ -3,7 +3,6 @@ package team1502.configuration.builders;
 import java.util.function.Function;
 
 import edu.wpi.first.math.util.Units;
-import edu.wpi.first.wpilibj.shuffleboard.BuiltInLayouts;
 
 import java.util.List;
 
@@ -39,7 +38,7 @@ public class Builder {
     }
     
     public Builder parent; // e.g., the "wrapper"; a way to get info from higher up?
-    private Builder wrap(Part part) { return new Builder(getIBuild(), part); }
+    protected Builder wrap(Part part) { return new Builder(getIBuild(), part); }
     
     /**
      * Wrapping an existing part with another builder
@@ -109,8 +108,8 @@ public class Builder {
     public <T extends Builder> Builder addPart(Function<IBuild, T> define, String newName, String partName, Function<T, Builder> fn) {
         return addPart(newName, getIBuild().getTemplate(partName, define, fn));
     }
-    public <T extends Builder> Builder addPart(Function<IBuild, T> define, String newName, Function<T, Builder> fn) {
-        return addPart(newName, new PartBuilder(define, fn));
+    public <T extends Builder> T addPart(Function<IBuild, T> define, String newName, Function<T, Builder> fn) {
+        return (T)addPart(newName, new PartBuilder(define, fn));
     }
     
     public Builder addPart(Builder part) {
@@ -208,6 +207,20 @@ public class Builder {
     public String Note(String name) { return (String)Value(name); }    
     public Builder Note(String name, String detail) { return Value(name, detail); }    
     
+    // == "Connector" ====
+    public Connector createConnector(String signal) {
+        return addPart(Connector.Define(signal), signal, c->c);
+    }
+    public Connector findConnector(String signal) { return Connector.findConnector(this, signal); }
+
+    // == "Channel" ====
+    public Integer Channel(String type) { return getInt("channel+" + type); }
+    public Builder Channel(String type, int channel) {
+        Value("channel+" + type, channel);
+        return this;
+    }
+
+
     // == CAN =========
 
     private CanInfo CanInfo() { return CanInfo.WrapPart(this); }
@@ -368,3 +381,21 @@ public class Builder {
         return Units.inchesToMeters(getDouble(valueName));
     }
 }
+/*
+ 
+
+== Part    ==  +--------------+
+               | buildName    |     "instance" name     "Follower"
+               +--------------+
+               | originalName |     "inventory" name    "Arm Motor"
+== Builder ==  +--------------+
+               | buildType    |     device "type"       "MotorController"
+==         ==  +--------------+
+               |              |
+               +==============+
+
+Follower         | Arm Motor        | MotorController         | Arm.Leader.Follower                         
+Motor            | NEO 550          | Motor                   | Arm.Leader.Motor                            
+
+
+ */

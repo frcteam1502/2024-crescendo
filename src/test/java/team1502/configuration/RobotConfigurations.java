@@ -194,17 +194,23 @@ public final class RobotConfigurations {
                     .Gear("Cartridge #2 5:1", 1, 5)
                     .Gear("Chain 4:1", 1, 4)))
         ).Build(arm -> arm
-            .Subsystem("Arm", s -> s
+            .Subsystem("Arm", a -> a
+                .Solenoid("Brake Solenoid", s->s.PowerChannel(0))
+                .Encoder("Encoder", e->e.DigitalInput(0))
                 .MotorController("Leader", "Arm Motor", c->c
+                    .Follower("Arm Motor", f->f
+                        .PDH(6)
+                        .CanNumber(6)
+                    )
                     .PDH(1)
                     .CanNumber(1)
                 )
-                .MotorController("Follower", "Arm Motor", c->c
-                    .PDH(6)
-                    .CanNumber(6)
-                )
             )
         );
+
+        // parts.Build(hw->hw
+        //     .RoboRIO(rio->rio.DIO(hw.Subsystem("Arm").Encoder()))
+        // );
 
         return parts.Build(swerve -> swerve
             .Note("Intake is the FRONT for this configuration as all the motors drive that direction unless reversed")

@@ -3,6 +3,7 @@ package team1502.configuration.builders.pneumatics;
 import java.util.List;
 import java.util.function.Function;
 
+import edu.wpi.first.wpilibj.PneumaticsModuleType;
 import team1502.configuration.CAN.DeviceType;
 import team1502.configuration.CAN.Manufacturer;
 import team1502.configuration.builders.Builder;
@@ -13,8 +14,9 @@ import team1502.configuration.builders.power.PowerDistributionModule;
 
 public class PneumaticsController extends PowerDistributionModule {
     private static final DeviceType deviceType = DeviceType.PneumaticsController;
-    public static final String PCM = "PCM";
-    public static final String RPH = "RPH"; // https://www.revrobotics.com/rev-11-1852/
+    // https://docs.wpilib.org/en/stable/docs/software/hardware-apis/pneumatics/index.html
+    public static final String PCM = "PCM"; // CAN(0) CTRE Pneumatics Control Module
+    public static final String PH = "PH"; // CAN(1) https://www.revrobotics.com/rev-11-1852/
     public static final String Compressor = "Compressor";
     public static final int CompressorPower = 16;
     public static Function<IBuild, PneumaticsController> Define(Manufacturer manufacturer) {
@@ -58,6 +60,11 @@ public class PneumaticsController extends PowerDistributionModule {
     public PneumaticsController Ch(Integer channelNumber, Builder part) {
         updateChannel(channelNumber, part);
         return this;
+    }
+
+    public edu.wpi.first.wpilibj.Solenoid buildSolenoid(int channel) {
+        var module = CanNumber();
+        return new edu.wpi.first.wpilibj.Solenoid(module, PneumaticsModuleType.REVPH, channel);
     }
 
     /*

@@ -5,7 +5,6 @@ import java.util.function.Function;
 import team1502.configuration.builders.Builder;
 import team1502.configuration.builders.IBuild;
 import team1502.configuration.builders.Part;
-import team1502.configuration.builders.motors.Gear;
 
 public class PowerProfile extends Builder {
     public static String powerProfile = "powerProfile";

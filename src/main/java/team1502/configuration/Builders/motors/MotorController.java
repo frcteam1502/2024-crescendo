@@ -45,6 +45,13 @@ public class MotorController extends Builder {
         addPart(Motor.Define, Motor.NAME, partName, fn);
         return this;
     }
+    
+    public MotorController Follower() { return WrapPart(this, "Follower"); }
+    public MotorController Follower(String partName, Function<MotorController, Builder> fn) {
+        addPart(MotorController.Define(Manufacturer.REVRobotics), "Follower", partName, fn);
+        return this;
+    }
+
 
     public IdleMode IdleMode() { return (IdleMode)getValue(Motor.idleMode); }
     public MotorController IdleMode(IdleMode value) {
@@ -103,6 +110,11 @@ public class MotorController extends Builder {
         }
         if (hasValue(smartCurrentLimit)) {
             motor.setSmartCurrentLimit(SmartCurrentLimit());
+        }
+        if (hasValue("Follower")) {
+            var follower = Follower();
+            var followerMotor = follower.buildSparkMax();
+            followerMotor.follow(motor, follower.IsReversed());
         }
         return motor;
     }
