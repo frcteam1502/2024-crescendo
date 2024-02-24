@@ -9,6 +9,7 @@ import frc.robot.subsystems.PowerManagement.MockDetector;
 import frc.robot.subsystems.ShooterIntake.ShooterIntake;
 import frc.robot.commands.ControllerCommands;
 import frc.robot.commands.IntakeNote;
+import frc.robot.commands.MoveToShoot;
 import frc.robot.commands.ShootNote;
 import frc.robot.commands.ShooterIntakeCommands;
 import frc.robot.commands.ArmCommands;
@@ -57,7 +58,7 @@ public class RobotContainer {
     //Register named commands. Must register all commands we want Pathplanner to execute.
     NamedCommands.registerCommand("Rotate to amp", new InstantCommand(armSubsystem::rotateToAmpTrap));
     NamedCommands.registerCommand("Rotate to intake", new InstantCommand(armSubsystem::rotateToIntake));
-    NamedCommands.registerCommand("Rotate to close shot", new InstantCommand(armSubsystem::rotateToShootClose));
+    NamedCommands.registerCommand("Rotate to close shot", new MoveToShoot(armSubsystem));
     NamedCommands.registerCommand("Rotate to far shot", new InstantCommand(armSubsystem::rotateToShootFar));
     NamedCommands.registerCommand("Rotate to intake", new InstantCommand(armSubsystem::rotateToIntake));
     NamedCommands.registerCommand("Intake on", new IntakeNote(shooterIntakeSubsystem));
