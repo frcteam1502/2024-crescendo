@@ -2,10 +2,10 @@
   "version": 1.0,
   "startingPose": {
     "position": {
-      "x": 0.7401886415755699,
-      "y": 4.286166175756032
+      "x": 0.68,
+      "y": 6.71
     },
-    "rotation": -59.036243467926475
+    "rotation": 58.148583537986035
   },
   "command": {
     "type": "sequential",
@@ -14,30 +14,36 @@
         {
           "type": "path",
           "data": {
-            "pathName": "RightStart-RightNote"
+            "pathName": "4NoteLeft1"
           }
         },
         {
           "type": "path",
           "data": {
-            "pathName": "RightNote-NoteMiddle"
+            "pathName": "4NoteLeft2"
           }
         },
         {
           "type": "path",
           "data": {
-            "pathName": "NoteMiddle-RightScore"
+            "pathName": "4NoteLeft3"
           }
         },
         {
           "type": "path",
           "data": {
-            "pathName": "RightScore-AMP"
+            "pathName": "4NoteLeft4"
+          }
+        },
+        {
+          "type": "path",
+          "data": {
+            "pathName": "4NoteLeft5"
           }
         }
       ]
     }
   },
-  "folder": null,
+  "folder": "Shot4Note",
   "choreoAuto": false
 }
