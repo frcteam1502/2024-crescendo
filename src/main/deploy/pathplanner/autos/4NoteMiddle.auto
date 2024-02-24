@@ -12,9 +12,51 @@
     "data": {
       "commands": [
         {
+          "type": "named",
+          "data": {
+            "name": "Rotate to close shot"
+          }
+        },
+        {
+          "type": "named",
+          "data": {
+            "name": "Shot Note"
+          }
+        },
+        {
+          "type": "named",
+          "data": {
+            "name": "Rotate to intake"
+          }
+        },
+        {
           "type": "path",
           "data": {
             "pathName": "4NoteMiddle1"
+          }
+        },
+        {
+          "type": "named",
+          "data": {
+            "name": "Intake on"
+          }
+        },
+        {
+          "type": "named",
+          "data": {
+            "name": "Rotate to close shot"
+          }
+        },
+        {
+          "type": "named",
+          "data": {
+            "name": "Shot Note"
+          }
+        },
+        {
+          "type": "named",
+          "data": {
+            "name": "Rotate to intake"
           }
         },
         {
@@ -24,9 +66,33 @@
           }
         },
         {
+          "type": "named",
+          "data": {
+            "name": "Intake on"
+          }
+        },
+        {
+          "type": "named",
+          "data": {
+            "name": "Rotate to far shot"
+          }
+        },
+        {
           "type": "path",
           "data": {
             "pathName": "4NoteMiddle3"
+          }
+        },
+        {
+          "type": "named",
+          "data": {
+            "name": "Shot Note"
+          }
+        },
+        {
+          "type": "named",
+          "data": {
+            "name": "Rotate to intake"
           }
         },
         {
@@ -36,9 +102,27 @@
           }
         },
         {
+          "type": "named",
+          "data": {
+            "name": "Intake on"
+          }
+        },
+        {
           "type": "path",
           "data": {
             "pathName": "4NoteMiddle5"
+          }
+        },
+        {
+          "type": "named",
+          "data": {
+            "name": "Rotate to far shot"
+          }
+        },
+        {
+          "type": "named",
+          "data": {
+            "name": "Shot Note"
           }
         }
       ]

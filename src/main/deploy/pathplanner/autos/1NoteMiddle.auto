@@ -2,8 +2,8 @@
   "version": 1.0,
   "startingPose": {
     "position": {
-      "x": 1.343662687325376,
-      "y": 5.55
+      "x": 1.34,
+      "y": 5.54
     },
     "rotation": 0
   },
@@ -14,7 +14,7 @@
         {
           "type": "named",
           "data": {
-            "name": "Rotate to far shot"
+            "name": "Rotate to close shot"
           }
         },
         {
@@ -26,7 +26,7 @@
         {
           "type": "path",
           "data": {
-            "pathName": "MiddleStart-MiddleNote"
+            "pathName": "4NoteMiddle1"
           }
         },
         {
@@ -42,21 +42,9 @@
           }
         },
         {
-          "type": "wait",
-          "data": {
-            "waitTime": 5.0
-          }
-        },
-        {
           "type": "named",
           "data": {
-            "name": "Intake off"
-          }
-        },
-        {
-          "type": "named",
-          "data": {
-            "name": "Rotate to far shot"
+            "name": "Rotate to close shot"
           }
         },
         {
@@ -64,28 +52,10 @@
           "data": {
             "name": "Shot Note"
           }
-        },
-        {
-          "type": "named",
-          "data": {
-            "name": "Rotate to intake"
-          }
-        },
-        {
-          "type": "path",
-          "data": {
-            "pathName": "MiddleNote-NoteMiddle"
-          }
-        },
-        {
-          "type": "path",
-          "data": {
-            "pathName": "MiddleNoteMiddle-AMP"
-          }
         }
       ]
     }
   },
-  "folder": "AMP3Note",
+  "folder": null,
   "choreoAuto": false
 }

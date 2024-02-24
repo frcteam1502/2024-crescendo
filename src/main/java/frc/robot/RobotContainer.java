@@ -62,8 +62,7 @@ public class RobotContainer {
     NamedCommands.registerCommand("Rotate to intake", new InstantCommand(armSubsystem::rotateToIntake));
     NamedCommands.registerCommand("Intake on", new IntakeNote(shooterIntakeSubsystem));
     NamedCommands.registerCommand("Intake off", new InstantCommand(shooterIntakeSubsystem::setIntakeOff));
-    NamedCommands.registerCommand("Rotate to intake", new ShootNote(shooterIntakeSubsystem));
-   
+    NamedCommands.registerCommand("Shot Note", new ShootNote(shooterIntakeSubsystem));
     
     
     
@@ -76,6 +75,7 @@ public class RobotContainer {
     new PathPlannerAuto("4NoteLeft");
     new PathPlannerAuto("4NoteMiddle");
     new PathPlannerAuto("4NoteRight");
+    new PathPlannerAuto("1NoteMiddle");
 
 
     autoChooser = AutoBuilder.buildAutoChooser();
