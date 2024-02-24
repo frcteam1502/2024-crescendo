@@ -30,7 +30,7 @@ final class ShooterIntakeConstants{
   public final static DigitalInput PHOTO_SENSOR_NO = new DigitalInput(PHOTO_SENSOR_NO_CHANNEL);
   public final static DigitalInput PHOTO_SENSOR_NC = new DigitalInput(PHOTO_SENSOR_NC_CHANNEL);
 
-  public final static double SHOOTER_DEFAULT_RPM = 4500;
+  public final static double SHOOTER_DEFAULT_RPM = 4000;
   public final static double SHOOTER_HOLD_RPM = -100;
   public final static double INTAKE_DEFAULT_PICK_UP_RPM = 2500;
   public final static double INTAKE_DEFAULT_INDEX_RPM = 100;
