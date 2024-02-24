@@ -58,6 +58,8 @@ public class DriveSubsystem extends SubsystemBase { //implements Subsystem, Send
   private final double maxSpeed;
   private final double driveBaseRadius;
 
+  private final boolean limelightEnabled;
+
   public DriveSubsystem(RobotConfiguration config) {
     gyro = config.Pigeon2().buildPigeon2();
   
@@ -68,6 +70,8 @@ public class DriveSubsystem extends SubsystemBase { //implements Subsystem, Send
     goStraightGain = config.SwerveDrive().GoStraightGain();
 
     this.odometry = new SwerveDrivePoseEstimator(kinematics, getGyroRotation2d(), getModulePositions(), pose);
+
+    limelightEnabled = !config.isDisabled("limelight");
         
     reset();
     registerLoggerObjects(config);
@@ -91,9 +95,11 @@ public class DriveSubsystem extends SubsystemBase { //implements Subsystem, Send
   private int numAprilTags;
   private void updateDashBoard() {
     //Limelight Info
-    LimelightResults llresults = LimelightHelpers.getLatestResults("");
-    numAprilTags = llresults.targetingResults.targets_Fiducials.length;
-    
+    if (limelightEnabled) {
+      LimelightResults llresults = LimelightHelpers.getLatestResults("");
+      numAprilTags = llresults.targetingResults.targets_Fiducials.length;  
+    }
+
     SmartDashboard.putData(this);
     swerveModules.send();
   }
