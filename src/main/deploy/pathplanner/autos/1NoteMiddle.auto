@@ -24,39 +24,40 @@
           }
         },
         {
-          "type": "wait",
-          "data": {
-            "waitTime": 5.0
-          }
-        },
-        {
           "type": "named",
           "data": {
             "name": "Rotate to intake"
           }
         },
         {
-          "type": "named",
+          "type": "race",
           "data": {
-            "name": "Intake on"
-          }
-        },
-        {
-          "type": "path",
-          "data": {
-            "pathName": "4NoteMiddle1"
-          }
-        },
-        {
-          "type": "wait",
-          "data": {
-            "waitTime": 10.0
+            "commands": [
+              {
+                "type": "path",
+                "data": {
+                  "pathName": "4NoteMiddle1"
+                }
+              },
+              {
+                "type": "named",
+                "data": {
+                  "name": "Intake on"
+                }
+              }
+            ]
           }
         },
         {
           "type": "named",
           "data": {
             "name": "Rotate to close shot"
+          }
+        },
+        {
+          "type": "path",
+          "data": {
+            "pathName": "1NoteAuto"
           }
         },
         {
