@@ -31,14 +31,16 @@ final class ShooterIntakeConstants{
   public final static DigitalInput PHOTO_SENSOR_NO = new DigitalInput(PHOTO_SENSOR_NO_CHANNEL);
   public final static DigitalInput PHOTO_SENSOR_NC = new DigitalInput(PHOTO_SENSOR_NC_CHANNEL);
 
-  public final static double SHOOTER_DEFAULT_RPM = 5000;
+  public final static double SHOOTER_DEFAULT_RPM = 4500;
   public final static double INTAKE_DEFAULT_PICK_UP_RPM = 2500;
-  public final static double INTAKE_DEFAULT_EJECT_RPM = -2500;
+  public final static double INTAKE_DEFAULT_INDEX_RPM = 500;
+  public final static double INTAKE_DEFAULT_EJECT_RPM = -1000;
+  public final static double INTAKE_DEFAULT_SHOOT_RPM = 3500;
 
   public final static double SHOOTER_PID_P = 0.00005;
   public final static double SHOOTER_PID_I = 0;
   public final static double SHOOTER_PID_D = 0;
-  public final static double SHOOTER_PID_F = 0.000180;
+  public final static double SHOOTER_PID_F = 0.000185;
 
   public final static double INTAKE_GEAR_RATIO = 1.0/3.0;
   public final static double INTAKE_PID_P = 0.00005;
@@ -59,7 +61,8 @@ public class ShooterIntake extends SubsystemBase {
   private final RelativeEncoder shooter_follow_encoder;
   private final RelativeEncoder intake_encoder;
 
-  private final SparkPIDController shooter_controller;
+  private final SparkPIDController shooter_lead_controller;
+  private final SparkPIDController shooter_follow_controller;
   private final SparkPIDController intake_controller;
 
   private final DigitalInput photoSensorNormOpen;
@@ -67,8 +70,9 @@ public class ShooterIntake extends SubsystemBase {
 
   private double shooter_speed = ShooterIntakeConstants.SHOOTER_DEFAULT_RPM;
   private double intakePickupSpeed = ShooterIntakeConstants.INTAKE_DEFAULT_PICK_UP_RPM;
-  private double intakeFwdSpeed;
-  private double intakeEjectSpeed;
+  private double intakeIndexSpeed = ShooterIntakeConstants.INTAKE_DEFAULT_INDEX_RPM;
+  private double intakeEjectSpeed = ShooterIntakeConstants.INTAKE_DEFAULT_EJECT_RPM;
+  private double intakeShootSpeed = ShooterIntakeConstants.INTAKE_DEFAULT_SHOOT_RPM;
 
   private double shooter_ff = ShooterIntakeConstants.SHOOTER_PID_F;
   private double intake_ff = ShooterIntakeConstants.INTAKE_PID_F;
@@ -76,18 +80,20 @@ public class ShooterIntake extends SubsystemBase {
   private double intake_p = ShooterIntakeConstants.INTAKE_PID_P;
 
   private boolean isNoteLoading = false;
+  private boolean isShooterOn = false;
   
   public ShooterIntake() {
     //Set up shooter control
     shooter_lead = Motors.SHOOTER_LEAD;
     shooter_lead.setIdleMode(Motors.SHOOTER_MOTOR_IDLE_MODE);
     shooter_lead.setSmartCurrentLimit(40);
-    shooter_controller = shooter_lead.getPIDController();
+    shooter_lead_controller = shooter_lead.getPIDController();
     
     shooter_follow = Motors.SHOOTER_FOLLOW;
     shooter_follow.follow(shooter_lead, false);
-    shooter_follow.setIdleMode(Motors.SHOOTER_MOTOR_IDLE_MODE);
+    //shooter_follow.setIdleMode(Motors.SHOOTER_MOTOR_IDLE_MODE);
     shooter_follow.setSmartCurrentLimit(40);
+    shooter_follow_controller = shooter_follow.getPIDController();
     
     //Set up intake control
     intake = Motors.INTAKE;
@@ -103,10 +109,15 @@ public class ShooterIntake extends SubsystemBase {
     photoSensorNormOpen = ShooterIntakeConstants.PHOTO_SENSOR_NO;
     photoSensorNormClosed = ShooterIntakeConstants.PHOTO_SENSOR_NC;
 
-    shooter_controller.setP(ShooterIntakeConstants.SHOOTER_PID_P);
-    shooter_controller.setI(ShooterIntakeConstants.SHOOTER_PID_I);
-    shooter_controller.setD(ShooterIntakeConstants.SHOOTER_PID_D);
-    shooter_controller.setFF(ShooterIntakeConstants.SHOOTER_PID_F);
+    shooter_lead_controller.setP(ShooterIntakeConstants.SHOOTER_PID_P);
+    shooter_lead_controller.setI(ShooterIntakeConstants.SHOOTER_PID_I);
+    shooter_lead_controller.setD(ShooterIntakeConstants.SHOOTER_PID_D);
+    shooter_lead_controller.setFF(ShooterIntakeConstants.SHOOTER_PID_F);
+
+    shooter_follow_controller.setP(ShooterIntakeConstants.SHOOTER_PID_P);
+    shooter_follow_controller.setI(ShooterIntakeConstants.SHOOTER_PID_I);
+    shooter_follow_controller.setD(ShooterIntakeConstants.SHOOTER_PID_D);
+    shooter_follow_controller.setFF(ShooterIntakeConstants.SHOOTER_PID_F);
 
     SmartDashboard.putNumber("Shooter PID FF", shooter_ff);
     SmartDashboard.putNumber("Shooter Set Speed",shooter_speed);
@@ -125,13 +136,26 @@ public class ShooterIntake extends SubsystemBase {
     updateDashboard();
   }
 
+  public void toggleShooter(){
+    if(isShooterOn){
+      setShooterOff();
+    }else{
+      setShooterOn();
+    }
+  }
+
   public void setShooterOn(){
-    shooter_controller.setFF(shooter_ff);
-    shooter_controller.setReference(shooter_speed, CANSparkMax.ControlType.kVelocity);
+    shooter_lead_controller.setFF(shooter_ff);
+    shooter_follow_controller.setFF(shooter_ff);
+    shooter_lead_controller.setReference(shooter_speed, CANSparkMax.ControlType.kVelocity);
+    shooter_follow_controller.setReference(shooter_speed, CANSparkMax.ControlType.kVelocity);
+    isShooterOn = true;
   }
 
   public void setShooterOff(){
-    shooter_lead.set(0.0);
+    shooter_lead_controller.setReference(0.0, CANSparkMax.ControlType.kVelocity);
+    shooter_follow_controller.setReference(0.0, CANSparkMax.ControlType.kVelocity);
+    isShooterOn = false;
   }
 
   public void setIntakePickup(){
@@ -139,8 +163,14 @@ public class ShooterIntake extends SubsystemBase {
     intake_controller.setReference(intakePickupSpeed, CANSparkMax.ControlType.kVelocity);
   }
 
-  public void setIntakeFwd(){
-     intake_controller.setReference(intakeFwdSpeed, CANSparkMax.ControlType.kVelocity);
+  public void setIntakeIndex(){
+    intake_controller.setFF(intake_ff); 
+    intake_controller.setReference(intakeIndexSpeed, CANSparkMax.ControlType.kVelocity);
+  }
+
+  public void setIntakeShoot(){
+    intake_controller.setFF(intake_ff); 
+    intake_controller.setReference(intakeShootSpeed, CANSparkMax.ControlType.kVelocity);
   }
 
   public void setIntakeEject(){
@@ -161,6 +191,14 @@ public class ShooterIntake extends SubsystemBase {
 
   public double getIntakeCurrent(){
     return(intake.getOutputCurrent());
+  }
+
+  public boolean isShooterAtSpeed(){
+    double shooter_on_threshold = shooter_speed - (shooter_speed*0.05);
+    if(shooter_lead_encoder.getVelocity() >= shooter_on_threshold){
+      return true;
+    }
+    return false;
   }
 
   private void updateDashboard(){
@@ -185,8 +223,10 @@ public class ShooterIntake extends SubsystemBase {
     SmartDashboard.putNumber("Intake Applied Output %", intake.getAppliedOutput());
     SmartDashboard.putNumber("Intake Applied Output Volts", (intake.getAppliedOutput()*intake.getBusVoltage()));
 
-    SmartDashboard.putBoolean("Note Present 1", photoSensorNormOpen.get());
-    SmartDashboard.putBoolean("Note Present 2", photoSensorNormClosed.get());
+    SmartDashboard.putBoolean("Note Present 1", !photoSensorNormOpen.get());
+    SmartDashboard.putBoolean("Note Present 2", !photoSensorNormClosed.get());
+
+    SmartDashboard.putBoolean("Is Shooter On", isShooterOn);
     
   }
 

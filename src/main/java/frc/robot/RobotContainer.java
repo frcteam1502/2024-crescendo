@@ -7,6 +7,7 @@ package frc.robot;
 import edu.wpi.first.wpilibj.PneumaticHub;
 import edu.wpi.first.wpilibj.PowerDistribution;
 import edu.wpi.first.wpilibj.PowerDistribution.ModuleType;
+
 import com.pathplanner.lib.auto.AutoBuilder;
 import com.pathplanner.lib.commands.PathPlannerAuto;
 
@@ -16,6 +17,7 @@ import edu.wpi.first.wpilibj2.command.Command;
 import frc.robot.commands.ControllerCommands;
 import frc.robot.subsystems.PowerManagement.MockDetector;
 import frc.robot.subsystems.SwerveDrive.DriveSubsystem;
+
 import team1502.configuration.factory.RobotConfiguration;
 import team1502.injection.RobotFactory;
 

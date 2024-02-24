@@ -14,7 +14,7 @@ import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import team1502.configuration.factory.RobotConfiguration;
 
 public class ControllerCommands extends Command {
-  private static final double MAX_TELEOP_SPEED = .75; //Range 0 to 1
+  private static final double MAX_TELEOP_SPEED = 1; //Range 0 to 1
   private static final double MAX_FINESSE_SPEED = .3;
 
   private static final double MAX_TELEOP_ROTATION = .3;

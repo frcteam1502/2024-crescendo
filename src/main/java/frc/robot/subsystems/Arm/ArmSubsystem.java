@@ -42,7 +42,7 @@ final class ArmConstants{
 
   public static final double MAX_ROTATION_SPEED = .3;
 
-  public static final double ABS_OFFSET = -5;//This is unique for the robot!
+  public static final double ABS_OFFSET = -6.5;//This is unique for the robot!
 
   public static final double ARM_P_GAIN = 0.4;
   public static final double ARM_I_GAIN = 0;
@@ -51,11 +51,11 @@ final class ArmConstants{
 
   public static final double[] POSITION_TABLE = 
   {
-    -3.5,  //Intake
-    -26, //Shoot Close
-    -45, //Shoot Far
-    -18,   //Stow/Start
-    -22.5,  //Amp/Trap
+    -0.5, //Intake
+    -26,  //Shoot Close
+    -43,  //Shoot Far
+    -75,  //Stow/Start
+    -90,  //Amp/Trap
   };
 }
 
@@ -105,7 +105,7 @@ public class ArmSubsystem extends SubsystemBase {
     rotatePID.setI(0);
     rotatePID.setD(0);
     //rotatePID.setFF(MAX_ROTATE_FEEDFORWARD);
-    rotatePID.setOutputRange((-ArmConstants.MAX_ROTATION_SPEED), ArmConstants.MAX_ROTATION_SPEED);
+    rotatePID.setOutputRange((-ArmConstants.MAX_ROTATION_SPEED), (ArmConstants.MAX_ROTATION_SPEED/4));
 
     SmartDashboard.putNumber("ANGLE P Gain", arm_p_gain);
     SmartDashboard.putNumber("Arm Intake Angle", arm_intake_angle);
