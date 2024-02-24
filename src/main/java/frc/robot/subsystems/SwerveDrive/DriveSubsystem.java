@@ -4,6 +4,8 @@ import frc.robot.GameState;
 import frc.robot.Logger;
 import frc.robot.LimelightHelpers.LimelightResults;
 import frc.robot.commands.ControllerCommands;
+import frc.robot.commands.IntakeNote;
+import frc.robot.commands.ShootNote;
 import frc.robot.LimelightHelpers;
 
 import com.ctre.phoenix6.hardware.Pigeon2;
@@ -66,21 +68,13 @@ public class DriveSubsystem extends SubsystemBase { //implements Subsystem, Send
     goStraightGain = config.SwerveDrive().GoStraightGain();
 
     this.odometry = new SwerveDrivePoseEstimator(kinematics, getGyroRotation2d(), getModulePositions(), pose);
-    
-    initializeNamedCommands();
-    
+        
     reset();
     registerLoggerObjects(config);
 
     //Configure Auto Builder last! -- why?
     configAutoBuilder(); 
 
-  }
-
-  private void initializeNamedCommands() {
-    //Register named commands. Must register all commands we want Pathplanner to execute.
-    NamedCommands.registerCommand("Dummy Command 1", new InstantCommand(this::dummyAction1));
-    NamedCommands.registerCommand("Dummy Command 2", new InstantCommand(this::dummyAction2));
   }
 
   private void checkInitialAngle() {

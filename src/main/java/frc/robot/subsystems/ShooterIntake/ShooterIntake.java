@@ -6,14 +6,18 @@ package frc.robot.subsystems.ShooterIntake;
 
 import com.revrobotics.CANSparkMax;
 import com.revrobotics.CANSparkLowLevel;
+import com.pathplanner.lib.auto.NamedCommands;
 import com.revrobotics.CANSparkBase.IdleMode;
 import com.revrobotics.RelativeEncoder;
 import com.revrobotics.SparkPIDController;
 
 import edu.wpi.first.wpilibj.DigitalInput;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
+import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Logger;
+import frc.robot.commands.IntakeNote;
+import frc.robot.commands.ShootNote;
 import frc.robot.commands.ShooterIntakeCommands;
 import team1502.configuration.annotations.DefaultCommand;
 
@@ -129,6 +133,7 @@ public class ShooterIntake extends SubsystemBase {
 
     registerLoggerObjects();
   }
+
 
   @Override
   public void periodic() {

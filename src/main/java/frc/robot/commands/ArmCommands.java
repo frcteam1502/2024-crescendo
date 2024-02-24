@@ -2,6 +2,9 @@ package frc.robot.commands;
 
 import frc.robot.Operator;
 import frc.robot.subsystems.Arm.ArmSubsystem;
+
+import com.pathplanner.lib.auto.NamedCommands;
+
 import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
@@ -17,13 +20,22 @@ public class ArmCommands extends Command {
 
   @Override
   public void initialize() {
-    Operator.Y.onTrue(new InstantCommand(arm::rotateToAmpTrap));
+    Operator.A.onTrue(new InstantCommand(arm::rotateToAmpTrap));
     Operator.B.onTrue(new InstantCommand(arm::rotateToShootFar));
-    Operator.A.onTrue(new InstantCommand(arm::rotateToShootClose));
+    Operator.Y.onTrue(new InstantCommand(arm::rotateToShootClose));
     Operator.X.onTrue(new InstantCommand(arm::rotateToIntake));
-    Operator.LeftBumper.onTrue(new InstantCommand(arm::rotateToStart));
+    Operator.Start.onTrue(new InstantCommand(arm::rotateToStart));
+
+    NamedCommands.registerCommand("Rotate to amp", new InstantCommand(arm::rotateToAmpTrap));
+    NamedCommands.registerCommand("Rotate to intake", new InstantCommand(arm::rotateToIntake));
+    NamedCommands.registerCommand("Rotate to close shot", new InstantCommand(arm::rotateToShootClose));
+    NamedCommands.registerCommand("Rotate to far shot", new InstantCommand(arm::rotateToShootFar));
+    NamedCommands.registerCommand("Rotate to intake", new InstantCommand(arm::rotateToIntake));
     
     arm.reset();
+  }
+  private void initializeNamedCommands() {
+
   }
 
   @Override

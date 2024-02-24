@@ -4,8 +4,11 @@
 
 package frc.robot.commands;
 
+import com.pathplanner.lib.auto.NamedCommands;
+
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
+
 import frc.robot.Operator;
 import frc.robot.subsystems.ShooterIntake.ShooterIntake;
 
@@ -22,10 +25,17 @@ public class ShooterIntakeCommands extends Command {
   // Called when the command is initially scheduled.
   @Override
   public void initialize() {
-    Operator.rightTrigger(0.5).onTrue(new InstantCommand(shooterIntake::setShooterOn));
-    Operator.rightTrigger(0.5).onFalse(new InstantCommand(shooterIntake::setShooterOff));
+    Operator.rightTrigger(0.5).onTrue(new ShootNote(shooterIntake));
+    Operator.RightBumper.toggleOnTrue(new InstantCommand(shooterIntake::toggleShooter));
 
-    Operator.leftTrigger(.5).whileTrue(new PickupNote(shooterIntake));
+    Operator.leftTrigger(.5).whileTrue(new IntakeNote(shooterIntake));
+    
+    Operator.LeftBumper.onTrue(new InstantCommand(shooterIntake::setIntakeEject));
+    Operator.LeftBumper.onFalse(new InstantCommand(shooterIntake::setIntakeOff));
+
+    NamedCommands.registerCommand("Intake on", new IntakeNote(shooterIntake));
+    NamedCommands.registerCommand("Intake off", new InstantCommand(shooterIntake::setIntakeOff));
+    NamedCommands.registerCommand("Rotate to intake", new ShootNote(shooterIntake));
   }
 
   // Called every time the scheduler runs while the command is scheduled.
