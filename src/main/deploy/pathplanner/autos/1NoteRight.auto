@@ -2,10 +2,10 @@
   "version": 1.0,
   "startingPose": {
     "position": {
-      "x": 1.34,
-      "y": 5.54
+      "x": 0.72,
+      "y": 4.37
     },
-    "rotation": 0
+    "rotation": -60.39975503603433
   },
   "command": {
     "type": "sequential",
@@ -36,7 +36,7 @@
               {
                 "type": "path",
                 "data": {
-                  "pathName": "4NoteMiddle1"
+                  "pathName": "4NoteRight1"
                 }
               },
               {
@@ -57,7 +57,7 @@
         {
           "type": "path",
           "data": {
-            "pathName": "1NoteAuto"
+            "pathName": "1NoteRight"
           }
         },
         {
