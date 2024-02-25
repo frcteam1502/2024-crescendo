@@ -213,6 +213,14 @@ public class Builder {
     }
     public Connector findConnector(String signal) { return Connector.findConnector(this, signal); }
 
+    void connectTo(Channel ch) {
+        var connector = findConnector(ch.Signal());
+        if (connector == null) {
+            connector = createConnector(ch.Signal());
+        }
+        connector.Connect(ch);
+    }
+
     // == "Channel" ====
     public Integer Channel(String type) { return getInt("channel+" + type); }
     public Builder Channel(String type, int channel) {
@@ -220,7 +228,26 @@ public class Builder {
         return this;
     }
 
+    public Channel createChannel(String signal, Object id) {
+        var ch = new Channel(getIBuild(), signal, Name(), id);
+        return ch;
+    }
+    Channel addChannel(String signal, Object id) {
+        return addChannel(createChannel(signal, id));
+    }
+    Channel addChannel(Channel ch) {
+        if (ch.ID() instanceof Integer) {
+            addPiece(ch);
+        } else {
+            addPart(ch);
+        }
+        return ch;
+    }
 
+    void connectChannel(Object id, Builder device) {
+        var ch = Channel.findChannel(this, id);
+        device.connectTo(ch); 
+    }
     // == CAN =========
 
     private CanInfo CanInfo() { return CanInfo.WrapPart(this); }

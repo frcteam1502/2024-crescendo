@@ -13,13 +13,13 @@ public class PowerChannel extends Channel {
     private static final String fuse = "fuse";
     private static final String part = "part";
     //private static final String type = "power";
-    public static Function<IBuild, PowerChannel> Define(Integer channelNumber) { return b->new PowerChannel(b, channelNumber); };
+    public static Function<IBuild, PowerChannel> Define(String network, Integer channelNumber) { return b->new PowerChannel(b, network, channelNumber); };
     public static PowerChannel Wrap(Builder builder) { return new PowerChannel(builder.getIBuild(), builder.getPart()); }
     public static PowerChannel WrapPart(Builder builder) { return WrapPart(builder, NAME); }
     public static PowerChannel WrapPart(Builder builder, String partName) { return Wrap(builder.getPart(partName)); }
 
-    public PowerChannel(IBuild build, Integer channelNumber) { 
-        super(build, NAME, channelNumber);
+    public PowerChannel(IBuild build, String network, Integer channelNumber) { 
+        super(build, Channel.SIGNAL_12VDC, network, channelNumber);
     }
     public PowerChannel(IBuild build, Part part) { super(build, part); }
 
@@ -50,14 +50,14 @@ public class PowerChannel extends Channel {
     }
 
     public String WireLabel() {
-        if (hasPart() && Part().hasPowerProfile()) {
-            return Part().PowerProfile().Label();
+        if (isConnected() && Connector().hasPowerProfile()) {
+            return Connector().PowerProfile().Label();
         }
         return "";
     }
     public Double ChannelPower() {
-        if (hasPart() && Part().hasPowerProfile()) {
-            return Part().TotalPeakPower();
+        if (isConnected()) {
+            return Connector().TotalPeakPower();
         }
         return Double.MIN_NORMAL;
     }

@@ -25,14 +25,28 @@ public class Connector extends Builder {
     public Connector(IBuild build, Part part) { super(build, part); }
 
     public String Signal() { return getString(Connector.signal); }
+    public Connector Signal(String signal) {
+        Value(Connector.signal, signal);
+        return this;
+    }
     
-    public Builder Part() {return wrap(getPart().getParent()); }
+    public Builder Host() {return wrap(getPart().getParent()); }
     
     // is always a "channel"?
     public boolean isConnected() { return Connector().isPartPresent(); }
     public Connector Connector() { return Wrap(getPart(connected)); }
+    
+    
     public void Connect(Connector channel) {
         Value(Connector.connected, channel.getPart());
+    }
+
+    public void TryConnect(Builder device) {
+        var connector = device.findConnector(Signal());
+        if (connector == null) {
+
+        }
+        connector.Connect(this);
     }
 
     public static Connector findConnector(Builder builder, String signal) {

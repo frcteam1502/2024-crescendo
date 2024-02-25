@@ -35,9 +35,9 @@ public class RoboRIO extends Builder {
     }
     Builder PWM() { return getPart("PWM"); }
     void AddPWM() {
-        var PWM = addPart(Builder.DefineAs("PWM"), d->d);
+        var pwn = addPart(Builder.DefineAs("PWM"), d->d);
         for (int ch = 0; ch < 10; ch++) {
-            PWM.addPiece(Channel.Define("PWM", ch));
+            pwn.addPiece(Channel.Define(Channel.SIGNAL_PWM, NAME, ch));
         }
     }
     
@@ -48,7 +48,7 @@ public class RoboRIO extends Builder {
     void AddDIO() {
         var dio = addPart(Builder.DefineAs("DIO"), d->d);
         for (int ch = 0; ch < 10; ch++) {
-            dio.addPiece(Channel.Define("DIO", ch));
+            dio.addPiece(Channel.Define(Channel.SIGNAL_DIGITAL, NAME, ch));
         }
     }
     public RoboRIO DIO(Builder part) {
@@ -62,7 +62,7 @@ public class RoboRIO extends Builder {
         return this;
     }
     public void updateDioChannel(Integer channelNumber, Builder part) {
-        getChannel(channelNumber).Part(part);
+        getChannel(channelNumber).TryConnect(part);
     }
     public Channel getChannel(int channelNumber) {
         return  Channel.Wrap(DIO().getPiece(channelNumber));

@@ -22,12 +22,21 @@ public class BuilderTests {
             System.out.println("'2' is and String");
         }
         
+        var controller1 = factory.createPart("controller1");
+        controller1.addChannel("12VDC", "Vin");
+        var ctr1 = Channel.findChannel(controller1,"Vin");
+        System.out.println(ctr1.getPart().getKey());
+
         var part1 = factory.createPart("Part1");
         var c1 = part1.createConnector("12VDC");
         System.out.println(c1.getPart().getKey());
         var c1a = part1.findConnector("12VDC");
         var c2x = part1.findConnector("24VDC"); // just make sure it doesn't crash
         System.out.println(c1a.getPart().getKey());
+        
+        controller1.connectChannel("Vin", part1);
+        System.out.println(ctr1.Connector().Host().getPart().getKey());
+
     }
 
     class TestBuilder implements IBuild {

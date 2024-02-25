@@ -178,7 +178,7 @@ public class RobotBuilder implements IBuild /*extends Builder*/{
         return MiniPowerModule(PowerDistributionModule.MPM, fn);
     }
     public RobotBuilder MiniPowerModule(String name, Function<PowerDistributionModule, Builder> fn) {
-        return installBuilder(name, PowerDistributionModule.MPM, PowerDistributionModule.DefineMPM, fn);
+        return installBuilder(name, PowerDistributionModule.MPM, PowerDistributionModule.DefineMPM(name), fn);
     }
     public RobotBuilder PCM(Function<PneumaticsController, Builder> fn) {
         return installBuilder(PneumaticsController.PCM, PneumaticsController.PCM,  PneumaticsController.Define(Manufacturer.ReduxRobotics), fn);

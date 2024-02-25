@@ -28,7 +28,7 @@ public class PneumaticsController extends PowerDistributionModule {
 
     // Define
     public PneumaticsController(IBuild build, Manufacturer manufacturer) {
-        super(build, 17);
+        super(build, "PCM", 17);
         Device(deviceType); // also "buildType"
         Manufacturer(manufacturer);
         int channels = 16;

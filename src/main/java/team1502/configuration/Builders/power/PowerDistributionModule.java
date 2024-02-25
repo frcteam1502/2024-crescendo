@@ -5,9 +5,7 @@ import java.util.function.Function;
 
 import team1502.configuration.CAN.DeviceType;
 import team1502.configuration.CAN.Manufacturer;
-import team1502.configuration.builders.Builder;
-import team1502.configuration.builders.IBuild;
-import team1502.configuration.builders.Part;
+import team1502.configuration.builders.*;
 
 /**
  * The CTRE Power Distribution Panel (PDP) and Rev Power Distribution Hub (PDH) can use their CAN connectivity to communicate a wealth of status information regarding the robot’s power use to the roboRIO, for use in user code.
@@ -32,18 +30,22 @@ public class PowerDistributionModule extends Builder {
      */
     public static final String MPM = "MPM"; // REV -  6 channels: 0-5  Mini Power Module (not a "Controller"?)
     
-    public static final Function<IBuild, PowerDistributionModule> DefinePDH = build->new PowerDistributionModule(build, 24, Manufacturer.REVRobotics);
-    public static final Function<IBuild, PowerDistributionModule> DefinePDP = build->new PowerDistributionModule(build, 18, Manufacturer.CTRElectronics);
-    public static final Function<IBuild, PowerDistributionModule> DefineMPM = build->new PowerDistributionModule(build, 6);
+    public static final Function<IBuild, PowerDistributionModule> DefinePDH = build->new PowerDistributionModule(build, PDH, 24, Manufacturer.REVRobotics);
+    public static final Function<IBuild, PowerDistributionModule> DefinePDP = build->new PowerDistributionModule(build, PDP, 18, Manufacturer.CTRElectronics);
+    public static final Function<IBuild, PowerDistributionModule> DefineMPM(String name) { return  build -> new PowerDistributionModule(build, name, 6); }
     public static PowerDistributionModule Wrap(Builder builder) { return new PowerDistributionModule(builder.getIBuild(), builder.getPart()); }
     public static PowerDistributionModule WrapPart(Builder builder, String partName) { return Wrap(builder.getPart(partName)); }
     
-    public PowerDistributionModule(IBuild build, int channels) {
-        super(build); 
+    private String signal = Channel.SIGNAL_12VDC;
+    private String network;
+
+    public PowerDistributionModule(IBuild build, String name, int channels) {
+        super(build);
+        network = name;
         initializeChannels(channels);
     }
-    public PowerDistributionModule(IBuild build, int channels, Manufacturer manufacturer) {
-         this(build, channels); 
+    public PowerDistributionModule(IBuild build, String name, int channels, Manufacturer manufacturer) {
+         this(build, name, channels); 
          Device(deviceType);
          Manufacturer(manufacturer);
     }
@@ -56,7 +58,7 @@ public class PowerDistributionModule extends Builder {
         return this;
     }
     private void createChannel(Integer channelNumber) {
-        addPiece(PowerChannel.Define(channelNumber));
+        addPiece(PowerChannel.Define(network, channelNumber));
     }
         
     public PowerDistributionModule Ch(Integer channel, Integer fuse) {
