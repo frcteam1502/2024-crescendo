@@ -52,9 +52,11 @@ final class ArmConstants{
     -0.5, //Intake
     -24,  //Shoot Close
     -43,  //Shoot Far
-    -75,  //Stow/Start
+    -70,  //Stow/Start
     -90,  //Amp/Trap
   };
+
+  public static final double BRAKE_THRESHOLD = 0.25;
 }
 
 public class ArmSubsystem extends SubsystemBase {
@@ -196,6 +198,18 @@ public class ArmSubsystem extends SubsystemBase {
     //goalRotate = input;
   }
 
+  private void checkBrake(){
+    double threshold_max = goalRotate + ArmConstants.BRAKE_THRESHOLD;
+    double threshold_min = goalRotate - ArmConstants.BRAKE_THRESHOLD;
+    if((rotateRelativeEncoder.getPosition() > threshold_max)||
+       (rotateRelativeEncoder.getPosition() < threshold_min)){
+        brakeSolenoid.set(true);
+       }else{
+        brakeSolenoid.set(false);
+       }
+
+  }
+
   public void checkMaxAndMin() {
     if(rotateRelativeEncoder.getPosition() > ArmConstants.MAX_ROTATE){
       goalRotate -= ArmConstants.ROTATE_CHANGE * 2;}
@@ -226,8 +240,8 @@ public class ArmSubsystem extends SubsystemBase {
   @Override
   public void periodic() {
     updateDashboard();
+    checkBrake();
     checkMaxAndMin();
     rotatePID.setReference(goalRotate, CANSparkMax.ControlType.kPosition);
-    //rotate.set(goalRotate);
   }
 }
