@@ -61,9 +61,9 @@ public class RobotContainer {
     NamedCommands.registerCommand("Rotate to close shot", new MoveToShoot(armSubsystem));
     NamedCommands.registerCommand("Rotate to far shot", new InstantCommand(armSubsystem::rotateToShootFar));
     NamedCommands.registerCommand("Rotate to intake", new InstantCommand(armSubsystem::rotateToIntake));
-    NamedCommands.registerCommand("Intake on", new IntakeNote(shooterIntakeSubsystem));
+    NamedCommands.registerCommand("Intake on", new IntakeNote(shooterIntakeSubsystem, ()->armSubsystem.isArmAtIntake()));
     NamedCommands.registerCommand("Intake off", new InstantCommand(shooterIntakeSubsystem::setIntakeOff));
-    NamedCommands.registerCommand("Shot Note", new ShootNote(shooterIntakeSubsystem));
+    NamedCommands.registerCommand("Shot Note", new ShootNote(shooterIntakeSubsystem, ()->armSubsystem.isArmAtAmp()));
     
     
     
@@ -110,10 +110,10 @@ public class RobotContainer {
     //ShooterIntake
     shooterIntakeSubsystem.setDefaultCommand(new ShooterIntakeCommands(shooterIntakeSubsystem));
 
-    Operator.Controller.rightTrigger(0.5).onTrue(new ShootNote(shooterIntakeSubsystem));
+    Operator.Controller.rightTrigger(0.5).onTrue(new ShootNote(shooterIntakeSubsystem, ()->armSubsystem.isArmAtAmp()));
     Operator.Controller.rightBumper().toggleOnTrue(new InstantCommand(shooterIntakeSubsystem::toggleShooter));
 
-    Operator.Controller.leftTrigger(.5).whileTrue(new IntakeNote(shooterIntakeSubsystem));
+    Operator.Controller.leftTrigger(.5).whileTrue(new IntakeNote(shooterIntakeSubsystem, ()->armSubsystem.isArmAtIntake()));
 
     Operator.Controller.leftBumper().onTrue(new InstantCommand(shooterIntakeSubsystem::setIntakeEject));
     Operator.Controller.leftBumper().onFalse(new InstantCommand(shooterIntakeSubsystem::setIntakeOff));

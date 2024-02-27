@@ -25,6 +25,7 @@ public class IndexNote extends Command {
   // Called when the command is initially scheduled.
   @Override
   public void initialize() {
+    System.out.println("Start Index Note");
     indexTimer.reset();
     indexTimer.start();
   }
@@ -32,12 +33,15 @@ public class IndexNote extends Command {
   // Called every time the scheduler runs while the command is scheduled.
   @Override
   public void execute() {
-    shooterIntake.setIntakeIndex();
+    if(!shooterIntake.isNotePresent()){
+      shooterIntake.setIntakeIndex();
+    }
   }
 
   // Called once the command ends or is interrupted.
   @Override
   public void end(boolean interrupted) {
+    System.out.println("End Index Note");
     shooterIntake.setIntakeOff();
   }
 
