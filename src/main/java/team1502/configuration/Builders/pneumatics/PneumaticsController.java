@@ -4,6 +4,7 @@ import java.util.List;
 import java.util.function.Function;
 
 import edu.wpi.first.wpilibj.PneumaticsModuleType;
+import team1502.configuration.CAN.CanInfo;
 import team1502.configuration.CAN.DeviceType;
 import team1502.configuration.CAN.Manufacturer;
 import team1502.configuration.builders.Builder;
@@ -29,8 +30,7 @@ public class PneumaticsController extends PowerDistributionModule {
     // Define
     public PneumaticsController(IBuild build, Manufacturer manufacturer) {
         super(build, "PCM", 17);
-        Device(deviceType); // also "buildType"
-        Manufacturer(manufacturer);
+        CanInfo.addConnector(this, deviceType, manufacturer);
         int channels = 16;
         for (int ch = 0; ch < channels; ch++) {
             updateChannel(ch, 1); // 200mA per solenoid

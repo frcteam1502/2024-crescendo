@@ -62,7 +62,7 @@ public class RobotConfiguration {
         return _evaluator;
     }
 
-    public CanMap getCanMap() {return getBuilder().getCanMap();}
+    //public CanMap getCanMap() {return getBuilder().getCanMap();}
     public PowerDistributionModule getPowerDistributionModule() {return getBuilder().getPowerDistributionModule();}
 
     public RobotConfiguration Parts(Function<PartFactory, PartFactory> fn) {

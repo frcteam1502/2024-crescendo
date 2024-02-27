@@ -30,7 +30,7 @@ public class SwerveDrive extends Builder {
 
     public Chassis Chassis() { return Chassis.WrapPart(this); }
     public SwerveDrive Chassis(Function<Chassis, Builder> fn) {
-         return (SwerveDrive)addPart(Chassis.Define, fn);
+         return (SwerveDrive)AddPart(Chassis.Define, fn);
     }
 
     /** How fast to track target angle when not turning */

@@ -7,8 +7,6 @@ import edu.wpi.first.math.util.Units;
 import java.util.List;
 
 import team1502.configuration.CAN.CanInfo;
-import team1502.configuration.CAN.DeviceType;
-import team1502.configuration.CAN.Manufacturer;
 import team1502.configuration.builders.power.PowerDistributionModule;
 import team1502.configuration.builders.power.PowerProfile;
 import team1502.configuration.factory.PartBuilder;
@@ -18,6 +16,8 @@ public class Builder {
     private Part _part;
 
     public static String BUILD_TYPE = "buildType";
+    public static String friendlyName = "friendlyName";
+    public static String abbreviation = "abbreviation";
     public static Builder Wrap(Builder builder) { return new Builder(builder.getIBuild(), builder.getPart()); }
     public static Function<IBuild, Builder> Define = b->new Builder(b);
     public static Function<IBuild, Builder> DefineAs(String buildType) {
@@ -37,9 +37,11 @@ public class Builder {
         _build.register(_part);
     }
     
+    // TODO: use Part.parent or this this different, e.g., the Ancestor that "wrapped" it?
     public Builder parent; // e.g., the "wrapper"; a way to get info from higher up?
     protected Builder wrap(Part part) { return new Builder(getIBuild(), part); }
-    
+    // TODO: see above, and rename and/or resolve
+    public Builder getParent() { return wrap(getPart().getParent()); }
     /**
      * Wrapping an existing part with another builder
      * @param build
@@ -75,6 +77,11 @@ public class Builder {
         return this;
     }
     
+    @Override
+    public String toString() {
+        return Name();
+    }
+
     // === PARTS and PIECES ===
 
     /**
@@ -91,25 +98,32 @@ public class Builder {
         return this;
     }
 
+    /** return this */
+    public Builder AddPart(PartBuilder<?> partBuilder) {
+        var builder = partBuilder.creatBuilder(getIBuild());
+        addPart(builder);
+        return this;
+    }
+    /** return this */
+    public <T extends Builder> Builder AddPart(Function<IBuild, T> define, Function<T, Builder> fn) {
+        return AddPart(new PartBuilder<T>("", define, fn));
+    }
+
     //public Builder Install(PartBuilder<?> partBuilder) { return addPart(partBuilder); }
     public Builder addPart(String newName, PartBuilder<?> partBuilder) {
         var builder = partBuilder.creatBuilder(getIBuild());
         builder.Name(newName);
         return addPart(builder);
     }
-    public Builder addPart(PartBuilder<?> partBuilder) {
-        var builder = partBuilder.creatBuilder(getIBuild());
-        addPart(builder);
-        return this;
-    }
-    public <T extends Builder> Builder addPart(Function<IBuild, T> define, Function<T, Builder> fn) {
-        return addPart(new PartBuilder<T>("", define, fn));
-    }
     public <T extends Builder> Builder addPart(Function<IBuild, T> define, String newName, String partName, Function<T, Builder> fn) {
         return addPart(newName, getIBuild().getTemplate(partName, define, fn));
     }
     public <T extends Builder> T addPart(Function<IBuild, T> define, String newName, Function<T, Builder> fn) {
         return (T)addPart(newName, new PartBuilder(define, fn));
+    }
+
+    public <T extends Builder> Builder addPart(Function<IBuild, T> define) {
+        return addPart(define.apply(getIBuild()));
     }
     
     public Builder addPart(Builder part) {
@@ -166,7 +180,15 @@ public class Builder {
     }
 
     public Builder Part(String valueName) { return getPart(valueName);  }
-    public Builder getPart(String valueName) { return wrap((Part)getValue(valueName));  }
+    public Builder getPart(String valueName) { 
+        if (hasValue(valueName)) {
+            var value = getValue(valueName);
+            if (value instanceof Part) {
+                return wrap((Part)value);  
+            }
+        }
+        return null;
+    }
     public Part getPart() { return _part;  }
     public void setPart(Part part) {
         _part = part;
@@ -198,33 +220,47 @@ public class Builder {
     public Object Value(String valueName) { return getValue(valueName); }
     public Builder Value(String valueName, Object value) { return setValue(valueName, value); }    
 
-    public String Abbreviation() { return getString("abbreviation", Name()); }
-    public Builder Abbreviation(String name) { return Value("abbreviation", name); }
+    public String Abbreviation() { return getString(abbreviation, Name()); }
+    public Builder Abbreviation(String name) { return Value(abbreviation, name); }
 
-    public String FriendlyName() { return getString("friendlyName", Name()); }
-    public Builder FriendlyName(String name) { return Value("friendlyName", name); }
+    public String FriendlyName() { return getString(friendlyName, Name()); }
+    public Builder FriendlyName(String name) { return Value(friendlyName, name); }
 
     public String Note(String name) { return (String)Value(name); }    
     public Builder Note(String name, String detail) { return Value(name, detail); }    
     
+    // =======================================================================
     // == "Connector" ====
-    public Connector createConnector(String signal) {
-        return addPart(Connector.Define(signal), signal, c->c);
+
+
+    public Connector addConnector(String signal) { return addConnector(signal, signal); }
+    public Connector addConnector(String signal, String name) {
+        return addPart(Connector.Define(signal), name, c->c);
     }
     public Connector findConnector(String signal) { return Connector.findConnector(this, signal); }
 
-    void connectTo(Channel ch) {
-        var connector = findConnector(ch.Signal());
-        if (connector == null) {
-            connector = createConnector(ch.Signal());
+    void connectTo(Builder hub, String signal, Object channelID) {
+        if (hub.hasValue(signal)) {
+            var subHub = hub.getPart(signal);
+            if (subHub != null) {
+                hub = subHub;
+            }
         }
-        connector.Connect(ch);
+        connectTo(hub, channelID);
+    }
+ 
+    void connectTo(Builder hub, Object channelID) {
+        var ch = hub.findChannel(channelID);
+        ch.connectToPart(this);
     }
 
+    Channel findChannel(Object id) {
+        return Channel.findChannel(this, id);
+    }
+    
     // == "Channel" ====
-    public Integer Channel(String type) { return getInt("channel+" + type); }
-    public Builder Channel(String type, int channel) {
-        Value("channel+" + type, channel);
+    public Builder Channel(String signal, Object id) {
+        addChannel(signal, id);
         return this;
     }
 
@@ -232,6 +268,24 @@ public class Builder {
         var ch = new Channel(getIBuild(), signal, Name(), id);
         return ch;
     }
+
+    Channel createChannelForNode(String signal, Builder node) {
+        var ch = new Channel(getIBuild(), signal, Name(), node.getPart().getKey());
+        return ch;
+    }
+
+    public Channel addChannel(String signal, Builder node) { // e.g. CAN netwwork-node
+        if (hasValue(signal)) {
+            var subHub = getPart(signal);
+            if (subHub != null) {
+                return subHub.addChannel(signal, node);
+            }
+        }
+        var ch = addChannel(createChannelForNode(signal, node));
+        ch.connectToPart(node);
+        return ch;
+    }
+
     Channel addChannel(String signal, Object id) {
         return addChannel(createChannel(signal, id));
     }
@@ -244,45 +298,14 @@ public class Builder {
         return ch;
     }
 
-    void connectChannel(Object id, Builder device) {
-        var ch = Channel.findChannel(this, id);
-        device.connectTo(ch); 
-    }
     // == CAN =========
 
-    private CanInfo CanInfo() { return CanInfo.WrapPart(this); }
-    private CanInfo ensureCanInfo() {
-        ensurePart(CanInfo.canInfo);
-        return CanInfo.WrapPart(this);
-    }
-
-    public Builder Device(DeviceType deviceType) {
-        if (Type() == "") {
-            Type(deviceType.toString());
-        }
-        ensureCanInfo().Device(deviceType);
-        return this;
-    }
-
-    public Manufacturer Manufacturer() { return getManufacturer();  }
-    public Manufacturer getManufacturer() { return CanInfo().Manufacturer();  }
-    public Builder Manufacturer(Manufacturer manufacturer) {
-        ensureCanInfo().Manufacturer(manufacturer);
-        return this;
-    }
-
-    public int CanNumber() { return getCanNumber(); }
-    public int getCanNumber() { return CanInfo().Number(); }
+    public Integer CanNumber() { return CanInfo.WrapPart(this).Number(); }
     public Builder CanNumber(int number) {
-        setCanNumber(number);
+        CanInfo.WrapPart(this).Number(number);
         return this;
     }
-    public void setCanNumber(int number) {
-        ensureCanInfo().Number(number);
-    }
-
-    // == CAN ============== - TODO: move to CAN
-    
+   
     public void addError(String errorMessage) {
         _part.addError(errorMessage);
     }
@@ -314,11 +337,6 @@ public class Builder {
         return this;
     }
     
-    // public Builder PowerProfile(PowerProfile power) {
-    //     ensurePowerProfile().PowerProfile(power);
-    //     return this;
-    // }
-
     /**
      * Notes the MPM that powers the component
      * @param channel
@@ -342,10 +360,11 @@ public class Builder {
         ensurePowerProfile().Label(wireLabel);
         return PDM(mpmName, channel);
     }
-    public Builder PDM(String mpmName, int channel) {
+    public Builder PDM(String mpmName, Integer channel) {
         PowerDistributionModule mpm = PowerDistributionModule.Wrap(getIBuild().getInstalled(mpmName));
-        PowerChannel(channel);
-        mpm.updateChannel(this);
+        this.connectTo(mpm, channel);
+        // PowerChannel(channel);
+        // mpm.updateChannel(this);
         return this;
     }
 

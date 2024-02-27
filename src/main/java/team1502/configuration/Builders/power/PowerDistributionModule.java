@@ -3,6 +3,7 @@ package team1502.configuration.builders.power;
 import java.util.List;
 import java.util.function.Function;
 
+import team1502.configuration.CAN.CanInfo;
 import team1502.configuration.CAN.DeviceType;
 import team1502.configuration.CAN.Manufacturer;
 import team1502.configuration.builders.*;
@@ -45,9 +46,8 @@ public class PowerDistributionModule extends Builder {
         initializeChannels(channels);
     }
     public PowerDistributionModule(IBuild build, String name, int channels, Manufacturer manufacturer) {
-         this(build, name, channels); 
-         Device(deviceType);
-         Manufacturer(manufacturer);
+        this(build, name, channels); 
+        CanInfo.addConnector(this, deviceType, manufacturer);
     }
     public PowerDistributionModule(IBuild build, Part part) { super(build, part); }
 

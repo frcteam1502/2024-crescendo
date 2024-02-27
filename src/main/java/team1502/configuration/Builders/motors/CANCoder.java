@@ -1,5 +1,6 @@
 package team1502.configuration.builders.motors;
 
+import team1502.configuration.CAN.CanInfo;
 import team1502.configuration.CAN.DeviceType;
 import team1502.configuration.CAN.Manufacturer;
 import team1502.configuration.builders.Builder;
@@ -23,9 +24,8 @@ public class CANCoder extends Builder{ // Accelerometer {
     public static CANCoder WrapPart(Builder builder) { return WrapPart(builder, deviceType.name()); }
     public static CANCoder WrapPart(Builder builder, String partName) { return Wrap(builder.getPart(partName)); }
     public CANCoder(IBuild build) {
-         super(build); 
-         Device(deviceType);
-         Manufacturer(Manufacturer.CTRElectronics);
+        super(build); 
+        CanInfo.addConnector(this, deviceType, Manufacturer.CTRElectronics);
     }
     public CANCoder(IBuild build, Part part) { super(build, part); }
     

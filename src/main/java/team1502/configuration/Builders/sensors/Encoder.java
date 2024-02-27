@@ -5,6 +5,7 @@ import java.util.function.Function;
 import edu.wpi.first.wpilibj.DutyCycleEncoder;
 
 import team1502.configuration.builders.Builder;
+import team1502.configuration.builders.Channel;
 import team1502.configuration.builders.IBuild;
 import team1502.configuration.builders.Part;
 import team1502.configuration.builders.RoboRIO;
@@ -22,9 +23,23 @@ public class Encoder extends Builder {
     public Encoder(IBuild build) { super(build, NAME); }
     public Encoder(IBuild build, Part part) { super(build, part); }
   
-    public Integer DigitalInput() { return getInt(RoboRIO.digitalInput); }
-    public Encoder DigitalInput(int channel) {
-        Value(RoboRIO.digitalInput, channel);
+    public Integer DigitalInput() {
+        var abs = findConnector(Channel.SIGNAL_DIO);
+        if (abs.hasConnection()) {
+            // expected
+            Integer channel = abs.getInt(RoboRIO.digitalInput);
+            if (abs.isConnected()) { // actual
+                channel = abs.getChannel().CanNumber();
+            }
+            return channel;
+        }
+        return null; 
+    }
+    public Encoder DigitalInput(Integer channel) {
+        // JST PH 6-pin to 4 Channel PWM or
+        // thru-bore abs duty-cycle uses DIO
+        var abs = addConnector(Channel.SIGNAL_DIO, "ABS");
+        abs.Value(RoboRIO.digitalInput, channel);
         return this;
     }
 

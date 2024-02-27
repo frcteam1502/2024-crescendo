@@ -2,11 +2,9 @@ package team1502.configuration.CAN;
 
 import java.util.function.Function;
 
-import team1502.configuration.builders.Builder;
-import team1502.configuration.builders.IBuild;
-import team1502.configuration.builders.Part;
+import team1502.configuration.builders.*;
 
-public class CanInfo extends Builder {
+public class CanInfo extends Connector {
     public static String canInfo = "canInfo";
     private static String deviceType = "deviceType";
     private static String manufacturer = "manufacturer";
@@ -15,7 +13,19 @@ public class CanInfo extends Builder {
     public static CanInfo Wrap(Builder builder) { return new CanInfo(builder.getIBuild(), builder.getPart()); }
     public static CanInfo WrapPart(Builder builder) { return WrapPart(builder, canInfo); }
     public static CanInfo WrapPart(Builder builder, String partName) { return Wrap(builder.getPart(partName)); }
-    public CanInfo(IBuild build) { super(build, canInfo); }
+    
+    public CanInfo(IBuild build) {
+        super(build, Channel.SIGNAL_CAN);
+    }
+    public CanInfo(IBuild build, DeviceType deviceType, Manufacturer manufacturer) {
+        super(build, Channel.SIGNAL_CAN);
+        Device(deviceType);
+        Manufacturer(manufacturer);
+        FriendlyName(manufacturer.ManufacturerName + " " + deviceType.DeviceName);
+        Name(Channel.SIGNAL_CAN + ":" + deviceType.toString() + "|" + manufacturer.toString());
+        Value("keyName", canInfo);
+    }
+    
     public CanInfo(IBuild build, Part part) { super(build, part); }
 
     public int getDeviceTypeId() {return Device().DeviceID;}
@@ -36,6 +46,12 @@ public class CanInfo extends Builder {
     public Integer Number() { return getInt(deviceNumber); }
     public CanInfo Number(int number) {
         setValue(deviceNumber, number);
+        Name(Channel.SIGNAL_CAN + ":" + "[" + number + "]" + Device().toString() + "|" + Manufacturer().toString());
+        FriendlyName(FriendlyName() + " " + number);
+        var rio = getIBuild().getInstalled(RoboRIO.NAME);
+        if (rio != null) {
+            rio.addChannel(Channel.SIGNAL_CAN, this.Host());
+        }
         return this;
     }
 
@@ -44,5 +60,24 @@ public class CanInfo extends Builder {
     }
     public boolean isCanDevice() {
         return getPart() != null;
+    }
+
+    public static CanInfo findConnection(Builder device) {
+        var can = device.findConnector(Channel.SIGNAL_CAN);
+        return Wrap(can);
+    }
+
+    public static CanInfo addConnector(Builder device, DeviceType deviceType, Manufacturer manufacturer, Integer number) {
+        var can = addConnector(device, deviceType, manufacturer);
+        can.Number(number);
+        return can;
+    }
+    public static CanInfo addConnector(Builder device, DeviceType deviceType, Manufacturer manufacturer) {
+        var can = new CanInfo(device.getIBuild(), deviceType, manufacturer);
+        device.addPart(can);
+        if (device.Type() == "") {
+            device.Type(deviceType.toString());
+        }
+        return can;
     }
 }

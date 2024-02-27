@@ -236,7 +236,6 @@ public class RobotBuilder implements IBuild /*extends Builder*/{
     /**
      * Should not create this before all CAN parts are created
      * @return
-     */
     public CanMap getCanMap() {
         if (_canMap == null) {
             _canMap = new CanMap();
@@ -250,6 +249,7 @@ public class RobotBuilder implements IBuild /*extends Builder*/{
         }
         return _canMap;
     }
+     */
     public PowerDistributionModule getPowerDistributionModule() {
         var pdm = getInstalled(PowerDistributionModule.PDH);
         if (pdm == null) {

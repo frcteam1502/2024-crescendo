@@ -10,7 +10,8 @@ public class Part {
     private ArrayList<String> _errorMessages = new ArrayList<>();
     private Part parent;
 
-    public static String BUILD_NAME = "buildName";
+    public static String BUILD_NAME = "buildName"; // normally the key
+    public static String KEY_NAME = "keyName"; // override the key
     public static String ORIGINAL_NAME = "originalName";
 
     public Part() {}
@@ -56,7 +57,11 @@ public class Part {
     public Part getPart(String valueName) { return (Part)getValue(valueName); }
     public Part addPart(Part part) {
         part.setParent(this);
-        _values.put((String)part.getValue(BUILD_NAME), part);
+        var key = (String)part.getValue(BUILD_NAME);
+        if (part.hasValue(KEY_NAME)) {            
+            key = (String)part.getValue(KEY_NAME);
+        }
+        _values.put(key, part);
         return this;
     }
     

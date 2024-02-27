@@ -3,9 +3,11 @@ package team1502.configuration.builders.pneumatics;
 import java.util.function.Function;
 
 import edu.wpi.first.wpilibj.PneumaticsModuleType;
+import team1502.configuration.CAN.CanInfo;
 import team1502.configuration.builders.Builder;
 import team1502.configuration.builders.IBuild;
 import team1502.configuration.builders.Part;
+import team1502.configuration.builders.power.PowerChannel;
 
 public class Solenoid extends Builder {
     public static final String NAME = "Solenoid";
@@ -25,7 +27,9 @@ public class Solenoid extends Builder {
     // }
 
     public edu.wpi.first.wpilibj.Solenoid buildSolenoid() {
-        int channel = Channel("power");
+        var ch = PowerChannel.findConnectedChannel(this);
+        int channel = ch.Channel();
+        int module = CanInfo.findConnection(this.getParent()).CanNumber();
         return Solenoid(new edu.wpi.first.wpilibj.Solenoid(7, PneumaticsModuleType.REVPH, channel));
     }
 

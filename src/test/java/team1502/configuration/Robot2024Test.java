@@ -17,7 +17,7 @@ public class Robot2024Test {
 
     private void printChannels(PowerDistributionModule pdh) {
         var ch20 = pdh.getChannel(20);
-        echo(ch20.Connector().Host().ShortName());
+        echo(ch20.Connection().Host().ShortName());
 
         echo("");
         var formatter = MdFormatter.Table("PDH Channel Assignments")
@@ -25,8 +25,8 @@ public class Robot2024Test {
         for (var value : pdh.getChannels()){
             formatter.AddRow(
                 value.Channel().toString(), 
-                value.isConnected() ? value.Connector().Host().ShortName() : "",
-                value.isConnected() ? value.Connector().Host().FriendlyName() : ""
+                value.isConnected() ? value.Connection().Host().ShortName() : "",
+                value.isConnected() ? value.Connection().Host().FriendlyName() : ""
                 );
         }
         formatter.AsTable().forEach(row -> echo(row));
@@ -42,8 +42,8 @@ public class Robot2024Test {
                 value.Channel().toString(),
                 value.hasFuse() ? value.Fuse().toString() : "",
                 value.WireLabel(),
-                value.isConnected() ? value.Connector().Host().ShortName() : "",
-                value.isConnected() ? value.Connector().Host().FriendlyName() : "",
+                value.isConnected() ? value.Connection().Host().ShortName() : "",
+                value.isConnected() ? value.Connection().Host().FriendlyName() : "",
                 value.isConnected() ? value.ChannelPower().toString() : ""
                 );
         }

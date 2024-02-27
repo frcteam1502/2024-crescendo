@@ -50,15 +50,21 @@ public class PowerChannel extends Channel {
     }
 
     public String WireLabel() {
-        if (isConnected() && Connector().hasPowerProfile()) {
-            return Connector().PowerProfile().Label();
+        if (isConnected() && Connection().hasPowerProfile()) {
+            return Connection().PowerProfile().Label();
         }
         return "";
     }
     public Double ChannelPower() {
         if (isConnected()) {
-            return Connector().TotalPeakPower();
+            return Connection().TotalPeakPower();
         }
         return Double.MIN_NORMAL;
     }
+
+    public static PowerChannel findConnectedChannel(Builder device) {
+        var vin = device.findConnector(Channel.SIGNAL_12VDC);
+        return Wrap(vin.Connection());
+    }
+    
 }

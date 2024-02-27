@@ -27,7 +27,7 @@ public class configurationTests {
 
         var part1 = config.Part("part1");
         part1.PeakPower(1_000.0);
-        var m1 = part1.Manufacturer();
+        //var m1 = part1.Manufacturer();
         var pp1 = part1.TotalPeakPower();
 
         //var gyro = config.Pigeon2().buildPigeon2();

@@ -8,6 +8,7 @@ import com.revrobotics.CANSparkMax;
 import com.revrobotics.RelativeEncoder;
 import com.revrobotics.SparkPIDController;
 
+import team1502.configuration.CAN.CanInfo;
 import team1502.configuration.CAN.DeviceType;
 import team1502.configuration.CAN.Manufacturer;
 import team1502.configuration.builders.Builder;
@@ -30,8 +31,7 @@ public class MotorController extends Builder {
     // Define
     public MotorController(IBuild build, Manufacturer manufacturer) {
         super(build);
-        Device(deviceType); // also "buildType"
-        Manufacturer(manufacturer);
+        CanInfo.addConnector(this, deviceType, manufacturer);
     }
     public MotorController(IBuild build, Part part) {
         super(build, part);
@@ -73,15 +73,15 @@ public class MotorController extends Builder {
 
     public GearBox GearBox() { return GearBox.WrapPart(this); }
     public MotorController GearBox(Function<GearBox, Builder> fn) {
-        return (MotorController)addPart(GearBox.Define, fn);
+        return (MotorController)AddPart(GearBox.Define, fn);
     }
     
     public PID PID() { return PID.WrapPart(this); }
     public MotorController PID(double p, double i, double d) {
-        return (MotorController)addPart(PID.Define, pid->pid.P(p).I(i).D(d));
+        return (MotorController)AddPart(PID.Define, pid->pid.P(p).I(i).D(d));
     }
     public MotorController PID(double p, double i, double d, double ff) {
-        return (MotorController)addPart(PID.Define, pid->pid.P(p).I(i).D(d).FF(ff));
+        return (MotorController)AddPart(PID.Define, pid->pid.P(p).I(i).D(d).FF(ff));
     }
 
     /** Time in seconds to go from 0 to full throttle. */

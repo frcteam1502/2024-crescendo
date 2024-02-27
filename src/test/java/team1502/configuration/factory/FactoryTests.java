@@ -19,12 +19,12 @@ public class FactoryTests {
 
 
         var formatter = MdFormatter.Table("Parts Registered")
-            .Heading("buildName", "originalName", "buidType", "Key");
+            .Heading("buildName", "originalName", "buildType", "Key");
 
         for (Part part : parts) {
             var key = part.getKey();
             if (!keySet.add(key)) {
-                System.out.println(key + " is a duplciate");
+                System.out.println(key + " is a duplicate");
             }
             formatter.AddRow(
                 part.hasValue(Part.BUILD_NAME) ? (String)part.getValue(Part.BUILD_NAME) : "",

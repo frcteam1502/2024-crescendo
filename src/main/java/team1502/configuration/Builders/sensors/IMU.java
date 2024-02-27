@@ -5,6 +5,7 @@ import java.util.function.Function;
 import com.ctre.phoenix6.hardware.Pigeon2;
 import com.revrobotics.CANSparkMax;
 
+import team1502.configuration.CAN.CanInfo;
 import team1502.configuration.CAN.DeviceType;
 import team1502.configuration.CAN.Manufacturer;
 import team1502.configuration.builders.Builder;
@@ -24,9 +25,9 @@ public class IMU extends Builder {
     // Define
     public IMU(IBuild build, Manufacturer manufacturer) {
         super(build);
-        Device(deviceType); // also "buildType"
-        Manufacturer(manufacturer);
+        CanInfo.addConnector(this, deviceType, manufacturer);
     }
+    
     //Build Proxy / Eval
     public IMU(IBuild build, Part part) { super(build, part); }
 

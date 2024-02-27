@@ -1,17 +1,27 @@
 package team1502.configuration.builders;
 
+import java.util.List;
 import java.util.function.Function;
-
-import team1502.configuration.builders.power.PowerChannel;
 
 public class Channel extends Connector {
     private static final String NAME = "Channel";
     private static final String id = "id";
+    public static final String network = "network";
 
     public static final String SIGNAL_12VDC = "12VDC";
+    /** Controller area network */
     public static final String SIGNAL_CAN = "CAN";
+    /** Pulse-width modulation */
     public static final String SIGNAL_PWM = "PWM";
-    public static final String SIGNAL_DIGITAL= "DIGITAL";
+    /** Digtal input and output */
+    public static final String SIGNAL_DIO= "DIO";
+    /** Analog input */
+    public static final String SIGNAL_AI= "AI";
+    /** Ethernet */
+    public static final String SIGNAL_ETH= "Ethernet";
+    /** RS-232 */
+    public static final String SIGNAL_RS232= "RS-232";
+    
     
     //private static final String part = "part";
     public static Function<IBuild, Channel> Define(String signal, String network, Object channelId) { return b->new Channel(b, signal, network, channelId); };
@@ -23,14 +33,20 @@ public class Channel extends Connector {
     public Channel(IBuild build, String signal, String network, Object id) { 
         super(build, NAME, signal);
         Value("network", network);
-        if (id instanceof Integer) {
-            Integer channelNumber = (Integer)id;
-            FriendlyName(network + " " + signal + " Ch " + (channelNumber < 10 ? " " : "") + channelNumber.toString());
-        } else {
-            FriendlyName(network + " " + signal + " " + id.toString());
+        var baseName = network;
+        if (network != signal) {
+            baseName += " " + signal;
         }
-        Name(NAME + "|" + network + "|" + signal + "|" + id.toString());
+        Name(id.toString());
         Channel(id);
+        FriendlyName(baseName + " " + Name());
+        // if (id instanceof Integer) {
+        //     Integer channelNumber = (Integer)id;
+        //     FriendlyName(network + " " + signal + " Ch " + (channelNumber < 10 ? " " : "") + channelNumber.toString());
+        // } else {
+        //     FriendlyName(network + " " + signal + " " + id.toString());
+        // }
+        //Name(NAME + "|" + network + "|" + signal + "|" + id.toString());
     }
     public Channel(IBuild build, Part part) { super(build, part); }
 
@@ -42,9 +58,44 @@ public class Channel extends Connector {
         return this; 
     }
 
+    public String Network() { return getString(Channel.network); }
+    public Channel Network(String network) {
+        Value(Channel.network, network);
+        return this;
+    }
+
+    public void connectToPart(Builder part) {
+        var connector = part.findConnector(Signal());
+        if (connector == null) {
+            connector = part.addConnector(Signal());
+        }
+        connector.connectToChannel(this);
+    }
+
+
+
     public static Channel findChannel(Builder hub, int channelNumber) {
         return Channel.Wrap(hub.getPiece(channelNumber));
     }
+
+    public static List<Channel> findPartChannels(Builder hub) {
+        return  hub.getPart().getValues().values().stream()
+            .filter(o -> o instanceof Part)
+            .map(o -> (Part)o)
+            .filter(p -> p.getValue(Builder.BUILD_TYPE) == Channel.NAME)
+            .map(p -> new Channel(hub.getIBuild(),p))
+            .toList();
+    }
+
+    public static List<Channel> findPieceChannels(Builder hub) {
+        return  hub.getPart().getPieces().stream()
+            .filter(o -> o instanceof Part)
+            .map(o -> (Part)o)
+            .filter(p -> p.getValue(Builder.BUILD_TYPE) == Channel.NAME)
+            .map(p -> new Channel(hub.getIBuild(),p))
+            .toList();
+    }
+
     public static Channel findChannel(Builder hub, Object id) {
         if (id instanceof Integer) {
             return findChannel(hub, (int)id);
