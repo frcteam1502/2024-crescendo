@@ -30,15 +30,22 @@
           }
         },
         {
-          "type": "path",
+          "type": "race",
           "data": {
-            "pathName": "4NoteMiddle1"
-          }
-        },
-        {
-          "type": "named",
-          "data": {
-            "name": "Intake on"
+            "commands": [
+              {
+                "type": "path",
+                "data": {
+                  "pathName": "4NoteMiddle1"
+                }
+              },
+              {
+                "type": "named",
+                "data": {
+                  "name": "Intake on"
+                }
+              }
+            ]
           }
         },
         {
@@ -60,21 +67,28 @@
           }
         },
         {
-          "type": "path",
+          "type": "race",
           "data": {
-            "pathName": "4NoteMidle2"
+            "commands": [
+              {
+                "type": "path",
+                "data": {
+                  "pathName": "4NoteMidle2"
+                }
+              },
+              {
+                "type": "named",
+                "data": {
+                  "name": "Intake on"
+                }
+              }
+            ]
           }
         },
         {
           "type": "named",
           "data": {
-            "name": "Intake on"
-          }
-        },
-        {
-          "type": "named",
-          "data": {
-            "name": "Rotate to far shot"
+            "name": "Rotate to close shot"
           }
         },
         {
@@ -96,15 +110,22 @@
           }
         },
         {
-          "type": "path",
+          "type": "race",
           "data": {
-            "pathName": "4NoteMiddle4"
-          }
-        },
-        {
-          "type": "named",
-          "data": {
-            "name": "Intake on"
+            "commands": [
+              {
+                "type": "path",
+                "data": {
+                  "pathName": "4NoteMiddle4"
+                }
+              },
+              {
+                "type": "named",
+                "data": {
+                  "name": "Intake on"
+                }
+              }
+            ]
           }
         },
         {
@@ -116,7 +137,7 @@
         {
           "type": "named",
           "data": {
-            "name": "Rotate to far shot"
+            "name": "Rotate to close shot"
           }
         },
         {
