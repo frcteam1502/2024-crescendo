@@ -33,7 +33,8 @@ final class ShooterIntakeConstants{
   public final static double SHOOTER_AMP_RPM = 100;
   public final static double SHOOTER_HOLD_RPM = -100;
 
-  public final static double INTAKE_DEFAULT_PICK_UP_RPM = 2000;
+  public final static double INTAKE_PICK_UP_FAST_RPM = 2000;
+  public final static double INTAKE_PICK_UP_SLOW_RPM = 1000;
   public final static double INTAKE_DEFAULT_INDEX_RPM = 250;
   public final static double INTAKE_DEFAULT_EJECT_RPM = -1000;
   public final static double INTAKE_DEFAULT_SHOOT_RPM = 3500;
@@ -69,7 +70,8 @@ public class ShooterIntake extends SubsystemBase {
   private final DigitalInput photoSensorNormClosed;
 
   private double shooter_speed = ShooterIntakeConstants.SHOOTER_DEFAULT_RPM;
-  private double intakePickupSpeed = ShooterIntakeConstants.INTAKE_DEFAULT_PICK_UP_RPM;
+  private double intakePickupFastSpeed = ShooterIntakeConstants.INTAKE_PICK_UP_FAST_RPM;
+  private double intakePickupSlowSpeed = ShooterIntakeConstants.INTAKE_PICK_UP_SLOW_RPM;
   private double intakeIndexSpeed = ShooterIntakeConstants.INTAKE_DEFAULT_INDEX_RPM;
   private double intakeEjectSpeed = ShooterIntakeConstants.INTAKE_DEFAULT_EJECT_RPM;
   private double intakeShootSpeed = ShooterIntakeConstants.INTAKE_DEFAULT_SHOOT_RPM;
@@ -124,7 +126,7 @@ public class ShooterIntake extends SubsystemBase {
     SmartDashboard.putNumber("Shooter PID P", shooter_p);
     
     SmartDashboard.putNumber("Intake PID FF", intake_ff);
-    SmartDashboard.putNumber("Intake Pickup Speed", intakePickupSpeed);
+    //SmartDashboard.putNumber("Intake Pickup Speed", intakePickupSpeed);
     SmartDashboard.putNumber("Intake PID p", intake_p);
 
     registerLoggerObjects();
@@ -172,9 +174,14 @@ public class ShooterIntake extends SubsystemBase {
     isShooterOn = false;
   }
 
-  public void setIntakePickup(){
+  public void setIntakePickupFast(){
     intake_controller.setFF(intake_ff);
-    intake_controller.setReference(intakePickupSpeed, CANSparkMax.ControlType.kVelocity);
+    intake_controller.setReference(intakePickupFastSpeed, CANSparkMax.ControlType.kVelocity);
+  }
+
+  public void setIntakePickupSlow(){
+    intake_controller.setFF(intake_ff);
+    intake_controller.setReference(intakePickupSlowSpeed, CANSparkMax.ControlType.kVelocity);
   }
 
   public void setIntakeIndex(){
@@ -221,7 +228,7 @@ public class ShooterIntake extends SubsystemBase {
     shooter_p =SmartDashboard.getNumber("Shooter PID p", 0);
     
     intake_ff = SmartDashboard.getNumber("Intake PID FF", 0);
-    intakePickupSpeed = SmartDashboard.getNumber("Intake Pickup Speed", 0);
+    //intakePickupSpeed = SmartDashboard.getNumber("Intake Pickup Speed", 0);
     intake_p = SmartDashboard.getNumber("Intake PID p", 0);
 
     SmartDashboard.putNumber("Shooter Lead Speed",shooter_lead_encoder.getVelocity());

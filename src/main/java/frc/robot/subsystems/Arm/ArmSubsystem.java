@@ -57,6 +57,8 @@ final class ArmConstants{
   };
 
   public static final double BRAKE_THRESHOLD = 0.25;
+  public static final double INTAKE_POSITION_THRESHOLD = POSITION_TABLE[0] - 1.0;
+  public static final double AMP_POSITION_THRESHOLD = POSITION_TABLE[4] + 1.0;
 }
 
 public class ArmSubsystem extends SubsystemBase {
@@ -131,6 +133,8 @@ public class ArmSubsystem extends SubsystemBase {
     SmartDashboard.putNumber("Arm Absolute Encoder Angle", getArmAbsPositionDegrees());
     SmartDashboard.putNumber("Arm Relative Encoder", rotateRelativeEncoder.getPosition());
     SmartDashboard.putNumber("Rotation Goal", goalRotate);
+    SmartDashboard.putBoolean("Is Arm At Intake", isArmAtIntake());
+    SmartDashboard.putBoolean("Is Arm At Amp", isArmAtAmp());
   }
 
   public void reset(){
@@ -202,6 +206,21 @@ public class ArmSubsystem extends SubsystemBase {
       goalRotate += ArmConstants.ROTATE_CHANGE * 2;}
   }
 
+  public boolean isArmAtIntake(){
+    if(getArmAbsPositionDegrees() >= ArmConstants.INTAKE_POSITION_THRESHOLD){
+      return true;
+    }else{
+      return false;
+    }
+  }
+
+  public boolean isArmAtAmp(){
+    if(getArmAbsPositionDegrees() <= ArmConstants.AMP_POSITION_THRESHOLD){
+      return true;
+    }else{
+      return false;
+    }
+  }
   /**
    * Takes in the current angle to be used to calculate
    * the necesary feedforward based on the maximum

@@ -4,6 +4,8 @@
 
 package frc.robot.commands;
 
+import java.util.function.BooleanSupplier;
+
 import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
 import frc.robot.subsystems.ShooterIntake.ShooterIntake;
 
@@ -14,11 +16,11 @@ public class IntakeNote extends SequentialCommandGroup {
   /** Creates a new IntakeNote. */
   //ShooterIntake shooterIntake;
   
-  public IntakeNote(ShooterIntake shooterIntake) {
+  public IntakeNote(ShooterIntake shooterIntake, BooleanSupplier atIntakePosition) {
     // Add your commands in the addCommands() call, e.g.
     // addCommands(new FooCommand(), new BarCommand());
     addCommands(
-      new PickupNote(shooterIntake),
+      new PickupNote(shooterIntake, atIntakePosition),
       new IndexNote(shooterIntake)
       );
   }
