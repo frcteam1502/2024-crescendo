@@ -4,6 +4,8 @@
 
 package frc.robot.commands;
 
+import java.util.function.BooleanSupplier;
+
 import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj2.command.Command;
 import frc.robot.subsystems.ShooterIntake.ShooterIntake;
@@ -11,13 +13,13 @@ import frc.robot.subsystems.ShooterIntake.ShooterIntake;
 public class LaunchNote extends Command {
   /** Creates a new LaunchNote. */
   private final ShooterIntake shooterIntake;
+  
 
   private final Timer launchNoteTimer = new Timer();
 
   public LaunchNote(ShooterIntake shooterIntake) {
     // Use addRequirements() here to declare subsystem dependencies.
     this.shooterIntake = shooterIntake;
-    
     launchNoteTimer.reset();
 
     addRequirements(shooterIntake);
@@ -26,19 +28,21 @@ public class LaunchNote extends Command {
   // Called when the command is initially scheduled.
   @Override
   public void initialize() {
-    shooterIntake.setIntakeShoot();
     launchNoteTimer.reset();
     launchNoteTimer.start();
   }
 
   // Called every time the scheduler runs while the command is scheduled.
   @Override
-  public void execute() {}
+  public void execute() {
+    shooterIntake.setIntakeShoot();
+  }
 
   // Called once the command ends or is interrupted.
   @Override
   public void end(boolean interrupted) {
     shooterIntake.setIntakeOff();
+    shooterIntake.setShooterOff();
   }
 
   // Returns true when the command should end.

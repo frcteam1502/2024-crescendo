@@ -4,6 +4,8 @@
 
 package frc.robot.commands;
 
+import java.util.function.BooleanSupplier;
+
 import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
 import frc.robot.subsystems.ShooterIntake.ShooterIntake;
 
@@ -12,9 +14,9 @@ import frc.robot.subsystems.ShooterIntake.ShooterIntake;
 // https://docs.wpilib.org/en/stable/docs/software/commandbased/convenience-features.html
 public class ShootNote extends SequentialCommandGroup {
   /** Creates a new ShootNote. */
-  public ShootNote(ShooterIntake shooterIntake) {
+  public ShootNote(ShooterIntake shooterIntake, BooleanSupplier armAtAmp) {
     // Add your commands in the addCommands() call, e.g.
     // addCommands(new FooCommand(), new BarCommand());
-    addCommands(new RampUpShooter(shooterIntake), new LaunchNote(shooterIntake));
+    addCommands(new RampUpShooter(shooterIntake, armAtAmp), new LaunchNote(shooterIntake));
   }
 }

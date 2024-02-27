@@ -203,7 +203,8 @@ public class DriveSubsystem extends SubsystemBase{
 
   private void checkInitialAngle() {
     if (GameState.isTeleop() && GameState.isFirst()) { 
-      targetAngle = getIMU_Yaw();
+      //targetAngle = getIMU_Yaw();
+      gyro.getYaw().getValue();
     }
   }
 
@@ -360,8 +361,6 @@ public class DriveSubsystem extends SubsystemBase{
       backRight.getState()};
   }
 
-  int count = 0;
-
   public void updateOdometry() {
     pose = odometry.update(
         getGyroRotation2d(),
@@ -371,13 +370,7 @@ public class DriveSubsystem extends SubsystemBase{
           backLeft.getPosition(),
           backRight.getPosition()
         });
-    if(count==0){
-      System.out.println(pose.getX());
-      System.out.println(pose.getY());
-      count = 1;
-    }
   }
-
 
   public void resetOdometry(Pose2d pose) {
     odometry.resetPosition(getGyroRotation2d(), getModulePositions(), pose);

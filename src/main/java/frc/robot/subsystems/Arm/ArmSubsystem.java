@@ -57,6 +57,8 @@ final class ArmConstants{
   };
 
   public static final double BRAKE_THRESHOLD = 0.25;
+  public static final double INTAKE_POSITION_THRESHOLD = POSITION_TABLE[0] - 1.0;
+  public static final double AMP_POSITION_THRESHOLD = POSITION_TABLE[4] + 1.0;
 }
 
 public class ArmSubsystem extends SubsystemBase {
@@ -121,24 +123,9 @@ public class ArmSubsystem extends SubsystemBase {
     
     // read PID coefficients from SmartDashboard
     arm_p_gain =         SmartDashboard.getNumber("ANGLE P Gain", 0);
-    /*double i =         SmartDashboard.getNumber("ANGLE I Gain", 0);
-    double d =         SmartDashboard.getNumber("ANGLE D Gain", 0);
-    double iz =        SmartDashboard.getNumber("ANGLE I Zone", 0);
-    double ff =        SmartDashboard.getNumber("ANGLE Feed Forward", 0);
-    double max =       SmartDashboard.getNumber("ANGLE Max Output", 0);
-    double min =       SmartDashboard.getNumber("ANGLE Min Output", 0);*/
-
-    
-
     // if PID coefficients on SmartDashboard have changed, write new values to controller
     if((arm_p_gain != rotatePID.getP())) { rotatePID.setP(arm_p_gain); }
-    /*if((i != rotatePID.getI())) { rotatePID.setI(i); }
-    if((d != rotatePID.getD())) { rotatePID.setD(d); }
-    if((iz != rotatePID.getIZone())) { rotatePID.setIZone(iz); }
-    if((ff != rotatePID.getFF())) { rotatePID.setFF(ff); }
-    if((max != rotatePID.getOutputMax()) || (min != rotatePID.getOutputMin())) { 
-      rotatePID.setOutputRange(min, max); 
-    }*/
+  
     arm_intake_angle = SmartDashboard.getNumber("Arm Intake Angle", 0);
     arm_close_angle = SmartDashboard.getNumber("Arm Close Angle", 0);
     arm_far_angle = SmartDashboard.getNumber("Arm Far Angle", 0);
@@ -146,6 +133,8 @@ public class ArmSubsystem extends SubsystemBase {
     SmartDashboard.putNumber("Arm Absolute Encoder Angle", getArmAbsPositionDegrees());
     SmartDashboard.putNumber("Arm Relative Encoder", rotateRelativeEncoder.getPosition());
     SmartDashboard.putNumber("Rotation Goal", goalRotate);
+    SmartDashboard.putBoolean("Is Arm At Intake", isArmAtIntake());
+    SmartDashboard.putBoolean("Is Arm At Amp", isArmAtAmp());
   }
 
   public void reset(){
@@ -217,6 +206,21 @@ public class ArmSubsystem extends SubsystemBase {
       goalRotate += ArmConstants.ROTATE_CHANGE * 2;}
   }
 
+  public boolean isArmAtIntake(){
+    if(getArmAbsPositionDegrees() >= ArmConstants.INTAKE_POSITION_THRESHOLD){
+      return true;
+    }else{
+      return false;
+    }
+  }
+
+  public boolean isArmAtAmp(){
+    if(getArmAbsPositionDegrees() <= ArmConstants.AMP_POSITION_THRESHOLD){
+      return true;
+    }else{
+      return false;
+    }
+  }
   /**
    * Takes in the current angle to be used to calculate
    * the necesary feedforward based on the maximum
