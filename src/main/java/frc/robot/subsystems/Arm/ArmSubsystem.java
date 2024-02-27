@@ -121,24 +121,9 @@ public class ArmSubsystem extends SubsystemBase {
     
     // read PID coefficients from SmartDashboard
     arm_p_gain =         SmartDashboard.getNumber("ANGLE P Gain", 0);
-    /*double i =         SmartDashboard.getNumber("ANGLE I Gain", 0);
-    double d =         SmartDashboard.getNumber("ANGLE D Gain", 0);
-    double iz =        SmartDashboard.getNumber("ANGLE I Zone", 0);
-    double ff =        SmartDashboard.getNumber("ANGLE Feed Forward", 0);
-    double max =       SmartDashboard.getNumber("ANGLE Max Output", 0);
-    double min =       SmartDashboard.getNumber("ANGLE Min Output", 0);*/
-
-    
-
     // if PID coefficients on SmartDashboard have changed, write new values to controller
     if((arm_p_gain != rotatePID.getP())) { rotatePID.setP(arm_p_gain); }
-    /*if((i != rotatePID.getI())) { rotatePID.setI(i); }
-    if((d != rotatePID.getD())) { rotatePID.setD(d); }
-    if((iz != rotatePID.getIZone())) { rotatePID.setIZone(iz); }
-    if((ff != rotatePID.getFF())) { rotatePID.setFF(ff); }
-    if((max != rotatePID.getOutputMax()) || (min != rotatePID.getOutputMin())) { 
-      rotatePID.setOutputRange(min, max); 
-    }*/
+  
     arm_intake_angle = SmartDashboard.getNumber("Arm Intake Angle", 0);
     arm_close_angle = SmartDashboard.getNumber("Arm Close Angle", 0);
     arm_far_angle = SmartDashboard.getNumber("Arm Far Angle", 0);
