@@ -8,6 +8,7 @@ import org.junit.jupiter.api.Test;
 
 import team1502.configuration.MdFormatter;
 import team1502.configuration.CAN.*;
+import team1502.configuration.builders.power.PowerChannel;
 import team1502.configuration.builders.power.PowerDistributionModule;
 import team1502.configuration.factory.PartBuilder;
 
@@ -71,6 +72,42 @@ public class BuilderTests {
         factory.DumpParts();
         factory.DumpChannels(hub);
     
+    }
+
+    @Test
+    public void powerTest() {
+        var factory = new TestBuilder();
+        
+        var hub1 = factory.createPart("hub1");
+        System.out.println("0: " +  PowerChannel.getTotalPeakPower(hub1));
+        
+        hub1.addPiece(PowerChannel.Define("hub1", 0));
+        hub1.addPiece(PowerChannel.Define("hub1", 2));
+        System.out.println("1: " +  PowerChannel.getTotalPeakPower(hub1));
+
+        var part1 = factory.createPart("Part1", p->p.PeakPower(3.0));
+        hub1.addChannel(Channel.SIGNAL_12VDC, "Compressor");
+
+        part1.connectTo(hub1, "Compressor");
+        System.out.println("1a: " +  PowerChannel.getTotalPeakPower(hub1));
+
+        var part2 = factory.createPart("Part2", p->p.PeakPower(1.0));
+        part2.connectTo(hub1, 1);
+        System.out.println("2a: " +  PowerChannel.getTotalPeakPower(part2));
+        System.out.println("2b: " +  PowerChannel.getTotalPeakPower(hub1));
+
+        var part3 = factory.createPart("Part3", p->p.PeakPower(5.0));
+        part1.addChannel(Channel.SIGNAL_12VDC, "Relay");
+        part3.connectTo(part1, "Relay");
+        var part4 = factory.createPart("Part4", p->p.PeakPower(7.0));
+        part1.addChannel(Channel.SIGNAL_12VDC, 0);
+        part4.connectTo(part1, 0);
+
+        System.out.println("3a: " +  PowerChannel.getTotalPeakPower(part4));
+        System.out.println("3b: " +  PowerChannel.getTotalPeakPower(part1));
+        System.out.println("3c: " +  PowerChannel.getTotalPeakPower(hub1));
+        
+        factory.reportPartPower();
     }
 
     @Test
@@ -140,8 +177,11 @@ public class BuilderTests {
     class TestBuilder implements IBuild {
         private ArrayList<Part> _parts = new ArrayList<>(); // every part created
 
-        // public Builder createPart(String partName, Function<Builder, Builder> fn) {
-        // }
+        public Builder createPart(String partName, Function<Builder, Builder> fn) {
+            var part = createPart(partName);
+            fn.apply(part);
+            return part;
+        }
         public Builder createPart(String partName) {
 
             return Builder.DefineAs(partName).apply(this);
@@ -191,6 +231,23 @@ public class BuilderTests {
             formatter.PrintTable();
 
         }
+
+        public void reportPartPower() {
+            var formatter = MdFormatter.Table("Parts Power")
+                .Heading("Watts", "Total", "Key", "Friendly Name");
+
+            var parts = _parts.stream().map(p->new Builder(this, p)).toList();
+            for (Builder part : parts) {
+                var key = part.getPart().getKey();
+                formatter.AddRow(
+                    part.hasPowerProfile() ? part.PowerProfile().PeakPower().toString() : "",
+                    part.hasValue("totalPeakPower") ? part.getDouble("totalPeakPower").toString() : "",
+                    key,
+                    part.hasValue(Builder.friendlyName) ? (String)part.getValue(Builder.friendlyName) : "");
+            }
+            formatter.PrintTable();
+
+        }
         
         public void reportUnconnected() {
             var connectors = Connector.findConnectors(_parts);
@@ -232,8 +289,8 @@ public class BuilderTests {
 
         }
         public void DumpChannels(Builder hub) {
-           var partChannels = Channel.findPartChannels(hub);
-           var pieceChannels = Channel.findPieceChannels(hub);
+           var partChannels = Channel.getPartChannels(hub);
+           var pieceChannels = Channel.getPieceChannels(hub);
 
            var formatter = MdFormatter.Table("Channels for " + hub.Name())
             .Heading("Part", "Friendly", "Signal", "Network", "Connection");

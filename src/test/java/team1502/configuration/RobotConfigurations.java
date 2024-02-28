@@ -174,11 +174,11 @@ public final class RobotConfigurations {
                 .PDH(19, "MPM2")
             )
 
-            .Compressor(p->p.PowerChannel(PneumaticsController.CompressorPower))
+            //.Compressor(p->p.PowerChannel(PneumaticsController.CompressorPower))
             .PCM(ph -> ph
                 .Solenoid(0, 0, "Solenoid")
                 .PDH(7)
-                .Powers(hw.Compressor())
+                //.Powers(hw.Compressor())
                 .CanNumber(1)
             )
         );
@@ -195,7 +195,7 @@ public final class RobotConfigurations {
                     .Gear("Chain 4:1", 1, 4)))
         ).Build(arm -> arm
             .Subsystem("Arm", a -> a
-                .Solenoid("Brake Solenoid", s->s.PowerChannel(0))
+                .Solenoid("Brake Solenoid", s->s.PCM(0))
                 .Encoder("Encoder", e->e.DigitalInput(0))
                 .MotorController("Leader", "Arm Motor", c->c
                     .Follower("Arm Motor", f->f
@@ -267,9 +267,9 @@ public final class RobotConfigurations {
         );
         
         parts.Build(hw->hw
-            .PCM(pcm->pcm.PowerChannel(21))
-            .RadioPowerModule(rpm->rpm.PowerChannel(22))
-            .Pigeon2(gyro->gyro.PowerChannel(23))
+            .PCM(pcm->pcm.PDH(21))
+            .RadioPowerModule(rpm->rpm.PDH(22))
+            .Pigeon2(gyro->gyro.PDH(23))
             .DC(dc -> dc // 60W PIs + camera
             /*                  .Pi("PhotonVisionone", "10.15.02.11")
                                 .Pi("PhotonVisiontwo", "10.15.02.12")
@@ -404,10 +404,10 @@ public final class RobotConfigurations {
                     .SwerveDrive().SwerveModule("#1").DrivingMotor().getPositionConversionFactor())
             .Eval("SwerveModule.TurningMotor.Motor.MotorType", e -> e
                     .SwerveDrive().SwerveModule("#1").TurningMotor().Motor().MotorType())
-            .Eval("SwerveModule.TurningMotor.Motor.PowerChannel", e -> e
-                    .SwerveDrive().SwerveModule("#1").TurningMotor().PowerChannel())
-            .Eval("SwerveModule.TurningMotor.TotalPower", e -> e
-                    .SwerveDrive().SwerveModule("#1").TurningMotor().TotalPeakPower())
+            // .Eval("SwerveModule.TurningMotor.Motor.PowerChannel", e -> e
+            //         .SwerveDrive().SwerveModule("#1").TurningMotor().PowerChannel())
+            // .Eval("SwerveModule.TurningMotor.TotalPower", e -> e
+            //         .SwerveDrive().SwerveModule("#1").TurningMotor().TotalPeakPower())
             .Eval("SwerveModule.MagneticOffset", e -> e
                     .SwerveDrive().SwerveModule("#1").Encoder().MagneticOffset())
             // .Eval("SwerveModule.TurningMotor.Motor.MotorType", e -> e

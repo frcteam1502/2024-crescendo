@@ -23,6 +23,14 @@ public class PowerChannel extends Channel {
     }
     public PowerChannel(IBuild build, Part part) { super(build, part); }
 
+    public boolean hasFuse() {return hasValue(fuse); }
+    public Integer Fuse() { return getInt(fuse); }
+    public PowerChannel Fuse(Integer amps) {
+        Value(fuse, amps);
+        return this; 
+    }
+    
+
     /*
      * 
     public Integer Channel() { return getInt(channel); }
@@ -32,14 +40,6 @@ public class PowerChannel extends Channel {
     }
     public boolean hasPart() { return Part().isPartPresent(); }
     public Builder Part() { return getPart(part); }
-     */
-    
-    public boolean hasFuse() {return hasValue(fuse); }
-    public Integer Fuse() { return getInt(fuse); }
-    public PowerChannel Fuse(Integer amps) {
-        Value(fuse, amps);
-        return this; 
-    }
     
     // public PowerChannel Part(Builder powered) {
     //     Value(part, powered.getPart());
@@ -57,14 +57,37 @@ public class PowerChannel extends Channel {
     }
     public Double ChannelPower() {
         if (isConnected()) {
-            return Connection().TotalPeakPower();
+            return Connection().Host().TotalPeakPower();
         }
         return Double.MIN_NORMAL;
     }
+     */
 
     public static PowerChannel findConnectedChannel(Builder device) {
         var vin = device.findConnector(Channel.SIGNAL_12VDC);
         return Wrap(vin.Connection());
+    }
+
+    public static Double getTotalPeakPower(PowerChannel ch) {
+        double totalPower = 0.0;
+        if (ch.isConnected()) {
+            totalPower += getTotalPeakPower(ch.Connection().Host());
+        }
+        ch.setValue("totalPeakPower", totalPower); // set the power for reporting
+        return totalPower;
+    }
+    
+    public static Double getTotalPeakPower(Builder part) {
+        double totalPower = 0.0;
+        if (part.hasPowerProfile()) {
+            totalPower = part.PowerProfile().PeakPower();
+        }
+        var channels = getChannels(part, Channel.SIGNAL_12VDC).stream().map(ch->Wrap(ch)).toList();
+        for (PowerChannel ch : channels) {
+            totalPower += getTotalPeakPower(ch);
+        }        
+        part.Value("totalPeakPower", totalPower); // set the power for reporting
+        return totalPower;
     }
     
 }

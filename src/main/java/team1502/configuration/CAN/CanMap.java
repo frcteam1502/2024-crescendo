@@ -20,7 +20,7 @@ public class CanMap {
     private ArrayList<String> _errorMessages = new ArrayList<>();
 
     public CanMap(Builder bus) {
-        var devices = Channel.findPartChannels(bus).stream()
+        var devices = Channel.getPartChannels(bus).stream()
             .map(ch -> ch.Connection().Host()).toList();
 
         for (Builder device : devices) {

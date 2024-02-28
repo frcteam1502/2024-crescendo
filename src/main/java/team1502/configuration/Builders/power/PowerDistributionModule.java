@@ -101,20 +101,6 @@ public class PowerDistributionModule extends Builder {
         }
     }
 
-    @Override // Builder
-    public Builder Powers(Builder builder) {
-        super.Powers(builder);
-        if (builder.hasPowerProfile() && builder.PowerProfile().Channel() != null) {
-            updateChannel(builder);
-        }
-        return this;
-    }
-
-    public void updateChannel(Builder part) {
-        int channelNumber = part.PowerChannel();
-        updateChannel(channelNumber, part);
-    }
-
     public String[] ChannelNames() {
         return getPieces().stream().map(ch->ch.FriendlyName()).toArray(String[]::new);
     }
@@ -124,6 +110,19 @@ public class PowerDistributionModule extends Builder {
 }
 
     /*
+    public void updateChannel(Builder part) {
+        int channelNumber = part.PowerChannel();
+        updateChannel(channelNumber, part);
+    }
+    @Override // Builder
+    public Builder Powers(Builder builder) {
+        super.Powers(builder);
+        if (builder.hasPowerProfile() && builder.PowerProfile().Channel() != null) {
+            updateChannel(builder);
+        }
+        return this;
+    }
+
     public PowerDistributionModule Ch(Integer channel, Integer fuse, String name) {
         return this;
     }

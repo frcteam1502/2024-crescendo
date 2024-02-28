@@ -7,6 +7,7 @@ import edu.wpi.first.math.util.Units;
 import java.util.List;
 
 import team1502.configuration.CAN.CanInfo;
+import team1502.configuration.builders.pneumatics.PneumaticsController;
 import team1502.configuration.builders.power.PowerDistributionModule;
 import team1502.configuration.builders.power.PowerProfile;
 import team1502.configuration.factory.PartBuilder;
@@ -322,21 +323,22 @@ public class Builder {
     }
 
     public boolean hasPowerProfile() {
-        return PowerProfile().isPartPresent();
+        return hasValue(PowerProfile.powerProfile);
     }
 
-    public double TotalPeakPower() { return PowerProfile().TotalPower(); }
     public Builder PeakPower(double peakWatts) {
         ensurePowerProfile().PeakPower(peakWatts);
         return this;
     }
     
+/*
+    public Double TotalPeakPower() { return PowerProfile().TotalPower(); }
     public int PowerChannel() { return PowerProfile().Channel(); }
     public Builder PowerChannel(int channel) {
         ensurePowerProfile().Channel(channel);
         return this;
     }
-    
+*/   
     /**
      * Notes the MPM that powers the component
      * @param channel
@@ -347,6 +349,7 @@ public class Builder {
     public Builder MPM(int channel, String wireLabel) { return PDM(PowerDistributionModule.MPM, channel, wireLabel); }
     public Builder MPM(int channel) { return PDM(PowerDistributionModule.MPM, channel); }
     public Builder PDH(int channel) { return PDM(PowerDistributionModule.PDH, channel); }
+    public Builder PCM(int channel) { return PDM(PneumaticsController.PCM, channel); }
     public Builder MPM(String mpm, int channel) { return PDM(mpm, channel); }
     
     /**

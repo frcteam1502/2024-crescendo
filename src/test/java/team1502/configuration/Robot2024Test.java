@@ -41,10 +41,10 @@ public class Robot2024Test {
             formatter.AddRow(
                 value.Channel().toString(),
                 value.hasFuse() ? value.Fuse().toString() : "",
-                value.WireLabel(),
+                value.Label(),
                 value.isConnected() ? value.Connection().Host().ShortName() : "",
                 value.isConnected() ? value.Connection().Host().FriendlyName() : "",
-                value.isConnected() ? value.ChannelPower().toString() : ""
+                value.hasValue("totalPeakPower") ? value.getDouble("totalPeakPower").toString() : ""
                 );
         }
         formatter.AsTable().forEach(row -> echo(row));

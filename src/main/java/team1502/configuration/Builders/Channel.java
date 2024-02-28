@@ -1,5 +1,6 @@
 package team1502.configuration.builders;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.function.Function;
 
@@ -78,7 +79,24 @@ public class Channel extends Connector {
         return Channel.Wrap(hub.getPiece(channelNumber));
     }
 
-    public static List<Channel> findPartChannels(Builder hub) {
+    public static List<Channel> getChannels(Builder hub , String signal) {
+        var list = new ArrayList<Channel>();
+        hub.getPart().getValues().values().stream()
+            .filter(o -> o instanceof Part)
+            .map(o -> (Part)o)
+            .filter(p -> p.getValue(Builder.BUILD_TYPE) == Channel.NAME && p.getValue(Channel.signal) == signal)
+            .map(p -> new Channel(hub.getIBuild(),p))
+            .forEach(c->list.add(c));
+        hub.getPart().getPieces().stream()
+            .filter(o -> o instanceof Part)
+            .map(o -> (Part)o)
+            .filter(p -> p.getValue(Builder.BUILD_TYPE) == Channel.NAME && p.getValue(Channel.signal) == signal)
+            .map(p -> new Channel(hub.getIBuild(),p))
+            .forEach(c->list.add(c));
+        return list;
+    }
+
+    public static List<Channel> getPartChannels(Builder hub) {
         return  hub.getPart().getValues().values().stream()
             .filter(o -> o instanceof Part)
             .map(o -> (Part)o)
@@ -87,7 +105,7 @@ public class Channel extends Connector {
             .toList();
     }
 
-    public static List<Channel> findPieceChannels(Builder hub) {
+    public static List<Channel> getPieceChannels(Builder hub) {
         return  hub.getPart().getPieces().stream()
             .filter(o -> o instanceof Part)
             .map(o -> (Part)o)
@@ -114,10 +132,10 @@ public class Channel extends Connector {
         .filter(c -> c.ChannelID() == channelName)
         .toList();
 
-    return signals.isEmpty() ? null : signals.get(0);
-
-
+        return signals.isEmpty() ? null : signals.get(0);
     }
+
+
     // public boolean hasPart() { return Part().isPartPresent(); }
     // public Builder Connector() { return getPart(part); }
     // public boolean hasPart() { return Part().isPartPresent(); }

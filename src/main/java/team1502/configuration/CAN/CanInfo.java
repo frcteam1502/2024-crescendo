@@ -23,7 +23,7 @@ public class CanInfo extends Connector {
         Manufacturer(manufacturer);
         FriendlyName(manufacturer.ManufacturerName + " " + deviceType.DeviceName);
         Name(Channel.SIGNAL_CAN + ":" + deviceType.toString() + "|" + manufacturer.toString());
-        Value("keyName", canInfo);
+        Value(Part.KEY_NAME, canInfo);
     }
     
     public CanInfo(IBuild build, Part part) { super(build, part); }
@@ -72,6 +72,7 @@ public class CanInfo extends Connector {
         can.Number(number);
         return can;
     }
+
     public static CanInfo addConnector(Builder device, DeviceType deviceType, Manufacturer manufacturer) {
         var can = new CanInfo(device.getIBuild(), deviceType, manufacturer);
         device.addPart(can);

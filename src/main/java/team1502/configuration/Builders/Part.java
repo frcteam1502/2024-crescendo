@@ -9,9 +9,10 @@ public class Part {
     private ArrayList<Part> _pieces = new ArrayList<>();
     private ArrayList<String> _errorMessages = new ArrayList<>();
     private Part parent;
-
-    public static String BUILD_NAME = "buildName"; // normally the key
-    public static String KEY_NAME = "keyName"; // override the key
+    /** normally the key */
+    public static String BUILD_NAME = "buildName"; 
+    /** override the key */
+    public static String KEY_NAME = "keyName";
     public static String ORIGINAL_NAME = "originalName";
 
     public Part() {}
