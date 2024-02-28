@@ -9,9 +9,9 @@ import team1502.configuration.builders.Part;
 
 public class PowerChannel extends Channel {
     private static final String NAME = "PowerChannel";
-    //private static final String channel = "channel";
     private static final String fuse = "fuse";
-    private static final String part = "part";
+    //private static final String channel = "channel";
+    //private static final String part = "part";
     //private static final String type = "power";
     public static Function<IBuild, PowerChannel> Define(String network, Integer channelNumber) { return b->new PowerChannel(b, network, channelNumber); };
     public static PowerChannel Wrap(Builder builder) { return new PowerChannel(builder.getIBuild(), builder.getPart()); }
@@ -41,13 +41,13 @@ public class PowerChannel extends Channel {
         return this; 
     }
     
-    public PowerChannel Part(Builder powered) {
-        Value(part, powered.getPart());
-        powered.PowerChannel(Channel());
-        FriendlyName(powered.FriendlyName());
-        Abbreviation(powered.Abbreviation());
-        return this; 
-    }
+    // public PowerChannel Part(Builder powered) {
+    //     Value(part, powered.getPart());
+    //     powered.PowerChannel(Channel());
+    //     FriendlyName(powered.FriendlyName());
+    //     Abbreviation(powered.Abbreviation());
+    //     return this; 
+    // }
 
     public String WireLabel() {
         if (isConnected() && Connection().hasPowerProfile()) {

@@ -39,10 +39,16 @@ public class BuilderTests {
         var part2 = factory.createPart("Part2");
         part2.connectTo(hub1, 0);
 
+        var part3 = factory.createPart("Part3");
+        var part4 = factory.createPart("Part4");
+        part3.addChannel(Channel.SIGNAL_12VDC, part4);
+
         System.out.println(ctr1.Connection().Host().getPart().getKey());
 
         factory.DumpParts();
         factory.DumpChannels(hub1);
+        factory.DumpChannels(part3);
+        factory.DumpChannels(part4);
 
     }
 

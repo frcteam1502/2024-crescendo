@@ -37,12 +37,8 @@ public class PowerDistributionModule extends Builder {
     public static PowerDistributionModule Wrap(Builder builder) { return new PowerDistributionModule(builder.getIBuild(), builder.getPart()); }
     public static PowerDistributionModule WrapPart(Builder builder, String partName) { return Wrap(builder.getPart(partName)); }
     
-    private String signal = Channel.SIGNAL_12VDC;
-    private String network;
-
     public PowerDistributionModule(IBuild build, String name, int channels) {
-        super(build);
-        network = name;
+        super(build, name);
         initializeChannels(channels);
     }
     public PowerDistributionModule(IBuild build, String name, int channels, Manufacturer manufacturer) {
@@ -58,7 +54,7 @@ public class PowerDistributionModule extends Builder {
         return this;
     }
     private void createChannel(Integer channelNumber) {
-        addPiece(PowerChannel.Define(network, channelNumber));
+        addPiece(PowerChannel.Define(Name(), channelNumber));
     }
         
     public PowerDistributionModule Ch(Integer channel, Integer fuse) {
@@ -81,9 +77,11 @@ public class PowerDistributionModule extends Builder {
     public PowerChannel getChannel(int channelNumber) {
         return  PowerChannel.Wrap(getPiece(channelNumber));
     }
+
     private void updateChannel(Integer channelNumber, Integer fuse, Builder part) {
         if (channelNumber >= 0) {
-            getChannel(channelNumber).Part(part).Fuse(fuse);
+            var ch = getChannel(channelNumber).Fuse(fuse);
+            ch.connectToPart(part);
         }
     }
 
@@ -98,7 +96,8 @@ public class PowerDistributionModule extends Builder {
     }
     public void updateChannel(Integer channelNumber, Builder part) {
         if (channelNumber >= 0) {
-            getChannel(channelNumber).Part(part);
+            var ch = getChannel(channelNumber);
+            ch.connectToPart(part);
         }
     }
 

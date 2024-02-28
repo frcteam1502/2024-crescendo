@@ -3,11 +3,14 @@ package team1502.configuration.builders;
 import java.util.List;
 import java.util.function.Function;
 
+import team1502.configuration.builders.power.PowerProfile;
+
 public class Connector extends Builder {
     public static final String NAME = "Connector";
     private static final String connection = "connection"; // what it is attached/connected to
     //private static final String part = "part"; // always "parent" ??
     public static final String signal = "signal";
+    public static final String label = "label";
     public static Function<IBuild, Connector> Define(String signal) { return b->new Connector(b, signal); };
     public static Connector Wrap(Builder builder) { return new Connector(builder.getIBuild(), builder.getPart()); }
 
@@ -28,6 +31,13 @@ public class Connector extends Builder {
     public String Signal() { return getString(Connector.signal); }
     public Connector Signal(String signal) {
         Value(Connector.signal, signal);
+        return this;
+    }
+
+    //** e.g., the physical label on the wire harness to help identify a connection */
+    public String Label() { return getString(Connector.label); }
+    public Connector Label(String label) {
+        setValue(Connector.label, label);
         return this;
     }
     

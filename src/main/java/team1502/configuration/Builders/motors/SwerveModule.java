@@ -4,6 +4,7 @@ import java.util.function.Function;
 
 import team1502.configuration.CAN.Manufacturer;
 import team1502.configuration.builders.Builder;
+import team1502.configuration.builders.Channel;
 import team1502.configuration.builders.IBuild;
 import team1502.configuration.builders.Part;
 import team1502.configuration.builders.power.PowerDistributionModule;
@@ -14,9 +15,9 @@ public class SwerveModule extends Builder {
     public static final String location = "location";
     /** Wheel Diameter (m) */
     public static final String wheelDiameter = "wheelDiameter";
-    private static final String AbsoluteEncoder = "Encoder";
-    private static final String TurningMotor = "TurningMotor";
-    private static final String DrivingMotor = "DrivingMotor";
+    private static final String absoluteEncoder = "Encoder";
+    private static final String turningMotor = "TurningMotor";
+    private static final String drivingMotor = "DrivingMotor";
     private static final String isReversed = "isReversed";
     public static Function<IBuild, SwerveModule> Define = build->new SwerveModule(build);
     public static SwerveModule Wrap(Builder builder) { return new SwerveModule(builder.getIBuild(), builder.getPart()); }
@@ -30,14 +31,14 @@ public class SwerveModule extends Builder {
         fn.apply(this);
         return this;
     }
-    public CANCoder Encoder() {return CANCoder.WrapPart(this, AbsoluteEncoder);}
+    public CANCoder Encoder() {return CANCoder.WrapPart(this, SwerveModule.absoluteEncoder);}
     public SwerveModule Encoder(Function<CANCoder, Builder> fn) {
         fn.apply(Encoder());
         return this;
     }
     
     public SwerveModule CANCoder(Function<CANCoder, Builder> fn) {
-        addPart(CANCoder.Define, AbsoluteEncoder, fn);
+        addPart(CANCoder.Define, SwerveModule.absoluteEncoder, fn);
         return this;
     }
 
@@ -46,19 +47,19 @@ public class SwerveModule extends Builder {
         return builder;
     }
 
-    public MotorController TurningMotor() { return MotorController.WrapPart(this, TurningMotor); }
+    public MotorController TurningMotor() { return MotorController.WrapPart(this, SwerveModule.turningMotor); }
     public SwerveModule TurningMotor(Manufacturer manufacturer, Function<MotorController, Builder> fn) {
-        addPart(MotorController.Define(manufacturer), TurningMotor, fn);
+        addPart(MotorController.Define(manufacturer), SwerveModule.turningMotor, fn);
         return this;
     }
     
-    public MotorController DrivingMotor() { return Wrapped(MotorController.WrapPart(this, DrivingMotor)); }
+    public MotorController DrivingMotor() { return Wrapped(MotorController.WrapPart(this, SwerveModule.drivingMotor)); }
     public SwerveModule DrivingMotor(Manufacturer manufacturer, Function<MotorController, Builder> fn) {
-        addPart(MotorController.Define(manufacturer), DrivingMotor, fn);
+        addPart(MotorController.Define(manufacturer), SwerveModule.drivingMotor, fn);
         return this;
     }
 
-    public boolean Reversed() { return getBoolean(isReversed, false); }
+    public boolean Reversed() { return getBoolean(SwerveModule.isReversed, false); }
     public SwerveModule Reversed(boolean value) {
         TurningMotor().Reversed(value);
         DrivingMotor().Reversed(value);
@@ -75,24 +76,19 @@ public class SwerveModule extends Builder {
     public int CanNumberDrivingMotor() { return DrivingMotor().CanNumber(); }
     public SwerveModule CanNumbers(int absoluteEncoder, int turningMotor, int drivingMotor) {
         Encoder().CanNumber(absoluteEncoder);
-        TurningMotor().CanNumber(turningMotor); TurningMotor().PowerChannel(turningMotor); 
-        TurningMotor().PowerProfile().Label(turningMotor + " " + turningMotor + " " + turningMotor + " ");
-        DrivingMotor().CanNumber(drivingMotor); DrivingMotor().PowerChannel(drivingMotor);
-        DrivingMotor().PowerProfile().Label(drivingMotor + " " + drivingMotor + " " + drivingMotor + " ");
+        TurningMotor().CanNumber(turningMotor); //TurningMotor().PowerChannel(turningMotor); 
+        TurningMotor().addConnector(Channel.SIGNAL_12VDC).Label(turningMotor + " " + turningMotor + " " + turningMotor + " ");
+        DrivingMotor().CanNumber(drivingMotor); //DrivingMotor().PowerChannel(drivingMotor);
+        DrivingMotor().addConnector(Channel.SIGNAL_12VDC).Label(drivingMotor + " " + drivingMotor + " " + drivingMotor + " ");
 
-        // TODO: HACK -- hard-coded PDH
-        PowerDistributionModule pdm = PowerDistributionModule.Wrap(getIBuild().getInstalled(PowerDistributionModule.PDH));
-        
         TurningMotor().Powers(TurningMotor().Motor());
         DrivingMotor().Powers(TurningMotor().Motor());
 
         TurningMotor().Abbreviation(Abbreviation()+"T");
-        TurningMotor().PowerChannel(turningMotor);
-        pdm.updateChannel(TurningMotor());
+        TurningMotor().PDH(turningMotor);
         
         DrivingMotor().Abbreviation(Abbreviation()+"D");
-        DrivingMotor().PowerChannel(drivingMotor);
-        pdm.updateChannel(DrivingMotor());
+        DrivingMotor().PDH(drivingMotor);
 
         return this;
     }

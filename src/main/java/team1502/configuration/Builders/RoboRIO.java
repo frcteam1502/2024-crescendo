@@ -26,8 +26,6 @@ public class RoboRIO extends Builder {
     public static RoboRIO WrapPart(Builder builder, String partName) { return Wrap(builder.getPart(partName)); }
     public RoboRIO(IBuild build) {
         super(build, NAME); 
-        var can = CanInfo.addConnector(this, deviceType, Manufacturer.NI, 0);
-        can.FriendlyName("NI Robot Controller");
         AddCAN();
         //addPart(Builder.DefineAs(Channel.SIGNAL_CAN)).FriendlyName("CAN port");
         addConnector(Channel.SIGNAL_12VDC, "INPUT").FriendlyName("Power connector");
@@ -39,7 +37,9 @@ public class RoboRIO extends Builder {
         // SPI
         // RS-232
         FriendlyName("roboRIO");
-        addChannel(Channel.SIGNAL_CAN, this);
+        var can = CanInfo.addConnector(this, deviceType, Manufacturer.NI, 0);
+        can.FriendlyName("NI Robot Controller");
+        //addChannel(Channel.SIGNAL_CAN, this);
         //can.tryConnectToChannel(this);
     }
     public RoboRIO(IBuild build, Part part) { super(build, part); }

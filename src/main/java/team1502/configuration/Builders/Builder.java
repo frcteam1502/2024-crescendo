@@ -357,7 +357,7 @@ public class Builder {
      * @return
      */
     public Builder PDM(String mpmName, int channel, String wireLabel) {
-        ensurePowerProfile().Label(wireLabel);
+        //ensurePowerProfile().Label(wireLabel);
         return PDM(mpmName, channel);
     }
     public Builder PDM(String mpmName, Integer channel) {
@@ -369,8 +369,7 @@ public class Builder {
     }
 
     public Builder Powers(Builder builder) {
-        // TODO: build power tree for TotalPeakPower
-        ensurePowerProfile().AddPowered(builder);
+        this.addChannel(Channel.SIGNAL_12VDC, builder);
         return this;
     }
     // EVAL 
