@@ -51,7 +51,7 @@ final class ArmConstants{
   {
     -0.5, //Intake
     -24,  //Shoot Close
-    -43,  //Shoot Far
+    -30,  //Shoot Far
     -70,  //Stow/Start
     -90,  //Amp/Trap
   };

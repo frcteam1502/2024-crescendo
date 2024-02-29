@@ -12,9 +12,40 @@
     "data": {
       "commands": [
         {
-          "type": "path",
+          "type": "named",
           "data": {
-            "pathName": "LeftStart-LeftNote"
+            "name": "Rotate to close shot"
+          }
+        },
+        {
+          "type": "named",
+          "data": {
+            "name": "Shot Note"
+          }
+        },
+        {
+          "type": "named",
+          "data": {
+            "name": "Rotate to intake"
+          }
+        },
+        {
+          "type": "race",
+          "data": {
+            "commands": [
+              {
+                "type": "path",
+                "data": {
+                  "pathName": "LeftStart-LeftNote"
+                }
+              },
+              {
+                "type": "named",
+                "data": {
+                  "name": "Intake on"
+                }
+              }
+            ]
           }
         },
         {
@@ -24,9 +55,46 @@
           }
         },
         {
-          "type": "path",
+          "type": "named",
           "data": {
-            "pathName": "Rotate-NoteMiddle"
+            "name": "Rotate to far shot"
+          }
+        },
+        {
+          "type": "wait",
+          "data": {
+            "waitTime": 0.5
+          }
+        },
+        {
+          "type": "named",
+          "data": {
+            "name": "Shot Note"
+          }
+        },
+        {
+          "type": "named",
+          "data": {
+            "name": "Rotate to intake"
+          }
+        },
+        {
+          "type": "race",
+          "data": {
+            "commands": [
+              {
+                "type": "path",
+                "data": {
+                  "pathName": "Rotate-NoteMiddle"
+                }
+              },
+              {
+                "type": "named",
+                "data": {
+                  "name": "Intake on"
+                }
+              }
+            ]
           }
         },
         {
@@ -36,9 +104,27 @@
           }
         },
         {
+          "type": "named",
+          "data": {
+            "name": "Rotate to amp"
+          }
+        },
+        {
           "type": "path",
           "data": {
             "pathName": "AMP-AMPForward"
+          }
+        },
+        {
+          "type": "wait",
+          "data": {
+            "waitTime": 0.25
+          }
+        },
+        {
+          "type": "named",
+          "data": {
+            "name": "Shot Note"
           }
         }
       ]
