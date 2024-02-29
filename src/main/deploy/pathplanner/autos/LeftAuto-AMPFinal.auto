@@ -2,10 +2,10 @@
   "version": 1.0,
   "startingPose": {
     "position": {
-      "x": 0.7319122330552369,
-      "y": 6.778589711025576
+      "x": 0.95,
+      "y": 6.5
     },
-    "rotation": 60.452654096853244
+    "rotation": 61.536564237266255
   },
   "command": {
     "type": "sequential",
@@ -20,13 +20,25 @@
         {
           "type": "path",
           "data": {
-            "pathName": "LeftNote-NoteMiddle"
+            "pathName": "Leftnote-Rotate"
+          }
+        },
+        {
+          "type": "path",
+          "data": {
+            "pathName": "Rotate-NoteMiddle"
           }
         },
         {
           "type": "path",
           "data": {
             "pathName": "LeftNoteMiddle-AMP"
+          }
+        },
+        {
+          "type": "path",
+          "data": {
+            "pathName": "AMP-AMPForward"
           }
         }
       ]
