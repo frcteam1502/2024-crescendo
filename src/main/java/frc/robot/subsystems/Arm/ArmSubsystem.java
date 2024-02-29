@@ -210,6 +210,13 @@ public class ArmSubsystem extends SubsystemBase {
 
   }
 
+  public boolean isArmAtAmp(){
+    if(getArmAbsPositionDegrees()<=(ArmConstants.POSITION_TABLE[4]+2.0)){
+      return true;
+    }
+    return false;
+  }
+
   public void checkMaxAndMin() {
     if(rotateRelativeEncoder.getPosition() > ArmConstants.MAX_ROTATE){
       goalRotate -= ArmConstants.ROTATE_CHANGE * 2;}
