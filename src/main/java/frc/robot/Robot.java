@@ -76,6 +76,8 @@ private String[] pneumaticNames = {
   null, //"15",
 };
 
+  private boolean wasAutonExecuted = false;
+
   /**
    * This function is run when the robot is first started up and should be used for any
    * initialization code.
@@ -96,8 +98,6 @@ private String[] pneumaticNames = {
     Logger.RegisterPdp(new PowerDistribution(1, ModuleType.kRev), pdhRealChannelNames);
     //Logger.RegisterPneumaticHub(new PneumaticHub(), pneumaticNames);
     logger.start();
-
-    
   }
 
   /**
@@ -132,6 +132,8 @@ private String[] pneumaticNames = {
     GameState.autonomousInit();
     m_autonomousCommand = m_robotContainer.getAutonomousCommand();
 
+    wasAutonExecuted = true;
+
     // schedule the autonomous command (example)
     if (m_autonomousCommand != null) {
       m_autonomousCommand.schedule();
@@ -144,6 +146,12 @@ private String[] pneumaticNames = {
 
   @Override
   public void teleopInit() {
+    double rotation = m_robotContainer.driveSubsystem.getPoseRotationDegrees();
+    if(wasAutonExecuted){
+      m_robotContainer.driveSubsystem.resetGyro(rotation);
+      wasAutonExecuted = false;
+    }
+
     GameState.teleopInit();
     // This makes sure that the autonomous stops running when
     // teleop starts running. If you want the autonomous to
@@ -152,6 +160,7 @@ private String[] pneumaticNames = {
     if (m_autonomousCommand != null) {
       m_autonomousCommand.cancel();
     }
+    //m_robotContainer.driveSubsystem.resetGyro(poseRotation);
   }
 
   /** This function is called periodically during operator control. */

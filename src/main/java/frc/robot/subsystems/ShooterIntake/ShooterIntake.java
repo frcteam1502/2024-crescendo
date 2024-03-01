@@ -146,7 +146,7 @@ public class ShooterIntake extends SubsystemBase {
     shooter_lead_controller.setFF(shooter_ff);
     shooter_follow_controller.setFF(shooter_ff);
     shooter_lead_controller.setReference(shooter_speed, CANSparkMax.ControlType.kVelocity);
-    shooter_follow_controller.setReference(shooter_speed, CANSparkMax.ControlType.kVelocity);
+    shooter_follow_controller.setReference(shooter_speed+200, CANSparkMax.ControlType.kVelocity);
     isShooterOn = true;
   }
 

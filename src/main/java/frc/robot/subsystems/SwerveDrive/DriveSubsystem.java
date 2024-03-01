@@ -260,14 +260,14 @@ public class DriveSubsystem extends SubsystemBase{
     SmartDashboard.putNumber("Pose2D Rotation", pose.getRotation().getDegrees());
 
     //Limelight Info
-    /*LimelightResults llresults = LimelightHelpers.getLatestResults("");
+    LimelightResults llresults = LimelightHelpers.getLatestResults("");
     int numAprilTags = llresults.targetingResults.targets_Fiducials.length;
 
     SmartDashboard.putNumber("Number of AprilTags",numAprilTags);
     SmartDashboard.putNumber("Tag ID", LimelightHelpers.getFiducialID(""));
     SmartDashboard.putNumber("Limelight TX", LimelightHelpers.getTX(""));
     SmartDashboard.putNumber("Limelight TY", LimelightHelpers.getTY(""));
-    SmartDashboard.putNumber("Limelight TA", LimelightHelpers.getTA(""));*/
+    SmartDashboard.putNumber("Limelight TA", LimelightHelpers.getTA(""));
 
   }
   
@@ -360,8 +360,6 @@ public class DriveSubsystem extends SubsystemBase{
       backRight.getState()};
   }
 
-  int count = 0;
-
   public void updateOdometry() {
     pose = odometry.update(
         getGyroRotation2d(),
@@ -371,11 +369,6 @@ public class DriveSubsystem extends SubsystemBase{
           backLeft.getPosition(),
           backRight.getPosition()
         });
-    if(count==0){
-      System.out.println(pose.getX());
-      System.out.println(pose.getY());
-      count = 1;
-    }
   }
 
 
@@ -448,8 +441,13 @@ public class DriveSubsystem extends SubsystemBase{
     return odometry.getEstimatedPosition();
   }
 
-  public void resetGyro() {
-    gyro.setYaw(0);
+  public double getPoseRotationDegrees(){
+    return pose.getRotation().getDegrees();
+  }
+
+  public void resetGyro(double angle) {
+    gyro.setYaw(angle);
+    //targetAngle = angle;
   }
 
   public void resetModules() {
@@ -460,7 +458,7 @@ public class DriveSubsystem extends SubsystemBase{
   }
 
   public void reset() {
-    resetGyro();
+    resetGyro(0);
     resetModules();
     resetOdometry(pose);
   }  
