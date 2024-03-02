@@ -1,11 +1,8 @@
 package team1502.configuration.factory;
 
-import java.util.HashSet;
-import java.util.Set;
-
 import org.junit.jupiter.api.Test;
 
-import team1502.configuration.MdFormatter;
+import edu.wpi.first.wpilibj.Solenoid;
 import team1502.configuration.RobotConfigurations;
 import team1502.configuration.builders.*;
 
@@ -15,28 +12,47 @@ public class FactoryTests {
         var config = RobotConfigurations.getConfiguration("");
         var parts = config.getBuilder().getParts();
 
-        var keySet = new HashSet<String>();
+        var factory = new TestBuilder(parts);
+        factory.DumpParts();
+        factory.reportUnconnected();
+    }
+
+    @Test
+    public void usingTest() {
+        var config = new RobotConfiguration();
+        config.Build(pcm->pcm
+            .PCM(ph -> ph.Solenoid(0, "Brake Solenoid"))
+        );
+
+        config.Build(arm -> arm
+            .Subsystem("Arm", a -> a.Solenoid("FAKE", s->s) /*.Solenoid("Brake Solenoid", s->s.PCM(0) */)
+        );
+        var pcm = config.PCM();
+        var ch = pcm.getChannel(0);
+        var brakeSolenoid = ch.getConnectedPart();
+        // var arm = config.Part("Arm"); // add a Part that referes to the pcm solenoid
+        // arm.Value("brakeSolenoid", brakeSolenoid);
 
 
-        var formatter = MdFormatter.Table("Parts Registered")
-            .Heading("buildName", "originalName", "buildType", "Key");
+        var factory = new TestBuilder(config.getBuilder().getParts());
+        factory.DumpParts();
+        factory.showType(team1502.configuration.builders.pneumatics.Solenoid.CLASSNAME);
+    }
 
-        for (Part part : parts) {
-            var key = part.getKey();
-            if (!keySet.add(key)) {
-                System.out.println(key + " is a duplicate");
-            }
-            formatter.AddRow(
-                part.hasValue(Part.BUILD_NAME) ? (String)part.getValue(Part.BUILD_NAME) : "",
-                part.hasValue(Part.ORIGINAL_NAME) ? (String)part.getValue(Part.ORIGINAL_NAME) : "",
-                part.hasValue(Builder.BUILD_TYPE) ? (String)part.getValue(Builder.BUILD_TYPE) : "",
-                part.getKey());
-            //System.out.println(part.getName());
-           // System.out.println(part.getKey());
-            
-        }
-        formatter.PrintTable();
+    @Test
+    public void rioTest1() {
+        var config = new RobotConfiguration();
+        config.Parts(define->define
+            .RoboRIO(r -> r.Version("2.0").PeakPower(45.0).Abbreviation("RIO")) // +RSL 0.6 ??
+        );
+        config.Build(hw->hw
+            .Part("Part1", p->p.Install("RoboRIO", null))
+            //.RoboRIO(null)
+        );
 
+        var parts = config.getBuilder().getParts();
+        var factory = new TestBuilder(parts);
+        factory.DumpParts();
     }
     
 }

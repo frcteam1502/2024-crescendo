@@ -21,7 +21,7 @@ public class GyroSensor extends Builder {
     public static GyroSensor WrapPart(Builder builder, String partName) { return Wrap(builder.getPart(partName)); }
 
     public GyroSensor(IBuild build, Manufacturer manufacturer) {
-        super(build);
+        super(build, deviceType);
         CanInfo.addConnector(this, deviceType, manufacturer);
     }
     

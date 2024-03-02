@@ -3,27 +3,22 @@ package team1502.configuration.builders;
 import java.util.List;
 import java.util.function.Function;
 
-import team1502.configuration.builders.power.PowerProfile;
-
 public class Connector extends Builder {
-    public static final String NAME = "Connector";
+    public static final String CLASSNAME = "Connector";
     private static final String connection = "connection"; // what it is attached/connected to
-    //private static final String part = "part"; // always "parent" ??
     public static final String signal = "signal";
     public static final String label = "label";
-    public static Function<IBuild, Connector> Define(String signal) { return b->new Connector(b, signal); };
+    public static Function<IBuild, Connector> Define(String signal) { return b->new Connector(b, CLASSNAME, signal); };
     public static Connector Wrap(Builder builder) { return new Connector(builder.getIBuild(), builder.getPart()); }
 
-    //public static Connector Wrap(Part connector) { return new Connector(builder.getIBuild(), builder.getPart()); }
-
-    protected Connector(IBuild build, String NAME, String signal)
+    protected Connector(IBuild build, String className, String signal)
     {
-        super(build, NAME);
+        super(build, className);
+        Category(className);
         Value(Connector.signal, signal);
     }
     public Connector(IBuild build, String signal) {
-        super(build, NAME);
-        Value(Connector.signal, signal);
+        this(build, CLASSNAME, signal);
     }
     
     public Connector(IBuild build, Part part) { super(build, part); }
@@ -45,11 +40,32 @@ public class Connector extends Builder {
     
     // is always a "channel"?
     public boolean hasConnection() { return hasValue(connection); }
+    /** there is a Part on the other side */
     public boolean isConnected() { return hasConnection() && Connection().isPartPresent(); }
+    public Builder getConnectedPart() { return isConnected() ? Connection().Host() : null; }
+
+    /** the Connection on the other side */
     public Connector Connection() { return Wrap(getPart(connection)); }
     public Channel getChannel() { return Channel.Wrap(getPart(connection)); }
     
-    
+
+    public void connectToChannel(String hubName, Object channelID) {
+        var hub = getIBuild().getInstalled(hubName);
+        connectToChannel(hub, channelID);
+    }
+
+    void connectToChannel(Builder hub, Object channelID) {
+        if (hub.hasValue(Signal())) {
+            var subHub = hub.getPart(Signal());
+            if (subHub != null) {
+                hub = subHub;
+            }
+        }
+        var ch = hub.findChannel(channelID);
+        connectToChannel(ch);
+    }
+
+
     public void connectToChannel(Connector channel) {
         makeConnection(channel);
         channel.makeConnection(this);
@@ -71,7 +87,7 @@ public class Connector extends Builder {
         var connectors = builder.getPart().getValues().values().stream()
             .filter(o -> o instanceof Part)
             .map(o -> (Part)o)
-            .filter(p -> p.getValue(Builder.BUILD_TYPE) == Connector.NAME)
+            .filter(p -> p.getValue(Part.CATEGORY_NAME) == Connector.CLASSNAME)
             .map(p -> new Connector(builder.getIBuild(),p))
             .toList();
         var signals =  connectors.stream()
@@ -85,32 +101,33 @@ public class Connector extends Builder {
         return parts.stream()
         .filter(o -> o instanceof Part)
         .map(o -> (Part)o)
-        .filter(p -> p.getValue(Builder.BUILD_TYPE) == Connector.NAME)
+        .filter(p -> p.getValue(Part.CATEGORY_NAME) == Connector.CLASSNAME)
         .map(p -> new Connector(null,p))
         .toList();
     }
 }
 
 /*
+             Connector
+        +-----------------+
+Host <--| parent          | 
+        |                 |
+        | values (map)    |
+        |  +--------------+ - - - - - - - Part values
+        |  |BUILD_NAME    | "Connector"
+        |  +--------------+
+        |  |CLASS_NAME    | "Connector"
+        |  +--------------+ - - - - - - - Connector values
+        |  |CATEGORY_NAME | "Connector"
+        |  +--------------+
+        |  |signal        | e.g., 12VDC
+        |  +--------------+
+        |  |label         | e.g., "8 8 8"      Channel
+        |  +--------------+                +--------------+
+        |  |connection    |--------------->|        parent|--> Hub 
+        |  +--------------+                |              |
+        |                 |                +--------------+
+        |                 |<---------------|connection    |
+        +-----------------+                +--------------+
  
-    Controller          Channel                 Connector           Part
-    +--------------+    +-----------------+    +--------------+    +--------------+
-    |              | <= | Host()          |    | Host()       | => |              |
-    +              +    +-----------------+    +--------------+    +              +
-    |              |    | Connection      |<==>| Connection   |    |              |
-    +--------------+    +-----------------+    +--------------+    +--------------+
-    |              |    |                 |    |              |    |              |
-    +--------------+    +-----------------+    +--------------+    +--------------+
-    |              |    |                 |    |              |    |              |
-    +--------------+    +-----------------+    +--------------+    +--------------+
-    |              |    |                 |    |              |    |              |
-    +--------------+    +-----------------+    +--------------+    +--------------+
-
-    Connect part to hub
-    
-    hub.connectTo(part)                         part.connectTo(hub, id)
-    c=part.findConnector(signal)                ch=hub.findChannel(id)
-    ch= ?                                       ch.connectTo(part)
-                                                c=part.findConnector(signal)
-                                                c.connectToChannel(ch)
  */

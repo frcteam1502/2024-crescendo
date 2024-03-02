@@ -120,7 +120,7 @@ public class Evaluator {
     public SwerveDrive SwerveDrive() {return SwerveDrive(d->d); }
 
     public <T extends Object> T SwerveDrive(Function<SwerveDrive, T> fn) {
-        return (T)getValue(SwerveDrive.NAME, b->SwerveDrive.Wrap(b), fn);   
+        return (T)getValue(SwerveDrive.CLASSNAME, b->SwerveDrive.Wrap(b), fn);   
     }
 
 }

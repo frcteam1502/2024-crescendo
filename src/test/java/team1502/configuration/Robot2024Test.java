@@ -2,6 +2,7 @@ package team1502.configuration;
 
 import org.junit.jupiter.api.Test;
 
+import team1502.configuration.builders.power.PowerChannel;
 import team1502.configuration.builders.power.PowerDistributionModule;
 
 public class Robot2024Test {
@@ -9,7 +10,7 @@ public class Robot2024Test {
     @Test
     public void buildRobotTest() {
         var config = RobotConfigurations.getConfiguration("");
-
+        PowerChannel.getTotalPeakPower(config.PDH());
         printDetailedChannels(config.PDH());
         printDetailedChannels(config.MPM("MPM1"));
         printDetailedChannels(config.PCM());

@@ -5,11 +5,16 @@ import java.util.List;
 import java.util.function.Function;
 
 public class Channel extends Connector {
-    private static final String NAME = "Channel";
+    private static final String CLASSNAME = "Channel";
+    public static final String CATEGORY_CHANNEL = "Channel";
+
     private static final String id = "id";
     public static final String network = "network";
 
+    /** Battery power */
     public static final String SIGNAL_12VDC = "12VDC";
+    /** 5V power */
+    public static final String SIGNAL_5VDC = "5VDC";
     /** Controller area network */
     public static final String SIGNAL_CAN = "CAN";
     /** Pulse-width modulation */
@@ -24,15 +29,14 @@ public class Channel extends Connector {
     public static final String SIGNAL_RS232= "RS-232";
     
     
-    //private static final String part = "part";
     public static Function<IBuild, Channel> Define(String signal, String network, Object channelId) { return b->new Channel(b, signal, network, channelId); };
-    //public static Function<IBuild, Channel> Define(Integer channelNumber) { return b->new Channel(b, NAME, channelNumber); };
     public static Channel Wrap(Builder builder) { return new Channel(builder.getIBuild(), builder.getPart()); }
-    public static Channel WrapPart(Builder builder) { return WrapPart(builder, NAME); }
+    public static Channel WrapPart(Builder builder) { return WrapPart(builder, CLASSNAME); }
     public static Channel WrapPart(Builder builder, String partName) { return Wrap(builder.getPart(partName)); }
 
     public Channel(IBuild build, String signal, String network, Object id) { 
-        super(build, NAME, signal);
+        super(build, CLASSNAME, signal);
+        Category(CLASSNAME);
         Value("network", network);
         var baseName = network;
         if (network != signal) {
@@ -65,14 +69,14 @@ public class Channel extends Connector {
         return this;
     }
 
-    public void connectToPart(Builder part) {
+    public Connector connectToPart(Builder part) {
         var connector = part.findConnector(Signal());
         if (connector == null) {
             connector = part.addConnector(Signal());
         }
         connector.connectToChannel(this);
+        return connector;
     }
-
 
 
     public static Channel findChannel(Builder hub, int channelNumber) {
@@ -84,13 +88,13 @@ public class Channel extends Connector {
         hub.getPart().getValues().values().stream()
             .filter(o -> o instanceof Part)
             .map(o -> (Part)o)
-            .filter(p -> p.getValue(Builder.BUILD_TYPE) == Channel.NAME && p.getValue(Channel.signal) == signal)
+            .filter(p -> p.getValue(Part.CATEGORY_NAME) == Channel.CLASSNAME && p.getValue(Channel.signal) == signal)
             .map(p -> new Channel(hub.getIBuild(),p))
             .forEach(c->list.add(c));
         hub.getPart().getPieces().stream()
             .filter(o -> o instanceof Part)
             .map(o -> (Part)o)
-            .filter(p -> p.getValue(Builder.BUILD_TYPE) == Channel.NAME && p.getValue(Channel.signal) == signal)
+            .filter(p -> p.getValue(Part.CATEGORY_NAME) == Channel.CLASSNAME && p.getValue(Channel.signal) == signal)
             .map(p -> new Channel(hub.getIBuild(),p))
             .forEach(c->list.add(c));
         return list;
@@ -100,7 +104,7 @@ public class Channel extends Connector {
         return  hub.getPart().getValues().values().stream()
             .filter(o -> o instanceof Part)
             .map(o -> (Part)o)
-            .filter(p -> p.getValue(Builder.BUILD_TYPE) == Channel.NAME)
+            .filter(p -> p.getValue(Part.CATEGORY_NAME) == Channel.CLASSNAME)
             .map(p -> new Channel(hub.getIBuild(),p))
             .toList();
     }
@@ -109,7 +113,7 @@ public class Channel extends Connector {
         return  hub.getPart().getPieces().stream()
             .filter(o -> o instanceof Part)
             .map(o -> (Part)o)
-            .filter(p -> p.getValue(Builder.BUILD_TYPE) == Channel.NAME)
+            .filter(p -> p.getValue(Part.CATEGORY_NAME) == Channel.CLASSNAME)
             .map(p -> new Channel(hub.getIBuild(),p))
             .toList();
     }
@@ -122,7 +126,7 @@ public class Channel extends Connector {
         var connectors = hub.getPart().getValues().values().stream()
         .filter(o -> o instanceof Part)
         .map(o -> (Part)o)
-        .filter(p -> p.getValue(Builder.BUILD_TYPE) == Channel.NAME)
+        .filter(p -> p.getValue(Part.CATEGORY_NAME) == Channel.CLASSNAME)
         .map(p -> new Channel(hub.getIBuild(),p))
         .toList();
 
@@ -135,19 +139,6 @@ public class Channel extends Connector {
         return signals.isEmpty() ? null : signals.get(0);
     }
 
-
-    // public boolean hasPart() { return Part().isPartPresent(); }
-    // public Builder Connector() { return getPart(part); }
-    // public boolean hasPart() { return Part().isPartPresent(); }
-    // public Builder Part() { return getPart(part); }
-    
-    // public Channel Part(Builder part) {
-    //     Value(Channel.part, part.getPart());
-    //     part.Channel(getString("channelType"), Channel());
-    //     FriendlyName(part.FriendlyName());
-    //     Abbreviation(part.Abbreviation());
-    //     return this; 
-    // }
 }
 
 /*
@@ -198,24 +189,33 @@ Need to be able to search a device for channels AND connectors
                     |    PCM       | +----------------------+
                     +--------------+ 
 
-                                                Part
-                                             +-------------------+--------------+
-                                             | name+channelType  |              |
-                                             +-------------------+--------------+
+
+             Channel
+        +-----------------+
+Hub  <--| parent          | 
+        |                 |
+        | values (map)    |
+        |  +--------------+ - - - - - - - Part value
+        |  |BUILD_NAME    | "Channel"
+        |  +--------------+
+        |  |CLASS_NAME    | "Channel"
+        |  +--------------+ - - - - - - - Connector values
+        |  |CATEGORY_NAME | "Channel" 
+        |  +--------------+
+        |  |signal        | e.g., 12VDC
+        |  +--------------+
+        |  |label         |  e.g., "8 8 8"     Connector
+        |  +--------------+                 +--------------+
+        |  |connection    |---------------->|        parent|--> Host 
+        |  +--------------+ - - - - - - -   |              |
+        |  |network       | "MPM1"          |              |
+        |  +--------------+                 |              |
+        |  |id (channel)  | 5               |              |
+        |  +--------------+                 +--------------+
+        |                 |<----------------|connection    |
+        +-----------------+                 +--------------+
     
   
-    Controller          Channel                 Part (connector)
-    +--------------+    +-----------------+    +--------------+--------------+
-    | channelType  |    | channelType     |    | channelType  |              |
-    +--------------+    +-----------------+    +--------------+--------------+
-    | name         | == | controllerType  |    | channelType  |
-    +--------------+    +-----------------+    +--------------+
-    | channelType  |    | channelName     | <- | channel      |
-    +--------------+    +-----------------+    +--------------+
-    | channelType  |    | part            | -> |              |
-    +--------------+    +-----------------+    +--------------+
-    |              | <- | controller      |    |              |
-    +--------------+    +-----------------+    +--------------+
  
     CHANNEL EXAMPLES
     +--------------+    +--------------+    +--------------+
@@ -234,26 +234,5 @@ Need to be able to search a device for channels AND connectors
                         | totalPower() |    | number       |
                         +--------------+    +--------------+
 
-    CONNECTOR EXAMPLES
-    +--------------+    +--------------+    +--------------+
-    | channel      | <- |              |    |              |
-    +--------------+    +--------------+    +--------------+
-    | part         | -> | part         |    | part         |
-    +==============+    +==============+    +==============+
-                        | "MPM1"       |    | "CAN"        |
-                        +--------------+    +--------------+
-                        | "CH 10"      |    | dev/mfr/num  |
-                        +--------------+    +--------------+
-                        | fuse         |    | manufacturer |
-                        +--------------+    +--------------+
-                        | label        |    | number       |
-                        +--------------+    +--------------+
-
-roboRIO.dio.ch0      <- arm.encoder.dio+ch0
-roboRIO.dio.ch0.part -> arm.encoder.dio+ch0.part -> arm.encoder
-roboRIO.dio.ch1
-
-pdh.power.ch0
-pdh.power.ch0.fuse
 
  */

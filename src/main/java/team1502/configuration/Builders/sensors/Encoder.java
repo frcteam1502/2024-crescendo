@@ -25,9 +25,9 @@ public class Encoder extends Builder {
   
     public Integer DigitalInput() {
         var abs = findConnector(Channel.SIGNAL_DIO);
+        // expected
+        Integer channel = abs.getInt(RoboRIO.digitalInput);
         if (abs.hasConnection()) {
-            // expected
-            Integer channel = abs.getInt(RoboRIO.digitalInput);
             if (abs.isConnected()) { // actual
                 channel = abs.getChannel().CanNumber();
             }
@@ -35,11 +35,13 @@ public class Encoder extends Builder {
         }
         return null; 
     }
+
     public Encoder DigitalInput(Integer channel) {
         // JST PH 6-pin to 4 Channel PWM or
         // thru-bore abs duty-cycle uses DIO
         var abs = addConnector(Channel.SIGNAL_DIO, "ABS");
         abs.Value(RoboRIO.digitalInput, channel);
+        abs.connectToChannel(RoboRIO.NAME, channel);
         return this;
     }
 

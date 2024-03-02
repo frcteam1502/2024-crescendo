@@ -24,7 +24,7 @@ public class CANCoder extends Builder{ // Accelerometer {
     public static CANCoder WrapPart(Builder builder) { return WrapPart(builder, deviceType.name()); }
     public static CANCoder WrapPart(Builder builder, String partName) { return Wrap(builder.getPart(partName)); }
     public CANCoder(IBuild build) {
-        super(build); 
+        super(build, deviceType); 
         CanInfo.addConnector(this, deviceType, Manufacturer.CTRElectronics);
     }
     public CANCoder(IBuild build, Part part) { super(build, part); }

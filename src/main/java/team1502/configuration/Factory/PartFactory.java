@@ -47,22 +47,17 @@ public class PartFactory {
                 : null;
     }
 
-    public Builder createBuilder(String partName) {
-        var partBuilder =  _builderMap.get(partName);
-        return partBuilder.creatBuilder(getIBuild());
-    }
-
-    public <T extends Builder> PartBuilder<?> getTemplate(String partName, Function<IBuild, T> createFunction, Function<T, Builder> buildFunction) {
+    public <T extends Builder> PartBuilder<T> getTemplate(String partName, Function<IBuild, T> createFunction, Function<T, Builder> buildFunction) {
         var template = (PartBuilder<T>)getTemplate(partName);
         if (template != null) {
-            return template.WithModification(buildFunction);
+            return template.with(buildFunction);
         } else {
-            return new PartBuilder(partName, createFunction, buildFunction);
+            return new PartBuilder<T>(createFunction, buildFunction);
         }
     }
 
     public PartFactory Part(String name, Function<Builder, Builder> fn) {
-        return addTemplate(name,  b->new Builder(b, name), fn);
+        return addTemplate(name, Builder.DefineAs(name), fn);
     }
 
     public PartFactory Motor(Function<Motor, Builder> fn) {
@@ -81,7 +76,7 @@ public class PartFactory {
     }
 
     public PartFactory SwerveDrive(Function<SwerveDrive, Builder> fn) {
-        return addTemplate(SwerveDrive.NAME, SwerveDrive.Define, fn);
+        return addTemplate(SwerveDrive.CLASSNAME, SwerveDrive.Define, fn);
     }
     public PartFactory SwerveModule(Function<SwerveModule, Builder> fn) {
         return addTemplate(SwerveModule.NAME,  SwerveModule.Define, fn);
@@ -92,13 +87,13 @@ public class PartFactory {
         return addTemplate(RoboRIO.NAME,  RoboRIO.Define, fn);
     }
     public PartFactory PowerDistributionHub(Function<PowerDistributionModule, Builder> fn) {
-        return addTemplate(PowerDistributionModule.PDH,  PowerDistributionModule.DefinePDH, fn);
+        return addTemplate(PowerDistributionModule.PDH, PowerDistributionModule.DefinePDH, fn);
     }
     public PartFactory PowerDistributionPanel(Function<PowerDistributionModule, Builder> fn) {
-        return addTemplate(PowerDistributionModule.PDP,  PowerDistributionModule.DefinePDP, fn);
+        return addTemplate(PowerDistributionModule.PDP, PowerDistributionModule.DefinePDP, fn);
     }
     public PartFactory Pigeon2(Function<IMU, Builder> fn) {
-        return addTemplate(IMU.Pigeon2,  IMU.Define(Manufacturer.CTRElectronics), fn);
+        return addTemplate(IMU.Pigeon2, IMU.Define(Manufacturer.CTRElectronics), fn);
     }
 
     // "part" Parts

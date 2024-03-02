@@ -8,13 +8,13 @@ import team1502.configuration.builders.Part;
 
 /** Peak power and maybe eventually other power-related properties like "smart current" */
 public class PowerProfile extends Builder {
-    public static String powerProfile = "powerProfile";
-    private static String peakPower = "peakPower";
+    public static final String CLASSNAME = "PowerProfile";
+    private static final String peakPower = "peakPower";
     public static final Function<IBuild, PowerProfile> Define = build->new PowerProfile(build);
     public static PowerProfile Wrap(Builder builder) { return new PowerProfile(builder.getIBuild(), builder.getPart()); }
-    public static PowerProfile WrapPart(Builder builder) { return WrapPart(builder, powerProfile); }
+    public static PowerProfile WrapPart(Builder builder) { return WrapPart(builder, CLASSNAME); }
     public static PowerProfile WrapPart(Builder builder, String partName) { return Wrap(builder.getPart(partName)); }
-    public PowerProfile(IBuild build) { super(build, powerProfile); }
+    public PowerProfile(IBuild build) { super(build, CLASSNAME); }
     public PowerProfile(IBuild build, Part part) { super(build, part); }
 
     

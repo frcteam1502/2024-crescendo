@@ -18,7 +18,11 @@ public class Motor extends Builder {
     public static Motor Wrap(Builder builder) { return new Motor(builder.getIBuild(), builder.getPart()); }
     public static Motor WrapPart(Builder builder) { return WrapPart(builder, NAME); }
     public static Motor WrapPart(Builder builder, String partName) { return Wrap(builder.getPart(partName)); }
-    public Motor(IBuild build) { super(build, NAME); }
+    public Motor(IBuild build) {
+         super(build, NAME);
+         addConnector(POWER, "Vin").FriendlyName("Power connector");
+
+    }
     public Motor(IBuild build, Part part) { super(build, part); }
 
     public CANSparkLowLevel.MotorType MotorType() { return (CANSparkLowLevel.MotorType)getValue(Motor.motorType); }

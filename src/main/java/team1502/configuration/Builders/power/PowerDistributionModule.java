@@ -15,6 +15,7 @@ import team1502.configuration.builders.*;
  */
 public class PowerDistributionModule extends Builder {
     private static final DeviceType deviceType = DeviceType.PowerDistributionModule;
+    public static final String CATEGORY_POWERHUB = "Power Hub";
 
     /**
      * https://www.revrobotics.com/rev-11-1850/
@@ -31,21 +32,28 @@ public class PowerDistributionModule extends Builder {
      */
     public static final String MPM = "MPM"; // REV -  6 channels: 0-5  Mini Power Module (not a "Controller"?)
     
-    public static final Function<IBuild, PowerDistributionModule> DefinePDH = build->new PowerDistributionModule(build, PDH, 24, Manufacturer.REVRobotics);
-    public static final Function<IBuild, PowerDistributionModule> DefinePDP = build->new PowerDistributionModule(build, PDP, 18, Manufacturer.CTRElectronics);
-    public static final Function<IBuild, PowerDistributionModule> DefineMPM(String name) { return  build -> new PowerDistributionModule(build, name, 6); }
+    public static final Function<IBuild, PowerDistributionModule> DefinePDH = build->new PowerDistributionModule(build, PDH, 24, deviceType, Manufacturer.REVRobotics);
+    public static final Function<IBuild, PowerDistributionModule> DefinePDP = build->new PowerDistributionModule(build, PDP, 18, deviceType, Manufacturer.CTRElectronics);
+    public static final Function<IBuild, PowerDistributionModule> DefineMPM = build -> new PowerDistributionModule(build, MPM, 6);
+    
     public static PowerDistributionModule Wrap(Builder builder) { return new PowerDistributionModule(builder.getIBuild(), builder.getPart()); }
     public static PowerDistributionModule WrapPart(Builder builder, String partName) { return Wrap(builder.getPart(partName)); }
     
-    public PowerDistributionModule(IBuild build, String name, int channels) {
-        super(build, name);
+    protected PowerDistributionModule(IBuild build, String name, int channels, DeviceType deviceType, Manufacturer manufacturer) {
+        super(build, deviceType, name);
+        Category(CATEGORY_POWERHUB);
+
+        CanInfo.addConnector(this, deviceType, manufacturer);
         initializeChannels(channels);
     }
-    public PowerDistributionModule(IBuild build, String name, int channels, Manufacturer manufacturer) {
-        this(build, name, channels); 
-        CanInfo.addConnector(this, deviceType, manufacturer);
+    
+    // MPM, non-CAN
+    protected PowerDistributionModule(IBuild build, String className, int channels) {
+        super(build, className);
+        initializeChannels(channels);
     }
-    public PowerDistributionModule(IBuild build, Part part) { super(build, part); }
+    
+    protected PowerDistributionModule(IBuild build, Part part) { super(build, part); }
 
     private PowerDistributionModule initializeChannels(int channels) {
         for (int ch = 0; ch < channels; ch++) {
@@ -53,6 +61,7 @@ public class PowerDistributionModule extends Builder {
         }
         return this;
     }
+
     private void createChannel(Integer channelNumber) {
         addPiece(PowerChannel.Define(Name(), channelNumber));
     }
@@ -65,7 +74,9 @@ public class PowerDistributionModule extends Builder {
         updateChannel(channel, fuse, part);
         return this;
     }
-    public PowerDistributionModule Ch(Integer channel) { // empty
+    
+    /** used for formating and layout -- does not create a channel */
+    public PowerDistributionModule Ch(Integer channel) { // NOP on purpose
         // assume already created when initialized
         return this;
     }
@@ -102,10 +113,22 @@ public class PowerDistributionModule extends Builder {
     }
 
     public String[] ChannelNames() {
-        return getPieces().stream().map(ch->ch.FriendlyName()).toArray(String[]::new);
+        return getPieces().stream().map(ch->getFriendlyName(ch)).toArray(String[]::new);
     }
     public String[] ChannelNamesAbbr() {
-        return getPieces().stream().map(ch->ch.Abbreviation()).toArray(String[]::new);
+        return getPieces().stream().map(ch->getAbbreviation(ch)).toArray(String[]::new);
+    }
+
+    private String getFriendlyName(Builder builder) {
+        var ch = PowerChannel.Wrap(builder);
+        return ch.isConnected() ? ch.getConnectedPart().FriendlyName() : chX(ch);
+    }
+    private String getAbbreviation(Builder builder) {
+        var ch = PowerChannel.Wrap(builder);
+        return ch.isConnected() ? ch.getConnectedPart().Abbreviation() : chX(ch);
+    }
+    private String chX(Channel ch) {
+        return "Ch " + ch.ID().toString();
     }
 }
 

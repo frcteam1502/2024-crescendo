@@ -20,7 +20,7 @@ public class GearToothSensor extends Builder {
     public static GearToothSensor WrapPart(Builder builder, String partName) { return Wrap(builder.getPart(partName)); }
     
     public GearToothSensor(IBuild build, Manufacturer manufacturer) {
-        super(build); 
+        super(build, deviceType); 
         CanInfo.addConnector(this, deviceType, manufacturer);
     }
 

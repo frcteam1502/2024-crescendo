@@ -1,25 +1,24 @@
 package team1502.configuration.builders.pneumatics;
 
-import java.util.List;
 import java.util.function.Function;
 
 import edu.wpi.first.wpilibj.PneumaticsModuleType;
-import team1502.configuration.CAN.CanInfo;
-import team1502.configuration.CAN.DeviceType;
-import team1502.configuration.CAN.Manufacturer;
-import team1502.configuration.builders.Builder;
-import team1502.configuration.builders.IBuild;
-import team1502.configuration.builders.Part;
-import team1502.configuration.builders.power.PowerChannel;
-import team1502.configuration.builders.power.PowerDistributionModule;
+
+import team1502.configuration.CAN.*;
+import team1502.configuration.builders.*;
+import team1502.configuration.builders.power.*;
 
 public class PneumaticsController extends PowerDistributionModule {
     private static final DeviceType deviceType = DeviceType.PneumaticsController;
+    //public static final String CLASSNAME = deviceType.toString();
+
     // https://docs.wpilib.org/en/stable/docs/software/hardware-apis/pneumatics/index.html
+
+    /** generic name for Pneumatics Controller, for now */
     public static final String PCM = "PCM"; // CAN(0) CTRE Pneumatics Control Module
-    public static final String PH = "PH"; // CAN(1) https://www.revrobotics.com/rev-11-1852/
+    // public static final String REVPH = PneumaticsModuleType.REVPH.toString(); // CAN(1) https://www.revrobotics.com/rev-11-1852/
     public static final String Compressor = "Compressor";
-    public static final int CompressorPower = 16;
+    public static final String compressorPort = "Compressor Out";
     public static Function<IBuild, PneumaticsController> Define(Manufacturer manufacturer) {
         return build->new PneumaticsController(build,manufacturer);
     } 
@@ -29,34 +28,38 @@ public class PneumaticsController extends PowerDistributionModule {
 
     // Define
     public PneumaticsController(IBuild build, Manufacturer manufacturer) {
-        super(build, "PCM", 17);
-        CanInfo.addConnector(this, deviceType, manufacturer);
-        int channels = 16;
-        for (int ch = 0; ch < channels; ch++) {
+        super(build, PneumaticsController.PCM, 16, deviceType, manufacturer);
+        Category(CATEGORY_POWERHUB);
+    
+        AddPart(PowerChannel.Define(Name(), compressorPort), ch->ch.Fuse(50));
+        // set pseudo fuses
+        for (int ch = 0; ch < 16; ch++) {
             updateChannel(ch, 1); // 200mA per solenoid
         }
-        updateChannel(CompressorPower, 50);
     }
+
     //Build Proxy / Eval
     public PneumaticsController(IBuild build, Part part) {
         super(build, part);
     }
 
     public PneumaticsController Compressor() {
-        updateChannel(16, 
-            addPart(Builder.DefineAs(Compressor), Compressor, Compressor, c->c));
+        var compressor = addPart(Builder.DefineAs(Compressor));
+        compressor.connectTo(this, compressorPort);
         return this;
     }
-    public PneumaticsController Solenoid(int module, int channel, String name) {
-        updateChannel(channel, 
-            addPart(Builder.DefineAs(name), name, name, c->c));
+
+    public PneumaticsController Solenoid(int channel, String name) {
+        updateChannel(channel, addPart(Solenoid.Define, name, c->c));
         return this;
     }
+
     public PneumaticsController DoubleSolenoid(int forwardChannel, int reverseChannel, String name) {
         updateChannel(reverseChannel, 
-            addPart(Builder.DefineAs(name), name, name, c->c));
+            addPart(Builder.DefineAs("DoubleSolenoid"), name, name, c->c));
         return this;
     }
+
     public PneumaticsController Ch(Integer channelNumber, Builder part) {
         updateChannel(channelNumber, part);
         return this;
@@ -64,45 +67,11 @@ public class PneumaticsController extends PowerDistributionModule {
 
     public edu.wpi.first.wpilibj.Solenoid buildSolenoid(int channel) {
         var module = CanNumber();
-        return new edu.wpi.first.wpilibj.Solenoid(module, PneumaticsModuleType.REVPH, channel);
-    }
+        PneumaticsModuleType pneumaticsModuleType = CanInfo.WrapPart(this)
+            .Manufacturer() == Manufacturer.CTRElectronics
+                ? PneumaticsModuleType.CTREPCM
+                : PneumaticsModuleType.REVPH;
 
-    /*
-     * 
-    public List<PowerChannel> getChannels() {
-        return getPieces().stream().map(ch->PowerChannel.Wrap(ch)).toList();
+        return new edu.wpi.first.wpilibj.Solenoid(module, pneumaticsModuleType, channel);
     }
-
-    public PowerChannel getChannel(int channelNumber) {
-        return  PowerChannel.Wrap(getPiece(channelNumber));
-    }
-
-    private void updateChannel(Integer channelNumber, Integer fuse) {
-        if (channelNumber >= 0) {
-            getChannel(channelNumber).Fuse(fuse);            
-        }
-    }
-
-    @Override // Builder
-    public Builder Powers(Builder builder) {
-        super.Powers(builder);
-        if (builder.hasPowerProfile() && builder.PowerProfile().Channel() != null) {
-            updateChannel(builder);
-        }
-        return this;
-    }
-    public void updateChannel(Integer channelNumber, Builder part) {
-        if (channelNumber >= 0) {
-            getChannel(channelNumber).Part(part);
-        }
-    }
-    public void updateChannel(Builder part) {
-        int channelNumber = part.PowerChannel();
-        updateChannel(channelNumber, part);
-    }
-
-    public String[] ChannelNames() {
-        return getPieces().stream().map(ch->ch.Name()).toArray(String[]::new);
-    }
-     */
 }

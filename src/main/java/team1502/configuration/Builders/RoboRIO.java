@@ -28,9 +28,9 @@ public class RoboRIO extends Builder {
         super(build, NAME); 
         AddCAN();
         //addPart(Builder.DefineAs(Channel.SIGNAL_CAN)).FriendlyName("CAN port");
-        addConnector(Channel.SIGNAL_12VDC, "INPUT").FriendlyName("Power connector");
+        addConnector(POWER, "INPUT").FriendlyName("Power connector");
         addConnector(Channel.SIGNAL_ETH, "Ethernet").FriendlyName("Ethernet port");
-        addChannel(Channel.SIGNAL_12VDC, "RSL").FriendlyName("RSL port");
+        addChannel(POWER, "RSL").FriendlyName("RSL port");
         AddDIO();
         AddPWM();
         // I2C
@@ -39,8 +39,7 @@ public class RoboRIO extends Builder {
         FriendlyName("roboRIO");
         var can = CanInfo.addConnector(this, deviceType, Manufacturer.NI, 0);
         can.FriendlyName("NI Robot Controller");
-        //addChannel(Channel.SIGNAL_CAN, this);
-        //can.tryConnectToChannel(this);
+        addChannel(Channel.SIGNAL_CAN, this);
     }
     public RoboRIO(IBuild build, Part part) { super(build, part); }
     

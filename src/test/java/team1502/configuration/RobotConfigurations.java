@@ -4,7 +4,6 @@ import com.revrobotics.CANSparkBase.IdleMode;
 import com.revrobotics.CANSparkLowLevel.MotorType;
 
 import team1502.configuration.CAN.Manufacturer;
-import team1502.configuration.builders.pneumatics.PneumaticsController;
 import team1502.configuration.factory.RobotConfiguration;
 
 public final class RobotConfigurations {
@@ -73,6 +72,7 @@ public final class RobotConfigurations {
         return inventory.Parts(define -> define
             .SwerveModule(sm -> sm
                 .CANCoder(cc -> cc
+                    .FriendlyName("Absolute Encoder")
                     .PeakPower(0.060)
                 )
                 .TurningMotor(Manufacturer.REVRobotics, mc -> mc
@@ -113,6 +113,7 @@ public final class RobotConfigurations {
     private static RobotConfiguration buildStandardElectronics(RobotConfiguration parts) {
         // Top-Level Parts
         return parts.Build(hw -> hw
+            .PowerDistributionHub(r->r)
             .RadioSignalLight(r->r)
             .Radio(r->r)
             .RadioPowerModule(r->r.Powers(hw.Radio()))
@@ -173,12 +174,10 @@ public final class RobotConfigurations {
                 .Ch(5, 10)
                 .PDH(19, "MPM2")
             )
-
-            //.Compressor(p->p.PowerChannel(PneumaticsController.CompressorPower))
             .PCM(ph -> ph
-                .Solenoid(0, 0, "Solenoid")
+                .Compressor()
+                .Solenoid(0, "Solenoid")
                 .PDH(7)
-                //.Powers(hw.Compressor())
                 .CanNumber(1)
             )
         );
@@ -267,6 +266,9 @@ public final class RobotConfigurations {
         );
         
         parts.Build(hw->hw
+            .PowerDistributionHub(pdh -> pdh
+                .Ch(17, parts.EthernetSwitch().Part("POE"))
+                .Ch(18, parts.EthernetSwitch()))
             .PCM(pcm->pcm.PDH(21))
             .RadioPowerModule(rpm->rpm.PDH(22))
             .Pigeon2(gyro->gyro.PDH(23))

@@ -17,9 +17,10 @@ public class GearBox extends Builder{
     public GearBox(IBuild build, Part part) { super(build, part); }
 
     public GearBox Gear(String stage, int drivingTeeth, int drivenTeeth) {
-        return (GearBox)InstallPiece(Gear.Define, stage, g->g
+        Piece(Gear.Define, stage, g->g
             .DrivingTeeth(drivingTeeth)
             .DrivenTeeth(drivenTeeth));
+        return this;
     }
     
     /** all stages driving-teeth / driven-teeth */

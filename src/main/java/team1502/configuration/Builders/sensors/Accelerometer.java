@@ -20,7 +20,7 @@ public class Accelerometer extends Builder {
     public static Accelerometer WrapPart(Builder builder, String partName) { return Wrap(builder.getPart(partName)); }
     
     public Accelerometer(IBuild build, Manufacturer manufacturer) {
-        super(build); 
+        super(build, deviceType); 
         CanInfo.addConnector(this, deviceType, manufacturer);
     }
     

@@ -3,7 +3,6 @@ package team1502.configuration.builders.sensors;
 import java.util.function.Function;
 
 import com.ctre.phoenix6.hardware.Pigeon2;
-import com.revrobotics.CANSparkMax;
 
 import team1502.configuration.CAN.CanInfo;
 import team1502.configuration.CAN.DeviceType;
@@ -24,7 +23,7 @@ public class IMU extends Builder {
 
     // Define
     public IMU(IBuild build, Manufacturer manufacturer) {
-        super(build);
+        super(build, deviceType);
         CanInfo.addConnector(this, deviceType, manufacturer);
     }
     

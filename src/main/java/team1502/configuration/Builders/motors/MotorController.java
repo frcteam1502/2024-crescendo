@@ -30,8 +30,9 @@ public class MotorController extends Builder {
 
     // Define
     public MotorController(IBuild build, Manufacturer manufacturer) {
-        super(build);
-        CanInfo.addConnector(this, deviceType, manufacturer);
+        super(build, deviceType, manufacturer);
+        addConnector(POWER, "Vin").FriendlyName("Power connector");
+        addChannel(POWER, "Vout").FriendlyName("Motor Power Out");
     }
     public MotorController(IBuild build, Part part) {
         super(build, part);
@@ -39,10 +40,11 @@ public class MotorController extends Builder {
     
     public Motor Motor() {return Motor.WrapPart(this, Motor.NAME); }
     public MotorController Motor(String partName) {
-        return Motor(partName, null);
+        return Motor(partName, m->m);
     }
     public MotorController Motor(String partName, Function<Motor, Builder> fn) {
-        addPart(Motor.Define, Motor.NAME, partName, fn);
+        var motor = addPart(Motor.Define, Motor.NAME, partName, fn);
+        this.Powers(motor);
         return this;
     }
     
@@ -130,32 +132,27 @@ public class MotorController extends Builder {
         return CANSparkMax().getEncoder();
     }
 
+    SwerveModule getSwerveModule() {
+        var parent = getParentOfType(SwerveModule.NAME);
+        return parent == null ? null : SwerveModule.Wrap(parent);
+    }
     public RelativeEncoder buildRelativeEncoder() {
         var encoder = getRelativeEncoder();
-        if (parent != null) {
-            if (parent.Value(Builder.BUILD_TYPE) == SwerveModule.NAME) {
-                encoder.setPositionConversionFactor(((SwerveModule)parent).getPositionConversionFactor());
-                encoder.setVelocityConversionFactor(((SwerveModule)parent).getVelocityConversionFactor());
-            }
+        var swerveModule = getSwerveModule();
+        if (swerveModule != null) {
+            encoder.setPositionConversionFactor((swerveModule).getPositionConversionFactor());
+            encoder.setVelocityConversionFactor((swerveModule).getVelocityConversionFactor());
         }
         return encoder;
     }
 
     public Double getPositionConversionFactor() {
-        if (parent != null) {
-            if (parent.Value(Builder.BUILD_TYPE) == SwerveModule.NAME) {
-                return ((SwerveModule)parent).getPositionConversionFactor();
-            }
-        }
-        return null;
+        var swerveModule = getSwerveModule();
+        return swerveModule == null ? null : swerveModule.getPositionConversionFactor();
     }
 
     public Double getVelocityConversionFactor() {
-        if (parent != null) {
-            if (parent.Value(Builder.BUILD_TYPE) == SwerveModule.NAME) {
-                return ((SwerveModule)parent).getVelocityConversionFactor();
-            }
-        }
-        return null;
+        var swerveModule = getSwerveModule();
+        return swerveModule == null ? null : swerveModule.getVelocityConversionFactor();
     }
 }

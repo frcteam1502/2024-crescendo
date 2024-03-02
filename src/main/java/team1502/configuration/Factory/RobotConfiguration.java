@@ -10,7 +10,6 @@ import com.ctre.phoenix6.hardware.CANcoder;
 import com.ctre.phoenix6.hardware.Pigeon2;
 import com.revrobotics.CANSparkMax;
 
-import team1502.configuration.CAN.CanMap;
 import team1502.configuration.builders.*;
 import team1502.configuration.builders.motors.*;
 import team1502.configuration.builders.pneumatics.*;

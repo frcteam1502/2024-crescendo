@@ -9,15 +9,19 @@ public class CanInfo extends Connector {
     private static String deviceType = "deviceType";
     private static String manufacturer = "manufacturer";
     private static String deviceNumber = "deviceNumber"; // = -1; // invalid value means it has not been set
-    public static final Function<IBuild, CanInfo> Define = build->new CanInfo(build);
+    
+    public static final Function<IBuild, CanInfo> Define(DeviceType deviceType, Manufacturer manufacturer) {
+         return  build->new CanInfo(build, deviceType, manufacturer); 
+    };
+    
     public static CanInfo Wrap(Builder builder) { return new CanInfo(builder.getIBuild(), builder.getPart()); }
     public static CanInfo WrapPart(Builder builder) { return WrapPart(builder, canInfo); }
     public static CanInfo WrapPart(Builder builder, String partName) { return Wrap(builder.getPart(partName)); }
     
-    public CanInfo(IBuild build) {
-        super(build, Channel.SIGNAL_CAN);
-    }
-    public CanInfo(IBuild build, DeviceType deviceType, Manufacturer manufacturer) {
+    // public CanInfo(IBuild build) {
+    //     super(build, Channel.SIGNAL_CAN);
+    // }
+    private CanInfo(IBuild build, DeviceType deviceType, Manufacturer manufacturer) {
         super(build, Channel.SIGNAL_CAN);
         Device(deviceType);
         Manufacturer(manufacturer);
@@ -74,8 +78,7 @@ public class CanInfo extends Connector {
     }
 
     public static CanInfo addConnector(Builder device, DeviceType deviceType, Manufacturer manufacturer) {
-        var can = new CanInfo(device.getIBuild(), deviceType, manufacturer);
-        device.addPart(can);
+        var can = device.addPart(CanInfo.Define(deviceType, manufacturer));
         if (device.Type() == "") {
             device.Type(deviceType.toString());
         }

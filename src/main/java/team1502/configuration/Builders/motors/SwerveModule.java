@@ -4,10 +4,9 @@ import java.util.function.Function;
 
 import team1502.configuration.CAN.Manufacturer;
 import team1502.configuration.builders.Builder;
-import team1502.configuration.builders.Channel;
+import team1502.configuration.builders.Connector;
 import team1502.configuration.builders.IBuild;
 import team1502.configuration.builders.Part;
-import team1502.configuration.builders.power.PowerDistributionModule;
 
 public class SwerveModule extends Builder {
     public static final String NAME = "SwerveModule";
@@ -42,10 +41,10 @@ public class SwerveModule extends Builder {
         return this;
     }
 
-    private MotorController Wrapped(MotorController builder) {
-        builder.parent = this;
-        return builder;
-    }
+    // private MotorController Wrapped(MotorController builder) {
+    //     builder.parent = this;
+    //     return builder;
+    // }
 
     public MotorController TurningMotor() { return MotorController.WrapPart(this, SwerveModule.turningMotor); }
     public SwerveModule TurningMotor(Manufacturer manufacturer, Function<MotorController, Builder> fn) {
@@ -53,7 +52,7 @@ public class SwerveModule extends Builder {
         return this;
     }
     
-    public MotorController DrivingMotor() { return Wrapped(MotorController.WrapPart(this, SwerveModule.drivingMotor)); }
+    public MotorController DrivingMotor() { return MotorController.WrapPart(this, SwerveModule.drivingMotor); }
     public SwerveModule DrivingMotor(Manufacturer manufacturer, Function<MotorController, Builder> fn) {
         addPart(MotorController.Define(manufacturer), SwerveModule.drivingMotor, fn);
         return this;
@@ -76,17 +75,14 @@ public class SwerveModule extends Builder {
     public int CanNumberDrivingMotor() { return DrivingMotor().CanNumber(); }
     public SwerveModule CanNumbers(int absoluteEncoder, int turningMotor, int drivingMotor) {
         Encoder().CanNumber(absoluteEncoder);
-        TurningMotor().CanNumber(turningMotor); //TurningMotor().PowerChannel(turningMotor); 
-        TurningMotor().addConnector(Channel.SIGNAL_12VDC).Label(turningMotor + " " + turningMotor + " " + turningMotor + " ");
-        DrivingMotor().CanNumber(drivingMotor); //DrivingMotor().PowerChannel(drivingMotor);
-        DrivingMotor().addConnector(Channel.SIGNAL_12VDC).Label(drivingMotor + " " + drivingMotor + " " + drivingMotor + " ");
 
-        TurningMotor().Powers(TurningMotor().Motor());
-        DrivingMotor().Powers(TurningMotor().Motor());
-
+        TurningMotor().CanNumber(turningMotor); 
+        Connector.findConnector(TurningMotor(),POWER).Label(turningMotor + " " + turningMotor + " " + turningMotor);
         TurningMotor().Abbreviation(Abbreviation()+"T");
         TurningMotor().PDH(turningMotor);
         
+        DrivingMotor().CanNumber(drivingMotor);
+        Connector.findConnector(DrivingMotor(), POWER).Label(drivingMotor + " " + drivingMotor + " " + drivingMotor);
         DrivingMotor().Abbreviation(Abbreviation()+"D");
         DrivingMotor().PDH(drivingMotor);
 

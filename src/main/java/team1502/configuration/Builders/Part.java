@@ -13,13 +13,20 @@ public class Part {
     public static String BUILD_NAME = "buildName"; 
     /** override the key */
     public static String KEY_NAME = "keyName";
-    public static String ORIGINAL_NAME = "originalName";
+    public static String TEMPLATE_NAME = "templateName";
+
+    // COMMON Value keys useful when working with parts
+    static String CLASS_NAME = "className";
+    static String CATEGORY_NAME = "categoryName";
+    public static String friendlyName = "friendlyName";
+    public static String abbreviation = "abbreviation";
+
 
     public Part() {}
-    public Part(String name) {
-        setValue(Part.BUILD_NAME, name);
-        setValue(Part.ORIGINAL_NAME, name);
-    }
+    public Part(String name) { setValue(Part.BUILD_NAME, name);  }
+
+    @Override
+    public String toString() { return getKey(); }
     
     public String getName() { return (String)getValue(BUILD_NAME); }
     public Part setName(String name) {
@@ -37,7 +44,7 @@ public class Part {
     public Part setParent(Part parent) {
         if (this.parent == null ) {
             this.parent = parent;
-        } else {
+        } else if (this.parent != parent) {
             System.out.println(parent.getKey() + " trying to reparent " + this.getKey());
         }
         return this;
@@ -47,7 +54,9 @@ public class Part {
     
     public Part getPiece(int index) { return _pieces.get(index); }
     public Part addPiece(Part part) {
-        part.setParent(this);
+        if (part.getParent() == null) { // warning: didn't use PartBuilder
+            part.setParent(this);
+        }
         return refPiece(part);
     }
     public Part refPiece(Part part) {
@@ -57,12 +66,14 @@ public class Part {
     
     public Part getPart(String valueName) { return (Part)getValue(valueName); }
     public Part addPart(Part part) {
-        part.setParent(this);
+        if (part.getParent() == null) { // warning: didn't use PartBuilder
+            part.setParent(this);
+        }
         var key = (String)part.getValue(BUILD_NAME);
         if (part.hasValue(KEY_NAME)) {            
             key = (String)part.getValue(KEY_NAME);
         }
-        _values.put(key, part);
+        setValue(key, part);
         return this;
     }
     
@@ -83,24 +94,30 @@ public class Part {
     public List<String> getErrors() {
         return _errorMessages;
 	}
+}
 
     /*
-    public static void print(String msg) {
-        System.out.print(msg);
-    }
-    public static void println(String msg) {
-        System.out.println(msg);
-    }
-    public void print(String format, String...keys) {
-        var values = Arrays.stream(keys).map(key -> getValue(key)).toArray();
-        System.out.print(MessageFormat.format(format, values));
 
-    }
-    public String format(String format, String...keys) {
-        var values = Arrays.stream(keys).map(key -> getValue(key)).toArray();
-        return MessageFormat.format(format, values);
-    }
+        +-----------------+
+        | parent          |
+        |                 |
+        | values (map)    |
+        |  +--------------+ --- Initial Part Values ------------
+        |  |BUILD_NAME    | (default key, to map this part)
+        |  +--------------+ --- Optional Part values of note ---
+        |  |TEMPLATE_NAME |
+        |  +--------------+
+        |  |KEY_NAME      | (override for default key)
+        |  +--------------+
+        |                 |
+        | pieces[]        |
+        |  +--------------+
+        |  | 0            |
+        |  +--------------+
+        |                 |
+        +-----------------+
+
+
     */
     
 
-}
