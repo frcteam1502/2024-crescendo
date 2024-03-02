@@ -33,7 +33,9 @@ public class PickupNote extends Command {
   // Called every time the scheduler runs while the command is scheduled.
   @Override
   public void execute() {
-    shooterIntake.setIntakePickup();
+    if(!shooterIntake.isNotePresent()){
+      shooterIntake.setIntakePickup();
+    }
   }
 
   // Called once the command ends or is interrupted.
@@ -48,7 +50,8 @@ public class PickupNote extends Command {
     //Wait for inrush current
     if(pickupTimer.get() > 0.5){
 
-      if(shooterIntake.getIntakeCurrent() >= 20){
+      if((shooterIntake.getIntakeCurrent() >= 20)||
+         (shooterIntake.isNotePresent())){
         return true;
       }
     }

@@ -17,6 +17,6 @@ public class ShootNote extends SequentialCommandGroup {
   public ShootNote(ShooterIntake shooterIntake, BooleanSupplier isArmAtAmp) {
     // Add your commands in the addCommands() call, e.g.
     // addCommands(new FooCommand(), new BarCommand());
-    addCommands(new RampUpShooter(shooterIntake, isArmAtAmp), new LaunchNote(shooterIntake));
+    addCommands(new RampUpShooter(shooterIntake, isArmAtAmp), new LaunchNote(shooterIntake, isArmAtAmp));
   }
 }
