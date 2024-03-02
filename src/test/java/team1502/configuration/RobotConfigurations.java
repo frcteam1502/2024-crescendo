@@ -124,7 +124,7 @@ public final class RobotConfigurations {
                 // .Spark(1, "LED-R", "LED-5V") // right_blinkin
                 )
                 .DIO(d -> d)
-                .CanNumber(0)
+                //.CanNumber(0)
                 .Powers(hw.RadioSignalLight())
             )
 
@@ -176,9 +176,9 @@ public final class RobotConfigurations {
             )
             .PCM(ph -> ph
                 .Compressor()
-                .Solenoid(0, "Solenoid")
+                .Solenoid(0, "Brake Solenoid")
                 .PDH(7)
-                .CanNumber(1)
+                .CanNumber(7)
             )
         );
 
@@ -194,7 +194,7 @@ public final class RobotConfigurations {
                     .Gear("Chain 4:1", 1, 4)))
         ).Build(arm -> arm
             .Subsystem("Arm", a -> a
-                .Solenoid("Brake Solenoid", s->s.PCM(0))
+                .UsePart("Brake Solenoid")
                 .Encoder("Encoder", e->e.DigitalInput(0))
                 .MotorController("Leader", "Arm Motor", c->c
                     .Follower("Arm Motor", f->f

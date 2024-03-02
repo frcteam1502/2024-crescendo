@@ -21,7 +21,7 @@ public class Solenoid extends Builder {
   
     public edu.wpi.first.wpilibj.Solenoid buildSolenoid() {
         var ch = PowerChannel.findConnectedChannel(this);
-        var pcm = (PneumaticsController)ch.Host();
+        var pcm = PneumaticsController.Wrap(ch.Host());
         return Solenoid(pcm.buildSolenoid(ch.Channel()));
     }
 

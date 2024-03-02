@@ -39,7 +39,7 @@ public class RoboRIO extends Builder {
         FriendlyName("roboRIO");
         var can = CanInfo.addConnector(this, deviceType, Manufacturer.NI, 0);
         can.FriendlyName("NI Robot Controller");
-        addChannel(Channel.SIGNAL_CAN, this);
+        //addChannel(Channel.SIGNAL_CAN, this);
     }
     public RoboRIO(IBuild build, Part part) { super(build, part); }
     

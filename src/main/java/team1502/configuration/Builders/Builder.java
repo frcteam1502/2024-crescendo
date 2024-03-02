@@ -15,6 +15,7 @@ import team1502.configuration.builders.pneumatics.PneumaticsController;
 import team1502.configuration.builders.power.PowerDistributionModule;
 import team1502.configuration.builders.power.PowerProfile;
 import team1502.configuration.factory.PartBuilder;
+import team1502.configuration.factory.RobotBuilder;
 
 public class Builder {
     private static final String CLASSNAME = "Builder";
@@ -169,6 +170,18 @@ public class Builder {
         _part.addPart(part);
     }
     
+    Builder findPart(String name) {
+        var part = getIBuild().getInstalled(name);
+        return part;
+    }
+    public Builder usePart(String key) { return usePart(key, k->k); }
+    public Builder usePart(String key, Function<Builder, Builder> path) {
+        var part = findPart(key);
+        Value(key, path.apply(part).getPart());
+        return this;
+    }
+
+  
     // ---- Pieces --------------
 
     /** Install and move on, use addPiece to return the piece  */
@@ -291,7 +304,7 @@ public class Builder {
         return ch.connectToPart(this);
     }
 
-    Channel findChannel(Object id) {
+    public Channel findChannel(Object id) {
         return Channel.findChannel(this, id);
     }
     
@@ -336,7 +349,15 @@ public class Builder {
     }
 
     // == CAN =========
-
+    public Builder CanInfo(DeviceType deviceType, Manufacturer manufacturer, int number) {
+        CanInfo(deviceType, manufacturer);
+        CanNumber(number);
+        return this;
+    }
+    public Builder CanInfo(DeviceType deviceType, Manufacturer manufacturer) {
+        addPart(CanInfo.Define(deviceType, manufacturer));
+        return this;
+    }
     public Integer CanNumber() { return CanInfo.WrapPart(this).Number(); }
     public Builder CanNumber(int number) {
         CanInfo.WrapPart(this).Number(number);

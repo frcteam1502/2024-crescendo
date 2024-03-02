@@ -22,6 +22,8 @@ public class RobotBuilder implements IBuild /*extends Builder*/{
     
     private RobotBuilder _parent;
     private Builder _subsytemPart;
+    public Builder getPart() { return _subsytemPart; }
+
     //private Part _part;
     private RobotBuilder(RobotBuilder parent, String name) {
         // todo, look for existing part "sub-factory"
@@ -60,7 +62,7 @@ public class RobotBuilder implements IBuild /*extends Builder*/{
             ? installed
             : _parent != null
                 ? _parent.getInstalled(name)
-                : null;
+                : findPart(name);
     }
 
     @Override // IBuild
@@ -90,9 +92,39 @@ public class RobotBuilder implements IBuild /*extends Builder*/{
 
     public void install(Builder builder) {
         _buildMap.put(builder.getName(), builder);
-        // if (_subsytemPart != null) {
-        //     _subsytemPart.addPart(builder);
-        // }
+        if (_subsytemPart != null) {
+             var parent = builder.getParent();
+             if (parent != null && parent.getPart() == _subsytemPart.getPart()) {
+                _subsytemPart.addPart(builder);
+            }
+        }
+    }
+
+    Part findLocalPart(String name) {
+        for (Part part : _parts) {
+            if (part.getName() == name) { return part; }
+        }
+        return null;
+    }
+
+    public Builder findPart(String name) {
+        var part = findLocalPart(name);
+        if (part == null) {
+            if (_parent != null) { // normally only runs at top level
+                return _parent.findPart(name);
+            }
+            return null;
+        }
+        return new Builder(this, part);
+    }
+
+    public RobotBuilder UsePart(String key) {
+        _subsytemPart.Value(key, getInstalled(key).getPart());
+        return this;
+    }
+    RobotBuilder usePart(Builder user, String key, Function<RobotBuilder, Builder> path) {
+        user.Value(key, path.apply(this).getPart());
+        return this;
     }
 
     // BUILDER AND BUILDER SUBCLASSES
@@ -174,6 +206,7 @@ public class RobotBuilder implements IBuild /*extends Builder*/{
     public RobotBuilder MiniPowerModule(String name, Function<PowerDistributionModule, Builder> fn) {
         return installBuilder(name, PowerDistributionModule.MPM, PowerDistributionModule.DefineMPM, fn);
     }
+    public PneumaticsController PCM() { return (PneumaticsController)getInstalled(PneumaticsController.PCM); }
     public RobotBuilder PCM(Function<PneumaticsController, Builder> fn) {
         return installBuilder(PneumaticsController.PCM, PneumaticsController.PCM,  PneumaticsController.Define(Manufacturer.REVRobotics), fn);
     }
