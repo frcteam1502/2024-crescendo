@@ -72,11 +72,13 @@ public class SwerveModule extends Builder {
         TurningMotor().CanNumber(turningMotor); 
         Connector.findConnector(TurningMotor(),POWER).Label(turningMotor + " " + turningMotor + " " + turningMotor);
         TurningMotor().Abbreviation(Abbreviation()+"T");
+        TurningMotor().FriendlyName((FriendlyName()+" Turning"));
         TurningMotor().PDH(turningMotor);
         
         DrivingMotor().CanNumber(drivingMotor);
         Connector.findConnector(DrivingMotor(), POWER).Label(drivingMotor + " " + drivingMotor + " " + drivingMotor);
         DrivingMotor().Abbreviation(Abbreviation()+"D");
+        DrivingMotor().FriendlyName((FriendlyName()+" Driving"));
         DrivingMotor().PDH(drivingMotor);
 
         return this;

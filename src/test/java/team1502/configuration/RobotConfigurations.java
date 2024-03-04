@@ -199,8 +199,10 @@ public final class RobotConfigurations {
                 .Encoder("Encoder", e->e.DigitalInput(0))
                 .MotorController("Leader", "Arm Motor", c->c
                     .Follower("Arm Motor", f->f
+                        .Reversed()
                         .PDH(6)
                         .CanNumber(6)
+                        .FriendlyName("Arm Follower")
                     )
                     .PDH(1)
                     .CanNumber(1)

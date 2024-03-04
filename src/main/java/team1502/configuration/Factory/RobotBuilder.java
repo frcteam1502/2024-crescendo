@@ -22,8 +22,8 @@ public class RobotBuilder implements IBuild /*extends Builder*/{
     }
     
     private RobotBuilder _parent;
-    private Builder _subsytemPart;
-    public Builder getPart() { return _subsytemPart; }
+    private Builder _subsystemPart;
+    public Builder getPart() { return _subsystemPart; }
 
     //private Part _part;
     private RobotBuilder(RobotBuilder parent, String name) {
@@ -31,10 +31,10 @@ public class RobotBuilder implements IBuild /*extends Builder*/{
         _parent = parent;
         _parent._subsystemMap.put(name, this);
         _partFactory = new PartFactory(_parent.getPartFactory(), getIBuild());
-        _subsytemPart= Builder.DefineAs("Subsystem").apply(parent); // ??
-        _subsytemPart.Name(name);
-        _subsytemPart.setIBuild(this);
-        _subsytemPart.Value("robotBuilder", this);
+        _subsystemPart= Builder.DefineAs("Subsystem").apply(parent); // ??
+        _subsystemPart.Name(name);
+        _subsystemPart.setIBuild(this);
+        _subsystemPart.Value("robotBuilder", this);
     }
     
     public PartFactory getPartFactory() { return _partFactory; }
@@ -85,19 +85,22 @@ public class RobotBuilder implements IBuild /*extends Builder*/{
 
     private <T extends Builder> RobotBuilder installBuilder(String name, String partName, Function<IBuild, T> createFunction, Function<T, Builder> buildFunction) {
         var template = _partFactory.getTemplate(partName, createFunction, buildFunction);
-        T builder = _subsytemPart == null
+        T builder = _subsystemPart == null
             ? template.createBuilder(getIBuild(), name)
-            : template.addBuilder(_subsytemPart, name);
+            : template.addBuilder(_subsystemPart, name);
         install(builder);
         return this;
     }
 
     public void install(Builder builder) {
         _buildMap.put(builder.getName(), builder);
-        if (_subsytemPart != null) {
+        if (_subsystemPart != null) {
              var parent = builder.getParent();
-             if (parent != null && parent.getPart() == _subsytemPart.getPart()) {
-                _subsytemPart.addPart(builder);
+             if (parent != null && parent.getPart() == _subsystemPart.getPart()) {
+                _subsystemPart.addPart(builder);
+                if (!builder.hasValue(Part.friendlyName)) {
+                    builder.FriendlyName(_subsystemPart.Name() + " " + builder.Name());
+                }
             }
         }
     }
@@ -121,7 +124,7 @@ public class RobotBuilder implements IBuild /*extends Builder*/{
     }
 
     public RobotBuilder UsePart(String key) {
-        _subsytemPart.Value(key, getInstalled(key).getPart());
+        _subsystemPart.Value(key, getInstalled(key).getPart());
         return this;
     }
     RobotBuilder usePart(Builder user, String key, Function<RobotBuilder, Builder> path) {
@@ -147,7 +150,7 @@ public class RobotBuilder implements IBuild /*extends Builder*/{
     public RobotBuilder Subsystem(String partName, Function<RobotBuilder, RobotBuilder> fn) {
         var child = new RobotBuilder(this, partName);
         var subsystem = fn.apply(child); //Part(partName, partName, fn);
-        install(subsystem._subsytemPart);
+        install(subsystem._subsystemPart);
         return subsystem;
     }
 
@@ -222,7 +225,7 @@ public class RobotBuilder implements IBuild /*extends Builder*/{
     }    
     
     public RobotBuilder DigitalInput(String name, Integer channel, Function<Builder, Builder> fn) {
-        var abs = _subsytemPart.addConnector(Channel.SIGNAL_DIO, name);
+        var abs = _subsystemPart.addConnector(Channel.SIGNAL_DIO, name);
         abs.Value(RoboRIO.digitalInput, channel);
         abs.connectToChannel(RoboRIO.CLASSNAME, channel);
         return this;
