@@ -8,7 +8,6 @@ import com.revrobotics.CANSparkMax;
 import com.revrobotics.RelativeEncoder;
 import com.revrobotics.SparkPIDController;
 
-import team1502.configuration.CAN.CanInfo;
 import team1502.configuration.CAN.DeviceType;
 import team1502.configuration.CAN.Manufacturer;
 import team1502.configuration.builders.Builder;
@@ -17,15 +16,19 @@ import team1502.configuration.builders.Part;
 
 public class MotorController extends Builder {
     private static final DeviceType deviceType = DeviceType.MotorController; 
+    public static final String CLASSNAME = "MotorController";
+
     private static final String isReversed = "isReversed";
     private static final String closedLoopRampRate = "closedLoopRampRate";
     private static final String smartCurrentLimit = "smartCurrentLimit";
-    public static final String NAME = "MotorController";
+    /** Wheel Diameter (m) */
+    public static final String wheelDiameter = "wheelDiameter";
+    
     public static final Function<IBuild, MotorController> Define(Manufacturer manufacturer) {
         return build->new MotorController(build,manufacturer);
     }
     public static MotorController Wrap(Builder builder) { return new MotorController(builder.getIBuild(), builder.getPart()); }
-    public static MotorController WrapPart(Builder builder) { return WrapPart(builder, NAME); }
+    public static MotorController WrapPart(Builder builder) { return WrapPart(builder, CLASSNAME); }
     public static MotorController WrapPart(Builder builder, String partName) { return Wrap(builder.getPart(partName)); }
 
     // Define
@@ -38,12 +41,12 @@ public class MotorController extends Builder {
         super(build, part);
     }
     
-    public Motor Motor() {return Motor.WrapPart(this, Motor.NAME); }
+    public Motor Motor() {return Motor.WrapPart(this, Motor.CLASSNAME); }
     public MotorController Motor(String partName) {
         return Motor(partName, m->m);
     }
     public MotorController Motor(String partName, Function<Motor, Builder> fn) {
-        var motor = addPart(Motor.Define, Motor.NAME, partName, fn);
+        var motor = addPart(Motor.Define, Motor.CLASSNAME, partName, fn);
         this.Powers(motor);
         return this;
     }
@@ -133,26 +136,29 @@ public class MotorController extends Builder {
     }
 
     SwerveModule getSwerveModule() {
-        var parent = getParentOfType(SwerveModule.NAME);
+        var parent = getParentOfType(SwerveModule.CLASSNAME);
         return parent == null ? null : SwerveModule.Wrap(parent);
     }
     public RelativeEncoder buildRelativeEncoder() {
         var encoder = getRelativeEncoder();
         var swerveModule = getSwerveModule();
         if (swerveModule != null) {
-            encoder.setPositionConversionFactor((swerveModule).getPositionConversionFactor());
-            encoder.setVelocityConversionFactor((swerveModule).getVelocityConversionFactor());
+            encoder.setPositionConversionFactor(getPositionConversionFactor());
+            encoder.setVelocityConversionFactor(getVelocityConversionFactor());
         }
         return encoder;
     }
 
-    public Double getPositionConversionFactor() {
-        var swerveModule = getSwerveModule();
-        return swerveModule == null ? null : swerveModule.getPositionConversionFactor();
+    /** mpr * 60 = position/minute (like rpm)  */
+    public double getVelocityConversionFactor() { return getPositionConversionFactor()/60;  }
+    public double getPositionConversionFactor() { return (getWheelDiameter() * Math.PI) * getGearBoxRatio(); }
+    private double getGearBoxRatio() { return GearBox() != null ? GearBox().GearRatio() : 1.0; }
+    private double getWheelDiameter() { return findDouble(MotorController.wheelDiameter, 1.0); }
+    public double calculateMaxSpeed() { return calculateMaxSpeed(getWheelDiameter()); }
+    public double calculateMaxSpeed(Double wheelDiameter) {
+        return Motor().FreeSpeedRPM() / 60.0
+        * GearBox().GearRatio()
+        * wheelDiameter * Math.PI; 
     }
 
-    public Double getVelocityConversionFactor() {
-        var swerveModule = getSwerveModule();
-        return swerveModule == null ? null : swerveModule.getVelocityConversionFactor();
-    }
 }

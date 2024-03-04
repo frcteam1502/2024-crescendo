@@ -22,15 +22,17 @@ public class SwerveDrive extends Builder {
     public SwerveDrive(IBuild build, Part part) { super(build, part); }
 
     public SwerveDrive SwerveModule(String name, Function<SwerveModule, Builder> fn) {
-        var module = addPiece(SwerveModule.Define, name, SwerveModule.NAME, fn);
+        var module = addPiece(SwerveModule.Define, name, SwerveModule.CLASSNAME, fn);
         module.Value(SwerveModule.location, getKinematic(getPieces().size()));
-        module.Value(SwerveModule.wheelDiameter, Chassis().getWheelDiameter());
+        //module.Value(MotorController.wheelDiameter, Chassis().getWheelDiameter());
         return this;
     }
 
     public Chassis Chassis() { return Chassis.WrapPart(this); }
     public SwerveDrive Chassis(Function<Chassis, Builder> fn) {
-         return (SwerveDrive)AddPart(Chassis.Define, fn);
+        var chassis = addPart(Chassis.Define, fn);
+        Value(MotorController.wheelDiameter, chassis.getWheelDiameter());
+        return this;
     }
 
     /** How fast to track target angle when not turning */

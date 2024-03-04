@@ -61,7 +61,7 @@ public class PartFactory {
     }
 
     public PartFactory Motor(Function<Motor, Builder> fn) {
-        return Motor(Motor.NAME, fn);
+        return Motor(Motor.CLASSNAME, fn);
     }
     public PartFactory Motor(String name, Function<Motor, Builder> fn) {
         return addTemplate(name, Motor.Define, fn);
@@ -79,12 +79,12 @@ public class PartFactory {
         return addTemplate(SwerveDrive.CLASSNAME, SwerveDrive.Define, fn);
     }
     public PartFactory SwerveModule(Function<SwerveModule, Builder> fn) {
-        return addTemplate(SwerveModule.NAME,  SwerveModule.Define, fn);
+        return addTemplate(SwerveModule.CLASSNAME,  SwerveModule.Define, fn);
     }
 
     // Basic Parts
     public PartFactory RoboRIO(Function<RoboRIO, Builder> fn) {
-        return addTemplate(RoboRIO.NAME,  RoboRIO.Define, fn);
+        return addTemplate(RoboRIO.CLASSNAME,  RoboRIO.Define, fn);
     }
     public PartFactory PowerDistributionHub(Function<PowerDistributionModule, Builder> fn) {
         return addTemplate(PowerDistributionModule.PDH, PowerDistributionModule.DefinePDH, fn);

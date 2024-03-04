@@ -14,6 +14,7 @@ import team1502.configuration.builders.sensors.*;
 public class RobotBuilder implements IBuild /*extends Builder*/{
     private PartFactory _partFactory;
     private HashMap<String, Builder> _buildMap = new HashMap<>(); // built top-level parts wrapped in builder
+    private HashMap<String, RobotBuilder> _subsystemMap = new HashMap<>(); // subsystems
     private ArrayList<Part> _parts = new ArrayList<>(); // every part created
         
     private RobotBuilder() {
@@ -28,6 +29,7 @@ public class RobotBuilder implements IBuild /*extends Builder*/{
     private RobotBuilder(RobotBuilder parent, String name) {
         // todo, look for existing part "sub-factory"
         _parent = parent;
+        _parent._subsystemMap.put(name, this);
         _partFactory = new PartFactory(_parent.getPartFactory(), getIBuild());
         _subsytemPart= Builder.DefineAs("Subsystem").apply(parent); // ??
         _subsytemPart.Name(name);
@@ -149,7 +151,7 @@ public class RobotBuilder implements IBuild /*extends Builder*/{
         return subsystem;
     }
 
-    public Builder Encoder() { return Encoder(Encoder.NAME); }
+    public Builder Encoder() { return Encoder(Encoder.CLASSNAME); }
     public Builder Encoder(String partName) { return getInstalled(partName); }
     public RobotBuilder Encoder(String partName, Function<Encoder, Builder> fn) {        
         return Encoder(partName, partName, fn);
@@ -173,14 +175,14 @@ public class RobotBuilder implements IBuild /*extends Builder*/{
     }    
 
     public RobotBuilder Motor(Function<Motor, Builder> fn) {
-        return Motor(Motor.NAME, Motor.NAME, fn);
+        return Motor(Motor.CLASSNAME, Motor.CLASSNAME, fn);
     }
     public RobotBuilder Motor(String name, String partName, Function<Motor, Builder> fn) {        
         return installBuilder(name, partName, Motor.Define, fn);
     }    
 
     public RobotBuilder MotorController(String name, Function<MotorController, Builder> fn) {        
-        return MotorController(name, MotorController.NAME, fn);
+        return MotorController(name, MotorController.CLASSNAME, fn);
     }    
     public RobotBuilder MotorController(String name, String partName, Function<MotorController, Builder> fn) {        
         return installBuilder(name, partName, MotorController.Define(Manufacturer.REVRobotics), fn);
@@ -190,12 +192,12 @@ public class RobotBuilder implements IBuild /*extends Builder*/{
         return installBuilder(SwerveDrive.CLASSNAME, SwerveDrive.CLASSNAME, SwerveDrive.Define, fn);
     }    
     public RobotBuilder SwerveModule(String name, Function<SwerveModule, Builder> fn) {        
-        return installBuilder(name, SwerveModule.NAME, SwerveModule.Define, fn);
+        return installBuilder(name, SwerveModule.CLASSNAME, SwerveModule.Define, fn);
     }    
 
     // Basic Parts
     public RobotBuilder RoboRIO(Function<RoboRIO, Builder> fn) {
-        return installBuilder(RoboRIO.NAME, RoboRIO.NAME, RoboRIO.Define, fn);
+        return installBuilder(RoboRIO.CLASSNAME, RoboRIO.CLASSNAME, RoboRIO.Define, fn);
     }
     public RobotBuilder PowerDistributionHub(Function<PowerDistributionModule, Builder> fn) {
         return installBuilder(PowerDistributionModule.PDH, PowerDistributionModule.PDH,  PowerDistributionModule.DefinePDH, fn);
@@ -218,6 +220,13 @@ public class RobotBuilder implements IBuild /*extends Builder*/{
     public RobotBuilder Solenoid(String name, String partName, Function<Solenoid, Builder> fn) {        
         return installBuilder(name, partName, Solenoid.Define, fn);
     }    
+    
+    public RobotBuilder DigitalInput(String name, Integer channel, Function<Builder, Builder> fn) {
+        var abs = _subsytemPart.addConnector(Channel.SIGNAL_DIO, name);
+        abs.Value(RoboRIO.digitalInput, channel);
+        abs.connectToChannel(RoboRIO.CLASSNAME, channel);
+        return this;
+    }
 
     // "part" Parts
     public RobotBuilder DC(Function<Builder, Builder> fn) {

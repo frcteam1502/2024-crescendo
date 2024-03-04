@@ -9,21 +9,19 @@ import team1502.configuration.builders.IBuild;
 import team1502.configuration.builders.Part;
 
 public class SwerveModule extends Builder {
-    public static final String NAME = "SwerveModule";
+    public static final String CLASSNAME = "SwerveModule";
     /** offset (m) */
     public static final String location = "location";
-    /** Wheel Diameter (m) */
-    public static final String wheelDiameter = "wheelDiameter";
     private static final String absoluteEncoder = "Encoder";
     private static final String turningMotor = "TurningMotor";
     private static final String drivingMotor = "DrivingMotor";
     private static final String isReversed = "isReversed";
     public static Function<IBuild, SwerveModule> Define = build->new SwerveModule(build);
     public static SwerveModule Wrap(Builder builder) { return new SwerveModule(builder.getIBuild(), builder.getPart()); }
-    public static SwerveModule WrapPart(Builder builder) { return WrapPart(builder, NAME); }
+    public static SwerveModule WrapPart(Builder builder) { return WrapPart(builder, CLASSNAME); }
     public static SwerveModule WrapPart(Builder builder, String partName) { return Wrap(builder.getPart(partName)); }
 
-    public SwerveModule(IBuild build) { super(build, NAME); }
+    public SwerveModule(IBuild build) { super(build, CLASSNAME); }
     public SwerveModule(IBuild build, Part part) { super(build, part); }
 
     public SwerveModule Wrap(Function<SwerveModule, Builder> fn) {
@@ -40,11 +38,6 @@ public class SwerveModule extends Builder {
         addPart(CANCoder.Define, SwerveModule.absoluteEncoder, fn);
         return this;
     }
-
-    // private MotorController Wrapped(MotorController builder) {
-    //     builder.parent = this;
-    //     return builder;
-    // }
 
     public MotorController TurningMotor() { return MotorController.WrapPart(this, SwerveModule.turningMotor); }
     public SwerveModule TurningMotor(Manufacturer manufacturer, Function<MotorController, Builder> fn) {
@@ -89,14 +82,9 @@ public class SwerveModule extends Builder {
         return this;
     }
 
-    public double getPositionConversionFactor() {
-        double wheelDiameterMeters = getDouble(wheelDiameter);
-        double driveGearRatio = DrivingMotor().GearBox().GearRatio();
-        return (wheelDiameterMeters * Math.PI) * driveGearRatio;
-    }
-    
-    public double getVelocityConversionFactor() {
-        return getPositionConversionFactor()/60; // mpr * 60 = position/minute (like rpm)
+    /** in meters per second */
+    public double calculateMaxSpeed() {
+        return DrivingMotor().calculateMaxSpeed() * Math.PI; 
     }
 
     public frc.robot.subsystems.SwerveDrive.SwerveModule getSwerveModuleInstance() {
@@ -105,12 +93,5 @@ public class SwerveModule extends Builder {
     public SwerveModule setSwerveModuleInstance(frc.robot.subsystems.SwerveDrive.SwerveModule sm) {
         Value("getSwerveModuleInstance", sm);
         return this;
-    }
-
-    /** in meters per second */
-    public double calculateMaxSpeed() {
-        return DrivingMotor().Motor().FreeSpeedRPM() / 60.0
-        * DrivingMotor().GearBox().GearRatio()
-        * getDouble(wheelDiameter) * Math.PI; 
     }
 }

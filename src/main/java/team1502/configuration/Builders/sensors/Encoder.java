@@ -11,16 +11,16 @@ import team1502.configuration.builders.Part;
 import team1502.configuration.builders.RoboRIO;
 
 public class Encoder extends Builder {
-    public static final String NAME = "Encoder";
+    public static final String CLASSNAME = "Encoder";
     private static final String offset = "offset";
     private static final String dutyCycleEncoder = "dutyCycleEncoder";
 
     public static Function<IBuild, Encoder> Define = build->new Encoder(build);
     public static Encoder Wrap(Builder builder) { return new Encoder(builder.getIBuild(), builder.getPart()); }
-    public static Encoder WrapPart(Builder builder) { return WrapPart(builder, NAME); }
+    public static Encoder WrapPart(Builder builder) { return WrapPart(builder, CLASSNAME); }
     public static Encoder WrapPart(Builder builder, String partName) { return Wrap(builder.getPart(partName)); }
 
-    public Encoder(IBuild build) { super(build, NAME); }
+    public Encoder(IBuild build) { super(build, CLASSNAME); }
     public Encoder(IBuild build, Part part) { super(build, part); }
   
     public Integer DigitalInput() {
@@ -41,7 +41,7 @@ public class Encoder extends Builder {
         // thru-bore abs duty-cycle uses DIO
         var abs = addConnector(Channel.SIGNAL_DIO, "ABS");
         abs.Value(RoboRIO.digitalInput, channel);
-        abs.connectToChannel(RoboRIO.NAME, channel);
+        abs.connectToChannel(RoboRIO.CLASSNAME, channel);
         return this;
     }
 

@@ -17,7 +17,7 @@ public class BuilderTests {
         var module1 = SwerveModule.Define.apply(factory);
         var mc1 = module1.addPart(MotorController.Define(Manufacturer.Copperforge));
 
-        var sm1 = mc1.getParentOfType(SwerveModule.NAME);
+        var sm1 = mc1.getParentOfType(SwerveModule.CLASSNAME);
         if (sm1 == null) {throw new AssertionError();}
     }
 
@@ -123,7 +123,7 @@ public class BuilderTests {
         var factory = new TestBuilder();
         
         // hub
-        var hub = factory.createPart(RoboRIO.NAME);
+        var hub = factory.createPart(RoboRIO.CLASSNAME);
         hub.AddPart(Builder.DefineAs(Channel.SIGNAL_CAN), p->p)
            .AddPart(Builder.DefineAs(Channel.SIGNAL_PWM), p->p
                 .Channel(Channel.SIGNAL_PWM, 0)

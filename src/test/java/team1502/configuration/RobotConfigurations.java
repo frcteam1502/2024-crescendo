@@ -4,6 +4,7 @@ import com.revrobotics.CANSparkBase.IdleMode;
 import com.revrobotics.CANSparkLowLevel.MotorType;
 
 import team1502.configuration.CAN.Manufacturer;
+import team1502.configuration.builders.RoboRIO;
 import team1502.configuration.factory.RobotConfiguration;
 
 public final class RobotConfigurations {
@@ -204,6 +205,8 @@ public final class RobotConfigurations {
                     .PDH(1)
                     .CanNumber(1)
                 )
+                .DigitalInput("Photosensor NO", 1, io->io.FriendlyName("Note Present 1"))  
+                .DigitalInput("Photosensor NC", 2, io->io.FriendlyName("Note Present 2"))
             )
         );
 
@@ -385,33 +388,38 @@ public final class RobotConfigurations {
     private static RobotConfiguration addEvalHelpers(RobotConfiguration robot) {
         // Configuration Values
         return robot.Values(k -> k
-            .Eval("Pigeon2", e->e.Pigeon2().CanNumber())
-            .Eval("SwerveModule.getPositionConversionFactor", e -> e
-                    .SwerveDrive().SwerveModule("#1").getPositionConversionFactor())
-            .Eval("SwerveDrive.DriveBaseRadius", e -> e
+            .Eval("Pigeon2: 14 == ", e->e.Pigeon2().CanNumber())
+            .Eval("SwerveDrive.DriveBaseRadius: 0.41758190962971564 == ", e -> e
                     .SwerveDrive().Chassis().getDriveBaseRadius())
-            .Eval("SwerveDrive.calculateMaxSpeed", e -> e
+            .Eval("SwerveDrive.calculateMaxSpeed: 14.418391278818346 == ", e -> e
                     .SwerveDrive().calculateMaxSpeed())
-            .Eval("SwerveDrive.calculateMaxRotationSpeed", e -> e
+            .Eval("SwerveDrive.calculateMaxRotationSpeed: 34.5282947999438 == ", e -> e
                     .SwerveDrive().calculateMaxRotationSpeed())
-            .Eval("SwerveDrive.GoStraightGain", e -> e
+            .Eval("SwerveDrive.GoStraightGain: 0.1 == ", e -> e
                     .SwerveDrive().GoStraightGain())
-            .Eval("SwerveModule.calculateMaxSpeed", e -> e
+            .Eval("SwerveModule.calculateMaxSpeed: 14.418391278818346 == ", e -> e
                     .SwerveDrive().SwerveModule("#1").calculateMaxSpeed())
-            .Eval("SwerveModule.ClosedLoopRampRate", e -> e
+            .Eval("SwerveModule.ClosedLoopRampRate: 0.5 == ", e -> e
                     .SwerveDrive().SwerveModule("#1").DrivingMotor().ClosedLoopRampRate())
-            .Eval("SwerveModule.SmartCurrentLimit", e -> e
+            .Eval("SwerveModule.SmartCurrentLimit: 30 == ", e -> e
                     .SwerveDrive().SwerveModule("#1").DrivingMotor().SmartCurrentLimit())
-            .Eval("SwerveModule.getPositionConversionFactor", e -> e
+            .Eval("SwerveModule.getPositionConversionFactor: 0.04731460295787658 == ", e -> e
                     .SwerveDrive().SwerveModule("#1").DrivingMotor().getPositionConversionFactor())
-            .Eval("SwerveModule.TurningMotor.Motor.MotorType", e -> e
+            .Eval("SwerveModule.TurningMotor.Motor.MotorType: kBrushless == ", e -> e
                     .SwerveDrive().SwerveModule("#1").TurningMotor().Motor().MotorType())
-            // .Eval("SwerveModule.TurningMotor.Motor.PowerChannel", e -> e
+            .Eval("SwerveModule.MagneticOffset: 151.96 == ", e -> e
+                    .SwerveDrive().SwerveModule("#1").Encoder().MagneticOffset())
+            .Eval("Arm.Encoder.DIO Ch: 0 == ", e -> e
+                    .Subsystem("Arm").Encoder().getPart("ABS").getValue(RoboRIO.digitalInput))
+            .Eval("Arm.Photosensor NO.DIO Ch: 1 == ", e -> e
+                    .SubsystemPart("Arm").DigitalInput("Photosensor NO"))
+
+
+
+             // .Eval("SwerveModule.TurningMotor.Motor.PowerChannel", e -> e
             //         .SwerveDrive().SwerveModule("#1").TurningMotor().PowerChannel())
             // .Eval("SwerveModule.TurningMotor.TotalPower", e -> e
             //         .SwerveDrive().SwerveModule("#1").TurningMotor().TotalPeakPower())
-            .Eval("SwerveModule.MagneticOffset", e -> e
-                    .SwerveDrive().SwerveModule("#1").Encoder().MagneticOffset())
             // .Eval("SwerveModule.TurningMotor.Motor.MotorType", e -> e
             //     .SwerveModule(e.partName(), m -> m.TurningMotor().Motor().MotorType()))
             // .Eval("SwerveModule.TurningMotor.Reversed", e -> e

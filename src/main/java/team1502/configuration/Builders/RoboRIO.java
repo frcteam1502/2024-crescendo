@@ -19,13 +19,16 @@ public class RoboRIO extends Builder {
     /** key to channel number in connector --  */
     public static final String digitalInput = "digitalInput";
 
-    public static final String NAME = "RoboRIO"; 
+    public static final String CLASSNAME = "RoboRIO"; 
     public static final Function<IBuild, RoboRIO> Define = build->new RoboRIO(build);
     public static RoboRIO Wrap(Builder builder) { return new RoboRIO(builder.getIBuild(), builder.getPart()); }
-    public static RoboRIO WrapPart(Builder builder) { return WrapPart(builder, NAME); }
+    public static RoboRIO WrapPart(Builder builder) { return WrapPart(builder, CLASSNAME); }
     public static RoboRIO WrapPart(Builder builder, String partName) { return Wrap(builder.getPart(partName)); }
     public RoboRIO(IBuild build) {
-        super(build, NAME); 
+        super(build, deviceType, Manufacturer.NI);
+        Type(CLASSNAME);
+        Name("RoboRIO");
+        FriendlyName("roboRIO");
         AddCAN();
         //addPart(Builder.DefineAs(Channel.SIGNAL_CAN)).FriendlyName("CAN port");
         addConnector(POWER, "INPUT").FriendlyName("Power connector");
@@ -36,10 +39,7 @@ public class RoboRIO extends Builder {
         // I2C
         // SPI
         // RS-232
-        FriendlyName("roboRIO");
-        var can = CanInfo.addConnector(this, deviceType, Manufacturer.NI, 0);
-        can.FriendlyName("NI Robot Controller");
-        //addChannel(Channel.SIGNAL_CAN, this);
+        CanNumber(0);
     }
     public RoboRIO(IBuild build, Part part) { super(build, part); }
     
@@ -62,7 +62,7 @@ public class RoboRIO extends Builder {
     void AddPWM() {
         var pwn = addPart(Builder.DefineAs(Channel.SIGNAL_PWM)).FriendlyName("roboRIO PWN port");
         for (int ch = 0; ch < 10; ch++) {
-            pwn.addPiece(Channel.Define(Channel.SIGNAL_PWM, NAME, ch));
+            pwn.addPiece(Channel.Define(Channel.SIGNAL_PWM, CLASSNAME, ch));
         }
     }
     
@@ -74,7 +74,7 @@ public class RoboRIO extends Builder {
     void AddDIO() {
         var dio = addPart(Builder.DefineAs(Channel.SIGNAL_DIO)).FriendlyName("roboRIO DIO port");
         for (int ch = 0; ch < 10; ch++) {
-            dio.addPiece(Channel.Define(Channel.SIGNAL_DIO, NAME, ch));
+            dio.addPiece(Channel.Define(Channel.SIGNAL_DIO, CLASSNAME, ch));
         }
     }
     // public RoboRIO DIO(Builder part) {

@@ -52,7 +52,7 @@ public class CanInfo extends Connector {
         setValue(deviceNumber, number);
         Name(Channel.SIGNAL_CAN + ":" + "[" + number + "]" + Device().toString() + "|" + Manufacturer().toString());
         FriendlyName(FriendlyName() + " " + number);
-        var rio = getIBuild().getInstalled(RoboRIO.NAME);
+        var rio = getIBuild().getInstalled(RoboRIO.CLASSNAME);
         if (rio != null) {
             rio.addChannel(Channel.SIGNAL_CAN, this.Host());
         }

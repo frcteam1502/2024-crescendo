@@ -121,6 +121,13 @@ public class Builder {
         return _part == null ? Name() : _part.toString();
     }
 
+    protected Builder findValue(String key) {
+        return hasValue(key)
+            ? this
+            : hasParent()
+                ? getParent().findValue(key)
+                : null;
+    }
     // === PARTS and PIECES ===
 
     /** Add a generic part  */
@@ -144,6 +151,9 @@ public class Builder {
         return AddPart(new PartBuilder<T>(define, fn));
     }
 
+    public <T extends Builder> T addPart(Function<IBuild, T> define, Function<T, Builder> fn) {
+        return addPart(new PartBuilder<T>(define, fn));
+    }
     public <T extends Builder> T addPart(PartBuilder<T> partBuilder) {
         return addPart(partBuilder.addBuilder(this));
     }
@@ -348,6 +358,7 @@ public class Builder {
         return ch;
     }
 
+    public Integer DigitalInput(String name) { return getPart(name).getInt(RoboRIO.digitalInput); }
     // == CAN =========
     public Builder CanInfo(DeviceType deviceType, Manufacturer manufacturer, int number) {
         CanInfo(deviceType, manufacturer);
@@ -460,6 +471,11 @@ public class Builder {
         return (Boolean)getValue(valueName);
     }
     
+    public double findDouble(String valueName, double defaultValue) {
+        var found = findValue(valueName);
+        var result = found != null ? (Double)found.getValue(valueName) : null;
+        return result != null ? result : defaultValue;
+    }
     public double getDouble(String valueName, double defaultValue) {
         var result = (Double)getValue(valueName);
         return result != null ? result : defaultValue;
