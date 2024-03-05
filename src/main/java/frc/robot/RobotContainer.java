@@ -15,6 +15,7 @@ import frc.robot.commands.ShootNote;
 import frc.robot.commands.ShooterIntakeCommands;
 import frc.robot.commands.ArmCommands;
 import frc.robot.subsystems.SwerveDrive.DriveSubsystem;
+import frc.robot.subsystems.Vision.Vision;
 
 import com.pathplanner.lib.auto.AutoBuilder;
 import com.pathplanner.lib.auto.NamedCommands;
@@ -39,7 +40,9 @@ public class RobotContainer {
   public final ArmSubsystem armSubsystem = new ArmSubsystem();
   public final ShooterIntake shooterIntakeSubsystem = new ShooterIntake();
   //private final PdpSubsystem pdpSubsystem = new PdpSubsystem();
-  //private final ExampleSubsystem m_exampleSubsystem = new ExampleSubsystem();
+  
+  //Needed to invoke scheduler
+  private final Vision visionSubsystem = new Vision();
 
   private final SendableChooser<Command> autoChooser; 
 
@@ -118,6 +121,8 @@ public class RobotContainer {
 
     Operator.Controller.leftBumper().onTrue(new InstantCommand(shooterIntakeSubsystem::setIntakeEject));
     Operator.Controller.leftBumper().onFalse(new InstantCommand(shooterIntakeSubsystem::setIntakeOff));
+
+    
 
 
     /* sample code

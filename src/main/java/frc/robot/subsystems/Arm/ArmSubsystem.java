@@ -1,7 +1,7 @@
 package frc.robot.subsystems.Arm;
 
-import frc.robot.LimelightHelpers;
-import frc.robot.LimelightHelpers.LimelightResults;
+import frc.robot.subsystems.Vision.LimelightHelpers;
+import frc.robot.subsystems.Vision.LimelightHelpers.LimelightResults;
 import frc.robot.Logger;
 
 import com.revrobotics.CANSparkMax;
@@ -148,7 +148,6 @@ public class ArmSubsystem extends SubsystemBase {
     SmartDashboard.putNumber("Arm Absolute Encoder Angle", getArmAbsPositionDegrees());
     SmartDashboard.putNumber("Arm Relative Encoder", rotateRelativeEncoder.getPosition());
     SmartDashboard.putNumber("Rotation Goal", goalRotate);
-    SmartDashboard.putNumber("Calculated Distance", calculateTargetDistance());
   }
 
   public void reset(){
@@ -252,7 +251,7 @@ public class ArmSubsystem extends SubsystemBase {
     }
     
     SmartDashboard.putBoolean("Target Found", targetFound);
-    
+
     if(targetFound){
       ty = ty + 20;
       distance = (1.45/Math.tan(Math.toDegrees(ty)));

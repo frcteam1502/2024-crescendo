@@ -1,13 +1,6 @@
 package frc.robot.subsystems.SwerveDrive;
 
-
-import java.util.function.BooleanSupplier;
-
-import javax.swing.text.Utilities;
-
 import frc.robot.Logger;
-import frc.robot.LimelightHelpers.LimelightResults;
-import frc.robot.LimelightHelpers;
 
 import com.ctre.phoenix6.hardware.CANcoder;
 import com.ctre.phoenix6.hardware.Pigeon2;
@@ -24,6 +17,8 @@ import com.revrobotics.CANSparkMax;
 import com.revrobotics.CANSparkLowLevel;
 import com.revrobotics.CANSparkBase.IdleMode;
 
+import edu.wpi.first.math.VecBuilder;
+import edu.wpi.first.math.Vector;
 import edu.wpi.first.math.estimator.SwerveDrivePoseEstimator;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
@@ -32,8 +27,8 @@ import edu.wpi.first.math.kinematics.ChassisSpeeds;
 import edu.wpi.first.math.kinematics.SwerveDriveKinematics;
 import edu.wpi.first.math.kinematics.SwerveModulePosition;
 import edu.wpi.first.math.kinematics.SwerveModuleState;
+import edu.wpi.first.math.numbers.N3;
 import edu.wpi.first.math.util.Units;
-import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 
 import frc.robot.GameState;
@@ -143,6 +138,16 @@ final class Motors {
   
 }
 
+final class PoseConfig{
+  public static final double POS_STD_DEV_X = 1;
+  public static final double POS_STD_DEV_Y = 1;
+  public static final double POS_STD_DEV_THETA = 1;
+  
+  public static final double POS_VIS_DEV_X = 1;
+  public static final double POS_VIS_DEV_Y = 1;
+  public static final double POS_VIS_DEV_THETA = 1;
+}
+
 
 public class DriveSubsystem extends SubsystemBase{
   
@@ -191,7 +196,20 @@ public class DriveSubsystem extends SubsystemBase{
   
   public DriveSubsystem() {
 
-    this.odometry = new SwerveDrivePoseEstimator(kinematics, getGyroRotation2d(), getModulePositions(), pose);
+    //this.odometry = new SwerveDrivePoseEstimator(kinematics, getGyroRotation2d(), getModulePositions(), pose);
+    this.odometry = new SwerveDrivePoseEstimator(
+      kinematics, 
+      getGyroRotation2d(), 
+      getModulePositions(), 
+      pose,
+      createStateStdDevs(
+                PoseConfig.POS_STD_DEV_X,
+                PoseConfig.POS_STD_DEV_Y,
+                PoseConfig.POS_STD_DEV_THETA),
+      createVisionMeasurementStdDevs(
+                PoseConfig.POS_VIS_DEV_X,
+                PoseConfig.POS_VIS_DEV_Y,
+                PoseConfig.POS_VIS_DEV_THETA));
 
     reset();
     ConfigMotorDirections();
@@ -199,6 +217,33 @@ public class DriveSubsystem extends SubsystemBase{
 
     //Configure Auto Builder last!
     configAutoBuilder(); 
+  }
+  
+  /**
+   * Creates a vector of standard deviations for the states. Standard deviations of model states.
+   * Increase these numbers to trust your model's state estimates less.
+   *
+   * @param x in meters
+   * @param y in meters
+   * @param theta in degrees
+   * @return the Vector of standard deviations need for the poseEstimator
+   */
+  public Vector<N3> createStateStdDevs(double x, double y, double theta) {
+    return VecBuilder.fill(x, y, Units.degreesToRadians(theta));
+  }
+
+  /**
+   * Creates a vector of standard deviations for the vision measurements. Standard deviations of
+   * global measurements from vision. Increase these numbers to trust global measurements from
+   * vision less.
+   *
+   * @param x in meters
+   * @param y in meters
+   * @param theta in degrees
+   * @return the Vector of standard deviations need for the poseEstimator
+   */
+  public Vector<N3> createVisionMeasurementStdDevs(double x, double y, double theta) {
+    return VecBuilder.fill(x, y, Units.degreesToRadians(theta));
   }
 
   private void checkInitialAngle() {
@@ -258,17 +303,6 @@ public class DriveSubsystem extends SubsystemBase{
     SmartDashboard.putNumber("Pose2D X", pose.getX());
     SmartDashboard.putNumber("Pose2D Y", pose.getY());
     SmartDashboard.putNumber("Pose2D Rotation", pose.getRotation().getDegrees());
-
-    //Limelight Info
-    LimelightResults llresults = LimelightHelpers.getLatestResults("");
-    int numAprilTags = llresults.targetingResults.targets_Fiducials.length;
-
-    SmartDashboard.putNumber("Number of AprilTags",numAprilTags);
-    SmartDashboard.putNumber("Tag ID", LimelightHelpers.getFiducialID(""));
-    SmartDashboard.putNumber("Limelight TX", LimelightHelpers.getTX(""));
-    SmartDashboard.putNumber("Limelight TY", LimelightHelpers.getTY(""));
-    SmartDashboard.putNumber("Limelight TA", LimelightHelpers.getTA(""));
-
   }
   
   @Override
