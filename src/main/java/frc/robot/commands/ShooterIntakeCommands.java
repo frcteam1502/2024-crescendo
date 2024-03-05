@@ -10,32 +10,34 @@ import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
 
 import frc.robot.Operator;
+import frc.robot.subsystems.Arm.ArmSubsystem;
 import frc.robot.subsystems.ShooterIntake.ShooterIntake;
 
 public class ShooterIntakeCommands extends Command {
   private final ShooterIntake shooterIntake;
+  private final ArmSubsystem arm;
 
-  public ShooterIntakeCommands(ShooterIntake shooterIntake) {
+  public ShooterIntakeCommands(ShooterIntake shooterIntake, ArmSubsystem arm) {
     this.shooterIntake = shooterIntake;
-    
+    this.arm = arm;
     // Use addRequirements() here to declare subsystem dependencies.
-    addRequirements(shooterIntake);
+    addRequirements(shooterIntake, arm);
   }
 
   // Called when the command is initially scheduled.
   @Override
   public void initialize() {
-    Operator.rightTrigger(0.5).onTrue(new ShootNote(shooterIntake));
+    Operator.rightTrigger(0.5).onTrue(new ShootNote(shooterIntake, ()->arm.isArmAtAmp()));
     Operator.RightBumper.toggleOnTrue(new InstantCommand(shooterIntake::toggleShooter));
 
-    Operator.leftTrigger(.5).whileTrue(new IntakeNote(shooterIntake));
+    Operator.leftTrigger(.5).whileTrue(new IntakeNote(shooterIntake, ()->arm.isArmAtIntake()));
     
     Operator.LeftBumper.onTrue(new InstantCommand(shooterIntake::setIntakeEject));
     Operator.LeftBumper.onFalse(new InstantCommand(shooterIntake::setIntakeOff));
 
-    NamedCommands.registerCommand("Intake on", new IntakeNote(shooterIntake));
+    NamedCommands.registerCommand("Intake on", new IntakeNote(shooterIntake, ()->arm.isArmAtIntake()));
     NamedCommands.registerCommand("Intake off", new InstantCommand(shooterIntake::setIntakeOff));
-    NamedCommands.registerCommand("Rotate to intake", new ShootNote(shooterIntake));
+    NamedCommands.registerCommand("Shot Note", new ShootNote(shooterIntake, ()->arm.isArmAtAmp()));
   }
 
   // Called every time the scheduler runs while the command is scheduled.

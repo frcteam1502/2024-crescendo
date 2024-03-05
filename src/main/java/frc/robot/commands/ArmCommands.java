@@ -30,7 +30,6 @@ public class ArmCommands extends Command {
     NamedCommands.registerCommand("Rotate to intake", new InstantCommand(arm::rotateToIntake));
     NamedCommands.registerCommand("Rotate to close shot", new InstantCommand(arm::rotateToShootClose));
     NamedCommands.registerCommand("Rotate to far shot", new InstantCommand(arm::rotateToShootFar));
-    NamedCommands.registerCommand("Rotate to intake", new InstantCommand(arm::rotateToIntake));
     
     arm.reset();
   }
