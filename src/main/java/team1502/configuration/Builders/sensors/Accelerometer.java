@@ -2,6 +2,7 @@ package team1502.configuration.builders.sensors;
 
 import java.util.function.Function;
 
+import team1502.configuration.CAN.CanInfo;
 import team1502.configuration.CAN.DeviceType;
 import team1502.configuration.CAN.Manufacturer;
 import team1502.configuration.builders.Builder;
@@ -17,11 +18,12 @@ public class Accelerometer extends Builder {
     public static Accelerometer Wrap(Builder builder) { return new Accelerometer(builder.getIBuild(), builder.getPart()); }
     public static Accelerometer WrapPart(Builder builder) { return WrapPart(builder, deviceType.name()); }
     public static Accelerometer WrapPart(Builder builder, String partName) { return Wrap(builder.getPart(partName)); }
+    
     public Accelerometer(IBuild build, Manufacturer manufacturer) {
-         super(build); 
-         Device(deviceType);
-         Manufacturer(manufacturer);
+        super(build, deviceType); 
+        CanInfo.addConnector(this, deviceType, manufacturer);
     }
+    
     public Accelerometer(IBuild build, Part part) { super(build, part); }
 
 

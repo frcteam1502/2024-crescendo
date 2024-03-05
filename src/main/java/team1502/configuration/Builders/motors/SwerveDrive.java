@@ -11,26 +11,28 @@ import team1502.configuration.builders.IBuild;
 import team1502.configuration.builders.Part;
 
 public class SwerveDrive extends Builder {
-    public static final String NAME = "SwerveDrive";
+    public static final String CLASSNAME = "SwerveDrive";
     public static final String goStraightGain = "goStraightGain";
     public static Function<IBuild, SwerveDrive> Define = build->new SwerveDrive(build);
     public static SwerveDrive Wrap(Builder builder) { return new SwerveDrive(builder.getIBuild(), builder.getPart()); }
-    public static SwerveDrive WrapPart(Builder builder) { return WrapPart(builder, NAME); }
+    public static SwerveDrive WrapPart(Builder builder) { return WrapPart(builder, CLASSNAME); }
     public static SwerveDrive WrapPart(Builder builder, String partName) { return Wrap(builder.getPart(partName)); }
 
-    public SwerveDrive(IBuild build) { super(build, NAME); }
+    public SwerveDrive(IBuild build) { super(build, CLASSNAME); }
     public SwerveDrive(IBuild build, Part part) { super(build, part); }
 
     public SwerveDrive SwerveModule(String name, Function<SwerveModule, Builder> fn) {
-        var module = addPiece(SwerveModule.Define, name, SwerveModule.NAME, fn);
+        var module = addPiece(SwerveModule.Define, name, SwerveModule.CLASSNAME, fn);
         module.Value(SwerveModule.location, getKinematic(getPieces().size()));
-        module.Value(SwerveModule.wheelDiameter, Chassis().getWheelDiameter());
+        //module.Value(MotorController.wheelDiameter, Chassis().getWheelDiameter());
         return this;
     }
 
     public Chassis Chassis() { return Chassis.WrapPart(this); }
     public SwerveDrive Chassis(Function<Chassis, Builder> fn) {
-         return (SwerveDrive)addPart(Chassis.Define, fn);
+        var chassis = addPart(Chassis.Define, fn);
+        Value(MotorController.wheelDiameter, chassis.getWheelDiameter());
+        return this;
     }
 
     /** How fast to track target angle when not turning */

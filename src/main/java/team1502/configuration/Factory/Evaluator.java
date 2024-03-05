@@ -24,6 +24,12 @@ public class Evaluator {
         _configuration = configuration;
     }
 
+    public Evaluator Subsystem(String name) {
+        return new Evaluator(_configuration.Subsystem(name));
+    }
+    public Builder SubsystemPart(String name) {
+        return _configuration.Subsystem(name).getPart();
+    }
     private Object Eval(EvaluatorArgs args) {
         this.args = args;
         var result = Eval(args.function);
@@ -76,6 +82,7 @@ public class Evaluator {
     //     return fn.apply((T)builder);
     // }
 
+
     public Builder Part(String partName) {
         return (Builder)getValue(partName, b->Builder.Wrap(b), b->b);   
     }
@@ -84,6 +91,9 @@ public class Evaluator {
     }
     public IMU Pigeon2() {
         return (IMU)getValue(IMU.Pigeon2, b->IMU.Wrap(b), g->(IMU)g);   
+    }
+    public Encoder Encoder() {
+        return (Encoder)getValue(Encoder.CLASSNAME, b->Encoder.Wrap(b), g->(Encoder)g);   
     }
     public GyroSensor GyroSensor() {
         return (GyroSensor)getValue(GyroSensor.Gyro, b->GyroSensor.Wrap(b), g->(GyroSensor)g);   
@@ -104,7 +114,7 @@ public class Evaluator {
         return (PowerDistributionModule)getValue(partName, b->PowerDistributionModule.Wrap(b), p->p);   
     }
     public RoboRIO RoboRIO() {
-        return (RoboRIO)getValue(RoboRIO.NAME, b->RoboRIO.Wrap(b), p->p);   
+        return (RoboRIO)getValue(RoboRIO.CLASSNAME, b->RoboRIO.Wrap(b), p->p);   
     }
     public Builder EthernetSwitch() {return Part("EthernetSwitch"); }
     public Builder RadioPowerModule() { return Part("RadioPowerModule"); }
@@ -120,7 +130,7 @@ public class Evaluator {
     public SwerveDrive SwerveDrive() {return SwerveDrive(d->d); }
 
     public <T extends Object> T SwerveDrive(Function<SwerveDrive, T> fn) {
-        return (T)getValue(SwerveDrive.NAME, b->SwerveDrive.Wrap(b), fn);   
+        return (T)getValue(SwerveDrive.CLASSNAME, b->SwerveDrive.Wrap(b), fn);   
     }
 
 }

@@ -12,7 +12,6 @@ public class CrescendoTests {
     @Test
     public void buildRobotTest() {
         var config = frc.robot.RobotConfigurations.getConfiguration("");
-        checkValues(config);
          
         printDetailedChannels("PDH", config.PDH());
         printDetailedChannels("MPM1", config.MPM("MPM1"));
@@ -20,45 +19,20 @@ public class CrescendoTests {
         printDetailedChannels("Pneumatics Hub", config.PCM());
     }
 
-    private void checkValues(RobotConfiguration config) {
-        var sw = config.SwerveDrive();
-        var swm = config.SwerveDrive().getModules();
-        
-    }
-    private void printChannels(PowerDistributionModule pdh) {
-        var ch20 = pdh.getChannel(20);
-        echo(ch20.Part().ShortName());
+
+    private void printDetailedChannels(String hub, PowerDistributionModule pdh) {
 
         echo("");
-        var formatter = MdFormatter.Table("PDH Channel Assignments")
-            .Heading("Ch", "Abbr", "Device");
-        for (var value : pdh.getChannels()){
-            formatter.AddRow(
-                value.Channel().toString(), 
-                value.hasPart() ? value.Part().ShortName() : "",
-                value.hasPart() ? value.Part().FriendlyName() : ""
-                );
-        }
-        formatter.AsTable().forEach(row -> echo(row));
-
-    }
-
-    // private void printDetailedChannels(String name, PneumaticsController pcm) {
-    //     for (var value : pcm.getChannels()){
-    // }
-
-    private void printDetailedChannels(String name, PowerDistributionModule pdh) {
-        echo("");
-        var formatter = MdFormatter.Table(name + " Channel Assignments")
+        var formatter = MdFormatter.Table(hub + " Channel Assignments")
             .Heading("Ch", "Amps", "Wire", "Abbr", "Device", "Watts");
         for (var value : pdh.getChannels()){
             formatter.AddRow(
                 value.Channel().toString(),
                 value.hasFuse() ? value.Fuse().toString() : "",
-                value.WireLabel(),
-                value.hasPart() ? value.Part().ShortName() : "",
-                value.hasPart() ? value.Part().FriendlyName() : "",
-                value.hasPart() ? value.ChannelPower().toString() : ""
+                value.Label(),
+                value.isConnected() ? value.Connection().Host().ShortName() : "",
+                value.isConnected() ? value.Connection().Host().FriendlyName() : "",
+                value.hasValue("totalPeakPower") ? value.getDouble("totalPeakPower").toString() : ""
                 );
         }
         formatter.AsTable().forEach(row -> echo(row));

@@ -2,6 +2,7 @@ package team1502.configuration.builders.sensors;
 
 import java.util.function.Function;
 
+import team1502.configuration.CAN.CanInfo;
 import team1502.configuration.CAN.DeviceType;
 import team1502.configuration.CAN.Manufacturer;
 import team1502.configuration.builders.Builder;
@@ -20,10 +21,10 @@ public class GyroSensor extends Builder {
     public static GyroSensor WrapPart(Builder builder, String partName) { return Wrap(builder.getPart(partName)); }
 
     public GyroSensor(IBuild build, Manufacturer manufacturer) {
-        super(build);
-        Device(deviceType); // also "buildType"
-        Manufacturer(manufacturer);
+        super(build, deviceType);
+        CanInfo.addConnector(this, deviceType, manufacturer);
     }
+    
     public GyroSensor(IBuild build, Part part) {super(build, part); }
    
 /*

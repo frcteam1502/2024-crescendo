@@ -4,7 +4,6 @@ import com.revrobotics.CANSparkBase.IdleMode;
 import com.revrobotics.CANSparkLowLevel.MotorType;
 
 import team1502.configuration.CAN.Manufacturer;
-import team1502.configuration.builders.pneumatics.PneumaticsController;
 import team1502.configuration.factory.RobotConfiguration;
 
 public final class RobotConfigurations {
@@ -88,56 +87,67 @@ public final class RobotConfigurations {
             .MPM("MPM1", 0))
 
         // PNEUMATICS
-        .Compressor(p->p.PowerChannel(PneumaticsController.CompressorPower))
         .PCM(ph -> ph
-            .Solenoid(0, 0, "Brake Solenoid")
+            .Compressor()
+            .Solenoid(0, "Brake Solenoid")
             .PDH(7)
-            .Powers(hw.Compressor())
-            .CanNumber(1))
+            .CanNumber(7)
+        )
 
         // ARM
         .Subsystem("Arm", s -> s
-            .MotorController("Arm Leader", "Arm Motor", c->c
+            .MotorController("Leader", "Arm Motor", c->c
+                .Follower("Arm Motor", f->f
+                    .Reversed()
+                    .PDH(6)
+                    .CanNumber(6)
+                    .FriendlyName("Arm Follower").Abbreviation("Arm-F")
+                )
                 .PID(0.4, 0, 0)
                 .PDH(1)
-                .CanNumber(1).Abbreviation("Arm-L")
+                .CanNumber(1)
+                .Abbreviation("Arm-L")
+
+                .Value("MAX_ROTATE", 5)//;
+                .Value("MIN_ROTATE", -95)//;
+                .Value("MAX_ROTATE_FEEDFORWARD", .06)//; //TODO: increase?
+                .Value("ROTATE_CHANGE", .3)//;           
+                .Value("MAX_ROTATION_SPEED", .3)//;                    
+                .Value("ABS_OFFSET", -5)//; also get 1:100 from motors
             )
-            .MotorController("Arm Follower", "Arm Motor", c->c
-                //.Reversed() automatic by .Follow()?
-                .PDH(6)
-                .CanNumber(6).Abbreviation("Arm-F")
-            )
-            //.Encoder(e-> e.Dio(0)) DutyCycleEncoder
-            // MAX_ROTATE = 5;
-            // MIN_ROTATE = -95;
-            // MAX_ROTATE_FEEDFORWARD = .06; //TODO: increase?
-            // ROTATE_CHANGE = .3;           
-            // MAX_ROTATION_SPEED = .3;                    
-            //  ABS_OFFSET = -5; also get 1:100 from motors
-            // BrakeSolenoid -- Solenoid(7,PneumaticsModuleType.REVPH, 0)
+            .UsePart("Brake Solenoid")
+            .Encoder("Encoder", e-> e.DigitalInput(0)) //DutyCycleEncoder
+            
         )
 
-        .Subsystem("ShooterIntake", s -> s
-            .MotorController("Shooter Leader", "Shooter Motor", c->c
-                .PID(.00005, 0.0, 0.0, 0.000180)
-                // SHOOTER_DEFAULT_RPM = 5000;
-                // INTAKE_DEFAULT_PICK_UP_RPM = 2500;
-                // INTAKE_DEFAULT_EJECT_RPM = -2500;
-                .PDH(2)
-                .CanNumber(2).Abbreviation("Sh-Ldr")
+        .Subsystem("ShooterIntake", si -> si
+            .Subsystem("Shooter", s -> s
+                .MotorController("Leader", "Shooter Motor", c->c
+                    .Follower("Shooter Motor", f->f
+                        .PDH(3)
+                        .CanNumber(3)
+                        .FriendlyName("Shooter Follower").Abbreviation("Sh-Flw")
+                    )
+                    .PID(.00005, 0.0, 0.0, 0.000180)
+                    .PDH(2)
+                    .CanNumber(2)
+                    .Abbreviation("Sh-Ldr")
+
+                    .Value("SHOOTER_DEFAULT_RPM", 5000)
+                )
             )
-            .MotorController("Shooter Follower", "Shooter Motor", c->c
-                .Reversed()
-                .PDH(3)
-                .CanNumber(3).Abbreviation("Sh-Flw")
+            .Subsystem("Intake", i -> i
+                .MotorController("Motor", "Intake Motor", c->c
+                    .PID(.00005, 0.0, 0.0, 0.000275)
+                    .PDH(18)
+                    .CanNumber(18).Abbreviation("Intk")
+                    
+                    .Value("INTAKE_DEFAULT_PICK_UP_RPM", 2500)
+                    .Value("INTAKE_DEFAULT_EJECT_RPM", -2500)
+                )
+                .DigitalInput("Photosensor NO", 1, io->io.FriendlyName("Note Present 1"))  
+                .DigitalInput("Photosensor NC", 2, io->io.FriendlyName("Note Present 2"))
             )
-            .MotorController("Intake", "Intake Motor", c->c
-                .PID(.00005, 0.0, 0.0, 0.000275)
-                .PDH(18)
-                .CanNumber(18).Abbreviation("Intk")
-            )
-            // DigitalInput(PHOTO_SENSOR_NO, 1)
-            // DigitalInput(PHOTO_SENSOR_NC, 2)
         )
 
         // SWERVE DRIVE
@@ -191,10 +201,11 @@ public final class RobotConfigurations {
         );
         
         return parts.Build(hw->hw
-        .PCM(pcm->pcm.PowerChannel(21))
-        .RadioPowerModule(rpm->rpm.PowerChannel(22))
-        .Pigeon2(gyro->gyro.PowerChannel(23).CanNumber(14))
-        .DC(dc -> dc.PDH(1, "??"))
+        // GYRO
+        .Pigeon2(g->g
+            .CanNumber(14)
+            .MPM("MPM1", 0))
+        //.DC(dc -> dc.PDH(1, "??"))
         // limelight 10.15.2.23:5800
         // PIs?
         .MiniPowerModule(mpm->mpm
@@ -208,7 +219,7 @@ public final class RobotConfigurations {
         .SwerveDrive(sd -> sd
             .SwerveModule("#1", sm -> sm // just leaving these as numbers, since "Front" is arbitrary and undetermined at the moment
                 .Wrap(sw->sw.FriendlyName("Front Left").Abbreviation("FL"))
-                .CanNumberDown(16) // 16 16 15 -- also PDP channel
+                .CanNumber(16) // 16 16 17 -- also PDP channel
                 .Encoder(e -> e
                     .MagneticOffset(151.96)
                     .Abbreviation(sm.Abbreviation()+"E")
@@ -223,20 +234,20 @@ public final class RobotConfigurations {
                     .MPM(2, "FR2"))
             )
             .SwerveModule("#3", sm -> sm
-                .Wrap(sw->sw.FriendlyName("Back Left").Abbreviation("BL"))
-                .CanNumberDown(4) // 4 4 3
+                .Wrap(sw->sw.FriendlyName("Rear Left").Abbreviation("RL"))
+                .CanNumber(4) // 4 4 5
                 .Encoder(e -> e
                     .MagneticOffset(4.83)
                     .Abbreviation(sm.Abbreviation()+"E")
-                    .MPM(0, "BL0"))
+                    .MPM(0, "RL0"))
             )
             .SwerveModule("#4", sm -> sm
-                .Wrap(sw->sw.FriendlyName("Back Right").Abbreviation("BR"))
+                .Wrap(sw->sw.FriendlyName("Rear Right").Abbreviation("RR"))
                 .CanNumber(8) // 8 8 9
                 .Encoder(e -> e
                     .MagneticOffset(127.26)
                     .Abbreviation(sm.Abbreviation()+"E")
-                    .MPM(1, "BR1"))
+                    .MPM(1, "RR1"))
             )
             // miscellaneous
             .GoStraightGain(0.1)
@@ -247,25 +258,18 @@ public final class RobotConfigurations {
 
     private static RobotConfiguration standardChassis(RobotConfiguration inventory) {
         return inventory.Parts(define -> define
-            .RoboRIO(r -> r.Version("2.0").PeakPower(45.0).Abbreviation("RIO")) // +RSL 0.6 ??
+            .RoboRIO(r -> r.Version("2.0").PeakPower(45.0).Abbreviation("RIO"))
             .PowerDistributionHub(p -> p.CanNumber(1).Abbreviation("PDH"))
             .Radio(r -> r.PeakPower(0.79))
-            .RadioPowerModule(r -> r.PeakPower(12.0).Abbreviation("RPM")) // radio power module
-            .RadioBarrelJack(r -> r.PeakPower(12.0).Abbreviation("RBJ")) // radio barrel jack
-            .RadioSignalLight(r -> r.PeakPower(0.6).Abbreviation("RSL")) // radio signal light
+            .RadioPowerModule(r -> r.PeakPower(12.0).Abbreviation("RPM"))
+            .RadioBarrelJack(r -> r.PeakPower(12.0).Abbreviation("RBJ"))
+            .RadioSignalLight(r -> r.PeakPower(0.6).Abbreviation("RSL"))
             .EthernetSwitch(r -> r.PeakPower(12.0).Abbreviation("ETH"))
             .TimeOfFlight(r -> r.PeakPower(0.02))
             .Compressor(r -> r.PeakPower(120.0))
             .LimeLight(r -> r.PeakPower(60.0))
             .RaspberryPi(r -> r.PeakPower(60.0)) //? + camera
             .LEDs(r -> r.PeakPower(25.0)) // 5V addressable LEDs - 5A max
-        );
-    }
-
-    private static RobotConfiguration standardSwerveChassis(RobotConfiguration inventory) {
-        standardChassis(inventory);
-        // Inventory Definitions
-        return inventory.Parts(define -> define
             .Pigeon2(p -> p
                 .PeakPower(0.4)
             )
@@ -288,6 +292,13 @@ public final class RobotConfigurations {
                 // current limit 20A
                 .PeakPower(279.0) // ~265 @ 40A
             )
+        );
+    }
+
+    private static RobotConfiguration standardSwerveChassis(RobotConfiguration inventory) {
+        standardChassis(inventory);
+        // Inventory Definitions
+        return inventory.Parts(define -> define
             .SwerveModule(sm -> sm
                 .CANCoder(cc -> cc
                     .PeakPower(0.060)
@@ -331,6 +342,7 @@ public final class RobotConfigurations {
     private static RobotConfiguration buildStandardElectronics(RobotConfiguration parts) {
         // Top-Level Parts
         return parts.Build(hw -> hw
+            .PowerDistributionHub(r->r)
             .RadioSignalLight(r->r)
             .Radio(r->r)
             .RadioPowerModule(r->r.Powers(hw.Radio()))
@@ -341,7 +353,6 @@ public final class RobotConfigurations {
                 // .Spark(1, "LED-R", "LED-5V") // right_blinkin
                 )
                 .DIO(d -> d)
-                .CanNumber(0)
                 .Powers(hw.RadioSignalLight())
             )
 

@@ -16,35 +16,47 @@ import team1502.configuration.builders.Part;
 
 public class MotorController extends Builder {
     private static final DeviceType deviceType = DeviceType.MotorController; 
+    public static final String CLASSNAME = "MotorController";
+
     private static final String isReversed = "isReversed";
     private static final String closedLoopRampRate = "closedLoopRampRate";
     private static final String smartCurrentLimit = "smartCurrentLimit";
-    public static final String NAME = "MotorController";
+    /** Wheel Diameter (m) */
+    public static final String wheelDiameter = "wheelDiameter";
+    
     public static final Function<IBuild, MotorController> Define(Manufacturer manufacturer) {
         return build->new MotorController(build,manufacturer);
     }
     public static MotorController Wrap(Builder builder) { return new MotorController(builder.getIBuild(), builder.getPart()); }
-    public static MotorController WrapPart(Builder builder) { return WrapPart(builder, NAME); }
+    public static MotorController WrapPart(Builder builder) { return WrapPart(builder, CLASSNAME); }
     public static MotorController WrapPart(Builder builder, String partName) { return Wrap(builder.getPart(partName)); }
 
     // Define
     public MotorController(IBuild build, Manufacturer manufacturer) {
-        super(build);
-        Device(deviceType); // also "buildType"
-        Manufacturer(manufacturer);
+        super(build, deviceType, manufacturer);
+        addConnector(POWER, "Vin").FriendlyName("Power connector");
+        addChannel(POWER, "Vout").FriendlyName("Motor Power Out");
     }
     public MotorController(IBuild build, Part part) {
         super(build, part);
     }
     
-    public Motor Motor() {return Motor.WrapPart(this, Motor.NAME); }
+    public Motor Motor() {return Motor.WrapPart(this, Motor.CLASSNAME); }
     public MotorController Motor(String partName) {
-        return Motor(partName, null);
+        return Motor(partName, m->m);
     }
     public MotorController Motor(String partName, Function<Motor, Builder> fn) {
-        addPart(Motor.Define, Motor.NAME, partName, fn);
+        var motor = addPart(Motor.Define, Motor.CLASSNAME, partName, fn);
+        this.Powers(motor);
         return this;
     }
+    
+    public MotorController Follower() { return WrapPart(this, "Follower"); }
+    public MotorController Follower(String partName, Function<MotorController, Builder> fn) {
+        addPart(MotorController.Define(Manufacturer.REVRobotics), "Follower", partName, fn);
+        return this;
+    }
+
 
     public IdleMode IdleMode() { return (IdleMode)getValue(Motor.idleMode); }
     public MotorController IdleMode(IdleMode value) {
@@ -66,15 +78,15 @@ public class MotorController extends Builder {
 
     public GearBox GearBox() { return GearBox.WrapPart(this); }
     public MotorController GearBox(Function<GearBox, Builder> fn) {
-        return (MotorController)addPart(GearBox.Define, fn);
+        return (MotorController)AddPart(GearBox.Define, fn);
     }
     
     public PID PID() { return PID.WrapPart(this); }
     public MotorController PID(double p, double i, double d) {
-        return (MotorController)addPart(PID.Define, pid->pid.P(p).I(i).D(d));
+        return (MotorController)AddPart(PID.Define, pid->pid.P(p).I(i).D(d));
     }
     public MotorController PID(double p, double i, double d, double ff) {
-        return (MotorController)addPart(PID.Define, pid->pid.P(p).I(i).D(d).FF(ff));
+        return (MotorController)AddPart(PID.Define, pid->pid.P(p).I(i).D(d).FF(ff));
     }
 
     /** Time in seconds to go from 0 to full throttle. */
@@ -104,6 +116,11 @@ public class MotorController extends Builder {
         if (hasValue(smartCurrentLimit)) {
             motor.setSmartCurrentLimit(SmartCurrentLimit());
         }
+        if (hasValue("Follower")) {
+            var follower = Follower();
+            var followerMotor = follower.buildSparkMax();
+            followerMotor.follow(motor, follower.IsReversed());
+        }
         return motor;
     }
     public CANSparkMax CANSparkMax() {
@@ -118,32 +135,30 @@ public class MotorController extends Builder {
         return CANSparkMax().getEncoder();
     }
 
+    SwerveModule getSwerveModule() {
+        var parent = getParentOfType(SwerveModule.CLASSNAME);
+        return parent == null ? null : SwerveModule.Wrap(parent);
+    }
     public RelativeEncoder buildRelativeEncoder() {
         var encoder = getRelativeEncoder();
-        if (parent != null) {
-            if (parent.Value(Builder.BUILD_TYPE) == SwerveModule.NAME) {
-                encoder.setPositionConversionFactor(((SwerveModule)parent).getPositionConversionFactor());
-                encoder.setVelocityConversionFactor(((SwerveModule)parent).getVelocityConversionFactor());
-            }
+        var swerveModule = getSwerveModule();
+        if (swerveModule != null) {
+            encoder.setPositionConversionFactor(getPositionConversionFactor());
+            encoder.setVelocityConversionFactor(getVelocityConversionFactor());
         }
         return encoder;
     }
 
-    public Double getPositionConversionFactor() {
-        if (parent != null) {
-            if (parent.Value(Builder.BUILD_TYPE) == SwerveModule.NAME) {
-                return ((SwerveModule)parent).getPositionConversionFactor();
-            }
-        }
-        return null;
+    /** mpr * 60 = position/minute (like rpm)  */
+    public double getVelocityConversionFactor() { return getPositionConversionFactor()/60;  }
+    public double getPositionConversionFactor() { return (getWheelDiameter() * Math.PI) * getGearBoxRatio(); }
+    private double getGearBoxRatio() { return GearBox() != null ? GearBox().GearRatio() : 1.0; }
+    private double getWheelDiameter() { return findDouble(MotorController.wheelDiameter, 1.0); }
+    public double calculateMaxSpeed() { return calculateMaxSpeed(getWheelDiameter()); }
+    public double calculateMaxSpeed(Double wheelDiameter) {
+        return Motor().FreeSpeedRPM() / 60.0
+        * GearBox().GearRatio()
+        * wheelDiameter * Math.PI; 
     }
 
-    public Double getVelocityConversionFactor() {
-        if (parent != null) {
-            if (parent.Value(Builder.BUILD_TYPE) == SwerveModule.NAME) {
-                return ((SwerveModule)parent).getVelocityConversionFactor();
-            }
-        }
-        return null;
-    }
 }

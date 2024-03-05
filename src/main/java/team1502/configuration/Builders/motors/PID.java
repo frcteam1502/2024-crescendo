@@ -53,3 +53,31 @@ public class PID extends Builder {
     }
 
 }
+/* NOTE: 4 PID slots (e.g., per reference?)
+
+  public enum AccelStrategy {
+    kTrapezoidal(0),
+    kSCurve(1);
+  public enum ArbFFUnits {
+    kVoltage(0),
+    kPercentOut(1);
+
+
+    public enum ControlType {
+        kDutyCycle(0),
+        kVelocity(1),
+        kVoltage(2),
+        kPosition(3),
+        kSmartMotion(4),
+        kCurrent(5),
+        kSmartVelocity(6);
+
+        @SuppressWarnings("MemberName")
+        public final int value;
+
+        ControlType(int value) {
+        this.value = value;
+        }
+  }
+
+ */
