@@ -183,6 +183,13 @@ public final class RobotConfigurations {
             )
         );
 
+        parts.Build(hw->hw
+            .Subsystem("One", s1->s1
+                .Value("a", 1)
+                .Subsystem("Two", s2->s2)
+
+            )
+        );
         // 
         parts.Parts(inventory -> inventory
             .MotorController("Arm Motor", Manufacturer.REVRobotics, c->c

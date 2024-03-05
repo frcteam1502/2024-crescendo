@@ -133,6 +133,10 @@ public class RobotBuilder implements IBuild /*extends Builder*/{
     }
 
     // BUILDER AND BUILDER SUBCLASSES
+    public RobotBuilder Value(String valueName, Object value) {
+        _subsystemPart.Value(valueName, value); 
+        return this;
+    }    
 
     public RobotBuilder Note(String note) {
         Note = note;
@@ -149,9 +153,12 @@ public class RobotBuilder implements IBuild /*extends Builder*/{
     public RobotBuilder Subsystem(String partName) { return (RobotBuilder)getInstalled(partName).Value("robotBuilder"); }
     public RobotBuilder Subsystem(String partName, Function<RobotBuilder, RobotBuilder> fn) {
         var child = new RobotBuilder(this, partName);
+        if (_subsystemPart != null) {
+            child.getPart().getPart().setParent(_subsystemPart.getPart());
+        }
         var subsystem = fn.apply(child); //Part(partName, partName, fn);
         install(subsystem._subsystemPart);
-        return subsystem;
+        return this;
     }
 
     public Builder Encoder() { return Encoder(Encoder.CLASSNAME); }
