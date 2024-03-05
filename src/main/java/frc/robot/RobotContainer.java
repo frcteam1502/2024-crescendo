@@ -52,6 +52,9 @@ public class RobotContainer {
     new PathPlannerAuto("4NoteLeft");
     new PathPlannerAuto("4NoteMiddle");
     new PathPlannerAuto("4NoteRight");
+    new PathPlannerAuto("1NoteMiddle");
+    new PathPlannerAuto("1NoteLeft");
+    new PathPlannerAuto("1NoteRight");
 
 
     autoChooser = AutoBuilder.buildAutoChooser();

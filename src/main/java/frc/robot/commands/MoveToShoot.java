@@ -4,36 +4,28 @@
 
 package frc.robot.commands;
 
-import java.util.function.BooleanSupplier;
-
 import edu.wpi.first.wpilibj2.command.Command;
-import frc.robot.subsystems.ShooterIntake.ShooterIntake;
+import frc.robot.subsystems.Arm.ArmSubsystem;
 
-public class RampUpShooter extends Command {
-  /** Creates a new RampUpShooter. */
-  private final ShooterIntake shooterIntake;
-  private final BooleanSupplier armAtAmp;
+public class MoveToShoot extends Command {
+  /** Creates a new MoveToShoot. */
 
-  public RampUpShooter(ShooterIntake shooterIntake, BooleanSupplier armAtApm) {
+  private final ArmSubsystem arm;
+
+  public MoveToShoot(ArmSubsystem arm) {
     // Use addRequirements() here to declare subsystem dependencies.
-    this.shooterIntake = shooterIntake;
-    this.armAtAmp = armAtApm;
-    
-    addRequirements(shooterIntake);
+    this.arm = arm;
+    addRequirements(arm);
   }
 
   // Called when the command is initially scheduled.
   @Override
-  public void initialize() {
-  
-  }
+  public void initialize() {}
 
   // Called every time the scheduler runs while the command is scheduled.
   @Override
   public void execute() {
-    if(!armAtAmp.getAsBoolean()){
-      shooterIntake.setShooterOn();
-    }
+    arm.rotateToShootClose();
   }
 
   // Called once the command ends or is interrupted.
@@ -43,10 +35,6 @@ public class RampUpShooter extends Command {
   // Returns true when the command should end.
   @Override
   public boolean isFinished() {
-    if((shooterIntake.isShooterAtSpeed())||
-       (armAtAmp.getAsBoolean())){
-      return true;
-    }
-    return false;
+    return true;
   }
 }

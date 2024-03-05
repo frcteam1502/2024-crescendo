@@ -6,7 +6,6 @@ package frc.robot.subsystems.ShooterIntake;
 
 import com.revrobotics.CANSparkMax;
 import com.revrobotics.CANSparkLowLevel;
-import com.pathplanner.lib.auto.NamedCommands;
 import com.revrobotics.CANSparkBase.IdleMode;
 import com.revrobotics.RelativeEncoder;
 import com.revrobotics.SparkPIDController;
@@ -35,9 +34,13 @@ final class ShooterIntakeConstants{
   public final static DigitalInput PHOTO_SENSOR_NO = new DigitalInput(PHOTO_SENSOR_NO_CHANNEL);
   public final static DigitalInput PHOTO_SENSOR_NC = new DigitalInput(PHOTO_SENSOR_NC_CHANNEL);
 
-  public final static double SHOOTER_DEFAULT_RPM = 4500;
-  public final static double INTAKE_DEFAULT_PICK_UP_RPM = 2500;
-  public final static double INTAKE_DEFAULT_INDEX_RPM = 500;
+  public final static double SHOOTER_DEFAULT_RPM = 4000;
+  public final static double SHOOTER_AMP_RPM = 100;
+  public final static double SHOOTER_HOLD_RPM = -100;
+
+  public final static double INTAKE_PICK_UP_FAST_RPM = 2000;
+  public final static double INTAKE_PICK_UP_SLOW_RPM = 1000;
+  public final static double INTAKE_DEFAULT_INDEX_RPM = 250;
   public final static double INTAKE_DEFAULT_EJECT_RPM = -1000;
   public final static double INTAKE_DEFAULT_SHOOT_RPM = 3500;
 
@@ -73,7 +76,8 @@ public class ShooterIntake extends SubsystemBase {
   private final DigitalInput photoSensorNormClosed;
 
   private double shooter_speed = ShooterIntakeConstants.SHOOTER_DEFAULT_RPM;
-  private double intakePickupSpeed = ShooterIntakeConstants.INTAKE_DEFAULT_PICK_UP_RPM;
+  private double intakePickupFastSpeed = ShooterIntakeConstants.INTAKE_PICK_UP_FAST_RPM;
+  private double intakePickupSlowSpeed = ShooterIntakeConstants.INTAKE_PICK_UP_SLOW_RPM;
   private double intakeIndexSpeed = ShooterIntakeConstants.INTAKE_DEFAULT_INDEX_RPM;
   private double intakeEjectSpeed = ShooterIntakeConstants.INTAKE_DEFAULT_EJECT_RPM;
   private double intakeShootSpeed = ShooterIntakeConstants.INTAKE_DEFAULT_SHOOT_RPM;
@@ -128,7 +132,7 @@ public class ShooterIntake extends SubsystemBase {
     SmartDashboard.putNumber("Shooter PID P", shooter_p);
     
     SmartDashboard.putNumber("Intake PID FF", intake_ff);
-    SmartDashboard.putNumber("Intake Pickup Speed", intakePickupSpeed);
+    //SmartDashboard.putNumber("Intake Pickup Speed", intakePickupSpeed);
     SmartDashboard.putNumber("Intake PID p", intake_p);
 
     registerLoggerObjects();
@@ -157,15 +161,34 @@ public class ShooterIntake extends SubsystemBase {
     isShooterOn = true;
   }
 
+  public void setShooterAmp(){
+    shooter_lead_controller.setFF(shooter_ff);
+    shooter_follow_controller.setFF(shooter_ff);
+    shooter_lead_controller.setReference(ShooterIntakeConstants.SHOOTER_AMP_RPM, CANSparkMax.ControlType.kVelocity);
+    shooter_follow_controller.setReference(ShooterIntakeConstants.SHOOTER_AMP_RPM, CANSparkMax.ControlType.kVelocity);
+  }
+
+  public void setShooterHold(){
+    shooter_lead_controller.setFF(shooter_ff);
+    shooter_follow_controller.setFF(shooter_ff);
+    shooter_lead_controller.setReference(ShooterIntakeConstants.SHOOTER_HOLD_RPM, CANSparkMax.ControlType.kVelocity);
+    shooter_follow_controller.setReference(ShooterIntakeConstants.SHOOTER_HOLD_RPM, CANSparkMax.ControlType.kVelocity);
+  }
+
   public void setShooterOff(){
     shooter_lead_controller.setReference(0.0, CANSparkMax.ControlType.kVelocity);
     shooter_follow_controller.setReference(0.0, CANSparkMax.ControlType.kVelocity);
     isShooterOn = false;
   }
 
-  public void setIntakePickup(){
+  public void setIntakePickupFast(){
     intake_controller.setFF(intake_ff);
-    intake_controller.setReference(intakePickupSpeed, CANSparkMax.ControlType.kVelocity);
+    intake_controller.setReference(intakePickupFastSpeed, CANSparkMax.ControlType.kVelocity);
+  }
+
+  public void setIntakePickupSlow(){
+    intake_controller.setFF(intake_ff);
+    intake_controller.setReference(intakePickupSlowSpeed, CANSparkMax.ControlType.kVelocity);
   }
 
   public void setIntakeIndex(){
@@ -187,7 +210,7 @@ public class ShooterIntake extends SubsystemBase {
   }
 
   public boolean isNotePresent(){
-    if(!photoSensorNormOpen.get()){
+    if((!photoSensorNormOpen.get())||(photoSensorNormClosed.get())){
       return true;
     }else{
       return false;
@@ -212,7 +235,7 @@ public class ShooterIntake extends SubsystemBase {
     shooter_p =SmartDashboard.getNumber("Shooter PID p", 0);
     
     intake_ff = SmartDashboard.getNumber("Intake PID FF", 0);
-    intakePickupSpeed = SmartDashboard.getNumber("Intake Pickup Speed", 0);
+    //intakePickupSpeed = SmartDashboard.getNumber("Intake Pickup Speed", 0);
     intake_p = SmartDashboard.getNumber("Intake PID p", 0);
 
     SmartDashboard.putNumber("Shooter Lead Speed",shooter_lead_encoder.getVelocity());
@@ -228,8 +251,9 @@ public class ShooterIntake extends SubsystemBase {
     SmartDashboard.putNumber("Intake Applied Output %", intake.getAppliedOutput());
     SmartDashboard.putNumber("Intake Applied Output Volts", (intake.getAppliedOutput()*intake.getBusVoltage()));
 
-    SmartDashboard.putBoolean("Note Present 1", !photoSensorNormOpen.get());
-    SmartDashboard.putBoolean("Note Present 2", !photoSensorNormClosed.get());
+    SmartDashboard.putBoolean("Note Sensor NO", !photoSensorNormOpen.get());
+    SmartDashboard.putBoolean("Note Sensor NC", !photoSensorNormClosed.get());
+    SmartDashboard.putBoolean("Is Note Present", isNotePresent());
 
     SmartDashboard.putBoolean("Is Shooter On", isShooterOn);
     

@@ -12,9 +12,33 @@
     "data": {
       "commands": [
         {
+          "type": "named",
+          "data": {
+            "name": "Rotate to close shot"
+          }
+        },
+        {
+          "type": "named",
+          "data": {
+            "name": "Shot Note"
+          }
+        },
+        {
+          "type": "named",
+          "data": {
+            "name": "Rotate to intake"
+          }
+        },
+        {
           "type": "path",
           "data": {
             "pathName": "4NoteLeft1"
+          }
+        },
+        {
+          "type": "named",
+          "data": {
+            "name": "Intake on"
           }
         },
         {
@@ -24,9 +48,27 @@
           }
         },
         {
+          "type": "named",
+          "data": {
+            "name": "Rotate to close shot"
+          }
+        },
+        {
           "type": "path",
           "data": {
             "pathName": "4NoteLeft3"
+          }
+        },
+        {
+          "type": "named",
+          "data": {
+            "name": "Shot Note"
+          }
+        },
+        {
+          "type": "named",
+          "data": {
+            "name": "Rotate to intake"
           }
         },
         {
@@ -36,9 +78,27 @@
           }
         },
         {
+          "type": "named",
+          "data": {
+            "name": "Intake on"
+          }
+        },
+        {
+          "type": "named",
+          "data": {
+            "name": "Rotate to close shot"
+          }
+        },
+        {
           "type": "path",
           "data": {
             "pathName": "4NoteLeft5"
+          }
+        },
+        {
+          "type": "named",
+          "data": {
+            "name": "Shot Note"
           }
         }
       ]

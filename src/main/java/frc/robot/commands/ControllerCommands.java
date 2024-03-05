@@ -9,12 +9,15 @@ import frc.robot.subsystems.SwerveDrive.DriveSubsystem;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.math.filter.SlewRateLimiter;
+import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 
 import team1502.configuration.factory.RobotConfiguration;
 
 public class ControllerCommands extends Command {
   private static final double MAX_TELEOP_SPEED = 1; //Range 0 to 1
+  private static final double MAX_TELEOP_SPEED_DRIVER_1 = 1; //Range 0 to 1
+  private static final double MAX_TELEOP_SPEED_DRIVER_2 = 2; //Range 0 to 1
   private static final double MAX_FINESSE_SPEED = .3;
 
   private static final double MAX_TELEOP_ROTATION = .3;
@@ -27,7 +30,11 @@ public class ControllerCommands extends Command {
   private final double maxSpeed;
   private final double maxRotationSpeed;
 
+  private final String kDriver1 = "Austin";
+  private final String kDriver2 = "Ethan";
+
   private SlewRateLimiter turnLimiter = new SlewRateLimiter(5);
+  private final SendableChooser<String> driverChooser = new SendableChooser<>();
   
   public ControllerCommands(RobotConfiguration config, DriveSubsystem drive, MockDetector brownOutDetector) {
     this.drive = drive;
@@ -35,6 +42,11 @@ public class ControllerCommands extends Command {
     this.maxRotationSpeed = config.SwerveDrive().calculateMaxRotationSpeed();
     this.speedController = new AdaptiveSpeedController(brownOutDetector, 3.0, MAX_FINESSE_SPEED, MAX_TELEOP_SPEED);
     addRequirements(drive);
+
+    driverChooser.setDefaultOption("Default Driver", kDriver1);
+    driverChooser.addOption("Austin", kDriver1);
+    driverChooser.addOption("Ethan", kDriver2);
+    SmartDashboard.putData("Driver Chooser", driverChooser);
   }
 
   @Override
@@ -44,12 +56,23 @@ public class ControllerCommands extends Command {
   public void execute() {
     double teleopSpeedGain;
     double teleopRotationGain;
+    double driver_gain;
+
+    String driver = (String) driverChooser.getSelected();
+
+    switch(driver){
+      case kDriver2:
+        driver_gain = MAX_TELEOP_SPEED_DRIVER_2;
+
+      default:
+        driver_gain = MAX_TELEOP_SPEED_DRIVER_1;
+    }
 
     if(Driver.LeftBumper.getAsBoolean()){
       teleopSpeedGain = MAX_FINESSE_SPEED;
       teleopRotationGain = MAX_FINESSE_ROTATION;
     }else{
-      teleopSpeedGain = MAX_TELEOP_SPEED;
+      teleopSpeedGain = driver_gain;
       teleopRotationGain = MAX_TELEOP_ROTATION;
     }
     //Need to convert joystick input (-1 to 1) into m/s!!! 100% == MAX Attainable Speed

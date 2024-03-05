@@ -4,14 +4,11 @@ import frc.robot.GameState;
 import frc.robot.Logger;
 import frc.robot.LimelightHelpers.LimelightResults;
 import frc.robot.commands.ControllerCommands;
-import frc.robot.commands.IntakeNote;
-import frc.robot.commands.ShootNote;
 import frc.robot.LimelightHelpers;
 
 import com.ctre.phoenix6.hardware.Pigeon2;
 
 import com.pathplanner.lib.auto.AutoBuilder;
-import com.pathplanner.lib.auto.NamedCommands;
 import com.pathplanner.lib.util.HolonomicPathFollowerConfig;
 import com.pathplanner.lib.util.PIDConstants;
 import com.pathplanner.lib.util.ReplanningConfig;
@@ -29,7 +26,6 @@ import edu.wpi.first.util.sendable.SendableBuilder;
 import edu.wpi.first.util.sendable.SendableRegistry;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
-import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.Subsystem;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import team1502.configuration.annotations.*;
@@ -83,7 +79,8 @@ public class DriveSubsystem extends SubsystemBase { //implements Subsystem, Send
 
   private void checkInitialAngle() {
     if (GameState.isTeleop() && GameState.isFirst()) { 
-      targetAngle = getIMU_Yaw();
+      //targetAngle = getIMU_Yaw();
+      gyro.getYaw().getValue();
     }
   }
 
@@ -171,11 +168,6 @@ public class DriveSubsystem extends SubsystemBase { //implements Subsystem, Send
 
   public void updateOdometry() {
     pose = odometry.update(getGyroRotation2d(), getModulePositions());
-
-    if(GameState.isFirst()){
-      System.out.println(pose.getX());
-      System.out.println(pose.getY());
-    }
   }
 
   public void resetOdometry(Pose2d pose) {
