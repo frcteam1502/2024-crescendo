@@ -114,6 +114,7 @@ public class RobotConfiguration {
 
     public MotorController MotorController() { return Values().MotorController(); }
     public MotorController MotorController(String name) { return Values().MotorController(name); }
+    public Encoder Encoder() { return Encoder(Encoder.CLASSNAME); }
     public Encoder Encoder(String name) { return Values().Encoder(name); }
 
     public Chassis Chassis() { return Values().SwerveDrive().Chassis(); }
