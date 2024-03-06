@@ -1,6 +1,7 @@
 package frc.robot.subsystems.SwerveDrive;
 
 import frc.robot.Logger;
+import frc.robot.subsystems.Vision.Limelight;
 
 import com.ctre.phoenix6.hardware.CANcoder;
 import com.ctre.phoenix6.hardware.Pigeon2;
@@ -25,6 +26,7 @@ import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.math.kinematics.ChassisSpeeds;
 import edu.wpi.first.math.kinematics.SwerveDriveKinematics;
+import edu.wpi.first.math.kinematics.SwerveDriveOdometry;
 import edu.wpi.first.math.kinematics.SwerveModulePosition;
 import edu.wpi.first.math.kinematics.SwerveModuleState;
 import edu.wpi.first.math.numbers.N3;
@@ -138,16 +140,19 @@ final class Motors {
   
 }
 
-final class PoseConfig{
-  public static final double POS_STD_DEV_X = 1;
-  public static final double POS_STD_DEV_Y = 1;
-  public static final double POS_STD_DEV_THETA = 1;
-  
-  public static final double POS_VIS_DEV_X = 1;
-  public static final double POS_VIS_DEV_Y = 1;
-  public static final double POS_VIS_DEV_THETA = 1;
+final class PoseEstConfig{
+  public static final double POSITION_STD_DEV_X = 0.1;
+  public static final double POSITION_STD_DEV_Y = 0.1;
+  public static final double POSITION_STD_DEV_THETA = 10; 
+
+  public static final double VISION_STD_DEV_X = 5;
+  public static final double VISION_STD_DEV_Y = 5;
+  public static final double VISION_STD_DEV_THETA = 500;
 }
 
+final class VisionConfig{
+  public static final boolean IS_LIMELIGHT_MODE = true;
+}
 
 public class DriveSubsystem extends SubsystemBase{
   
@@ -190,26 +195,35 @@ public class DriveSubsystem extends SubsystemBase{
 
   private final SwerveDriveKinematics kinematics = DriveConstants.KINEMATICS;
 
-  public final SwerveDrivePoseEstimator odometry;
+  //public final SwerveDrivePoseEstimator odometry;
+  public final SwerveDriveOdometry odometry;
+
+  public final SwerveDrivePoseEstimator poseEstimator;
 
   private Pose2d pose = new Pose2d();
-  
+  private Pose2d estimatedPose = new Pose2d();
+  private Pose2d visionPose = new Pose2d();
+
+  private static Limelight vision = new Limelight();
+
   public DriveSubsystem() {
 
     //this.odometry = new SwerveDrivePoseEstimator(kinematics, getGyroRotation2d(), getModulePositions(), pose);
-    this.odometry = new SwerveDrivePoseEstimator(
+    this.odometry = new SwerveDriveOdometry(kinematics, getGyroRotation2d(), getModulePositions());
+
+    this.poseEstimator = new SwerveDrivePoseEstimator(
       kinematics, 
       getGyroRotation2d(), 
-      getModulePositions(), 
-      pose,
+      getModulePositions(),
+      estimatedPose,
       createStateStdDevs(
-                PoseConfig.POS_STD_DEV_X,
-                PoseConfig.POS_STD_DEV_Y,
-                PoseConfig.POS_STD_DEV_THETA),
+          PoseEstConfig.POSITION_STD_DEV_X,
+          PoseEstConfig.POSITION_STD_DEV_Y,
+          PoseEstConfig.POSITION_STD_DEV_THETA),
       createVisionMeasurementStdDevs(
-                PoseConfig.POS_VIS_DEV_X,
-                PoseConfig.POS_VIS_DEV_Y,
-                PoseConfig.POS_VIS_DEV_THETA));
+          PoseEstConfig.VISION_STD_DEV_X,
+          PoseEstConfig.VISION_STD_DEV_Y,
+          PoseEstConfig.VISION_STD_DEV_THETA));
 
     reset();
     ConfigMotorDirections();
@@ -217,33 +231,6 @@ public class DriveSubsystem extends SubsystemBase{
 
     //Configure Auto Builder last!
     configAutoBuilder(); 
-  }
-  
-  /**
-   * Creates a vector of standard deviations for the states. Standard deviations of model states.
-   * Increase these numbers to trust your model's state estimates less.
-   *
-   * @param x in meters
-   * @param y in meters
-   * @param theta in degrees
-   * @return the Vector of standard deviations need for the poseEstimator
-   */
-  public Vector<N3> createStateStdDevs(double x, double y, double theta) {
-    return VecBuilder.fill(x, y, Units.degreesToRadians(theta));
-  }
-
-  /**
-   * Creates a vector of standard deviations for the vision measurements. Standard deviations of
-   * global measurements from vision. Increase these numbers to trust global measurements from
-   * vision less.
-   *
-   * @param x in meters
-   * @param y in meters
-   * @param theta in degrees
-   * @return the Vector of standard deviations need for the poseEstimator
-   */
-  public Vector<N3> createVisionMeasurementStdDevs(double x, double y, double theta) {
-    return VecBuilder.fill(x, y, Units.degreesToRadians(theta));
   }
 
   private void checkInitialAngle() {
@@ -303,12 +290,35 @@ public class DriveSubsystem extends SubsystemBase{
     SmartDashboard.putNumber("Pose2D X", pose.getX());
     SmartDashboard.putNumber("Pose2D Y", pose.getY());
     SmartDashboard.putNumber("Pose2D Rotation", pose.getRotation().getDegrees());
+
+    SmartDashboard.putNumber("EstimatedPose X", estimatedPose.getX());
+    SmartDashboard.putNumber("EstimatedPose Y", estimatedPose.getY());
+    SmartDashboard.putNumber("EstimatedPose Rotation", estimatedPose.getRotation().getDegrees());
+
+    SmartDashboard.putNumber("Vision Pose X", vision.getVisionBotPose().getX());
+    SmartDashboard.putNumber("Vision Pose Y", vision.getVisionBotPose().getY());
+    SmartDashboard.putNumber("Vision Pose Rotation", vision.getVisionBotPose().getRotation().getDegrees());
+    SmartDashboard.putBoolean("Is Target Valid", vision.isValidPose());
+    SmartDashboard.putNumber("Limelight Latency", vision.getTotalLatency());
   }
   
   @Override
   public void periodic() {
     checkInitialAngle();
     updateOdometry();
+    updateEstimatedPose();
+    vision.update();
+    visionPose = vision.getVisionBotPose();
+    
+    if (VisionConfig.IS_LIMELIGHT_MODE && visionPose != null) { // Limelight mode
+      
+      double currentTimestamp = vision.getTimestampSeconds(vision.getTotalLatency());
+      
+      if (vision.visionAccurate(visionPose)) 
+      {
+        poseEstimator.addVisionMeasurement(visionPose, currentTimestamp);
+      }
+    }
     updateDashboard();
   }
   
@@ -405,9 +415,20 @@ public class DriveSubsystem extends SubsystemBase{
         });
   }
 
+  public void updateEstimatedPose(){
+    estimatedPose = poseEstimator.update(
+      getGyroRotation2d(), 
+      getModulePositions());
+  }
+
 
   public void resetOdometry(Pose2d pose) {
     odometry.resetPosition(getGyroRotation2d(), getModulePositions(), pose);
+    //poseEstimator.resetPosition(getGyroRotation2d(), getModulePositions(), pose);
+  }
+
+  public void resetPoseEstimation(Pose2d pose) {
+    poseEstimator.resetPosition(getGyroRotation2d(), getModulePositions(), pose);
   }
   
   public SwerveModulePosition[] getModulePositions() {
@@ -434,45 +455,13 @@ public class DriveSubsystem extends SubsystemBase{
     setDesiredState(moduleStates);
   }
 
-  /*public void alignToSpeaker(){
-    LimelightResults llresults = LimelightHelpers.getLatestResults("");
-    int numAprilTags = llresults.targetingResults.targets_Fiducials.length;
-    boolean validTarget = llresults.targetingResults.valid;
-
-    double tx = 0;
-    boolean targetFound = false;
-    ChassisSpeeds speedCommands = new ChassisSpeeds(0,0,0);
-
-    //Determine if any AprilTags are present
-    if(validTarget){
-      //Parse through the JSON fiducials and see if speaker tags are present
-      for(int i=0;i<numAprilTags;i++){
-        int tagID = (int)llresults.targetingResults.targets_Fiducials[i].fiducialID;
-        
-        if((tagID == 7)||(tagID == 4)){
-          //Center Tag
-          tx = llresults.targetingResults.targets_Fiducials[i].tx;
-          targetFound = true;
-        }else{
-          targetFound = false;
-        }
-      }
-
-      double turnCommand = (tx - getIMU_Yaw())*DriveConstants.GO_STRAIGHT_GAIN;
-
-      ChassisSpeeds speedCommands = new ChassisSpeeds(0,0,turnCommand);
-
-      driveRobotRelative(speedCommands);
-    }else
-
-  }*/
-
   public Rotation2d getGyroRotation2d() {
     return new Rotation2d(Units.degreesToRadians(getIMU_Yaw()));
   }
 
   public Pose2d getPose2d() {
-    return odometry.getEstimatedPosition();
+    //return odometry.getEstimatedPosition();
+    return odometry.getPoseMeters();
   }
 
   public double getPoseRotationDegrees(){
@@ -572,5 +561,33 @@ public class DriveSubsystem extends SubsystemBase{
     Logger.RegisterSensor("RL Drive Speed", ()->backLeft.getVelocity());
     Logger.RegisterSensor("RR Drive Speed", ()->backRight.getVelocity());
   }
+
+  /**
+   * Creates a vector of standard deviations for the states. Standard deviations of model states.
+   * Increase these numbers to trust your model's state estimates less.
+   *
+   * @param x in meters
+   * @param y in meters
+   * @param theta in degrees
+   * @return the Vector of standard deviations need for the poseEstimator
+   */
+  public Vector<N3> createStateStdDevs(double x, double y, double theta) {
+    return VecBuilder.fill(x, y, Units.degreesToRadians(theta));
+  }
+
+  /**
+   * Creates a vector of standard deviations for the vision measurements. Standard deviations of
+   * global measurements from vision. Increase these numbers to trust global measurements from
+   * vision less.
+   *
+   * @param x in meters
+   * @param y in meters
+   * @param theta in degrees
+   * @return the Vector of standard deviations need for the poseEstimator
+   */
+  public Vector<N3> createVisionMeasurementStdDevs(double x, double y, double theta) {
+    return VecBuilder.fill(x, y, Units.degreesToRadians(theta));
+  }
+
 
 }

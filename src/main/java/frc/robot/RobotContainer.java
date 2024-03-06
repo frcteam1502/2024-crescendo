@@ -15,7 +15,6 @@ import frc.robot.commands.ShootNote;
 import frc.robot.commands.ShooterIntakeCommands;
 import frc.robot.commands.ArmCommands;
 import frc.robot.subsystems.SwerveDrive.DriveSubsystem;
-import frc.robot.subsystems.Vision.Vision;
 
 import com.pathplanner.lib.auto.AutoBuilder;
 import com.pathplanner.lib.auto.NamedCommands;
@@ -42,7 +41,7 @@ public class RobotContainer {
   //private final PdpSubsystem pdpSubsystem = new PdpSubsystem();
   
   //Needed to invoke scheduler
-  private final Vision visionSubsystem = new Vision();
+  //public final Vision visionSubsystem = new Vision();
 
   private final SendableChooser<Command> autoChooser; 
 
