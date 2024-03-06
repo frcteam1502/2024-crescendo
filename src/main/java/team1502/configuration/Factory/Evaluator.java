@@ -37,7 +37,7 @@ public class Evaluator {
         return result;
     }
     // Ad hoc evaluate
-    public Object Eval(Function<Evaluator,? extends Object> fn) {
+    public <U extends Object> U Eval(Function<Evaluator, U> fn) {
         return fn.apply(this);
     }
     
@@ -71,12 +71,18 @@ public class Evaluator {
         return _configuration.getInstalled(partName);
     }
 
-    private <T extends Builder> Object getValue(String partName, Function<Builder, T> wrapper, Function<T, ? extends Object> fn) {
+    // private <T extends Builder> Object getValue(String partName, Function<Builder, T> wrapper, Function<T, ? extends Object> fn) {
+    //     var susBuilder = getInstalled(partName);
+    //     var builder = wrapper.apply(susBuilder);
+    //     return fn.apply(builder);    
+    // }
+    private <T extends Builder, U> U getValue(String partName, Function<Builder, T> wrapper, Function<T, U> fn) {
         var susBuilder = getInstalled(partName);
         var builder = wrapper.apply(susBuilder);
-        return fn.apply(builder);
+        return (U)fn.apply(builder);
     
     }
+
     // private <T extends Builder> Object getValue(String partName, Function<T, ? extends Object> fn) {
     //     var builder = getInstalled(partName);
     //     return fn.apply((T)builder);
@@ -84,34 +90,39 @@ public class Evaluator {
 
 
     public Builder Part(String partName) {
-        return (Builder)getValue(partName, b->Builder.Wrap(b), b->b);   
+        return getValue(partName, b->Builder.Wrap(b), b->b);   
     }
-    public Object Part(String partName, Function<Builder, Object> fn) {
+    public <U> U Part(String partName, Function<Builder, U> fn) {
         return getValue(partName, b->Builder.Wrap(b), fn);   
     }
     public IMU Pigeon2() {
-        return (IMU)getValue(IMU.Pigeon2, b->IMU.Wrap(b), g->(IMU)g);   
+        return getValue(IMU.Pigeon2, b->IMU.Wrap(b), g->g);   
     }
-    public Encoder Encoder() {
-        return (Encoder)getValue(Encoder.CLASSNAME, b->Encoder.Wrap(b), g->(Encoder)g);   
+    public Encoder Encoder() { return Encoder(Encoder.CLASSNAME); }
+    public Encoder Encoder(String name) {
+        return getValue(name, b->Encoder.Wrap(b), g->g);   
     }
     public GyroSensor GyroSensor() {
-        return (GyroSensor)getValue(GyroSensor.Gyro, b->GyroSensor.Wrap(b), g->(GyroSensor)g);   
+        return getValue(GyroSensor.Gyro, b->GyroSensor.Wrap(b), g->g);   
     }
-    public Object GyroSensor(String partName, Function<GyroSensor, Object> fn) {
+    public <U> U GyroSensor(String partName, Function<GyroSensor, U> fn) {
         return getValue(partName, b->GyroSensor.Wrap(b), fn);   
     }
-    public Object Motor(String partName, Function<Motor, Object> fn) {
+    public <U> U Motor(String partName, Function<Motor, U> fn) {
         return getValue(partName, b->Motor.Wrap(b), fn);   
     }
-    public Object MotorController(String partName, Function<MotorController, Object> fn) {
+    public MotorController MotorController() { return MotorController(MotorController.CLASSNAME); }
+    public MotorController MotorController(String partName) {
+        return getValue(partName, b->MotorController.Wrap(b), mc->mc);   
+    }
+    public <U> U MotorController(String partName, Function<MotorController, U> fn) {
         return getValue(partName, b->MotorController.Wrap(b), fn);   
     }
-    public Object SwerveModule(String partName, Function<SwerveModule, Object> fn) {
+    public <U> U SwerveModule(String partName, Function<SwerveModule, U> fn) {
         return getValue(partName, b->SwerveModule.Wrap(b), fn);   
     }
     public PowerDistributionModule MPM(String partName) {
-        return (PowerDistributionModule)getValue(partName, b->PowerDistributionModule.Wrap(b), p->p);   
+        return getValue(partName, b->PowerDistributionModule.Wrap(b), p->p);   
     }
     public RoboRIO RoboRIO() {
         return (RoboRIO)getValue(RoboRIO.CLASSNAME, b->RoboRIO.Wrap(b), p->p);   
@@ -121,10 +132,10 @@ public class Evaluator {
     public Builder RadioBarrelJack() { return Part("RadioBarrelJack"); }
 
     public PneumaticsController PCM() {
-        return (PneumaticsController)getValue(PneumaticsController.PCM, b->PneumaticsController.Wrap(b), p->p);   
+        return getValue(PneumaticsController.PCM, b->PneumaticsController.Wrap(b), p->p);   
     }
     public PowerDistributionModule PDH() {
-        return (PowerDistributionModule)getValue(PowerDistributionModule.PDH, b->PowerDistributionModule.Wrap(b), p->p);
+        return getValue(PowerDistributionModule.PDH, b->PowerDistributionModule.Wrap(b), p->p);
     }
 
     public SwerveDrive SwerveDrive() {return SwerveDrive(d->d); }

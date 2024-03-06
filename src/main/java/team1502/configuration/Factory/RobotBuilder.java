@@ -133,6 +133,7 @@ public class RobotBuilder implements IBuild /*extends Builder*/{
     }
 
     // BUILDER AND BUILDER SUBCLASSES
+    public Object Value(String valueName) { return _subsystemPart.Value(valueName); }
     public RobotBuilder Value(String valueName, Object value) {
         _subsystemPart.Value(valueName, value); 
         return this;

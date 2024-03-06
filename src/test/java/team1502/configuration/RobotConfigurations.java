@@ -186,8 +186,8 @@ public final class RobotConfigurations {
         parts.Build(hw->hw
             .Subsystem("One", s1->s1
                 .Value("a", 1)
-                .Subsystem("Two", s2->s2)
-
+                .Encoder("AbsEncoder", e->e.DigitalInput(5))
+                .Subsystem("Two", s2->s2.MotorController("motorTwo", mc->mc))
             )
         );
         // 
@@ -267,8 +267,12 @@ public final class RobotConfigurations {
         );
     }
                 
-     private static RobotConfiguration buildPracticeBot(RobotConfiguration parts) {
-        parts.DisableSubsystem("frc.robot.subsystems.Arm.ArmSubsystem");
+    class ArmSubsystem {
+
+    }
+    
+    private static RobotConfiguration buildPracticeBot(RobotConfiguration parts) {
+        parts.DisableSubsystem(ArmSubsystem.class);
 
         buildStandardElectronics(parts);
 
