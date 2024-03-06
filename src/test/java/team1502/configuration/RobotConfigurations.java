@@ -84,7 +84,10 @@ public final class RobotConfigurations {
                         .Gear("Stage2", 10, 60)
                         .Note("MK4i Standard", "150/7:1")
                     )
-                    .PID(3.4, 0.0, 0.0)
+                    .PID(p->p
+                        .Gain(3.4, 0.0, 0.0)
+                        .EnableContinuousInput(-Math.PI, Math.PI)
+                    )
                     .Reversed() // all turn motors are reversed
                 )
                 .DrivingMotor(Manufacturer.REVRobotics, mc -> mc
@@ -186,7 +189,7 @@ public final class RobotConfigurations {
         parts.Build(hw->hw
             .Subsystem("One", s1->s1
                 .Value("a", 1)
-                .Encoder("AbsEncoder", e->e.DigitalInput(5))
+                .Encoder(e->e.DigitalInput(5))
                 .Subsystem("Two", s2->s2.MotorController("motorTwo", mc->mc))
             )
         );
@@ -201,7 +204,7 @@ public final class RobotConfigurations {
                     .Gear("Cartridge #2 5:1", 1, 5)
                     .Gear("Chain 4:1", 1, 4)))
         ).Build(arm -> arm
-            .Subsystem("Arm", a -> a
+            .Subsystem(ArmSubsystem.class, a -> a
                 .UsePart("Brake Solenoid")
                 .Encoder("Encoder", e->e.DigitalInput(0))
                 .MotorController("Leader", "Arm Motor", c->c
@@ -210,6 +213,10 @@ public final class RobotConfigurations {
                         .PDH(6)
                         .CanNumber(6)
                         .FriendlyName("Arm Follower")
+                    )
+                    .PID(p->p
+                        .Gain(0.4, 0, 0)
+                        .OutputRange(-0.3, 0.3/4)
                     )
                     .PDH(1)
                     .CanNumber(1)
@@ -422,10 +429,12 @@ public final class RobotConfigurations {
                     .SwerveDrive().SwerveModule("#1").TurningMotor().Motor().MotorType())
             .Eval("SwerveModule.MagneticOffset: 151.96 == ", e -> e
                     .SwerveDrive().SwerveModule("#1").Encoder().MagneticOffset())
+            .Eval("ARM_DEGREES_PER_ENCODER_ROTATION: " + (360.0/100.0) + " == ", e -> e
+                .Subsystem(ArmSubsystem.class).MotorController().getPositionConversionFactor())
             .Eval("Arm.Encoder.DIO Ch: 0 == ", e -> e
-                    .Subsystem("Arm").Encoder().getPart("ABS").getValue(RoboRIO.digitalInput))
+                    .Subsystem(ArmSubsystem.class).Encoder().getPart("ABS").getValue(RoboRIO.digitalInput))
             .Eval("Arm.Photosensor NO.DIO Ch: 1 == ", e -> e
-                    .SubsystemPart("Arm").DigitalInput("Photosensor NO"))
+                    .SubsystemPart(ArmSubsystem.class).DigitalInput("Photosensor NO"))
 
 
 

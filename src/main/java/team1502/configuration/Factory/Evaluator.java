@@ -24,9 +24,11 @@ public class Evaluator {
         _configuration = configuration;
     }
 
+    public Evaluator Subsystem(Class<?> subsystemClass) { return Subsystem(subsystemClass.getName()); }
     public Evaluator Subsystem(String name) {
         return new Evaluator(_configuration.Subsystem(name));
     }
+    public Builder SubsystemPart(Class<?> subsystemClass) { return SubsystemPart(subsystemClass.getName()); }
     public Builder SubsystemPart(String name) {
         return _configuration.Subsystem(name).getPart();
     }
@@ -79,8 +81,11 @@ public class Evaluator {
     private <T extends Builder, U> U getValue(String partName, Function<Builder, T> wrapper, Function<T, U> fn) {
         var susBuilder = getInstalled(partName);
         var builder = wrapper.apply(susBuilder);
-        return (U)fn.apply(builder);
-    
+        return (U)fn.apply(builder);    
+    }
+    private <T extends Builder, U> T getType(String className, Function<Builder, T> wrapper) {
+        var found = _configuration.getInstalledType(MotorController.CLASSNAME);
+        return wrapper.apply(found);
     }
 
     // private <T extends Builder> Object getValue(String partName, Function<T, ? extends Object> fn) {
@@ -111,7 +116,9 @@ public class Evaluator {
     public <U> U Motor(String partName, Function<Motor, U> fn) {
         return getValue(partName, b->Motor.Wrap(b), fn);   
     }
-    public MotorController MotorController() { return MotorController(MotorController.CLASSNAME); }
+    public MotorController MotorController() {
+        return getType(MotorController.CLASSNAME, b->MotorController.Wrap(b));
+    }
     public MotorController MotorController(String partName) {
         return getValue(partName, b->MotorController.Wrap(b), mc->mc);   
     }

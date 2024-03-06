@@ -66,6 +66,25 @@ public class RobotBuilder implements IBuild /*extends Builder*/{
                 ? _parent.getInstalled(name)
                 : findPart(name);
     }
+    public Builder getInstalledType(String className) {
+        var installed =_buildMap.get(className);
+        if (installed == null) {
+            var parts = _parts.stream()
+                .filter(part->(part.getType() == className))
+                .toList();
+            if (parts.size() != 0) {
+                if (parts.size() == 1) {
+                     installed = new Builder(this, parts.get(0)); 
+                } else {
+                    parts = parts.stream().filter(p -> _buildMap.containsKey(p.getName())).toList();
+                    if (parts.size() == 1) {
+                        installed = new Builder(this, parts.get(0)); 
+                    }
+                }
+            }
+        }
+        return installed;
+    }
 
     @Override // IBuild
     public <T extends Builder> PartBuilder<T> getTemplate(String partName, Function<IBuild, T> createFunction,
@@ -152,6 +171,9 @@ public class RobotBuilder implements IBuild /*extends Builder*/{
     }
 
     public RobotBuilder Subsystem(String partName) { return (RobotBuilder)getInstalled(partName).Value("robotBuilder"); }
+    public RobotBuilder Subsystem(Class<?> subsystemClass, Function<RobotBuilder, RobotBuilder> fn) {
+        return Subsystem(subsystemClass.getName(), fn);
+    }
     public RobotBuilder Subsystem(String partName, Function<RobotBuilder, RobotBuilder> fn) {
         var child = new RobotBuilder(this, partName);
         if (_subsystemPart != null) {
@@ -164,6 +186,7 @@ public class RobotBuilder implements IBuild /*extends Builder*/{
 
     public Builder Encoder() { return Encoder(Encoder.CLASSNAME); }
     public Builder Encoder(String partName) { return getInstalled(partName); }
+    public RobotBuilder Encoder(Function<Encoder, Builder> fn) {  return Encoder(Encoder.CLASSNAME, fn); }
     public RobotBuilder Encoder(String partName, Function<Encoder, Builder> fn) {        
         return Encoder(partName, partName, fn);
     }

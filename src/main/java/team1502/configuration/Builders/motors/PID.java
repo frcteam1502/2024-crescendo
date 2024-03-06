@@ -32,8 +32,34 @@ public class PID extends Builder {
     public double FF() {return getDouble("ff"); }
     public PID FF(double p) {return (PID)setValue("ff", p); }
 
+    public PID Gain(double p, double i, double d, double ff) {
+        Gain(p,i,d);
+        FF(ff);
+        return this;
+    }
+    public PID Gain(double p, double i, double d) {
+        P(p); 
+        I(i);
+        D(d);
+        return this;
+    }
+    public PID OutputRange(double min, double max) {
+        setValue("min", min); 
+        setValue("max", max); 
+        return this;
+    }
+    public PID EnableContinuousInput(double minimumInput, double maximumInput) {
+        setValue("minimumInput", minimumInput); 
+        setValue("maximumInput", maximumInput); 
+        return this;
+    }
+
     public PIDController createPIDController() {
-        return new PIDController(P(), I(), D());
+        var pidController = new PIDController(P(), I(), D());
+        if (hasValue("minimumInput") && hasValue("maximumInput")) {
+            pidController.enableContinuousInput(getDouble("minimumInput"), getDouble("maximumInput"));
+        }
+        return pidController;
     }
 
     public SparkPIDController setPIDController(CANSparkMax motor) {
@@ -48,6 +74,9 @@ public class PID extends Builder {
         pidController.setD(D());
         if (hasValue("ff")) {
             pidController.setFF(FF());
+        }
+        if (hasValue("min") && hasValue("max")) {
+            pidController.setOutputRange(getDouble("min"), getDouble("max"));
         }
     
     }
