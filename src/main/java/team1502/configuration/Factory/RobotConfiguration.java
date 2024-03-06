@@ -1,5 +1,6 @@
 package team1502.configuration.factory;
 
+import java.lang.module.Configuration;
 import java.util.HashMap;
 import java.util.function.BiConsumer;
 import java.util.function.Consumer;
@@ -34,7 +35,14 @@ public class RobotConfiguration {
 
     }
 
+    RobotConfiguration() { }
+    private RobotConfiguration(RobotBuilder robotBuilder) {
+        _robotBuilder = robotBuilder;
+    }
     private HashMap<String, String> disabledMap = new HashMap<>();
+    public RobotConfiguration DisableSubsystem(Class<?> subsystemclass) {
+         return DisableSubsystem(subsystemclass.getName());
+    }
     public RobotConfiguration DisableSubsystem(String className) {
         disabledMap.put(className, className);
         return this;
@@ -97,11 +105,16 @@ public class RobotConfiguration {
     }
 
     public <T> T Eval(Function<Evaluator,T> fn) {
-        return (T)Values().Eval(fn);
+        return Values().Eval(fn);
     }
 
     public Builder Part(String name) { return Values().Part(name); }
+    public RobotConfiguration Subsystem(String partName) { return new RobotConfiguration((RobotBuilder)Part(partName).Value("robotBuilder")); }
+    public Object Value(String valueName) { return _robotBuilder.getPart().Value(valueName); }
 
+    public MotorController MotorController() { return Values().MotorController(); }
+    public MotorController MotorController(String name) { return Values().MotorController(name); }
+    public Encoder Encoder(String name) { return Values().Encoder(name); }
 
     public Chassis Chassis() { return Values().SwerveDrive().Chassis(); }
     public SwerveDrive SwerveDrive() { return Values().SwerveDrive(); }

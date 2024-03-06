@@ -12,6 +12,14 @@ public class configurationTests {
         var pneumaticChannelNames = config.PCM().ChannelNames();
         var channelNamesAbbr = config.PDH().ChannelNamesAbbr();
         var pneumaticChannelNamesAbbr = config.PCM().ChannelNamesAbbr();
+        
+        var one = config.Subsystem("One");
+        var a1 = one.Value("a");
+        var abs = one.Encoder("AbsEncoder");
+        var ch5 = abs.DigitalInput();
+        var two = one.Subsystem("Two");
+        var mc2 = two.MotorController("motorTwo");
+        
         var evals = config.Values().GetValueKeys();
         Collections.sort(evals);
         for (String valueName : evals) {

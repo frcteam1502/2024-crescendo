@@ -29,7 +29,7 @@ public class Encoder extends Builder {
         Integer channel = abs.getInt(RoboRIO.digitalInput);
         if (abs.hasConnection()) {
             if (abs.isConnected()) { // actual
-                channel = abs.getChannel().CanNumber();
+                channel = abs.getChannel().Channel();
             }
             return channel;
         }
