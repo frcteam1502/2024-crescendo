@@ -93,7 +93,7 @@ public class RobotContainer {
     DriveSubsystem driveSubsystem = new DriveSubsystem(config);
     driveSubsystem.setDefaultCommand(new ControllerCommands(config, driveSubsystem, new MockDetector()));
     if (!config.isDisabled("frc.robot.subsystems.Arm.ArmSubsystem")) {
-      var armSubsystem = new frc.robot.subsystems.Arm.ArmSubsystem();
+      var armSubsystem = new frc.robot.subsystems.Arm.ArmSubsystem(config);
       armSubsystem.setDefaultCommand(new frc.robot.commands.ArmCommands(armSubsystem));
     }
     return driveSubsystem;

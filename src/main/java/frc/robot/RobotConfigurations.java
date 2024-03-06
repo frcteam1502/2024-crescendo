@@ -3,6 +3,8 @@ package frc.robot;
 import com.revrobotics.CANSparkBase.IdleMode;
 import com.revrobotics.CANSparkLowLevel.MotorType;
 
+import frc.robot.subsystems.Arm.ArmSubsystem;
+import frc.robot.subsystems.ShooterIntake.ShooterIntake;
 import team1502.configuration.CAN.Manufacturer;
 import team1502.configuration.factory.RobotConfiguration;
 
@@ -89,13 +91,13 @@ public final class RobotConfigurations {
         // PNEUMATICS
         .PCM(ph -> ph
             .Compressor()
-            .Solenoid(0, "Brake Solenoid")
+            .Solenoid(0, ArmSubsystem.BRAKE_SOLENOID)
             .PDH(7)
             .CanNumber(7)
         )
 
         // ARM
-        .Subsystem("Arm", s -> s
+        .Subsystem(ArmSubsystem.class, s -> s
             .MotorController("Leader", "Arm Motor", c->c
                 .Follower("Arm Motor", f->f
                     .Reversed()
@@ -103,24 +105,28 @@ public final class RobotConfigurations {
                     .CanNumber(6)
                     .FriendlyName("Arm Follower").Abbreviation("Arm-F")
                 )
-                .PID(0.4, 0, 0)
+                .PID(p->p
+                    .Gain(0.4, 0, 0)
+                    .OutputRange(-0.3, 0.3/4) // MAX_ROTATION_SPEED
+                )
                 .PDH(1)
                 .CanNumber(1)
                 .Abbreviation("Arm-L")
 
-                .Value("MAX_ROTATE", 5)//;
-                .Value("MIN_ROTATE", -95)//;
-                .Value("MAX_ROTATE_FEEDFORWARD", .06)//; //TODO: increase?
-                .Value("ROTATE_CHANGE", .3)//;           
-                .Value("MAX_ROTATION_SPEED", .3)//;                    
-                .Value("ABS_OFFSET", -5)//; also get 1:100 from motors
+                // .Value("MAX_ROTATE", 5)
+                // .Value("MIN_ROTATE", -95)
+                // .Value("MAX_ROTATE_FEEDFORWARD", .06)
+                // .Value("ROTATE_CHANGE", .3)    
             )
-            .UsePart("Brake Solenoid")
-            .Encoder("Encoder", e-> e.DigitalInput(0)) //DutyCycleEncoder
+            .UsePart(ArmSubsystem.BRAKE_SOLENOID)
+            .Encoder(e-> e  //DutyCycleEncoder
+                .DigitalInput(0)
+                .Value("ABS_OFFSET", -6.5)
+            )
             
         )
 
-        .Subsystem("ShooterIntake", si -> si
+        .Subsystem(ShooterIntake.class, si -> si
             .Subsystem("Shooter", s -> s
                 .MotorController("Leader", "Shooter Motor", c->c
                     .Follower("Shooter Motor", f->f
@@ -191,8 +197,8 @@ public final class RobotConfigurations {
     }
                 
      private static RobotConfiguration buildPracticeBot(RobotConfiguration parts) {
-        parts.DisableSubsystem("frc.robot.subsystems.Arm.ArmSubsystem");
-        parts.DisableSubsystem("frc.robot.subsystems.ShooterIntake.ShooterIntake");
+        parts.DisableSubsystem(ArmSubsystem.class.getName());
+        parts.DisableSubsystem(ShooterIntake.class.getName());
         parts.DisableSubsystem("limelight");
 
         parts.PowerDistributionModule(pdh -> pdh
@@ -201,10 +207,6 @@ public final class RobotConfigurations {
         );
         
         return parts.Build(hw->hw
-        // GYRO
-        .Pigeon2(g->g
-            .CanNumber(14)
-            .MPM("MPM1", 0))
         //.DC(dc -> dc.PDH(1, "??"))
         // limelight 10.15.2.23:5800
         // PIs?
@@ -216,6 +218,10 @@ public final class RobotConfigurations {
             .Ch(4, 10)
             .Ch(5, 10)
             .PDH(0, "MPM0"))
+        // GYRO
+        .Pigeon2(g->g
+            .CanNumber(14)
+            .MPM(0))
         .SwerveDrive(sd -> sd
             .SwerveModule("#1", sm -> sm // just leaving these as numbers, since "Front" is arbitrary and undetermined at the moment
                 .Wrap(sw->sw.FriendlyName("Front Left").Abbreviation("FL"))
@@ -312,7 +318,10 @@ public final class RobotConfigurations {
                         .Gear("Stage2", 10, 60)
                         .Note("MK4i Standard", "150/7:1")
                     )
-                    .PID(3.4, 0.0, 0.0)
+                    .PID(p->p
+                        .Gain(3.4, 0.0, 0.0)
+                        .EnableContinuousInput(-Math.PI, Math.PI)
+                    )
                 )
                 .DrivingMotor(Manufacturer.REVRobotics, mc -> mc
                     .Motor("NEO")
