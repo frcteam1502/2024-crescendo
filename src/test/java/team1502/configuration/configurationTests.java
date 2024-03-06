@@ -3,6 +3,9 @@ import java.util.Collections;
 
 import org.junit.jupiter.api.Test;
 
+import team1502.configuration.RobotConfigurations.ArmSubsystem;
+import team1502.configuration.builders.power.PowerChannel;
+
 public class configurationTests {
 
     @Test
@@ -15,11 +18,12 @@ public class configurationTests {
         
         var one = config.Subsystem("One");
         var a1 = one.Value("a");
-        var abs = one.Encoder("AbsEncoder");
+        var abs = one.Encoder();
         var ch5 = abs.DigitalInput();
         var two = one.Subsystem("Two");
         var mc2 = two.MotorController("motorTwo");
-        
+        var noid1 = config.Subsystem(ArmSubsystem.class).Solenoid("Brake Solenoid");
+        var ch0 = PowerChannel.findConnectedChannel(noid1).Channel();
         var evals = config.Values().GetValueKeys();
         Collections.sort(evals);
         for (String valueName : evals) {
@@ -32,6 +36,8 @@ public class configurationTests {
             var mtr1 = config.SwerveModule("#1").DrivingMotor().buildSparkMax();
             var pid2 = config.SwerveModule("#1").DrivingMotor().createPIDController();
             var rel1 = config.SwerveModule("#1").DrivingMotor().buildRelativeEncoder();
+            var rotateAbsEncoder = config.Subsystem(ArmSubsystem.class).Encoder().buildDutyCycleEncoder();
+            var brakeSolenoid = config.Subsystem(ArmSubsystem.class).Solenoid("Brake Solenoid").buildSolenoid();
         }
 
     }

@@ -5,6 +5,7 @@ import java.util.function.Function;
 import com.revrobotics.CANSparkBase.IdleMode;
 
 import com.revrobotics.CANSparkMax;
+import com.revrobotics.MotorFeedbackSensor;
 import com.revrobotics.RelativeEncoder;
 import com.revrobotics.SparkPIDController;
 
@@ -82,11 +83,14 @@ public class MotorController extends Builder {
     }
     
     public PID PID() { return PID.WrapPart(this); }
+    public MotorController PID(Function<PID, Builder> fn) {
+        return (MotorController)AddPart(PID.Define, fn);
+    }
     public MotorController PID(double p, double i, double d) {
-        return (MotorController)AddPart(PID.Define, pid->pid.P(p).I(i).D(d));
+        return PID(pid->pid.P(p).I(i).D(d));
     }
     public MotorController PID(double p, double i, double d, double ff) {
-        return (MotorController)AddPart(PID.Define, pid->pid.P(p).I(i).D(d).FF(ff));
+        return PID(pid->pid.P(p).I(i).D(d).FF(ff));
     }
 
     /** Time in seconds to go from 0 to full throttle. */
@@ -102,6 +106,11 @@ public class MotorController extends Builder {
         return this;
     }
 
+    public SparkPIDController createPIDController(MotorFeedbackSensor feedbackDevice) {
+        var pid = PID().setPIDController(CANSparkMax());
+        pid.setFeedbackDevice(feedbackDevice);
+        return pid;
+    }
     public SparkPIDController createPIDController() {
         return PID().setPIDController(CANSparkMax());
     }
@@ -141,17 +150,21 @@ public class MotorController extends Builder {
     }
     public RelativeEncoder buildRelativeEncoder() {
         var encoder = getRelativeEncoder();
-        var swerveModule = getSwerveModule();
-        if (swerveModule != null) {
+        //var swerveModule = getSwerveModule();
+        //if (swerveModule != null) {
             encoder.setPositionConversionFactor(getPositionConversionFactor());
             encoder.setVelocityConversionFactor(getVelocityConversionFactor());
-        }
+        //}
         return encoder;
     }
 
     /** mpr * 60 = position/minute (like rpm)  */
     public double getVelocityConversionFactor() { return getPositionConversionFactor()/60;  }
-    public double getPositionConversionFactor() { return (getWheelDiameter() * Math.PI) * getGearBoxRatio(); }
+    public double getPositionConversionFactor() {
+        var circumference = findDouble(MotorController.wheelDiameter, 0.0) * Math.PI;
+        if (circumference == 0.0) {circumference = 360.0; } //degrees
+        return circumference * getGearBoxRatio(); 
+    }
     private double getGearBoxRatio() { return GearBox() != null ? GearBox().GearRatio() : 1.0; }
     private double getWheelDiameter() { return findDouble(MotorController.wheelDiameter, 1.0); }
     public double calculateMaxSpeed() { return calculateMaxSpeed(getWheelDiameter()); }

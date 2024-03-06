@@ -109,6 +109,7 @@ public class RobotConfiguration {
     }
 
     public Builder Part(String name) { return Values().Part(name); }
+    public RobotConfiguration Subsystem(Class<?> subsystemClass) { return Subsystem(subsystemClass.getName()); }
     public RobotConfiguration Subsystem(String partName) { return new RobotConfiguration((RobotBuilder)Part(partName).Value("robotBuilder")); }
     public Object Value(String valueName) { return _robotBuilder.getPart().Value(valueName); }
 
@@ -116,6 +117,7 @@ public class RobotConfiguration {
     public MotorController MotorController(String name) { return Values().MotorController(name); }
     public Encoder Encoder() { return Encoder(Encoder.CLASSNAME); }
     public Encoder Encoder(String name) { return Values().Encoder(name); }
+    public Solenoid Solenoid(String name) { return Solenoid.WrapPart(_robotBuilder.getPart(), name); }
 
     public Chassis Chassis() { return Values().SwerveDrive().Chassis(); }
     public SwerveDrive SwerveDrive() { return Values().SwerveDrive(); }

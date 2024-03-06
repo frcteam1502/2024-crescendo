@@ -34,6 +34,8 @@ public class Part {
          return this;
     }
 
+    public String getType() { return (String)getValue(Part.CLASS_NAME); }
+    
     public String getKey() {
         return parent == null
             ? getName()
