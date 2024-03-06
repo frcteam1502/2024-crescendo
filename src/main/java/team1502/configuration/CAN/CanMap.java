@@ -61,8 +61,8 @@ public class CanMap {
         ArrayList<Builder> devices = new ArrayList<>(_errorParts);
         deviceMap.values().forEach(d -> d.values().forEach(m -> m.values().forEach(id -> devices.add(id))));
         
-        Comparator<Builder> comparator = Comparator.comparing(d -> CanInfo.WrapPart(d).Device().DeviceName);
-        comparator = comparator.thenComparing(Comparator.comparing(d -> CanInfo.WrapPart(d).Number()));
+        Comparator<Builder> comparator = Comparator.comparing(d -> CanInfo.WrapPart(d).Number());
+        comparator = comparator.thenComparing(Comparator.comparing(d -> CanInfo.WrapPart(d).Device().DeviceName));
         comparator = comparator.thenComparing(Comparator.comparing(d -> CanInfo.WrapPart(d).Manufacturer().ManufacturerName));
         comparator = comparator.thenComparing(Comparator.comparing(d -> d.hasErrors() ? 0 : 1));
 

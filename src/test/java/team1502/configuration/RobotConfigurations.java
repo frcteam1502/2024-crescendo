@@ -206,7 +206,10 @@ public final class RobotConfigurations {
         ).Build(arm -> arm
             .Subsystem(ArmSubsystem.class, a -> a
                 .UsePart("Brake Solenoid")
-                .Encoder("Encoder", e->e.DigitalInput(0))
+                .Encoder(e-> e  //DutyCycleEncoder
+                    .DigitalInput(0)
+                    .Value("ABS_OFFSET", -6.5)
+                )
                 .MotorController("Leader", "Arm Motor", c->c
                     .Follower("Arm Motor", f->f
                         .Reversed()
@@ -433,6 +436,8 @@ public final class RobotConfigurations {
                 .Subsystem(ArmSubsystem.class).MotorController().getPositionConversionFactor())
             .Eval("Arm.Encoder.DIO Ch: 0 == ", e -> e
                     .Subsystem(ArmSubsystem.class).Encoder().getPart("ABS").getValue(RoboRIO.digitalInput))
+            .Eval("Arm.Encoder.ABS_OFFSET: -6.5 == ", e -> e
+                    .Subsystem(ArmSubsystem.class).Encoder().getDouble("ABS_OFFSET"))
             .Eval("Arm.Photosensor NO.DIO Ch: 1 == ", e -> e
                     .SubsystemPart(ArmSubsystem.class).DigitalInput("Photosensor NO"))
 
