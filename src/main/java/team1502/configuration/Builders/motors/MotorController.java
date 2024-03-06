@@ -1,5 +1,6 @@
 package team1502.configuration.builders.motors;
 
+import java.util.function.BiConsumer;
 import java.util.function.Function;
 
 import com.revrobotics.CANSparkBase.IdleMode;
@@ -174,4 +175,10 @@ public class MotorController extends Builder {
         * wheelDiameter * Math.PI; 
     }
 
+    public void registerLoggerObjects(BiConsumer<String, CANSparkMax> motorLogger) {
+        motorLogger.accept(FriendlyName(), CANSparkMax());
+        if (hasValue("Follower")) {
+            Follower().registerLoggerObjects(motorLogger);
+        }
+    }
 }
