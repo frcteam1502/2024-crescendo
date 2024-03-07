@@ -94,8 +94,8 @@ public class ShooterIntake extends SubsystemBase {
     Logger.RegisterSensor("Shooter Follow Speed",()->shooter_follow_encoder.getVelocity());
     Logger.RegisterSensor("Intake Speed",()->intake_encoder.getVelocity());
 
-    photoSensorNormOpen = config.DigitalInput(PHOTO_SENSOR_NO); //.PHOTO_SENSOR_NO;
-    photoSensorNormClosed = config.DigitalInput(PHOTO_SENSOR_NC); //.PHOTO_SENSOR_NC;
+    photoSensorNormOpen = intakeConfig.DigitalInput(PHOTO_SENSOR_NO); //.PHOTO_SENSOR_NO;
+    photoSensorNormClosed = intakeConfig.DigitalInput(PHOTO_SENSOR_NC); //.PHOTO_SENSOR_NC;
 
     SmartDashboard.putNumber("Shooter PID FF", shooter_ff);
     SmartDashboard.putNumber("Shooter Set Speed",shooter_speed);

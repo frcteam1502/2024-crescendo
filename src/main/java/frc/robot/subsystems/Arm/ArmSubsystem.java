@@ -58,7 +58,7 @@ public class ArmSubsystem extends SubsystemBase {
     config.MotorController().buildSparkMax();
     arm_p_gain = config.MotorController().PID().P();
     rotateRelativeEncoder = config.MotorController().buildRelativeEncoder();
-    rotatePID = config.MotorController().createPIDController(rotateRelativeEncoder);
+    rotatePID = config.MotorController().buildPIDController(rotateRelativeEncoder);
     rotateAbsEncoder = config.Encoder().buildDutyCycleEncoder();
     brakeSolenoid = config.Solenoid(BRAKE_SOLENOID).buildSolenoid();
 
