@@ -34,7 +34,7 @@ public class configurationTests {
             var gyro = config.Pigeon2().buildPigeon2();
             var pid1 = config.SwerveModule("#1").TurningMotor().PID().createPIDController();
             var mtr1 = config.SwerveModule("#1").DrivingMotor().buildSparkMax();
-            var pid2 = config.SwerveModule("#1").DrivingMotor().createPIDController();
+            var pid2 = config.SwerveModule("#1").DrivingMotor().buildPIDController();
             var rel1 = config.SwerveModule("#1").DrivingMotor().buildRelativeEncoder();
             var rotateAbsEncoder = config.Subsystem(ArmSubsystem.class).Encoder().buildDutyCycleEncoder();
             var brakeSolenoid = config.Subsystem(ArmSubsystem.class).Solenoid("Brake Solenoid").buildSolenoid();
