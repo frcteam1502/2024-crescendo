@@ -107,7 +107,7 @@ public class MotorController extends Builder {
         return this;
     }
 
-    public SparkPIDController createPIDController(MotorFeedbackSensor feedbackDevice) {
+    public SparkPIDController buildPIDController(MotorFeedbackSensor feedbackDevice) {
         var pid = PID().setPIDController(CANSparkMax());
         pid.setFeedbackDevice(feedbackDevice);
         return pid;
