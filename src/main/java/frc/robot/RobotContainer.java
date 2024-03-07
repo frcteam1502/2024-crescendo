@@ -43,9 +43,9 @@ public class RobotContainer {
     Logger.RegisterPneumaticHub(new PneumaticHub(), config.PCM().ChannelNames());
     logger.start();
 
-    // Path planner NamedCommands are currently in DriveSubSystem
+    // Path planner NamedCommands are currently in their respective Command class
 
-    //Build an Autochooser from SmartDashboard selection.  Default will be Commands.none()
+    // Build an Autochooser from SmartDashboard selection.  Default will be Commands.none()
     new PathPlannerAuto("MiddleAutoAMPFinal");
     new PathPlannerAuto("LeftAuto-AMPFinal");
     new PathPlannerAuto("RightAuto-AMPFinal");
@@ -70,11 +70,11 @@ public class RobotContainer {
 
     // NOTE: Add Command bindings in the respective Command class
 
-    //Drivetrain
+    // Drivetrain
 
-    //Arm
+    // Arm
 
-    //ShooterIntake
+    // ShooterIntake
 
   }
 

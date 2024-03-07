@@ -51,9 +51,7 @@ public class ArmSubsystem extends SubsystemBase {
   private double arm_close_angle = POSITION_TABLE[1];
   private double arm_far_angle = POSITION_TABLE[2];
 
-  public ArmSubsystem(RobotConfiguration config) {
-    config = config.Subsystem(ArmSubsystem.class);
-    
+  public ArmSubsystem(RobotConfiguration config) {    
     ABS_OFFSET = config.Encoder().getDouble("ABS_OFFSET");
 
     //Initialize Motors
