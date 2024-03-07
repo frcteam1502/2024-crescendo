@@ -16,7 +16,7 @@ public class GyroSensor extends Builder {
     public static Function<IBuild, GyroSensor> Define(Manufacturer manufacturer) {
         return build->new GyroSensor(build,manufacturer);
     } 
-    public static GyroSensor Wrap(Builder builder) { return new GyroSensor(builder.getIBuild(), builder.getPart()); }
+    public static GyroSensor Wrap(Builder builder) { return builder == null ? null : new GyroSensor(builder.getIBuild(), builder.getPart()); }
     public static GyroSensor WrapPart(Builder builder) { return WrapPart(builder, deviceType.name()); }
     public static GyroSensor WrapPart(Builder builder, String partName) { return Wrap(builder.getPart(partName)); }
 

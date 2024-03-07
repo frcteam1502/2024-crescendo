@@ -15,7 +15,7 @@ public class GearToothSensor extends Builder {
     public static final Function<IBuild, GearToothSensor> Define(Manufacturer manufacturer) {
         return build->new GearToothSensor(build, manufacturer);
     } 
-    public static GearToothSensor Wrap(Builder builder) { return new GearToothSensor(builder.getIBuild(), builder.getPart()); }
+    public static GearToothSensor Wrap(Builder builder) { return builder == null ? null : new GearToothSensor(builder.getIBuild(), builder.getPart()); }
     public static GearToothSensor WrapPart(Builder builder) { return WrapPart(builder, deviceType.name()); }
     public static GearToothSensor WrapPart(Builder builder, String partName) { return Wrap(builder.getPart(partName)); }
     

@@ -15,7 +15,7 @@ public class Motor extends Builder {
 
     public static final String CLASSNAME = "Motor";
     public static final Function<IBuild, Motor> Define = build->new Motor(build);
-    public static Motor Wrap(Builder builder) { return new Motor(builder.getIBuild(), builder.getPart()); }
+    public static Motor Wrap(Builder builder) { return builder == null ? null : new Motor(builder.getIBuild(), builder.getPart()); }
     public static Motor WrapPart(Builder builder) { return WrapPart(builder, CLASSNAME); }
     public static Motor WrapPart(Builder builder, String partName) { return Wrap(builder.getPart(partName)); }
     public Motor(IBuild build) {

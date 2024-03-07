@@ -11,7 +11,7 @@ public class Gear extends Builder {
     public static final String drivingTeeth = "drivingTeeth";
     public static final String drivenTeeth = "drivenTeeth";
     public static Function<IBuild, Gear> Define = b->new Gear(b);
-    public static Gear Wrap(Builder builder) { return new Gear(builder.getIBuild(), builder.getPart()); }
+    public static Gear Wrap(Builder builder) { return builder == null ? null : new Gear(builder.getIBuild(), builder.getPart()); }
     public static Gear WrapPart(Builder builder) { return WrapPart(builder, CLASSNAME); }
     public static Gear WrapPart(Builder builder, String partName) { return Wrap(builder.getPart(partName)); }
 

@@ -21,7 +21,7 @@ public class RoboRIO extends Builder {
 
     public static final String CLASSNAME = "RoboRIO"; 
     public static final Function<IBuild, RoboRIO> Define = build->new RoboRIO(build);
-    public static RoboRIO Wrap(Builder builder) { return new RoboRIO(builder.getIBuild(), builder.getPart()); }
+    public static RoboRIO Wrap(Builder builder) { return builder == null ? null : new RoboRIO(builder.getIBuild(), builder.getPart()); }
     public static RoboRIO WrapPart(Builder builder) { return WrapPart(builder, CLASSNAME); }
     public static RoboRIO WrapPart(Builder builder, String partName) { return Wrap(builder.getPart(partName)); }
     public RoboRIO(IBuild build) {

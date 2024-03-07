@@ -9,7 +9,7 @@ import team1502.configuration.builders.Part;
 public class GearBox extends Builder{
     private static final String NAME = "GearBox"; 
     public static Function<IBuild, GearBox> Define = b->new GearBox(b);
-    public static GearBox Wrap(Builder builder) { return new GearBox(builder.getIBuild(), builder.getPart()); }
+    public static GearBox Wrap(Builder builder) { return builder == null ? null : new GearBox(builder.getIBuild(), builder.getPart()); }
     public static GearBox WrapPart(Builder builder) { return WrapPart(builder, NAME); }
     public static GearBox WrapPart(Builder builder, String partName) { return Wrap(builder.getPart(partName)); }
 

@@ -16,7 +16,7 @@ public class Encoder extends Builder {
     private static final String dutyCycleEncoder = "dutyCycleEncoder";
 
     public static Function<IBuild, Encoder> Define = build->new Encoder(build);
-    public static Encoder Wrap(Builder builder) { return new Encoder(builder.getIBuild(), builder.getPart()); }
+    public static Encoder Wrap(Builder builder) { return builder == null ? null : new Encoder(builder.getIBuild(), builder.getPart()); }
     public static Encoder WrapPart(Builder builder) { return WrapPart(builder, CLASSNAME); }
     public static Encoder WrapPart(Builder builder, String partName) { return Wrap(builder.getPart(partName)); }
 

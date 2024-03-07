@@ -14,7 +14,7 @@ public class SwerveDrive extends Builder {
     public static final String CLASSNAME = "SwerveDrive";
     public static final String goStraightGain = "goStraightGain";
     public static Function<IBuild, SwerveDrive> Define = build->new SwerveDrive(build);
-    public static SwerveDrive Wrap(Builder builder) { return new SwerveDrive(builder.getIBuild(), builder.getPart()); }
+    public static SwerveDrive Wrap(Builder builder) { return builder == null ? null : new SwerveDrive(builder.getIBuild(), builder.getPart()); }
     public static SwerveDrive WrapPart(Builder builder) { return WrapPart(builder, CLASSNAME); }
     public static SwerveDrive WrapPart(Builder builder, String partName) { return Wrap(builder.getPart(partName)); }
 

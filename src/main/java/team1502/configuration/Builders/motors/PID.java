@@ -13,7 +13,7 @@ import team1502.configuration.builders.Part;
 public class PID extends Builder {
     private static final String NAME = "PID"; 
     public static Function<IBuild, PID> Define = b->new PID(b);
-    public static PID Wrap(Builder builder) { return new PID(builder.getIBuild(), builder.getPart()); }
+    public static PID Wrap(Builder builder) { return builder == null ? null : new PID(builder.getIBuild(), builder.getPart()); }
     public static PID WrapPart(Builder builder) { return WrapPart(builder, NAME); }
     public static PID WrapPart(Builder builder, String partName) { return Wrap(builder.getPart(partName)); }
 

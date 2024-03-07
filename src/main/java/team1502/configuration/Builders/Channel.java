@@ -30,7 +30,7 @@ public class Channel extends Connector {
     
     
     public static Function<IBuild, Channel> Define(String signal, String network, Object channelId) { return b->new Channel(b, signal, network, channelId); };
-    public static Channel Wrap(Builder builder) { return new Channel(builder.getIBuild(), builder.getPart()); }
+    public static Channel Wrap(Builder builder) { return builder == null ? null : new Channel(builder.getIBuild(), builder.getPart()); }
     public static Channel WrapPart(Builder builder) { return WrapPart(builder, CLASSNAME); }
     public static Channel WrapPart(Builder builder, String partName) { return Wrap(builder.getPart(partName)); }
 

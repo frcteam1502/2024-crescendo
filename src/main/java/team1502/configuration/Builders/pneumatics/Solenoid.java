@@ -12,7 +12,7 @@ public class Solenoid extends Builder {
     public static final String CLASSNAME = "Solenoid";
 
     public static Function<IBuild, Solenoid> Define = build->new Solenoid(build);
-    public static Solenoid Wrap(Builder builder) { return new Solenoid(builder.getIBuild(), builder.getPart()); }
+    public static Solenoid Wrap(Builder builder) { return builder == null ? null : new Solenoid(builder.getIBuild(), builder.getPart()); }
     public static Solenoid WrapPart(Builder builder) { return WrapPart(builder, CLASSNAME); }
     public static Solenoid WrapPart(Builder builder, String partName) { return Wrap(builder.getPart(partName)); }
 
