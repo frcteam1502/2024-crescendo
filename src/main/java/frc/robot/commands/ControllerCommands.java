@@ -54,6 +54,10 @@ public class ControllerCommands extends Command {
     double teleopRotationGain;
     double driver_gain;
 
+    double forwardSpeed;
+    double strafeSpeed;
+    double rotationSpeed;
+
     String driver = (String) driverChooser.getSelected();
 
     switch(driver){
@@ -64,7 +68,7 @@ public class ControllerCommands extends Command {
         driver_gain = DriveConstants.MAX_TELEOP_SPEED_DRIVER_1;
     }
 
-    if(Driver.XboxButtons.LeftBumper.getAsBoolean()){
+    if(Driver.Controller.leftBumper().getAsBoolean()){
       teleopSpeedGain = DriveConstants.MAX_FINESSE_SPEED;
       teleopRotationGain = DriveConstants.MAX_FINESSE_ROTATION;
     }else{
@@ -72,15 +76,21 @@ public class ControllerCommands extends Command {
       teleopRotationGain = DriveConstants.MAX_TELEOP_ROTATION;
     }
     //Need to convert joystick input (-1 to 1) into m/s!!! 100% == MAX Attainable Speed
-    double forwardSpeed = ((MathUtil.applyDeadband(Driver.getLeftY(), 0.1)) * teleopSpeedGain) *
+    forwardSpeed = ((MathUtil.applyDeadband(Driver.getLeftY(), 0.1)) * teleopSpeedGain) *
         DriveConstants.MAX_SPEED_METERS_PER_SECOND;
 
-    double strafeSpeed = ((MathUtil.applyDeadband(Driver.getLeftX(), 0.1)) * teleopSpeedGain) *
+    strafeSpeed = ((MathUtil.applyDeadband(Driver.getLeftX(), 0.1)) * teleopSpeedGain) *
         DriveConstants.MAX_SPEED_METERS_PER_SECOND;
 
     //Need to convert joystick input (-1 to 1) into m/s!!! 100% == MAX Attainable Rotation
-    double rotationSpeed = turnLimiter.calculate(((MathUtil.applyDeadband(Driver.getRightX(), 0.1)) * teleopRotationGain) *
-    DriveConstants.MAX_ROTATION_RADIANS_PER_SECOND);
+    if(Driver.Controller.getRightTriggerAxis() > 0.5){
+      rotationSpeed = drive.vision_aim_proportional();
+      //rotationSpeed = turnLimiter.calculate(((MathUtil.applyDeadband(drive.vision_aim_proportional(), 0.1)) * teleopRotationGain) *
+        //DriveConstants.MAX_ROTATION_RADIANS_PER_SECOND);
+    }else{
+      rotationSpeed = turnLimiter.calculate(((MathUtil.applyDeadband(Driver.getRightX(), 0.1)) * teleopRotationGain) *
+        DriveConstants.MAX_ROTATION_RADIANS_PER_SECOND);
+    }
 
     SmartDashboard.putNumber("Forward In", forwardSpeed);
     SmartDashboard.putNumber("Strafe In", strafeSpeed);
@@ -91,7 +101,7 @@ public class ControllerCommands extends Command {
         forwardSpeed, // Forward
         strafeSpeed, // Strafe
         rotationSpeed, // Rotate
-        Driver.XboxButtons.LeftBumper.getAsBoolean()); // brake
+        Driver.Controller.leftBumper().getAsBoolean()); // brake
     
       drive.drive(-speedCommand.forwardSpeed, -speedCommand.strafeSpeed, -speedCommand.rotationSpeed, true);
     }else{

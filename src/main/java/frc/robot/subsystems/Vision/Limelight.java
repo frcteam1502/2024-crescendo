@@ -9,6 +9,7 @@ import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.util.Units;
 import edu.wpi.first.networktables.GenericEntry;
 import edu.wpi.first.networktables.NetworkTableInstance;
+import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj.shuffleboard.Shuffleboard;
 import edu.wpi.first.wpilibj.shuffleboard.ShuffleboardTab;
@@ -17,7 +18,7 @@ import frc.robot.subsystems.Vision.LimelightHelpers.LimelightTarget_Fiducial;
 /** Add your docs here. */
 final class LimelightConfig{
     public static boolean IS_LIMELIGHT_MODE = true;
-    public static int APRILTAG_PIPELINE;
+    public static int APRILTAG_PIPELINE = 0;
     public static String POSE_LIMELIGHT = "limelight-pose";
     public static double POSE_LIME_X = -0.33195;
     public static double POSE_LIME_Y = 0.0;
@@ -39,6 +40,10 @@ public class Limelight {
 
     private LimelightHelpers.LimelightResults jsonResults;
     private Pose2d targetRobotRelativePose;
+
+    private boolean speakerFound = false;
+    private double speaker_tx = 0.0;
+    private double speaker_ty = 0.0;
 
     public Limelight(){
         botPose = new Pose2d(0, 0, new Rotation2d(Units.degreesToRadians(0)));
@@ -70,16 +75,47 @@ public class Limelight {
                 .equals("");
         
         if (LimelightConfig.IS_LIMELIGHT_MODE && apriltagLimelightConnected) {
+            
             jsonResults = LimelightHelpers.getLatestResults(LimelightConfig.POSE_LIMELIGHT);
+            
             tempPose = LimelightHelpers.getBotPose2d_wpiBlue(LimelightConfig.POSE_LIMELIGHT);
+            
             if (visionAccurate(tempPose)) {
                 // json dump more accurate?
                 // Update Vision robotpose - need to read more about coordinate systems centered
                 // Blue alliance means origin is bottom right of the field 
+                
                 limeLatency =
                     LimelightHelpers.getLatency_Pipeline(LimelightConfig.POSE_LIMELIGHT)
                         + LimelightHelpers.getLatency_Capture(LimelightConfig.POSE_LIMELIGHT);
+                
                 botPose = tempPose;
+                
+                var alliance = DriverStation.getAlliance();
+                LimelightTarget_Fiducial[] tags = jsonResults.targetingResults.targets_Fiducials;
+                int numTags = tags.length;
+
+                speakerFound = false;
+
+                if(alliance.get() == DriverStation.Alliance.Red){
+                    for(int i = 0;i < numTags;i++){
+                        if(tags[i].fiducialID == 4){
+                            speakerFound = true;
+                            speaker_tx = tags[i].tx;
+                            speaker_ty = tags[i].ty;
+                        }
+                    }
+                }else{//Alliance == Blue
+                    for(int i = 0;i < numTags;i++){
+                        if(tags[i].fiducialID == 7){
+                            speakerFound = true;
+                            speaker_tx = tags[i].tx;
+                            speaker_ty = tags[i].ty;
+                        }
+                    }
+                }
+            }else{
+                speakerFound = false;
             }
         }
     }
@@ -90,6 +126,18 @@ public class Limelight {
    */
     public void setLimelightPipeline(String limelight, int pipelineIndex) {
         LimelightHelpers.setPipelineIndex(limelight, pipelineIndex);
+    }
+
+    public boolean isSpeakerFound(){
+        return(speakerFound);
+    }
+
+    public double getSpeaker_tx(){
+        return(speaker_tx);
+    }
+
+    public double getSpeaker_ty(){
+        return(speaker_ty);
     }
 
       /**
@@ -150,5 +198,19 @@ public class Limelight {
     public double getTimestampSeconds(double latencyMillis) {
         return Timer.getFPGATimestamp() - (latencyMillis / 1000d);
     }
+
+    /**
+   * @return RobotPose2d with the apriltag as the origin (for chase apriltag command)
+   */
+  public Pose2d getRobotPose2d_TargetSpace() {
+    return LimelightHelpers.getBotPose2d_TargetSpace(LimelightConfig.POSE_LIMELIGHT);
+  }
+
+  /**
+   * @return Pose2d of the apriltag with the robot as the origin
+   */
+  public Pose2d getTargetRobotPose_RobotSpace() {
+    return LimelightHelpers.getTargetPose2d_RobotSpace(LimelightConfig.POSE_LIMELIGHT);
+  }
 }
 

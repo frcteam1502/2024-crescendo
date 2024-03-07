@@ -2,6 +2,7 @@ package frc.robot.subsystems.SwerveDrive;
 
 import frc.robot.Logger;
 import frc.robot.subsystems.Vision.Limelight;
+import frc.robot.subsystems.Vision.LimelightHelpers;
 
 import com.ctre.phoenix6.hardware.CANcoder;
 import com.ctre.phoenix6.hardware.Pigeon2;
@@ -68,6 +69,8 @@ final class CANCoders {
 
 final class DriveConstants {
   public static final double MAX_SPEED_METERS_PER_SECOND = 4.6; //IF YOU UP THE SPEED CHANGE ACCELERATION
+  public static final double MAX_ROTATION_RADIANS_PER_SECOND = 11;
+  public static final double MAX_TELEOP_ROTATION = .3;
 
   //Turning Motors
   public static final boolean FrontLeftTurningMotorReversed = true;
@@ -152,6 +155,7 @@ final class PoseEstConfig{
 
 final class VisionConfig{
   public static final boolean IS_LIMELIGHT_MODE = true;
+  public static String POSE_LIMELIGHT = "limelight-pose";
 }
 
 public class DriveSubsystem extends SubsystemBase{
@@ -300,6 +304,11 @@ public class DriveSubsystem extends SubsystemBase{
     SmartDashboard.putNumber("Vision Pose Rotation", vision.getVisionBotPose().getRotation().getDegrees());
     SmartDashboard.putBoolean("Is Target Valid", vision.isValidPose());
     SmartDashboard.putNumber("Limelight Latency", vision.getTotalLatency());
+
+    SmartDashboard.putNumber("Speaker tX", vision.getSpeaker_tx());
+    SmartDashboard.putNumber("Speaker tY", vision.getSpeaker_ty());
+    SmartDashboard.putBoolean("Speaker Found", vision.isSpeakerFound());
+    SmartDashboard.putNumber("Distance to Speaker", getDistanceToSpeaker());
   }
   
   @Override
@@ -371,9 +380,6 @@ public class DriveSubsystem extends SubsystemBase{
     //Normalize wheel speed commands to make sure no speed is greater than the maximum achievable wheel speed.
     SwerveDriveKinematics.desaturateWheelSpeeds(swerveModuleStates, DriveConstants.MAX_SPEED_METERS_PER_SECOND);
 
-    /*for (int i = 0; i<=3; i++){
-      swerveModuleStates[i].speedMetersPerSecond *= -1;
-    }*/
     //Set the speed and angle of each module
     setDesiredState(swerveModuleStates);
   }
@@ -484,7 +490,51 @@ public class DriveSubsystem extends SubsystemBase{
     resetGyro(0);
     resetModules();
     resetOdometry(pose);
-  }  
+  }
+  
+  public double vision_aim_proportional(){    
+    // kP (constant of proportionality)
+    // this is a hand-tuned number that determines the aggressiveness of our proportional control loop
+    // if it is too high, the robot will oscillate around.
+    // if it is too low, the robot will never reach its target
+    // if the robot never turns in the correct direction, kP should be inverted.
+    double targetingAngularVelocity;
+    double kP = .01;
+
+    double error = vision.getSpeaker_tx();
+    double min_rate = 0.075;
+
+    // tx ranges from (-hfov/2) to (hfov/2) in degrees. If your target is on the rightmost edge of 
+    // your limelight 3 feed, tx should return roughly 31 degrees.
+    
+    if(vision.isSpeakerFound()){  
+      if(Math.abs(error) > 1.0){
+        if(error > 0){
+          targetingAngularVelocity = (error * kP) + min_rate;
+        }else{
+          targetingAngularVelocity = (error * kP) - min_rate;
+        }
+
+        // convert to radians per second for our drive method
+        targetingAngularVelocity *= DriveConstants.MAX_ROTATION_RADIANS_PER_SECOND * DriveConstants.MAX_TELEOP_ROTATION;
+      }else{
+        targetingAngularVelocity = 0.0;
+      }   
+    }else{
+      targetingAngularVelocity = 0.0;
+    }
+
+    return targetingAngularVelocity;
+  }
+
+  public double getDistanceToSpeaker(){
+    double ty = vision.getSpeaker_ty();
+    double camera_pitch = 20;
+    ty += camera_pitch;
+    // tan(w)=y/x -> x = y/tan(w)
+    double distance = 1.055/(Math.tan(Math.toRadians(ty)));
+    return distance;
+  }
 
   public void ConfigMotorDirections() {
     Motors.ANGLE_FRONT_LEFT.setInverted(DriveConstants.FrontLeftTurningMotorReversed);
