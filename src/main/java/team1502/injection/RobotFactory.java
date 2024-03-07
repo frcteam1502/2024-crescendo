@@ -144,7 +144,7 @@ public class RobotFactory {
                 if (!dependency.isBuilt()) {
                     buildPart(dependency);
                 }
-                args[i] = dependency.getPart();
+                args[i] = prepDependency(part, dependency);
             }
             
             // check for null args??
@@ -155,6 +155,19 @@ public class RobotFactory {
                     var subsystem = (Subsystem)instance;
                     subsystem.setDefaultCommand(command);
                 }
+            }
+        }
+        return instance;
+    }
+
+    /** E.g., find a sub-config for a subsystem */
+    private Object prepDependency(RobotPart part, RobotPart dependency) {
+        var instance = dependency.getPart();
+        if (instance instanceof RobotConfiguration) {
+            var config = (RobotConfiguration)instance;
+            var subsystem = config.findSubsystemConfiguration(part.getName());
+            if (subsystem != null) {
+                instance = subsystem;
             }
         }
         return instance;

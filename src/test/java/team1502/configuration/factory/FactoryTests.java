@@ -83,5 +83,17 @@ public class FactoryTests {
         var roboRIO = config.getBuilder().getInstalled("RoboRIO");
         factory.reportCanBus(roboRIO.getPart(Channel.SIGNAL_CAN));
     }
-    
+
+    @Test
+    public void subsystemTest() {
+        var config = new RobotConfiguration();
+        config.Build(hw->hw
+            .Subsystem("frc.robot.Arm", arm->arm
+                .Part("Part1", p->p)
+            )
+        );
+
+        var arm = config.findSubsystemConfiguration("frc.robot.Arm");
+    }
+
 }
