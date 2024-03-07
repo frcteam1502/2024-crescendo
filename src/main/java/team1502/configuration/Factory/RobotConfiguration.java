@@ -11,6 +11,7 @@ import com.ctre.phoenix6.hardware.CANcoder;
 import com.ctre.phoenix6.hardware.Pigeon2;
 import com.revrobotics.CANSparkMax;
 
+import edu.wpi.first.wpilibj.DigitalInput;
 import team1502.configuration.builders.*;
 import team1502.configuration.builders.motors.*;
 import team1502.configuration.builders.pneumatics.*;
@@ -128,6 +129,8 @@ public class RobotConfiguration {
     public Encoder Encoder() { return Encoder(Encoder.CLASSNAME); }
     public Encoder Encoder(String name) { return Values().Encoder(name); }
     public Solenoid Solenoid(String name) { return Solenoid.WrapPart(_robotBuilder.getPart(), name); }
+
+    public edu.wpi.first.wpilibj.DigitalInput DigitalInput(String name) { return new DigitalInput(_robotBuilder.getPart().getInt(RoboRIO.digitalInput)); }
 
     public Chassis Chassis() { return Values().SwerveDrive().Chassis(); }
     public SwerveDrive SwerveDrive() { return Values().SwerveDrive(); }
