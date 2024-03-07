@@ -17,7 +17,7 @@ public class IMU extends Builder {
     public static Function<IBuild, IMU> Define(Manufacturer manufacturer) {
         return build->new IMU(build,manufacturer);
     } 
-    public static IMU Wrap(Builder builder) { return new IMU(builder.getIBuild(), builder.getPart()); }
+    public static IMU Wrap(Builder builder) { return builder == null ? null : new IMU(builder.getIBuild(), builder.getPart()); }
     public static IMU WrapPart(Builder builder) { return WrapPart(builder, deviceType.name()); }
     public static IMU WrapPart(Builder builder, String partName) { return Wrap(builder.getPart(partName)); }
 

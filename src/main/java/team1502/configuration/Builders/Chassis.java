@@ -19,7 +19,7 @@ public class Chassis extends Builder {
   private static final String wheelDiameter = "wheelDiameter";
 
   public static Function<IBuild, Chassis> Define = build->new Chassis(build);
-  public static Chassis Wrap(Builder builder) { return new Chassis(builder.getIBuild(), builder.getPart()); }
+  public static Chassis Wrap(Builder builder) { return builder == null ? null : new Chassis(builder.getIBuild(), builder.getPart()); }
   public static Chassis WrapPart(Builder builder) { return WrapPart(builder, NAME); }
   public static Chassis WrapPart(Builder builder, String partName) { return Wrap(builder.getPart(partName)); }
 

@@ -22,7 +22,7 @@ public class PneumaticsController extends PowerDistributionModule {
     public static Function<IBuild, PneumaticsController> Define(Manufacturer manufacturer) {
         return build->new PneumaticsController(build,manufacturer);
     } 
-    public static PneumaticsController Wrap(Builder builder) { return new PneumaticsController(builder.getIBuild(), builder.getPart()); }
+    public static PneumaticsController Wrap(Builder builder) { return builder == null ? null : new PneumaticsController(builder.getIBuild(), builder.getPart()); }
     public static PneumaticsController WrapPart(Builder builder) { return WrapPart(builder, deviceType.name()); }
     public static PneumaticsController WrapPart(Builder builder, String partName) { return Wrap(builder.getPart(partName)); }
 

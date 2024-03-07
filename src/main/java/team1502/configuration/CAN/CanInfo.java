@@ -14,7 +14,7 @@ public class CanInfo extends Connector {
          return  build->new CanInfo(build, deviceType, manufacturer); 
     };
     
-    public static CanInfo Wrap(Builder builder) { return new CanInfo(builder.getIBuild(), builder.getPart()); }
+    public static CanInfo Wrap(Builder builder) { return builder == null ? null : new CanInfo(builder.getIBuild(), builder.getPart()); }
     public static CanInfo WrapPart(Builder builder) { return WrapPart(builder, canInfo); }
     public static CanInfo WrapPart(Builder builder, String partName) { return Wrap(builder.getPart(partName)); }
     

@@ -15,7 +15,7 @@ public class Accelerometer extends Builder {
     public static final Function<IBuild, Accelerometer> Define(Manufacturer manufacturer) {
         return build->new Accelerometer(build, manufacturer);
     } 
-    public static Accelerometer Wrap(Builder builder) { return new Accelerometer(builder.getIBuild(), builder.getPart()); }
+    public static Accelerometer Wrap(Builder builder) { return builder == null ? null : new Accelerometer(builder.getIBuild(), builder.getPart()); }
     public static Accelerometer WrapPart(Builder builder) { return WrapPart(builder, deviceType.name()); }
     public static Accelerometer WrapPart(Builder builder, String partName) { return Wrap(builder.getPart(partName)); }
     

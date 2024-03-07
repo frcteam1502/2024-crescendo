@@ -36,7 +36,7 @@ public class PowerDistributionModule extends Builder {
     public static final Function<IBuild, PowerDistributionModule> DefinePDP = build->new PowerDistributionModule(build, PDP, 18, deviceType, Manufacturer.CTRElectronics);
     public static final Function<IBuild, PowerDistributionModule> DefineMPM = build -> new PowerDistributionModule(build, MPM, 6);
     
-    public static PowerDistributionModule Wrap(Builder builder) { return new PowerDistributionModule(builder.getIBuild(), builder.getPart()); }
+    public static PowerDistributionModule Wrap(Builder builder) { return builder == null ? null : new PowerDistributionModule(builder.getIBuild(), builder.getPart()); }
     public static PowerDistributionModule WrapPart(Builder builder, String partName) { return Wrap(builder.getPart(partName)); }
     
     protected PowerDistributionModule(IBuild build, String name, int channels, DeviceType deviceType, Manufacturer manufacturer) {

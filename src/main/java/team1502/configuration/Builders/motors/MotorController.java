@@ -29,7 +29,7 @@ public class MotorController extends Builder {
     public static final Function<IBuild, MotorController> Define(Manufacturer manufacturer) {
         return build->new MotorController(build,manufacturer);
     }
-    public static MotorController Wrap(Builder builder) { return new MotorController(builder.getIBuild(), builder.getPart()); }
+    public static MotorController Wrap(Builder builder) { return builder == null ? null : new MotorController(builder.getIBuild(), builder.getPart()); }
     public static MotorController WrapPart(Builder builder) { return WrapPart(builder, CLASSNAME); }
     public static MotorController WrapPart(Builder builder, String partName) { return Wrap(builder.getPart(partName)); }
 

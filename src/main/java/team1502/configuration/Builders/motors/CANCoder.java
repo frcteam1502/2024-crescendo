@@ -20,7 +20,7 @@ public class CANCoder extends Builder{ // Accelerometer {
 
     public static final DeviceType deviceType = DeviceType.Accelerometer;
     public static final Function<IBuild, CANCoder> Define =  build->new CANCoder(build);
-    public static CANCoder Wrap(Builder builder) { return new CANCoder(builder.getIBuild(), builder.getPart()); }
+    public static CANCoder Wrap(Builder builder) { return builder == null ? null : new CANCoder(builder.getIBuild(), builder.getPart()); }
     public static CANCoder WrapPart(Builder builder) { return WrapPart(builder, deviceType.name()); }
     public static CANCoder WrapPart(Builder builder, String partName) { return Wrap(builder.getPart(partName)); }
     public CANCoder(IBuild build) {

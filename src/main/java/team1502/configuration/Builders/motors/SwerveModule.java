@@ -17,7 +17,7 @@ public class SwerveModule extends Builder {
     private static final String drivingMotor = "DrivingMotor";
     private static final String isReversed = "isReversed";
     public static Function<IBuild, SwerveModule> Define = build->new SwerveModule(build);
-    public static SwerveModule Wrap(Builder builder) { return new SwerveModule(builder.getIBuild(), builder.getPart()); }
+    public static SwerveModule Wrap(Builder builder) { return builder == null ? null : new SwerveModule(builder.getIBuild(), builder.getPart()); }
     public static SwerveModule WrapPart(Builder builder) { return WrapPart(builder, CLASSNAME); }
     public static SwerveModule WrapPart(Builder builder, String partName) { return Wrap(builder.getPart(partName)); }
 

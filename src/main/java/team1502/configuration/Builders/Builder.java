@@ -15,7 +15,6 @@ import team1502.configuration.builders.pneumatics.PneumaticsController;
 import team1502.configuration.builders.power.PowerDistributionModule;
 import team1502.configuration.builders.power.PowerProfile;
 import team1502.configuration.factory.PartBuilder;
-import team1502.configuration.factory.RobotBuilder;
 
 public class Builder {
     private static final String CLASSNAME = "Builder";
@@ -26,7 +25,7 @@ public class Builder {
     public static Function<IBuild, Builder> DefineAs(String buildType) {
         return build->new Builder(build, buildType);
     }
-    public static Builder Wrap(Builder builder) { return new Builder(builder.getIBuild(), builder.getPart()); }
+    public static Builder Wrap(Builder builder) { return builder == null ? null : new Builder(builder.getIBuild(), builder.getPart()); }
 
     private IBuild _build;
     private Part _part;

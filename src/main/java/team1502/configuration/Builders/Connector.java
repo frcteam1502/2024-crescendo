@@ -9,7 +9,7 @@ public class Connector extends Builder {
     public static final String signal = "signal";
     public static final String label = "label";
     public static Function<IBuild, Connector> Define(String signal) { return b->new Connector(b, CLASSNAME, signal); };
-    public static Connector Wrap(Builder builder) { return new Connector(builder.getIBuild(), builder.getPart()); }
+    public static Connector Wrap(Builder builder) { return builder == null ? null : new Connector(builder.getIBuild(), builder.getPart()); }
 
     protected Connector(IBuild build, String className, String signal)
     {

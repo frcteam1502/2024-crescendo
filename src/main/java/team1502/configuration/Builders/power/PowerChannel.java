@@ -11,7 +11,7 @@ public class PowerChannel extends Channel {
     
     public static Function<IBuild, PowerChannel> Define(String network, String channelNumber) { return b->new PowerChannel(b, network, channelNumber); };
     public static Function<IBuild, PowerChannel> Define(String network, Integer channelNumber) { return b->new PowerChannel(b, network, channelNumber); };
-    public static PowerChannel Wrap(Builder builder) { return new PowerChannel(builder.getIBuild(), builder.getPart()); }
+    public static PowerChannel Wrap(Builder builder) { return builder == null ? null : new PowerChannel(builder.getIBuild(), builder.getPart()); }
     public static PowerChannel WrapPart(Builder builder) { return WrapPart(builder, NAME); }
     public static PowerChannel WrapPart(Builder builder, String partName) { return Wrap(builder.getPart(partName)); }
 

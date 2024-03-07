@@ -11,7 +11,7 @@ public class PowerProfile extends Builder {
     public static final String CLASSNAME = "PowerProfile";
     private static final String peakPower = "peakPower";
     public static final Function<IBuild, PowerProfile> Define = build->new PowerProfile(build);
-    public static PowerProfile Wrap(Builder builder) { return new PowerProfile(builder.getIBuild(), builder.getPart()); }
+    public static PowerProfile Wrap(Builder builder) { return builder == null ? null : new PowerProfile(builder.getIBuild(), builder.getPart()); }
     public static PowerProfile WrapPart(Builder builder) { return WrapPart(builder, CLASSNAME); }
     public static PowerProfile WrapPart(Builder builder, String partName) { return Wrap(builder.getPart(partName)); }
     public PowerProfile(IBuild build) { super(build, CLASSNAME); }
