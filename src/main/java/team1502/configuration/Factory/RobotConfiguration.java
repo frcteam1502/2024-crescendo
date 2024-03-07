@@ -109,6 +109,15 @@ public class RobotConfiguration {
     }
 
     public Builder Part(String name) { return Values().Part(name); }
+
+    public RobotConfiguration findSubsystemConfiguration(String partName) {
+        var subsystem = Part(partName);
+        if (subsystem != null && subsystem.hasValue("robotBuilder")){
+            return new RobotConfiguration((RobotBuilder)subsystem.Value("robotBuilder"));
+        }
+        return null;
+    }
+
     public RobotConfiguration Subsystem(Class<?> subsystemClass) { return Subsystem(subsystemClass.getName()); }
     public RobotConfiguration Subsystem(String partName) { return new RobotConfiguration((RobotBuilder)Part(partName).Value("robotBuilder")); }
     public Object Value(String valueName) { return _robotBuilder.getPart().Value(valueName); }
