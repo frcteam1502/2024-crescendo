@@ -130,7 +130,9 @@ public class RobotConfiguration {
     public Encoder Encoder(String name) { return Values().Encoder(name); }
     public Solenoid Solenoid(String name) { return Solenoid.WrapPart(_robotBuilder.getPart(), name); }
 
-    public edu.wpi.first.wpilibj.DigitalInput DigitalInput(String name) { return new DigitalInput(_robotBuilder.getPart().getInt(RoboRIO.digitalInput)); }
+    public edu.wpi.first.wpilibj.DigitalInput DigitalInput(String name) { 
+        return new DigitalInput(_robotBuilder.getPart().getPart(name).getInt(RoboRIO.digitalInput));
+    }
 
     public Chassis Chassis() { return Values().SwerveDrive().Chassis(); }
     public SwerveDrive SwerveDrive() { return Values().SwerveDrive(); }
