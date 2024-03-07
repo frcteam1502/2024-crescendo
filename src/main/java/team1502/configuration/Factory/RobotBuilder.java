@@ -56,6 +56,8 @@ public class RobotBuilder implements IBuild /*extends Builder*/{
     // IBuild INTERFACE
     public IBuild getIBuild() {return this; }
 
+    /** look for top-level parts */
+    public Builder findInstalled(String name) { return _buildMap.get(name); }
 
     @Override // IBuild
     public Builder getInstalled(String name) {

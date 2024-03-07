@@ -109,6 +109,7 @@ public class RobotConfiguration {
     }
 
     public Builder Part(String name) { return Values().Part(name); }
+    public Builder findPart(String name) { return _robotBuilder.findInstalled(name); }
 
     public RobotConfiguration findSubsystemConfiguration(String partName) {
         var subsystem = Part(partName);
