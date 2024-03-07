@@ -120,7 +120,7 @@ public class RobotBuilder implements IBuild /*extends Builder*/{
              if (parent != null && parent.getPart() == _subsystemPart.getPart()) {
                 _subsystemPart.addPart(builder);
                 if (!builder.hasValue(Part.friendlyName)) {
-                    builder.FriendlyName(_subsystemPart.Name() + " " + builder.Name());
+                    builder.FriendlyName(_subsystemPart.FriendlyName() + " " + builder.Name());
                 }
             }
         }
@@ -174,7 +174,10 @@ public class RobotBuilder implements IBuild /*extends Builder*/{
 
     public RobotBuilder Subsystem(String partName) { return (RobotBuilder)getInstalled(partName).Value("robotBuilder"); }
     public RobotBuilder Subsystem(Class<?> subsystemClass, Function<RobotBuilder, RobotBuilder> fn) {
-        return Subsystem(subsystemClass.getName(), fn);
+        return Subsystem(subsystemClass.getName(), rb->{
+            rb.getPart().FriendlyName(Part.makeKey(subsystemClass.getName()).replace("Subsystem", ""));
+            return fn.apply(rb);
+        });
     }
     public RobotBuilder Subsystem(String partName, Function<RobotBuilder, RobotBuilder> fn) {
         var child = new RobotBuilder(this, partName);

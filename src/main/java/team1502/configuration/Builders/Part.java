@@ -11,8 +11,10 @@ public class Part {
     private Part parent;
     /** normally the key */
     public static String BUILD_NAME = "buildName"; 
-    /** override the key */
+    /** override the map key */
     public static String KEY_NAME = "keyName";
+    /** override the value of the id-key */
+    public static String KEY_VALUE = "keyValue";
     public static String TEMPLATE_NAME = "templateName";
 
     // COMMON Value keys useful when working with parts
@@ -36,10 +38,23 @@ public class Part {
 
     public String getType() { return (String)getValue(Part.CLASS_NAME); }
     
+    public static String makeKey(String name) {
+        var key = name;
+        var ds = key.lastIndexOf("$");
+        if (ds > -1) {
+            key = key.substring(ds + 1);
+        }
+        var dot = key.lastIndexOf(".");
+        if (dot > -1) {
+            key = key.substring(dot + 1);
+        }
+        return key;
+    }
     public String getKey() {
+        var key = makeKey(getName());
         return parent == null
-            ? getName()
-            : parent.getKey() + "." + getName();
+            ? key
+            : parent.getKey() + "." + key;
     }
     
     Part getParent() { return this.parent; }
