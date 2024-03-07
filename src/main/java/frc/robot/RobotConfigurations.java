@@ -40,20 +40,6 @@ public final class RobotConfigurations {
                 .Note("Reference", "https://www.revrobotics.com/rev-11-1271/")
             )
 
-            .MotorController("Intake Motor", Manufacturer.REVRobotics, c->c
-                .Motor("NEO", m->m)
-                .IdleMode(IdleMode.kBrake)
-                .SmartCurrentLimit(60)
-                .GearBox(g-> g
-                    .Gear("Cartridge #1 3:1", 1, 3))
-            )
-
-            .MotorController("Shooter Motor", Manufacturer.REVRobotics, c->c
-                .Motor("NEO", m->m)
-                .IdleMode(IdleMode.kCoast)
-                .SmartCurrentLimit(40)
-            )
-
             .MotorController("Arm Motor", Manufacturer.REVRobotics, c->c
                 .Motor("NEO 550", m->m)
                 .IdleMode(IdleMode.kBrake)
@@ -62,6 +48,20 @@ public final class RobotConfigurations {
                     .Gear("Cartridge #1 5:1", 1, 5)
                     .Gear("Cartridge #2 5:1", 1, 5)
                     .Gear("Chain 4:1", 1, 4))
+            )
+
+            .MotorController("Shooter Motor", Manufacturer.REVRobotics, c->c
+                .Motor("NEO", m->m)
+                .IdleMode(IdleMode.kCoast)
+                .SmartCurrentLimit(40)
+            )
+
+            .MotorController("Intake Motor", Manufacturer.REVRobotics, c->c
+                .Motor("NEO", m->m)
+                .IdleMode(IdleMode.kBrake)
+                .SmartCurrentLimit(60)
+                .GearBox(g-> g
+                    .Gear("Cartridge #1 3:1", 1, 3))
             )
         );
 
@@ -127,32 +127,33 @@ public final class RobotConfigurations {
         )
 
         .Subsystem(ShooterIntake.class, si -> si
-            .Subsystem("Shooter", s -> s
+            .Subsystem(ShooterIntake.SHOOTER, s -> s
                 .MotorController("Leader", "Shooter Motor", c->c
                     .Follower("Shooter Motor", f->f
+                        //.PID(.00005, 0.0, 0.0, 0.000185) //TODO: PID for a follower?
                         .PDH(3)
                         .CanNumber(3)
                         .FriendlyName("Shooter Follower").Abbreviation("Sh-Flw")
                     )
-                    .PID(.00005, 0.0, 0.0, 0.000180)
+                    .PID(.00005, 0.0, 0.0, 0.000185)
                     .PDH(2)
                     .CanNumber(2)
                     .Abbreviation("Sh-Ldr")
 
-                    .Value("SHOOTER_DEFAULT_RPM", 5000)
+                    //.Value("SHOOTER_DEFAULT_RPM", 5000)
                 )
             )
-            .Subsystem("Intake", i -> i
+            .Subsystem(ShooterIntake.INTAKE, i -> i
                 .MotorController("Motor", "Intake Motor", c->c
                     .PID(.00005, 0.0, 0.0, 0.000275)
                     .PDH(18)
                     .CanNumber(18).Abbreviation("Intk")
                     
-                    .Value("INTAKE_DEFAULT_PICK_UP_RPM", 2500)
-                    .Value("INTAKE_DEFAULT_EJECT_RPM", -2500)
+                    // .Value("INTAKE_DEFAULT_PICK_UP_RPM", 2500)
+                    // .Value("INTAKE_DEFAULT_EJECT_RPM", -2500)
                 )
-                .DigitalInput("Photosensor NO", 1, io->io.FriendlyName("Note Present 1"))  
-                .DigitalInput("Photosensor NC", 2, io->io.FriendlyName("Note Present 2"))
+                .DigitalInput(ShooterIntake.PHOTO_SENSOR_NO, 1, io->io.FriendlyName("Note Present 1"))  
+                .DigitalInput(ShooterIntake.PHOTO_SENSOR_NC, 2, io->io.FriendlyName("Note Present 2"))
             )
         )
 

@@ -30,7 +30,7 @@ public class SwerveModule implements Sendable {
 
     this.driveMotor = config.DrivingMotor().buildSparkMax();
     this.driveEncoder = config.DrivingMotor().buildRelativeEncoder();
-    this.drivePIDController = config.DrivingMotor().createPIDController();
+    this.drivePIDController = config.DrivingMotor().buildPIDController();
 
     this.turningMotor = config.TurningMotor().buildSparkMax();
     this.turningPIDController = config.TurningMotor().PID().createPIDController();
