@@ -112,7 +112,7 @@ public class MotorController extends Builder {
         pid.setFeedbackDevice(feedbackDevice);
         return pid;
     }
-    public SparkPIDController createPIDController() {
+    public SparkPIDController buildPIDController() {
         return PID().setPIDController(CANSparkMax());
     }
 
