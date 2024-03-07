@@ -521,10 +521,15 @@ public class DriveSubsystem extends SubsystemBase{
         targetingAngularVelocity = 0.0;
       }   
     }else{
-      targetingAngularVelocity = 0.0;
+      //Speaker not found, turn until we find it
+      targetingAngularVelocity = min_rate;
     }
 
     return targetingAngularVelocity;
+  }
+
+  public boolean isSpeakerDataValid(){
+    return vision.isSpeakerFound();
   }
 
   public double getDistanceToSpeaker(){
@@ -534,6 +539,10 @@ public class DriveSubsystem extends SubsystemBase{
     // tan(w)=y/x -> x = y/tan(w)
     double distance = 1.055/(Math.tan(Math.toRadians(ty)));
     return distance;
+  }
+
+  public double getVisionTargetAngle(){
+    return vision.getSpeaker_tx();
   }
 
   public void ConfigMotorDirections() {
