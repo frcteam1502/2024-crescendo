@@ -13,6 +13,7 @@ import frc.robot.commands.MoveToAmp;
 import frc.robot.commands.MoveToShoot;
 import frc.robot.commands.ShootNote;
 import frc.robot.commands.ShooterIntakeCommands;
+import frc.robot.commands.AlignToSpeaker;
 import frc.robot.commands.ArmCommands;
 import frc.robot.subsystems.SwerveDrive.DriveSubsystem;
 
@@ -100,7 +101,8 @@ public class RobotContainer {
   private void configureBindings() {
     //Drivetrain
     driveSubsystem.setDefaultCommand(new ControllerCommands(driveSubsystem, new MockDetector())); //USES THE LEFT BUMPER TO SLOW DOWN
-
+    Driver.Controller.a().onTrue(new AlignToSpeaker(driveSubsystem));
+    
     //Arm
     armSubsystem.setDefaultCommand(new ArmCommands(armSubsystem));
     
@@ -116,7 +118,7 @@ public class RobotContainer {
     Operator.Controller.rightTrigger(0.5).onTrue(new ShootNote(shooterIntakeSubsystem, ()->armSubsystem.isArmAtAmp()));
     Operator.Controller.rightBumper().toggleOnTrue(new InstantCommand(shooterIntakeSubsystem::toggleShooter));
 
-    Operator.Controller.leftTrigger(.5).whileTrue(new IntakeNote(shooterIntakeSubsystem));
+    Operator.Controller.leftTrigger(.5).whileTrue(new IntakeNote(shooterIntakeSubsystem));//whileTrue() is causing CommandScheduler overruns!
 
     Operator.Controller.leftBumper().onTrue(new InstantCommand(shooterIntakeSubsystem::setIntakeEject));
     Operator.Controller.leftBumper().onFalse(new InstantCommand(shooterIntakeSubsystem::setIntakeOff));

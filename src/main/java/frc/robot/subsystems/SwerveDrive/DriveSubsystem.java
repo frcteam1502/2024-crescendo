@@ -522,7 +522,7 @@ public class DriveSubsystem extends SubsystemBase{
       }   
     }else{
       //Speaker not found, turn until we find it
-      targetingAngularVelocity = min_rate;
+      targetingAngularVelocity = 0.75;
     }
 
     return targetingAngularVelocity;
