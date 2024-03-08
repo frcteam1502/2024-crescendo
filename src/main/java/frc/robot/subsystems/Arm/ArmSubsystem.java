@@ -1,5 +1,6 @@
 package frc.robot.subsystems.Arm;
 
+import frc.robot.subsystems.SwerveDrive.DriveSubsystem;
 import frc.robot.subsystems.Vision.LimelightHelpers;
 import frc.robot.subsystems.Vision.LimelightHelpers.LimelightResults;
 import frc.robot.Logger;
@@ -58,6 +59,22 @@ final class ArmConstants{
     -90,  //Amp/Trap
   };
 
+  public static final double[] ANGLE_LOOK_UP_TABLE = 
+  {
+    -42,//6
+    -40,//5.5
+    -38,//5
+    -36,//4.5
+    -34,//4
+    -32,//3.5
+    -30,//3
+    -28,//2.5
+    -26,//2
+    -24,//1.5
+  };
+
+  public static final double LOOKUP_TABLE_MIN = 1.5;
+  public static final double LOOKUP_TABLE_MAX = 6;
   public static final double BRAKE_THRESHOLD = 0.25;
 }
 
@@ -197,7 +214,22 @@ public class ArmSubsystem extends SubsystemBase {
     double change = Math.signum(input) * ArmConstants.ROTATE_CHANGE;
     if(input > .8) change *= 2;
     rotateArm(goalRotate + change);
-    //goalRotate = input;
+  }
+
+  public void lookupArmAngle(double distance){
+    double angle;
+
+    if(distance >= ArmConstants.LOOKUP_TABLE_MAX){
+      angle = ArmConstants.LOOKUP_TABLE_MAX;
+    }else if(distance <= ArmConstants.LOOKUP_TABLE_MIN){
+      angle = ArmConstants.LOOKUP_TABLE_MIN;
+    }else{
+      double temp_index = ArmConstants.LOOKUP_TABLE_MAX % distance;
+      int index = (int)(temp_index/0.5);
+      angle = ArmConstants.ANGLE_LOOK_UP_TABLE[index];
+    }
+    goalRotate = angle;
+    rotateArm(goalRotate);
   }
 
   private void checkBrake(){
