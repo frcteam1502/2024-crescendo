@@ -17,7 +17,7 @@ public class FactoryTests {
         var parts = config.getBuilder().getParts();
 
         var factory = new TestBuilder(parts);
-        factory.DumpParts();
+        factory.DumpParts2b();
         factory.reportUnconnected();
         
         var roboRIO = config.getBuilder().getInstalled("RoboRIO");
@@ -37,7 +37,7 @@ public class FactoryTests {
 
         config.Build(arm -> arm
             .Subsystem("Arm", a -> a
-                .usePart(a.getPart(), "brakeSolenoid", s->s
+                .usePart(a.getSubsystemPart(), "brakeSolenoid", s->s
                     .PCM().getChannel(0).getConnectedPart()
                 )
                 .Part("Part1", p->p

@@ -30,7 +30,7 @@ public class Evaluator {
     }
     public Builder SubsystemPart(Class<?> subsystemClass) { return SubsystemPart(subsystemClass.getName()); }
     public Builder SubsystemPart(String name) {
-        return _configuration.Subsystem(name).getPart();
+        return _configuration.Subsystem(name).getSubsystemPart();
     }
     private Object Eval(EvaluatorArgs args) {
         this.args = args;

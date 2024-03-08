@@ -122,16 +122,16 @@ public class RobotConfiguration {
 
     public RobotConfiguration Subsystem(Class<?> subsystemClass) { return Subsystem(subsystemClass.getName()); }
     public RobotConfiguration Subsystem(String partName) { return new RobotConfiguration((RobotBuilder)Part(partName).Value("robotBuilder")); }
-    public Object Value(String valueName) { return _robotBuilder.getPart().Value(valueName); }
+    public Object Value(String valueName) { return _robotBuilder.getSubsystemPart().Value(valueName); }
 
     public MotorController MotorController() { return Values().MotorController(); }
     public MotorController MotorController(String name) { return Values().MotorController(name); }
     public Encoder Encoder() { return Encoder(Encoder.CLASSNAME); }
     public Encoder Encoder(String name) { return Values().Encoder(name); }
-    public Solenoid Solenoid(String name) { return Solenoid.WrapPart(_robotBuilder.getPart(), name); }
+    public Solenoid Solenoid(String name) { return Solenoid.WrapPart(_robotBuilder.getSubsystemPart(), name); }
 
     public edu.wpi.first.wpilibj.DigitalInput DigitalInput(String name) { 
-        return new DigitalInput(_robotBuilder.getPart().getPart(name).getInt(RoboRIO.digitalInput));
+        return new DigitalInput(_robotBuilder.getSubsystemPart().getPart(name).getInt(RoboRIO.digitalInput));
     }
 
     public Chassis Chassis() { return Values().SwerveDrive().Chassis(); }

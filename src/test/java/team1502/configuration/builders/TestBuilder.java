@@ -70,6 +70,51 @@ public class TestBuilder implements IBuild {
         formatter.PrintTable();
 
     }
+    public void DumpParts2() {
+        var keySet = new HashSet<String>();
+
+
+        var formatter = MdFormatter.Table( _parts.size() + " Parts Registered")
+            .Heading("Key", "class", "Template", "Name", "Friendly Name", "Label");
+
+        for (Part part : _parts) {
+            var key = part.getKey();
+            if (!keySet.add(key)) {
+                System.out.println(key + " is a duplicate");
+            }
+            formatter.AddRow(
+                part.getKey(),
+                part.hasValue(Part.CLASS_NAME) ? (String)part.getValue(Part.CLASS_NAME) : "",
+                part.hasValue(Part.TEMPLATE_NAME) ? (String)part.getValue(Part.TEMPLATE_NAME) : "",
+                part.hasValue(Part.BUILD_NAME) ? (String)part.getValue(Part.BUILD_NAME) : "",
+                part.hasValue(Part.friendlyName) ? (String)part.getValue(Part.friendlyName) : "",
+                part.hasValue(Connector.label) ? (String)part.getValue(Connector.label) : ""
+            );
+        }
+        formatter.PrintTable();
+
+    }
+    public void DumpParts2b() {
+        var keySet = new HashSet<String>();
+
+
+        var formatter = MdFormatter.Table( _parts.size() + " Parts Registered")
+            .Heading("Key", "class", "Name", "Friendly Name");
+
+        for (Part part : _parts) {
+            var key = part.getKey();
+            if (!keySet.add(key)) {
+                System.out.println(key + " is a duplicate");
+            }
+            formatter.AddRow(
+                part.getKey(),
+                part.hasValue(Part.CLASS_NAME) ? (String)part.getValue(Part.CLASS_NAME) : "",
+                part.hasValue(Part.BUILD_NAME) ? (String)part.getValue(Part.BUILD_NAME) : "",
+                part.hasValue(Part.friendlyName) ? (String)part.getValue(Part.friendlyName) : ""
+            );
+        }
+        formatter.PrintTable();
+    }
     public void showType(String className) {
         var parts = _parts.stream()
             .filter(part->((String)part.getValue(Part.CLASS_NAME)) == className)

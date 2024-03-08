@@ -25,7 +25,9 @@ public class Part {
 
 
     public Part() {}
-    public Part(String name) { setValue(Part.BUILD_NAME, name);  }
+    public Part(String name) {
+        setValue(Part.BUILD_NAME, name); // makeKey(makeLocalClassName(name)));
+    }
 
     @Override
     public String toString() { return getKey(); }
@@ -38,18 +40,24 @@ public class Part {
 
     public String getType() { return (String)getValue(Part.CLASS_NAME); }
     
-    public static String makeKey(String name) {
+    public static String makeLocalClassName(String name) {
         var key = name;
         var ds = key.lastIndexOf("$");
         if (ds > -1) {
             key = key.substring(ds + 1);
         }
+        return key;
+    }
+    
+    public static String makeKey(String name) {
+        var key = name;
         var dot = key.lastIndexOf(".");
         if (dot > -1) {
             key = key.substring(dot + 1);
         }
         return key;
     }
+    
     public String getKey() {
         var key = makeKey(getName());
         return parent == null
@@ -86,12 +94,16 @@ public class Part {
         if (part.getParent() == null) { // warning: didn't use PartBuilder
             part.setParent(this);
         }
-        var key = (String)part.getValue(BUILD_NAME);
-        if (part.hasValue(KEY_NAME)) {            
-            key = (String)part.getValue(KEY_NAME);
-        }
+        var key = part.getMapKey();
         setValue(key, part);
         return this;
+    }
+    public String getMapKey() {
+        var key = (String)getValue(BUILD_NAME);
+        if (hasValue(KEY_NAME)) {            
+            key = (String)getValue(KEY_NAME);
+        }
+        return key;
     }
     
     

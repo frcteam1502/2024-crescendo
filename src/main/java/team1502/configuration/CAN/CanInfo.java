@@ -27,7 +27,7 @@ public class CanInfo extends Connector {
         Manufacturer(manufacturer);
         FriendlyName(manufacturer.ManufacturerName + " " + deviceType.DeviceName);
         Name(Channel.SIGNAL_CAN + ":" + deviceType.toString() + "|" + manufacturer.toString());
-        Value(Part.KEY_NAME, canInfo);
+        Value(Part.KEY_NAME, CanInfo.canInfo);
     }
     
     public CanInfo(IBuild build, Part part) { super(build, part); }

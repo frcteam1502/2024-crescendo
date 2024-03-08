@@ -329,7 +329,7 @@ public class Builder {
     }
 
     Channel createChannelForNode(String signal, Builder node) {
-        var ch = new Channel(getIBuild(), signal, Name(), node.getPart().getKey());
+        var ch = new Channel(getIBuild(), signal, Name(), node.getPart().getKey().replace(".","|"));
         return ch;
     }
 

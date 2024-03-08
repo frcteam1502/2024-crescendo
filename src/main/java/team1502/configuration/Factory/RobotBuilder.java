@@ -12,35 +12,6 @@ import team1502.configuration.builders.power.*;
 import team1502.configuration.builders.sensors.*;
 
 public class RobotBuilder implements IBuild /*extends Builder*/{
-    private PartFactory _partFactory;
-    private HashMap<String, Builder> _buildMap = new HashMap<>(); // built top-level parts wrapped in builder
-    private HashMap<String, RobotBuilder> _subsystemMap = new HashMap<>(); // subsystems
-    private ArrayList<Part> _parts = new ArrayList<>(); // every part created
-        
-    private RobotBuilder() {
-        _partFactory = new PartFactory(getIBuild());
-    }
-    
-    private RobotBuilder _parent;
-    private Builder _subsystemPart;
-    public Builder getPart() { return _subsystemPart; }
-
-    //private Part _part;
-    private RobotBuilder(RobotBuilder parent, String name) {
-        // todo, look for existing part "sub-factory"
-        _parent = parent;
-        _parent._subsystemMap.put(name, this);
-        _partFactory = new PartFactory(_parent.getPartFactory(), getIBuild());
-        _subsystemPart= Builder.DefineAs("Subsystem").apply(parent); // ??
-        _subsystemPart.Name(name);
-        _subsystemPart.setIBuild(this);
-        _subsystemPart.Value("robotBuilder", this);
-    }
-    
-    public PartFactory getPartFactory() { return _partFactory; }
-    ArrayList<Part> getParts() { return _parts; }
-
-    public String Note;
 
     public static RobotBuilder Create() {
         var robot = new RobotBuilder();
@@ -52,6 +23,73 @@ public class RobotBuilder implements IBuild /*extends Builder*/{
         fn.apply(robot);
         return robot;
     }
+
+    private RobotBuilder() {
+        _partFactory = new PartFactory(getIBuild());
+    }
+    
+
+    private PartFactory _partFactory;
+    private HashMap<String, Builder> _buildMap = new HashMap<>(); // built top-level parts wrapped in builder
+    //private HashMap<String, RobotBuilder> _subsystemMap = new HashMap<>(); // subsystems
+    private ArrayList<Part> _parts = new ArrayList<>(); // every part created
+        
+    public PartFactory getPartFactory() { return _partFactory; }
+    ArrayList<Part> getParts() { return _parts; }
+
+    public String Note;
+
+    // SUBSYSTEM SUPPORT
+    private RobotBuilder _parent;
+    private Builder _subsystemPart;
+    boolean hasSubsystemPart() { return _subsystemPart != null; }
+    public Builder getSubsystemPart() { return _subsystemPart; }
+
+    //private Part _part;
+    private RobotBuilder(RobotBuilder parent, String name) {
+        // todo, look for existing part "sub-factory"
+        _parent = parent;
+        //_parent._subsystemMap.put(name, this);
+        _partFactory = new PartFactory(_parent.getPartFactory(), getIBuild());
+        _subsystemPart= Builder.DefineAs("Subsystem").apply(parent); // ??
+        _subsystemPart.Name(name);
+        _subsystemPart.setIBuild(this);
+        _subsystemPart.Value("robotBuilder", this);
+    }
+  
+    public RobotBuilder Subsystem(String partName) { return (RobotBuilder)getInstalled(partName).Value("robotBuilder"); }
+    public RobotBuilder Subsystem(Class<?> subsystemClass, Function<RobotBuilder, RobotBuilder> fn) {
+        var className = subsystemClass.getName(); // need this as map key
+        var local = Part.makeLocalClassName(className);
+        var shortKey = Part.makeKey(local);
+        var friendly = shortKey.replace("Subsystem", "");
+        
+        var child = new RobotBuilder(this, friendly);
+        child.getSubsystemPart().Value(Part.KEY_NAME, className);
+        fn.apply(child);
+        Builder childPart = child.getSubsystemPart();
+        if (!childPart.hasValue(Part.friendlyName)) {
+            childPart.FriendlyName(friendly);
+        }
+        installSubsystem(child);
+
+        return child;
+    }
+
+    void installSubsystem(RobotBuilder child) {
+        if (hasSubsystemPart()) {
+            child.getSubsystemPart().getPart().setParent(_subsystemPart.getPart());
+        }
+        install(child.getSubsystemPart());
+    }
+
+    public RobotBuilder Subsystem(String partName, Function<RobotBuilder, RobotBuilder> fn) {
+        var child = new RobotBuilder(this, partName);
+        fn.apply(child);
+        installSubsystem(child);
+        return this;
+    }
+  
 
     // IBuild INTERFACE
     public IBuild getIBuild() {return this; }
@@ -113,8 +151,9 @@ public class RobotBuilder implements IBuild /*extends Builder*/{
         return this;
     }
 
-    public void install(Builder builder) {
-        _buildMap.put(builder.getName(), builder);
+    public void install(Builder builder) { install(builder, builder.getPart().getMapKey()); }
+    public void install(Builder builder, String mapKey) {
+        _buildMap.put(mapKey, builder);
         if (_subsystemPart != null) {
              var parent = builder.getParent();
              if (parent != null && parent.getPart() == _subsystemPart.getPart()) {
@@ -170,23 +209,6 @@ public class RobotBuilder implements IBuild /*extends Builder*/{
     }
     public RobotBuilder Part(String name, String partName, Function<Builder, Builder> fn) {
         return installBuilder(name, partName, Builder.DefineAs(partName), fn);
-    }
-
-    public RobotBuilder Subsystem(String partName) { return (RobotBuilder)getInstalled(partName).Value("robotBuilder"); }
-    public RobotBuilder Subsystem(Class<?> subsystemClass, Function<RobotBuilder, RobotBuilder> fn) {
-        return Subsystem(subsystemClass.getName(), rb->{
-            rb.getPart().FriendlyName(Part.makeKey(subsystemClass.getName()).replace("Subsystem", ""));
-            return fn.apply(rb);
-        });
-    }
-    public RobotBuilder Subsystem(String partName, Function<RobotBuilder, RobotBuilder> fn) {
-        var child = new RobotBuilder(this, partName);
-        if (_subsystemPart != null) {
-            child.getPart().getPart().setParent(_subsystemPart.getPart());
-        }
-        var subsystem = fn.apply(child); //Part(partName, partName, fn);
-        install(subsystem._subsystemPart);
-        return this;
     }
 
     public Builder Encoder() { return Encoder(Encoder.CLASSNAME); }
