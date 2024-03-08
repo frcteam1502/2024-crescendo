@@ -4,9 +4,10 @@
   "holonomicMode": true,
   "pathFolders": [
     "4NoteShoot",
+    "Attempt2Defence",
     "LeftSpotStartAMP",
     "MiddleSpotStartAmp",
-    "Attempt2Defence",
+    "4NoteClose",
     "PathsForDefenceBotAlliance",
     "RightSpotStartAMP"
   ],
