@@ -4,46 +4,40 @@
 
 package frc.robot.commands;
 
-import java.util.function.BooleanSupplier;
-
 import edu.wpi.first.wpilibj2.command.Command;
-import frc.robot.subsystems.ShooterIntake.ShooterIntake;
+import frc.robot.subsystems.SwerveDrive.DriveSubsystem;
 
-public class RampUpShooter extends Command {
-  /** Creates a new RampUpShooter. */
-  private final ShooterIntake shooterIntake;
-  private final BooleanSupplier isArmAtAmp;
 
-  public RampUpShooter(ShooterIntake shooterIntake, BooleanSupplier isArmAtAmp) {
+public class AlignToSpeaker extends Command {
+  /** Creates a new AlignToSpeaker. */
+  private DriveSubsystem driveSubsystem;
+  
+  public AlignToSpeaker(DriveSubsystem driveSubsystem){
     // Use addRequirements() here to declare subsystem dependencies.
-    this.shooterIntake = shooterIntake;
-    this.isArmAtAmp = isArmAtAmp;
-    addRequirements(shooterIntake);
+    this.driveSubsystem = driveSubsystem;
+    addRequirements(driveSubsystem);
   }
 
   // Called when the command is initially scheduled.
   @Override
-  public void initialize() {
-    //shooterIntake.setShooterOn();
-  }
+  public void initialize() {}
 
   // Called every time the scheduler runs while the command is scheduled.
   @Override
   public void execute() {
-    if(!isArmAtAmp.getAsBoolean()){
-      shooterIntake.setShooterOn();
-    }
+    driveSubsystem.drive(0, 0, driveSubsystem.vision_aim_proportional(), true);
   }
 
   // Called once the command ends or is interrupted.
   @Override
-  public void end(boolean interrupted) {}
+  public void end(boolean interrupted) {
+    driveSubsystem.drive(0, 0, 0, true);
+  }
 
   // Returns true when the command should end.
   @Override
   public boolean isFinished() {
-    if((shooterIntake.isShooterAtSpeed())||
-       (isArmAtAmp.getAsBoolean())){
+    if((driveSubsystem.isSpeakerDataValid()) && (driveSubsystem.getVisionTargetAngle() < 1.0)){
       return true;
     }
     return false;

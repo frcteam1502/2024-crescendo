@@ -33,6 +33,8 @@ public class Robot extends TimedRobot {
   public String commit = "unknown";
   public String radio = "1502";
 
+  private boolean wasAutonExecuted = false;
+
   /**
    * This function is run when the robot is first started up and should be used for any
    * initialization code.
@@ -49,10 +51,9 @@ public class Robot extends TimedRobot {
 
     }
      
-    CameraServer.startAutomaticCapture();
-
+    //CameraServer.startAutomaticCapture();
+    
     RobotController.setBrownoutVoltage(3);
-    //Register PDP and PH Logger items
     
     // Instantiate our RobotContainer.  This will perform all our button bindings, and put our
     // autonomous chooser on the dashboard.
@@ -85,17 +86,15 @@ public class Robot extends TimedRobot {
   /** This function is called once each time the robot enters Disabled mode. */
   @Override
   public void disabledInit() {
-    GameState.disabledInit();
   }
-
-  @Override
-  public void disabledPeriodic() {}
 
   /** This autonomous runs the autonomous command selected by your {@link RobotContainer} class. */
   @Override
   public void autonomousInit() {
     GameState.autonomousInit();
     m_autonomousCommand = m_robotContainer.getAutonomousCommand();
+
+    wasAutonExecuted = true;
 
     // schedule the autonomous command (example)
     if (m_autonomousCommand != null) {
@@ -109,6 +108,12 @@ public class Robot extends TimedRobot {
 
   @Override
   public void teleopInit() {
+    double rotation = m_robotContainer.driveSubsystem.getPoseRotationDegrees();
+    if(wasAutonExecuted){
+      m_robotContainer.driveSubsystem.resetGyro(rotation);
+      wasAutonExecuted = false;
+    }
+
     GameState.teleopInit();
     // This makes sure that the autonomous stops running when
     // teleop starts running. If you want the autonomous to
@@ -117,6 +122,7 @@ public class Robot extends TimedRobot {
     if (m_autonomousCommand != null) {
       m_autonomousCommand.cancel();
     }
+    //m_robotContainer.driveSubsystem.resetGyro(poseRotation);
   }
 
   /** This function is called periodically during operator control. */

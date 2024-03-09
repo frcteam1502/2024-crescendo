@@ -35,6 +35,7 @@ final class ShooterIntakeConstants{
   public final static double SHOOTER_HOLD_RPM = -100;
   public final static double INTAKE_DEFAULT_PICK_UP_RPM = 2500;
   public final static double INTAKE_DEFAULT_INDEX_RPM = 100;
+  public final static double INTAKE_DEFAULT_AMP_RPM = 2000;
   public final static double INTAKE_DEFAULT_EJECT_RPM = -1000;
   public final static double INTAKE_DEFAULT_SHOOT_RPM = 3500;
 
@@ -77,6 +78,7 @@ public class ShooterIntake extends SubsystemBase {
   private double shooter_speed = ShooterIntakeConstants.SHOOTER_DEFAULT_RPM;
   private double intakePickupSpeed = ShooterIntakeConstants.INTAKE_DEFAULT_PICK_UP_RPM;
   private double intakeIndexSpeed = ShooterIntakeConstants.INTAKE_DEFAULT_INDEX_RPM;
+  private double intakeAmpSpeed = ShooterIntakeConstants.INTAKE_DEFAULT_AMP_RPM;
   private double intakeEjectSpeed = ShooterIntakeConstants.INTAKE_DEFAULT_EJECT_RPM;
   private double intakeShootSpeed = ShooterIntakeConstants.INTAKE_DEFAULT_SHOOT_RPM;
 
@@ -154,7 +156,7 @@ public class ShooterIntake extends SubsystemBase {
     shooter_lead_controller.setFF(shooter_ff);
     shooter_follow_controller.setFF(shooter_ff);
     shooter_lead_controller.setReference(shooter_speed, CANSparkMax.ControlType.kVelocity);
-    shooter_follow_controller.setReference(shooter_speed, CANSparkMax.ControlType.kVelocity);
+    shooter_follow_controller.setReference(shooter_speed+200, CANSparkMax.ControlType.kVelocity);
     isShooterOn = true;
   }
 
@@ -172,6 +174,10 @@ public class ShooterIntake extends SubsystemBase {
   public void setIntakeIndex(){
     intake_controller.setFF(intake_ff); 
     intake_controller.setReference(intakeIndexSpeed, CANSparkMax.ControlType.kVelocity);
+  }
+  public void setIntakeAmp(){
+    intake_controller.setFF(intake_ff); 
+    intake_controller.setReference(intakeAmpSpeed, CANSparkMax.ControlType.kVelocity);
   }
 
   public void setIntakeShoot(){

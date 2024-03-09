@@ -3,25 +3,25 @@
   "waypoints": [
     {
       "anchor": {
-        "x": 1.37,
-        "y": 5.52
+        "x": 2.44,
+        "y": 7.0
       },
       "prevControl": null,
       "nextControl": {
-        "x": 2.4499707772596704,
-        "y": 5.562647359246215
+        "x": 2.262597392527166,
+        "y": 6.874261052373746
       },
       "isLocked": false,
       "linkedName": null
     },
     {
       "anchor": {
-        "x": 2.4382599407138885,
-        "y": 5.55
+        "x": 2.0400914981573175,
+        "y": 6.522935956000301
       },
       "prevControl": {
-        "x": 1.3374413054104268,
-        "y": 5.515804013063089
+        "x": 2.1806215367066955,
+        "y": 6.897682725465309
       },
       "nextControl": null,
       "isLocked": false,
@@ -39,11 +39,14 @@
   },
   "goalEndState": {
     "velocity": 0,
-    "rotation": 0,
-    "rotateFast": true
+    "rotation": 30.963756532073567,
+    "rotateFast": false
   },
   "reversed": false,
-  "folder": "PathsForDefenceBotAlliance",
-  "previewStartingState": null,
+  "folder": "LeftSpotStartAMP",
+  "previewStartingState": {
+    "rotation": 0,
+    "velocity": 0
+  },
   "useDefaultConstraints": true
 }
