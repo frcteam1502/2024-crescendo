@@ -29,12 +29,14 @@ public class ShooterIntake extends SubsystemBase {
   public final static String PHOTO_SENSOR_NC = "Photosensor NC";
 
   private final static double SHOOTER_DEFAULT_RPM = 4000;
+  public final static double SHOOTER_HOLD_RPM = -100;
   private final static double SHOOTER_AMP_RPM = 100;
-  private final static double SHOOTER_HOLD_RPM = -100;
 
   private final static double INTAKE_PICK_UP_FAST_RPM = 2000;
   private final static double INTAKE_PICK_UP_SLOW_RPM = 1000;
-  private final static double INTAKE_DEFAULT_INDEX_RPM = 250;
+  public final static double INTAKE_DEFAULT_PICK_UP_RPM = 2500;
+  private final static double INTAKE_DEFAULT_INDEX_RPM = 100;
+  private final static double INTAKE_DEFAULT_AMP_RPM = 2000;
   private final static double INTAKE_DEFAULT_EJECT_RPM = -1000;
   private final static double INTAKE_DEFAULT_SHOOT_RPM = 3500;
 
@@ -59,6 +61,7 @@ public class ShooterIntake extends SubsystemBase {
   private double intakePickupFastSpeed = INTAKE_PICK_UP_FAST_RPM;
   private double intakePickupSlowSpeed = INTAKE_PICK_UP_SLOW_RPM;
   private double intakeIndexSpeed = INTAKE_DEFAULT_INDEX_RPM;
+  private double intakeAmpSpeed = INTAKE_DEFAULT_AMP_RPM;
   private double intakeEjectSpeed = INTAKE_DEFAULT_EJECT_RPM;
   private double intakeShootSpeed = INTAKE_DEFAULT_SHOOT_RPM;
 

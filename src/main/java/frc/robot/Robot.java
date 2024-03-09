@@ -32,6 +32,8 @@ public class Robot extends TimedRobot {
   private String commit = "unknown";
   private String radio = "1502";
 
+  private boolean wasAutonExecuted = false;
+
   /**
    * This function is run when the robot is first started up and should be used for any
    * initialization code.
@@ -94,6 +96,7 @@ public class Robot extends TimedRobot {
   public void autonomousInit() {
     GameState.autonomousInit();
     m_autonomousCommand = m_robotContainer.getAutonomousCommand();
+    wasAutonExecuted = true;
 
     // schedule the autonomous command (example)
     if (m_autonomousCommand != null) {
@@ -108,6 +111,13 @@ public class Robot extends TimedRobot {
   @Override
   public void teleopInit() {
     GameState.teleopInit();
+    double rotation = m_robotContainer.driveSubsystem.getPoseRotationDegrees();
+    if(wasAutonExecuted){
+      m_robotContainer.driveSubsystem.resetGyro(rotation);
+      wasAutonExecuted = false;
+    }
+
+
     // This makes sure that the autonomous stops running when
     // teleop starts running. If you want the autonomous to
     // continue until interrupted by another command, remove
