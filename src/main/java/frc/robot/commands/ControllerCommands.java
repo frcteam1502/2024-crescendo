@@ -68,7 +68,7 @@ public class ControllerCommands extends Command {
         driver_gain = DriveConstants.MAX_TELEOP_SPEED_DRIVER_1;
     }
 
-    if(Driver.Controller.leftBumper().getAsBoolean()){
+    if(Driver.Controller.rightBumper().getAsBoolean()){
       teleopSpeedGain = DriveConstants.MAX_FINESSE_SPEED;
       teleopRotationGain = DriveConstants.MAX_FINESSE_ROTATION;
     }else{

@@ -48,6 +48,23 @@ final class ShooterIntakeConstants{
   public final static double INTAKE_PID_D = 0;
   public final static double INTAKE_PID_F = 0.000275;
 
+  public static final double[] SPEED_LOOK_UP_TABLE = 
+  {
+    5000,//6
+    5000,//5.5
+    5000,//5
+    5000,//4.5
+    5000,//4
+    5000,//3.5
+    5000,//3
+    5000,//2.5
+    5000,//2
+    5000,//1.5
+  };
+
+  public static final double LOOKUP_TABLE_MIN = 1.5;
+  public static final double LOOKUP_TABLE_MAX = 6;
+
 }
 
 public class ShooterIntake extends SubsystemBase {
@@ -191,6 +208,21 @@ public class ShooterIntake extends SubsystemBase {
     }else{
       return false;
     }
+  }
+
+  public void lookupShooterSpeed(double distance){
+    double angle;
+
+    if(distance >= ShooterIntakeConstants.LOOKUP_TABLE_MAX){
+      angle = ShooterIntakeConstants.LOOKUP_TABLE_MAX;
+    }else if(distance <= ShooterIntakeConstants.LOOKUP_TABLE_MIN){
+      angle = ShooterIntakeConstants.LOOKUP_TABLE_MIN;
+    }else{
+      double temp_index = ShooterIntakeConstants.LOOKUP_TABLE_MAX % distance;
+      int index = (int)(temp_index/0.5);
+      angle = ShooterIntakeConstants.SPEED_LOOK_UP_TABLE[index];
+    }
+    shooter_speed = angle;
   }
 
   public double getIntakeCurrent(){
