@@ -14,6 +14,8 @@ import edu.wpi.first.wpilibj.DigitalInput;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Logger;
+import frc.robot.commands.ShooterIntakeCommands;
+import team1502.configuration.annotations.DefaultCommand;
 
 final class Motors{
   public final static CANSparkMax SHOOTER_LEAD    = new CANSparkMax(2, CANSparkLowLevel.MotorType.kBrushless);
@@ -49,7 +51,13 @@ final class ShooterIntakeConstants{
 
 }
 
+@DefaultCommand(command = ShooterIntakeCommands.class)
 public class ShooterIntake extends SubsystemBase {
+  public final static String SHOOTER = "Shooter";
+  public final static String INTAKE = "Intake";
+  public final static String PHOTO_SENSOR_NO = "Photosensor NO";
+  public final static String PHOTO_SENSOR_NC = "Photosensor NC";
+
   /** Creates a new ShooterIntake. */
   private final CANSparkMax shooter_lead;
   private final CANSparkMax shooter_follow;

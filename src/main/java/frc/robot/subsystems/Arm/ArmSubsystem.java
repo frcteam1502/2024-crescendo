@@ -1,6 +1,8 @@
 package frc.robot.subsystems.Arm;
 
 import frc.robot.Logger;
+import frc.robot.commands.ArmCommands;
+import team1502.configuration.annotations.DefaultCommand;
 
 import com.revrobotics.CANSparkMax;
 import com.revrobotics.CANSparkLowLevel;
@@ -59,7 +61,10 @@ final class ArmConstants{
   public static final double BRAKE_THRESHOLD = 0.25;
 }
 
+@DefaultCommand(command = ArmCommands.class)
 public class ArmSubsystem extends SubsystemBase {
+  public static final String BRAKE_SOLENOID = "Brake Solenoid";
+
   private final CANSparkMax rotate;
   private final CANSparkMax rotateFollower;
 

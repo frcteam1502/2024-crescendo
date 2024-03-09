@@ -4,18 +4,19 @@
 
 package frc.robot;
 
-import frc.robot.Logger;
-import frc.robot.subsystems.Arm.ArmSubsystem;
+import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Path;
+
 import edu.wpi.first.cameraserver.CameraServer;
 import edu.wpi.first.networktables.NetworkTableEntry;
-import edu.wpi.first.wpilibj.PneumaticHub;
-import edu.wpi.first.wpilibj.PowerDistribution;
-import edu.wpi.first.wpilibj.PowerDistribution.ModuleType;
-import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
+import edu.wpi.first.wpilibj.Filesystem;
 import edu.wpi.first.wpilibj.RobotController;
 import edu.wpi.first.wpilibj.TimedRobot;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
+
 import frc.testmode.swerve.AbsoluteEncoderAlignment;
 
 /**
@@ -28,53 +29,9 @@ public class Robot extends TimedRobot {
   private Command m_autonomousCommand;
   private RobotContainer m_robotContainer;
 
-  private Logger logger = new Logger();
-
-  private String[] pdhRealChannelNames = {
-    null,             //"0"
-    "Arm Lead",       //"1"
-    "Shooter Lead",   //"2"
-    "Shooter Follow", //"3"
-    "RL Turn",        //"4"  
-    "RL Drive",       //"5"
-    "Arm Follow",     //"6"
-    null,             //"7"
-    "RR Turn",        //"8"
-    "RR Drive",       //"9"
-    "FR Turn",        //"10"
-    "FR Drive",       //"11"
-    null,             //"12"
-    null,             //"13"
-    null,             //"14"
-    null,             //"15"
-    "FL Turn",        //"16"
-    "FL Drive",       //"17"
-    "Intake",         //"18"
-    null,             //"19"
-    null,             //"20"
-    null,             //"21"
-    null,             //"22"
-    null,             //"23"
-};
-
-private String[] pneumaticNames = {
-  "Brake Solenoid", //"0",
-  null, //"1",
-  null, //"2"
-  null, //"3"
-  null, //"4",
-  null, //"5",
-  null, //"6",
-  null, //"7",
-  null, //"8",
-  null, //"9",
-  null, //"10",
-  null, //"11",
-  null, //"12",
-  null, //"13",
-  null, //"14",
-  null, //"15",
-};
+  public String branch = "unknown";
+  public String commit = "unknown";
+  public String radio = "1502";
 
   /**
    * This function is run when the robot is first started up and should be used for any
@@ -82,22 +39,24 @@ private String[] pneumaticNames = {
    */
   @Override
   public void robotInit() {
+    Path deployPath = Filesystem.getDeployDirectory().toPath();
+    try {
+      branch = Files.readString(deployPath.resolve("branch.txt"));
+      commit = Files.readString(deployPath.resolve("commit.txt"));
+      radio = Files.readString(deployPath.resolve("wifi.txt"));
+    } 
+    catch (IOException ex) {
+
+    }
+     
     CameraServer.startAutomaticCapture();
-    
+
     RobotController.setBrownoutVoltage(3);
     //Register PDP and PH Logger items
     
     // Instantiate our RobotContainer.  This will perform all our button bindings, and put our
     // autonomous chooser on the dashboard.
-    m_robotContainer = new RobotContainer();
-
-    //Register Logger items
-    //Logger.RegisterLoopTimes(this);
-    Logger.RegisterPdp(new PowerDistribution(1, ModuleType.kRev), pdhRealChannelNames);
-    //Logger.RegisterPneumaticHub(new PneumaticHub(), pneumaticNames);
-    logger.start();
-
-    
+    m_robotContainer = new RobotContainer(radio);
   }
 
   /**
@@ -114,30 +73,12 @@ private String[] pneumaticNames = {
     // and running subsystem periodic() methods.  This must be called from the robot's periodic
     // block in order for anything in the Command-based framework to work.
     CommandScheduler.getInstance().run();
+    if (GameState.isFirst()) {
+      SmartDashboard.putString("Code Branch", branch);
+      SmartDashboard.putString("Code Commit", commit);
+      SmartDashboard.putString("Configuration (radio)", radio);
+    }
     GameState.robotPeriodic();
-    Double v = testdouble.getValue();
-    System.out.print(v);
-    }
-
-
-
-    PresisdentDouble testdouble = new PresisdentDouble("testDouble", 71.3);
-
-  private class PresisdentDouble{
-    
-      private NetworkTableEntry entry;
-    
-    public PresisdentDouble(String name, double defaultValue){
-     entry = SmartDashboard.getEntry(name);
-     
-      entry.setDefaultNumber(defaultValue);
-      entry.setPersistent();  
-    }
-
-    public double getValue(){
-      return entry.getDouble(0);
-    }
-  
   }
 
 
