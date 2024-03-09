@@ -502,7 +502,7 @@ public class DriveSubsystem extends SubsystemBase{
     double kP = .01;
 
     double error = vision.getSpeaker_tx();
-    double min_rate = 0.075;
+    double min_rate = .075;
 
     // tx ranges from (-hfov/2) to (hfov/2) in degrees. If your target is on the rightmost edge of 
     // your limelight 3 feed, tx should return roughly 31 degrees.
@@ -522,7 +522,7 @@ public class DriveSubsystem extends SubsystemBase{
       }   
     }else{
       //Speaker not found, turn until we find it
-      targetingAngularVelocity = 0.75;
+      targetingAngularVelocity = 2.0;
     }
 
     return targetingAngularVelocity;
