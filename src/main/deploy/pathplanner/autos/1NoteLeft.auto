@@ -49,12 +49,6 @@
           }
         },
         {
-          "type": "wait",
-          "data": {
-            "waitTime": 1.0
-          }
-        },
-        {
           "type": "named",
           "data": {
             "name": "Rotate to close shot"

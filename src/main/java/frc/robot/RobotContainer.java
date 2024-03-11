@@ -68,10 +68,7 @@ public class RobotContainer {
     NamedCommands.registerCommand("Intake on", new IntakeNote(shooterIntakeSubsystem));
     NamedCommands.registerCommand("Intake off", new InstantCommand(shooterIntakeSubsystem::setIntakeOff));
     NamedCommands.registerCommand("Shot Note", new ShootNote(shooterIntakeSubsystem, ()->armSubsystem.isArmAtAmp()));
-    
-    
-    
-
+  
     //Build an Autochooser from SmartDashboard selection.  Default will be Commands.none()
 
     new PathPlannerAuto("MiddleAutoAMPFinal");
@@ -83,6 +80,7 @@ public class RobotContainer {
     new PathPlannerAuto("1NoteMiddle");
     new PathPlannerAuto("1NoteLeft");
     new PathPlannerAuto("1NoteRight");
+    //new PathPlannerAuto("Leave");
 
 
     autoChooser = AutoBuilder.buildAutoChooser();

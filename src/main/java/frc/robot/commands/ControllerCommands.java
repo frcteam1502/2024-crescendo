@@ -14,7 +14,7 @@ import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 final class DriveConstants {
   public static final double MAX_SPEED_METERS_PER_SECOND = 4.6;
   public static final double MAX_TELEOP_SPEED_DRIVER_1 = 1; //Range 0 to 1
-  public static final double MAX_TELEOP_SPEED_DRIVER_2 = 2; //Range 0 to 1
+  public static final double MAX_TELEOP_SPEED_DRIVER_2 = .75; //Range 0 to 1
   public static final double MAX_FINESSE_SPEED = .3;
 
   public static final double MAX_ROTATION_RADIANS_PER_SECOND = 11; //w = ((max_speed)/(2*pi*robot_radius))*(2*pi)
@@ -33,6 +33,8 @@ public class ControllerCommands extends Command {
 
   private SlewRateLimiter turnLimiter = new SlewRateLimiter(5);
   private final SendableChooser<String> driverChooser = new SendableChooser<>();
+
+  boolean finesse_mode = false;
   
   public ControllerCommands(DriveSubsystem drive, IBrownOutDetector brownOutDetector) {
     this.drive = drive;
@@ -68,7 +70,7 @@ public class ControllerCommands extends Command {
         driver_gain = DriveConstants.MAX_TELEOP_SPEED_DRIVER_1;
     }
 
-    if(Driver.Controller.rightBumper().getAsBoolean()){
+    if(Driver.Controller.getHID().getRightBumperPressed()){
       teleopSpeedGain = DriveConstants.MAX_FINESSE_SPEED;
       teleopRotationGain = DriveConstants.MAX_FINESSE_ROTATION;
     }else{

@@ -263,6 +263,7 @@ public class DriveSubsystem extends SubsystemBase{
     SmartDashboard.putNumber("Drive Robot Relative Rotation Command", relativeCommands.omegaRadiansPerSecond);
 
     SmartDashboard.putNumber("Gyro Yaw", getIMU_Yaw());
+    SmartDashboard.putNumber("Target Angle", targetAngle);
 
     //Swerve Module info
     SmartDashboard.putNumber("Front Left Speed Command", frontLeft.getCommandedSpeed());
@@ -328,7 +329,7 @@ public class DriveSubsystem extends SubsystemBase{
         poseEstimator.addVisionMeasurement(visionPose, currentTimestamp);
       }
     }
-    updateDashboard();
+    //updateDashboard();
   }
   
   public void drive(double xSpeed, double ySpeed, double rot, boolean fieldRelative) {
@@ -430,7 +431,7 @@ public class DriveSubsystem extends SubsystemBase{
 
   public void resetOdometry(Pose2d pose) {
     odometry.resetPosition(getGyroRotation2d(), getModulePositions(), pose);
-    //poseEstimator.resetPosition(getGyroRotation2d(), getModulePositions(), pose);
+    poseEstimator.resetPosition(getGyroRotation2d(), getModulePositions(), pose);
   }
 
   public void resetPoseEstimation(Pose2d pose) {
