@@ -8,8 +8,6 @@ import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 
-import edu.wpi.first.cameraserver.CameraServer;
-import edu.wpi.first.networktables.NetworkTableEntry;
 import edu.wpi.first.wpilibj.Filesystem;
 import edu.wpi.first.wpilibj.RobotController;
 import edu.wpi.first.wpilibj.TimedRobot;
@@ -32,8 +30,6 @@ public class Robot extends TimedRobot {
   public String branch = "unknown";
   public String commit = "unknown";
   public String radio = "1502";
-
-  private boolean wasAutonExecuted = false;
 
   /**
    * This function is run when the robot is first started up and should be used for any
@@ -94,8 +90,6 @@ public class Robot extends TimedRobot {
     GameState.autonomousInit();
     m_autonomousCommand = m_robotContainer.getAutonomousCommand();
 
-    wasAutonExecuted = true;
-
     // schedule the autonomous command (example)
     if (m_autonomousCommand != null) {
       m_autonomousCommand.schedule();
@@ -108,12 +102,6 @@ public class Robot extends TimedRobot {
 
   @Override
   public void teleopInit() {
-    double rotation = m_robotContainer.driveSubsystem.getPoseRotationDegrees();
-    if(wasAutonExecuted){
-      m_robotContainer.driveSubsystem.resetGyro(rotation);
-      wasAutonExecuted = false;
-    }
-
     GameState.teleopInit();
     // This makes sure that the autonomous stops running when
     // teleop starts running. If you want the autonomous to
@@ -122,7 +110,6 @@ public class Robot extends TimedRobot {
     if (m_autonomousCommand != null) {
       m_autonomousCommand.cancel();
     }
-    //m_robotContainer.driveSubsystem.resetGyro(poseRotation);
   }
 
   /** This function is called periodically during operator control. */

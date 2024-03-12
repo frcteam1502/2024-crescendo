@@ -5,8 +5,6 @@
 package frc.robot.subsystems.ShooterIntake;
 
 import com.revrobotics.CANSparkMax;
-import com.revrobotics.CANSparkLowLevel;
-import com.revrobotics.CANSparkBase.IdleMode;
 import com.revrobotics.RelativeEncoder;
 import com.revrobotics.SparkPIDController;
 
@@ -16,48 +14,26 @@ import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Logger;
 import frc.robot.commands.ShooterIntakeCommands;
 import team1502.configuration.annotations.DefaultCommand;
-
-final class Motors{
-  public final static CANSparkMax SHOOTER_LEAD    = new CANSparkMax(2, CANSparkLowLevel.MotorType.kBrushless);
-  public final static CANSparkMax SHOOTER_FOLLOW  = new CANSparkMax(3, CANSparkLowLevel.MotorType.kBrushless);
-  public final static CANSparkMax INTAKE          = new CANSparkMax(18, CANSparkLowLevel.MotorType.kBrushless);
-
-  public static final CANSparkMax.IdleMode SHOOTER_MOTOR_IDLE_MODE = IdleMode.kCoast;
-}
-
-final class ShooterIntakeConstants{
-  public final static int PHOTO_SENSOR_NO_CHANNEL  = 1;
-  public final static int PHOTO_SENSOR_NC_CHANNEL  = 2;
-  public final static DigitalInput PHOTO_SENSOR_NO = new DigitalInput(PHOTO_SENSOR_NO_CHANNEL);
-  public final static DigitalInput PHOTO_SENSOR_NC = new DigitalInput(PHOTO_SENSOR_NC_CHANNEL);
-
-  public final static double SHOOTER_DEFAULT_RPM = 4000;
-  public final static double SHOOTER_HOLD_RPM = -100;
-  public final static double INTAKE_DEFAULT_PICK_UP_RPM = 2500;
-  public final static double INTAKE_DEFAULT_INDEX_RPM = 100;
-  public final static double INTAKE_DEFAULT_AMP_RPM = 2000;
-  public final static double INTAKE_DEFAULT_EJECT_RPM = -1000;
-  public final static double INTAKE_DEFAULT_SHOOT_RPM = 3500;
-
-  public final static double SHOOTER_PID_P = 0.00005;
-  public final static double SHOOTER_PID_I = 0;
-  public final static double SHOOTER_PID_D = 0;
-  public final static double SHOOTER_PID_F = 0.000185;
-
-  public final static double INTAKE_GEAR_RATIO = 1.0/3.0;
-  public final static double INTAKE_PID_P = 0.00005;
-  public final static double INTAKE_PID_I = 0;
-  public final static double INTAKE_PID_D = 0;
-  public final static double INTAKE_PID_F = 0.000275;
-
-}
+import team1502.configuration.factory.RobotConfiguration;
 
 @DefaultCommand(command = ShooterIntakeCommands.class)
 public class ShooterIntake extends SubsystemBase {
   public final static String SHOOTER = "Shooter";
+  public final static String LEADER = "Leader";
+  public final static String FOLLOWER = "Follower";
   public final static String INTAKE = "Intake";
   public final static String PHOTO_SENSOR_NO = "Photosensor NO";
   public final static String PHOTO_SENSOR_NC = "Photosensor NC";
+
+  private final static double SHOOTER_DEFAULT_RPM = 4000;
+  private final static double SHOOTER_THRESHOLD_BELOW_MAX = 0.05; // i.e., within 5% of max
+  private final static double FOLLOWER_DELTA_RPM = 200;
+
+  private final static double INTAKE_DEFAULT_PICK_UP_RPM = 2500;
+  private final static double INTAKE_DEFAULT_INDEX_RPM = 100;
+  private final static double INTAKE_DEFAULT_AMP_RPM = 2000;
+  private final static double INTAKE_DEFAULT_EJECT_RPM = -1000;
+  private final static double INTAKE_DEFAULT_SHOOT_RPM = 3500;
 
   /** Creates a new ShooterIntake. */
   private final CANSparkMax shooter_lead;
@@ -75,57 +51,52 @@ public class ShooterIntake extends SubsystemBase {
   private final DigitalInput photoSensorNormOpen;
   private final DigitalInput photoSensorNormClosed;
 
-  private double shooter_speed = ShooterIntakeConstants.SHOOTER_DEFAULT_RPM;
-  private double intakePickupSpeed = ShooterIntakeConstants.INTAKE_DEFAULT_PICK_UP_RPM;
-  private double intakeIndexSpeed = ShooterIntakeConstants.INTAKE_DEFAULT_INDEX_RPM;
-  private double intakeAmpSpeed = ShooterIntakeConstants.INTAKE_DEFAULT_AMP_RPM;
-  private double intakeEjectSpeed = ShooterIntakeConstants.INTAKE_DEFAULT_EJECT_RPM;
-  private double intakeShootSpeed = ShooterIntakeConstants.INTAKE_DEFAULT_SHOOT_RPM;
+  private double shooter_speed = SHOOTER_DEFAULT_RPM;
+  private double intakePickupSpeed = INTAKE_DEFAULT_PICK_UP_RPM;
+  private double intakeIndexSpeed = INTAKE_DEFAULT_INDEX_RPM;
+  private double intakeAmpSpeed = INTAKE_DEFAULT_AMP_RPM;
+  private double intakeEjectSpeed = INTAKE_DEFAULT_EJECT_RPM;
+  private double intakeShootSpeed = INTAKE_DEFAULT_SHOOT_RPM;
 
-  private double shooter_ff = ShooterIntakeConstants.SHOOTER_PID_F;
-  private double intake_ff = ShooterIntakeConstants.INTAKE_PID_F;
-  private double shooter_p = ShooterIntakeConstants.SHOOTER_PID_P;
-  private double intake_p = ShooterIntakeConstants.INTAKE_PID_P;
+  private double shooter_ff;
+  private double intake_ff;
+  private double shooter_p;
+  private double intake_p;
 
-  private boolean isNoteLoading = false;
   private boolean isShooterOn = false;
   
-  public ShooterIntake() {
+  public ShooterIntake(RobotConfiguration config) {
     //Set up shooter control
-    shooter_lead = Motors.SHOOTER_LEAD;
-    shooter_lead.setIdleMode(Motors.SHOOTER_MOTOR_IDLE_MODE);
-    shooter_lead.setSmartCurrentLimit(40);
-    shooter_lead_controller = shooter_lead.getPIDController();
+    var shooterConfig = config.Subsystem(SHOOTER);
+    var leaderConfig = shooterConfig.MotorController(LEADER);
+    shooter_p = leaderConfig.PID().P();
+    shooter_ff = leaderConfig.PID().FF();
+    shooter_lead = leaderConfig.buildSparkMax();
+    shooter_lead_controller = leaderConfig.buildPIDController();
+    shooter_lead_encoder = leaderConfig.buildRelativeEncoder();
+    leaderConfig.registerLoggerObjects((n, r)->Logger.RegisterCanSparkMax(n,r));
     
-    shooter_follow = Motors.SHOOTER_FOLLOW;
-    shooter_follow.follow(shooter_lead, false);
-    //shooter_follow.setIdleMode(Motors.SHOOTER_MOTOR_IDLE_MODE);
-    shooter_follow.setSmartCurrentLimit(40);
-    shooter_follow_controller = shooter_follow.getPIDController();
-    
-    //Set up intake control
-    intake = Motors.INTAKE;
-    intake.setSmartCurrentLimit(60);
-    intake_controller = intake.getPIDController();
-    intake_controller.setFF(intake_ff);
-    
-    shooter_lead_encoder = shooter_lead.getEncoder();
+    var followerConfig = shooterConfig.MotorController(FOLLOWER);
+    shooter_follow = followerConfig.CANSparkMax();
+    shooter_follow_controller = followerConfig.buildPIDController();
     shooter_follow_encoder = shooter_follow.getEncoder();
-    intake_encoder = intake.getEncoder();
-    intake_encoder.setVelocityConversionFactor(ShooterIntakeConstants.INTAKE_GEAR_RATIO);
+    followerConfig.registerLoggerObjects((n, r)->Logger.RegisterCanSparkMax(n,r));
 
-    photoSensorNormOpen = ShooterIntakeConstants.PHOTO_SENSOR_NO;
-    photoSensorNormClosed = ShooterIntakeConstants.PHOTO_SENSOR_NC;
+    //Set up intake control
+    var intakeConfig = config.Subsystem(INTAKE);
+    var intakeControllerConfig = intakeConfig.MotorController();
+    intake_p = intakeControllerConfig.PID().P();
+    intake_ff = intakeControllerConfig.PID().FF();
+    intake = intakeControllerConfig.buildSparkMax();;
+    intake_controller = intakeControllerConfig.buildPIDController();;
+    intake_encoder = intakeControllerConfig.buildRelativeEncoder();
+    intakeControllerConfig.registerLoggerObjects((n, r)->Logger.RegisterCanSparkMax(n,r));
+    Logger.RegisterSensor("Shooter Lead Speed",()->shooter_lead_encoder.getVelocity());
+    Logger.RegisterSensor("Shooter Follow Speed",()->shooter_follow_encoder.getVelocity());
+    Logger.RegisterSensor("Intake Speed",()->intake_encoder.getVelocity());
 
-    shooter_lead_controller.setP(ShooterIntakeConstants.SHOOTER_PID_P);
-    shooter_lead_controller.setI(ShooterIntakeConstants.SHOOTER_PID_I);
-    shooter_lead_controller.setD(ShooterIntakeConstants.SHOOTER_PID_D);
-    shooter_lead_controller.setFF(ShooterIntakeConstants.SHOOTER_PID_F);
-
-    shooter_follow_controller.setP(ShooterIntakeConstants.SHOOTER_PID_P);
-    shooter_follow_controller.setI(ShooterIntakeConstants.SHOOTER_PID_I);
-    shooter_follow_controller.setD(ShooterIntakeConstants.SHOOTER_PID_D);
-    shooter_follow_controller.setFF(ShooterIntakeConstants.SHOOTER_PID_F);
+    photoSensorNormOpen = intakeConfig.DigitalInput(PHOTO_SENSOR_NO); //.PHOTO_SENSOR_NO;
+    photoSensorNormClosed = intakeConfig.DigitalInput(PHOTO_SENSOR_NC); //.PHOTO_SENSOR_NC;
 
     SmartDashboard.putNumber("Shooter PID FF", shooter_ff);
     SmartDashboard.putNumber("Shooter Set Speed",shooter_speed);
@@ -134,8 +105,6 @@ public class ShooterIntake extends SubsystemBase {
     SmartDashboard.putNumber("Intake PID FF", intake_ff);
     SmartDashboard.putNumber("Intake Pickup Speed", intakePickupSpeed);
     SmartDashboard.putNumber("Intake PID p", intake_p);
-
-    registerLoggerObjects();
   }
 
   @Override
@@ -146,21 +115,20 @@ public class ShooterIntake extends SubsystemBase {
 
   public void toggleShooter(){
     if(isShooterOn){
-      setShooterOff();
-    }else{
-      setShooterOn();
-    }
+      setShooterOff(); }
+    else {
+      setShooterOn(); }
   }
 
   public void setShooterOn(){
     shooter_lead_controller.setFF(shooter_ff);
     shooter_follow_controller.setFF(shooter_ff);
     shooter_lead_controller.setReference(shooter_speed, CANSparkMax.ControlType.kVelocity);
-    shooter_follow_controller.setReference(shooter_speed+200, CANSparkMax.ControlType.kVelocity);
+    shooter_follow_controller.setReference(shooter_speed + FOLLOWER_DELTA_RPM, CANSparkMax.ControlType.kVelocity);
     isShooterOn = true;
   }
 
-  public void setShooterOff(){
+  private void setShooterOff(){
     shooter_lead_controller.setReference(0.0, CANSparkMax.ControlType.kVelocity);
     shooter_follow_controller.setReference(0.0, CANSparkMax.ControlType.kVelocity);
     isShooterOn = false;
@@ -195,10 +163,9 @@ public class ShooterIntake extends SubsystemBase {
 
   public boolean isNotePresent(){
     if((!photoSensorNormOpen.get())||(photoSensorNormClosed.get())){
-      return true;
-    }else{
-      return false;
-    }
+      return true; }
+    else {
+      return false; }
   }
 
   public double getIntakeCurrent(){
@@ -206,11 +173,11 @@ public class ShooterIntake extends SubsystemBase {
   }
 
   public boolean isShooterAtSpeed(){
-    double shooter_on_threshold = shooter_speed - (shooter_speed*0.05);
+    double shooter_on_threshold = shooter_speed - (shooter_speed * SHOOTER_THRESHOLD_BELOW_MAX);
     if(shooter_lead_encoder.getVelocity() >= shooter_on_threshold){
-      return true;
-    }
-    return false;
+      return true; }
+    else {
+      return false; }
   }
 
   private void updateDashboard(){
@@ -243,13 +210,4 @@ public class ShooterIntake extends SubsystemBase {
     
   }
 
-  public void registerLoggerObjects(){
-    Logger.RegisterCanSparkMax("Shooter Lead", Motors.SHOOTER_LEAD);
-    Logger.RegisterCanSparkMax("Shooter Follow", Motors.SHOOTER_FOLLOW);
-    Logger.RegisterCanSparkMax("Intake", Motors.INTAKE);
-
-    Logger.RegisterSensor("Shooter Lead Speed",()->shooter_lead_encoder.getVelocity());
-    Logger.RegisterSensor("Shooter Follow Speed",()->shooter_follow_encoder.getVelocity());
-    Logger.RegisterSensor("Intake Speed",()->intake_encoder.getVelocity());
-  }
 }

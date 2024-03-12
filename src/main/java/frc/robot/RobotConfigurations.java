@@ -130,26 +130,20 @@ public final class RobotConfigurations {
 
         .Subsystem(ShooterIntake.class, si -> si
             .Subsystem(ShooterIntake.SHOOTER, s -> s
-                .MotorController("Leader", "Shooter Motor", c->c
-                    .Follower("Shooter Motor", f->f
-                        //.PID(.00005, 0.0, 0.0, 0.000185) //TODO: PID for a follower?
-                        .PDH(3)
-                        .CanNumber(3)
-                        .FriendlyName("Shooter Follower").Abbreviation("Sh-Flw")
-                    )
+                .MotorController(ShooterIntake.LEADER, "Shooter Motor", c->c
                     .PID(.00005, 0.0, 0.0, 0.000185)
-                    .PDH(2)
-                    .CanNumber(2)
-                    .Abbreviation("Sh-Ldr")
-
+                    .PDH(2).CanNumber(2).Abbreviation("Sh-Ldr")
                     //.Value("SHOOTER_DEFAULT_RPM", 5000)
+                )
+                .MotorController(ShooterIntake.FOLLOWER, "Shooter Motor", f->f
+                    .PID(.00005, 0.0, 0.0, 0.000185)
+                    .PDH(3).CanNumber(3).FriendlyName("Shooter Follower").Abbreviation("Sh-Flw")
                 )
             )
             .Subsystem(ShooterIntake.INTAKE, i -> i
                 .MotorController("Motor", "Intake Motor", c->c
                     .PID(.00005, 0.0, 0.0, 0.000275)
-                    .PDH(18)
-                    .CanNumber(18).Abbreviation("Intk")
+                    .PDH(18).CanNumber(18).Abbreviation("Intk")
                     
                     // .Value("INTAKE_DEFAULT_PICK_UP_RPM", 2500)
                     // .Value("INTAKE_DEFAULT_EJECT_RPM", -2500)
