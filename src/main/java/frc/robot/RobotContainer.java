@@ -10,6 +10,7 @@ import frc.robot.subsystems.ShooterIntake.ShooterIntake;
 import frc.robot.commands.ControllerCommands;
 import frc.robot.commands.IntakeNote;
 import frc.robot.commands.MoveToAmp;
+import frc.robot.commands.MoveToIntake;
 import frc.robot.commands.MoveToShoot;
 import frc.robot.commands.ShootNote;
 import frc.robot.commands.ShooterIntakeCommands;
@@ -64,10 +65,11 @@ public class RobotContainer {
     NamedCommands.registerCommand("Rotate to intake", new InstantCommand(armSubsystem::rotateToIntake));
     NamedCommands.registerCommand("Rotate to close shot", new MoveToShoot(armSubsystem));
     NamedCommands.registerCommand("Rotate to far shot", new InstantCommand(armSubsystem::rotateToShootFar));
-    NamedCommands.registerCommand("Rotate to intake", new InstantCommand(armSubsystem::rotateToIntake));
+    NamedCommands.registerCommand("Rotate to intake", new MoveToIntake(armSubsystem));
     NamedCommands.registerCommand("Intake on", new IntakeNote(shooterIntakeSubsystem));
     NamedCommands.registerCommand("Intake off", new InstantCommand(shooterIntakeSubsystem::setIntakeOff));
     NamedCommands.registerCommand("Shot Note", new ShootNote(shooterIntakeSubsystem, ()->armSubsystem.isArmAtAmp()));
+    NamedCommands.registerCommand("Shooter On", new InstantCommand(shooterIntakeSubsystem::setShooterOn));
   
     //Build an Autochooser from SmartDashboard selection.  Default will be Commands.none()
 
@@ -80,7 +82,7 @@ public class RobotContainer {
     new PathPlannerAuto("1NoteMiddle");
     new PathPlannerAuto("1NoteLeft");
     new PathPlannerAuto("1NoteRight");
-    //new PathPlannerAuto("Leave");
+    new PathPlannerAuto("Leave");
 
 
     autoChooser = AutoBuilder.buildAutoChooser();

@@ -254,19 +254,19 @@ public class DriveSubsystem extends SubsystemBase{
     SmartDashboard.putNumber("Field Oriented Y Command (Forward)", fieldYCommand);
 
     //Robot Relative inputs
-    SmartDashboard.putNumber("Robot Relative vX Speed Command", speedCommands.vxMetersPerSecond);
+    /*SmartDashboard.putNumber("Robot Relative vX Speed Command", speedCommands.vxMetersPerSecond);
     SmartDashboard.putNumber("Robot Relative vY Speed Command", speedCommands.vyMetersPerSecond);
-    SmartDashboard.putNumber("Robot Relative Rotation Command", speedCommands.omegaRadiansPerSecond);
+    SmartDashboard.putNumber("Robot Relative Rotation Command", speedCommands.omegaRadiansPerSecond);*/
 
-    SmartDashboard.putNumber("Drive Robot Relative vX Speed Command", relativeCommands.vxMetersPerSecond);
-    SmartDashboard.putNumber("Drive Robot Relative vY Speed Command", relativeCommands.vyMetersPerSecond);
+    /*SmartDashboard.putNumber("Drive Robot Relative vX Speed Command", relativeCommands.vxMetersPerSecond);
+    SmartDashboard.putNumber("Drive Robot Relative vY Speed Command", relativeCommands.vyMetersPerSecond);*/
     SmartDashboard.putNumber("Drive Robot Relative Rotation Command", relativeCommands.omegaRadiansPerSecond);
 
     SmartDashboard.putNumber("Gyro Yaw", getIMU_Yaw());
     SmartDashboard.putNumber("Target Angle", targetAngle);
 
     //Swerve Module info
-    SmartDashboard.putNumber("Front Left Speed Command", frontLeft.getCommandedSpeed());
+    /*SmartDashboard.putNumber("Front Left Speed Command", frontLeft.getCommandedSpeed());
     SmartDashboard.putNumber("Front Left Angle Command", frontLeft.getCommandedAngle());
     SmartDashboard.putNumber("Front Left Speed Setpoint", frontLeft.getControllerSetpoint());
     SmartDashboard.putNumber("Front Left Measured Speed", frontLeft.getModuleVelocity());
@@ -288,7 +288,7 @@ public class DriveSubsystem extends SubsystemBase{
     SmartDashboard.putNumber("Rear Left Angle Command", backLeft.getCommandedAngle());
     SmartDashboard.putNumber("Rear Left Speed Setpoint", backLeft.getControllerSetpoint());
     SmartDashboard.putNumber("Rear Left Measured Speed", backLeft.getModuleVelocity());
-    SmartDashboard.putNumber("Rear Left CANcoder Angle", (backLeft.getAbsPositionZeroed()*(180/Math.PI)));
+    SmartDashboard.putNumber("Rear Left CANcoder Angle", (backLeft.getAbsPositionZeroed()*(180/Math.PI)));*/
 
     //Pose Info
     SmartDashboard.putString("FMS Alliance", DriverStation.getAlliance().toString());
@@ -329,7 +329,7 @@ public class DriveSubsystem extends SubsystemBase{
         poseEstimator.addVisionMeasurement(visionPose, currentTimestamp);
       }
     }
-    //updateDashboard();
+    updateDashboard();
   }
   
   public void drive(double xSpeed, double ySpeed, double rot, boolean fieldRelative) {

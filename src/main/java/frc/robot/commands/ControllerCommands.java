@@ -70,7 +70,7 @@ public class ControllerCommands extends Command {
         driver_gain = DriveConstants.MAX_TELEOP_SPEED_DRIVER_1;
     }
 
-    if(Driver.Controller.getHID().getRightBumperPressed()){
+    if(Driver.Controller.getHID().getRightBumper()){
       teleopSpeedGain = DriveConstants.MAX_FINESSE_SPEED;
       teleopRotationGain = DriveConstants.MAX_FINESSE_ROTATION;
     }else{
@@ -87,8 +87,6 @@ public class ControllerCommands extends Command {
     //Need to convert joystick input (-1 to 1) into m/s!!! 100% == MAX Attainable Rotation
     if(Driver.Controller.getRightTriggerAxis() > 0.5){
       rotationSpeed = drive.vision_aim_proportional();
-      //rotationSpeed = turnLimiter.calculate(((MathUtil.applyDeadband(drive.vision_aim_proportional(), 0.1)) * teleopRotationGain) *
-        //DriveConstants.MAX_ROTATION_RADIANS_PER_SECOND);
     }else{
       rotationSpeed = turnLimiter.calculate(((MathUtil.applyDeadband(Driver.getRightX(), 0.1)) * teleopRotationGain) *
         DriveConstants.MAX_ROTATION_RADIANS_PER_SECOND);

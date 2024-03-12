@@ -148,7 +148,7 @@ private String[] pneumaticNames = {
   public void teleopInit() {
     double rotation = m_robotContainer.driveSubsystem.getPoseRotationDegrees();
     if(wasAutonExecuted){
-      m_robotContainer.driveSubsystem.resetGyro(rotation);
+      //m_robotContainer.driveSubsystem.resetGyro(rotation);//Take out until PathPlanner headings are fixed!
       wasAutonExecuted = false;
     }
 
@@ -160,7 +160,6 @@ private String[] pneumaticNames = {
     if (m_autonomousCommand != null) {
       m_autonomousCommand.cancel();
     }
-    //m_robotContainer.driveSubsystem.resetGyro(poseRotation);
   }
 
   /** This function is called periodically during operator control. */
