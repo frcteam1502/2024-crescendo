@@ -61,16 +61,16 @@ final class ArmConstants{
 
   public static final double[] ANGLE_LOOK_UP_TABLE = 
   {
-    -42,//6
-    -40,//5.5
-    -38,//5
-    -36,//4.5
-    -34,//4
-    -32,//3.5
-    -30,//3
-    -28,//2.5
-    -26,//2
-    -24,//1.5
+    -43,//6
+    -43,//5.5
+    -43,//5
+    -40,//4.5
+    -40,//4
+    -38,//3.5
+    -36,//3
+    -34,//2.5
+    -32,//2
+    -26,//1.5
   };
 
   public static final double LOOKUP_TABLE_MIN = 1.5;

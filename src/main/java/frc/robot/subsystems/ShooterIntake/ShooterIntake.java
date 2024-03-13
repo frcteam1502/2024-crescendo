@@ -55,11 +55,11 @@ final class ShooterIntakeConstants{
     5000,//5
     5000,//4.5
     5000,//4
-    5000,//3.5
-    5000,//3
-    5000,//2.5
-    5000,//2
-    5000,//1.5
+    4500,//3.5
+    4500,//3
+    4500,//2.5
+    4000,//2
+    4000,//1.5
   };
 
   public static final double LOOKUP_TABLE_MIN = 1.5;

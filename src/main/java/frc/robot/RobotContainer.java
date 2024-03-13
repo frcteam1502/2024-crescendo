@@ -108,8 +108,8 @@ public class RobotContainer {
     armSubsystem.setDefaultCommand(new ArmCommands(armSubsystem));
     
     Operator.Controller.a().onTrue(new InstantCommand(armSubsystem::rotateToAmpTrap));
-    //Operator.Controller.b().onTrue(new InstantCommand(armSubsystem::rotateToShootFar));
-    Operator.Controller.b().onTrue(new AutoRotateArm(armSubsystem, ()->driveSubsystem.getDistanceToSpeaker()));
+    Operator.Controller.b().onTrue(new InstantCommand(armSubsystem::rotateToShootFar));
+    //Operator.Controller.b().onTrue(new AutoRotateArm(armSubsystem, ()->driveSubsystem.getDistanceToSpeaker()));
     Operator.Controller.y().onTrue(new InstantCommand(armSubsystem::rotateToShootClose));
     Operator.Controller.x().onTrue(new InstantCommand(armSubsystem::rotateToIntake));
     Operator.Controller.start().onTrue(new InstantCommand(armSubsystem::rotateToStart));
