@@ -77,7 +77,7 @@ public class ShooterIntake extends SubsystemBase {
     leaderConfig.registerLoggerObjects((n, r)->Logger.RegisterCanSparkMax(n,r));
     
     var followerConfig = shooterConfig.MotorController(FOLLOWER);
-    shooter_follow = followerConfig.CANSparkMax();
+    shooter_follow = followerConfig.buildSparkMax();
     shooter_follow_controller = followerConfig.buildPIDController();
     shooter_follow_encoder = shooter_follow.getEncoder();
     followerConfig.registerLoggerObjects((n, r)->Logger.RegisterCanSparkMax(n,r));
