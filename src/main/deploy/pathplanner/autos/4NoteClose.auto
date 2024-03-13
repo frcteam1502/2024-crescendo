@@ -26,6 +26,12 @@
         {
           "type": "named",
           "data": {
+            "name": "Shooter off"
+          }
+        },
+        {
+          "type": "named",
+          "data": {
             "name": "Rotate to intake"
           }
         },
@@ -34,15 +40,15 @@
           "data": {
             "commands": [
               {
-                "type": "path",
-                "data": {
-                  "pathName": "14nc"
-                }
-              },
-              {
                 "type": "named",
                 "data": {
                   "name": "Intake on"
+                }
+              },
+              {
+                "type": "path",
+                "data": {
+                  "pathName": "14nc"
                 }
               }
             ]
@@ -67,7 +73,7 @@
           }
         },
         {
-          "type": "parallel",
+          "type": "race",
           "data": {
             "commands": [
               {
@@ -86,22 +92,15 @@
           }
         },
         {
-          "type": "parallel",
+          "type": "path",
           "data": {
-            "commands": [
-              {
-                "type": "path",
-                "data": {
-                  "pathName": "34nc"
-                }
-              },
-              {
-                "type": "named",
-                "data": {
-                  "name": "Rotate to far shot"
-                }
-              }
-            ]
+            "pathName": "34nc"
+          }
+        },
+        {
+          "type": "named",
+          "data": {
+            "name": "Rotate to far shot"
           }
         },
         {
@@ -117,7 +116,13 @@
           }
         },
         {
-          "type": "parallel",
+          "type": "named",
+          "data": {
+            "name": "Intake off"
+          }
+        },
+        {
+          "type": "race",
           "data": {
             "commands": [
               {
@@ -160,7 +165,13 @@
           }
         },
         {
-          "type": "parallel",
+          "type": "named",
+          "data": {
+            "name": "Shooter off"
+          }
+        },
+        {
+          "type": "race",
           "data": {
             "commands": [
               {
@@ -179,28 +190,27 @@
           }
         },
         {
-          "type": "parallel",
+          "type": "path",
           "data": {
-            "commands": [
-              {
-                "type": "path",
-                "data": {
-                  "pathName": "74nc"
-                }
-              },
-              {
-                "type": "named",
-                "data": {
-                  "name": "Rotate to far shot"
-                }
-              }
-            ]
+            "pathName": "74nc"
+          }
+        },
+        {
+          "type": "named",
+          "data": {
+            "name": "Rotate to far shot"
           }
         },
         {
           "type": "named",
           "data": {
             "name": "Shot Note"
+          }
+        },
+        {
+          "type": "named",
+          "data": {
+            "name": "Shooter off"
           }
         }
       ]

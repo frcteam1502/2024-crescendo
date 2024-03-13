@@ -2,10 +2,10 @@
   "version": 1.0,
   "startingPose": {
     "position": {
-      "x": 0.72,
-      "y": 4.37
+      "x": 1.34,
+      "y": 5.54
     },
-    "rotation": -60.39975503603433
+    "rotation": 0
   },
   "command": {
     "type": "sequential",
@@ -34,15 +34,15 @@
           "data": {
             "commands": [
               {
-                "type": "path",
-                "data": {
-                  "pathName": "4NoteRight1"
-                }
-              },
-              {
                 "type": "named",
                 "data": {
                   "name": "Intake on"
+                }
+              },
+              {
+                "type": "path",
+                "data": {
+                  "pathName": "4NoteMiddle1"
                 }
               }
             ]
@@ -55,26 +55,14 @@
           }
         },
         {
-          "type": "path",
-          "data": {
-            "pathName": "1NoteRight"
-          }
-        },
-        {
           "type": "named",
           "data": {
             "name": "Shot Note"
-          }
-        },
-        {
-          "type": "path",
-          "data": {
-            "pathName": "1NoteRight2"
           }
         }
       ]
     }
   },
-  "folder": "1Note",
+  "folder": null,
   "choreoAuto": false
 }

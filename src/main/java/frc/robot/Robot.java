@@ -84,7 +84,7 @@ private String[] pneumaticNames = {
    */
   @Override
   public void robotInit() {
-    //CameraServer.startAutomaticCapture();
+    CameraServer.startAutomaticCapture();
     
     RobotController.setBrownoutVoltage(3);
     //Register PDP and PH Logger items
@@ -95,9 +95,9 @@ private String[] pneumaticNames = {
 
     //Register Logger items
     //Logger.RegisterLoopTimes(this);
-    Logger.RegisterPdp(new PowerDistribution(1, ModuleType.kRev), pdhRealChannelNames);
+    //Logger.RegisterPdp(new PowerDistribution(1, ModuleType.kRev), pdhRealChannelNames);
     //Logger.RegisterPneumaticHub(new PneumaticHub(), pneumaticNames);
-    logger.start();
+    //logger.start();
   }
 
   /**
@@ -148,7 +148,7 @@ private String[] pneumaticNames = {
   public void teleopInit() {
     double rotation = m_robotContainer.driveSubsystem.getPoseRotationDegrees();
     if(wasAutonExecuted){
-      m_robotContainer.driveSubsystem.resetGyro(rotation);
+      //m_robotContainer.driveSubsystem.resetGyro(rotation);//Take out until PathPlanner headings are fixed!
       wasAutonExecuted = false;
     }
 
@@ -160,7 +160,6 @@ private String[] pneumaticNames = {
     if (m_autonomousCommand != null) {
       m_autonomousCommand.cancel();
     }
-    //m_robotContainer.driveSubsystem.resetGyro(poseRotation);
   }
 
   /** This function is called periodically during operator control. */

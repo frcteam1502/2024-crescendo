@@ -54,8 +54,8 @@ final class ArmConstants{
   {
     -0.5, //Intake
     -24,  //Shoot Close
-    -33.5,  //Shoot Far
-    -70,  //Stow/Start
+    -38,  //Shoot Far
+    -76,  //Stow/Start
     -90,  //Amp/Trap
   };
 
@@ -165,6 +165,7 @@ public class ArmSubsystem extends SubsystemBase {
     SmartDashboard.putNumber("Arm Absolute Encoder Angle", getArmAbsPositionDegrees());
     SmartDashboard.putNumber("Arm Relative Encoder", rotateRelativeEncoder.getPosition());
     SmartDashboard.putNumber("Rotation Goal", goalRotate);
+    SmartDashboard.putBoolean("Is Arm At Rotation Goal", isArmAtRotateGoal());
   }
 
   public void reset(){
@@ -258,37 +259,13 @@ public class ArmSubsystem extends SubsystemBase {
       goalRotate += ArmConstants.ROTATE_CHANGE * 2;}
   }
 
-  private double calculateTargetDistance(){
-    double distance;
-    LimelightResults llresults = LimelightHelpers.getLatestResults("");
-    int numAprilTags = llresults.targetingResults.targets_Fiducials.length;
-    boolean validTarget = llresults.targetingResults.valid;
-
-    double ty = 0;
-    boolean targetFound = false;
-    //Determine if any AprilTags are present
-    if(validTarget){
-      //Parse through the JSON fiducials and see if speaker tags are present
-      for(int i=0;i<numAprilTags;i++){
-        int tagID = (int)llresults.targetingResults.targets_Fiducials[i].fiducialID;
-        
-        if((tagID == 7)||(tagID == 4)){
-          //Center Tag
-          ty = llresults.targetingResults.targets_Fiducials[i].ty;
-          targetFound = true;
-        }else{
-          targetFound = false;
-        }
-      }
-    }
-    
-    SmartDashboard.putBoolean("Target Found", targetFound);
-
-    if(targetFound){
-      ty = ty + 20;
-      distance = (1.45/Math.tan(Math.toDegrees(ty)));
-    }else{distance = -1.0;}
-    return(distance);
+  public boolean isArmAtRotateGoal(){
+    double angle = rotateRelativeEncoder.getPosition();
+    if((angle>= goalRotate-1.0)&&
+       (angle<=goalRotate+1.0)){
+        return true;
+       }
+    return false;
   }
 
   /**
