@@ -73,7 +73,7 @@ public class RobotBuilder implements IBuild /*extends Builder*/{
         }
         installSubsystem(child);
 
-        return child;
+        return this;
     }
 
     void installSubsystem(RobotBuilder child) {
