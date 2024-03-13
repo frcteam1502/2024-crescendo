@@ -14,12 +14,6 @@
         {
           "type": "named",
           "data": {
-            "name": "Shooter On"
-          }
-        },
-        {
-          "type": "named",
-          "data": {
             "name": "Rotate to close shot"
           }
         },

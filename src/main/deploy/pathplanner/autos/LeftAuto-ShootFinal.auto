@@ -2,10 +2,10 @@
   "version": 1.0,
   "startingPose": {
     "position": {
-      "x": 0.72,
-      "y": 4.37
+      "x": 0.95,
+      "y": 6.5
     },
-    "rotation": -60.39975503603433
+    "rotation": 61.536564237266255
   },
   "command": {
     "type": "sequential",
@@ -36,7 +36,7 @@
               {
                 "type": "path",
                 "data": {
-                  "pathName": "4NoteRight1"
+                  "pathName": "LeftStart-NoteMiddle"
                 }
               },
               {
@@ -49,15 +49,15 @@
           }
         },
         {
-          "type": "named",
+          "type": "path",
           "data": {
-            "name": "Rotate to close shot"
+            "pathName": "LeftNoteMiddle-AMP"
           }
         },
         {
-          "type": "path",
+          "type": "named",
           "data": {
-            "pathName": "1NoteRight"
+            "name": "Rotate to amp"
           }
         },
         {
@@ -67,14 +67,45 @@
           }
         },
         {
+          "type": "race",
+          "data": {
+            "commands": [
+              {
+                "type": "path",
+                "data": {
+                  "pathName": "AMP-LeftNote"
+                }
+              },
+              {
+                "type": "named",
+                "data": {
+                  "name": "Intake on"
+                }
+              }
+            ]
+          }
+        },
+        {
           "type": "path",
           "data": {
-            "pathName": "1NoteRight2"
+            "pathName": "Leftnote-Rotate"
+          }
+        },
+        {
+          "type": "named",
+          "data": {
+            "name": "Rotate to far shot"
+          }
+        },
+        {
+          "type": "named",
+          "data": {
+            "name": "Shot Note"
           }
         }
       ]
     }
   },
-  "folder": "1Note",
+  "folder": "AMP3Note",
   "choreoAuto": false
 }
