@@ -92,6 +92,9 @@ public class ArmSubsystem extends SubsystemBase {
 
   private double goalRotate = 0;
 
+  private double temp_index;
+  private int index;
+
   private double arm_p_gain = ArmConstants.ARM_P_GAIN;
   private double arm_intake_angle = ArmConstants.POSITION_TABLE[0];
   private double arm_close_angle = ArmConstants.POSITION_TABLE[1];
@@ -166,6 +169,8 @@ public class ArmSubsystem extends SubsystemBase {
     SmartDashboard.putNumber("Arm Relative Encoder", rotateRelativeEncoder.getPosition());
     SmartDashboard.putNumber("Rotation Goal", goalRotate);
     SmartDashboard.putBoolean("Is Arm At Rotation Goal", isArmAtRotateGoal());
+
+    SmartDashboard.putNumber("Lookup Temp Index", temp_index);
   }
 
   public void reset(){
@@ -217,17 +222,21 @@ public class ArmSubsystem extends SubsystemBase {
     rotateArm(goalRotate + change);
   }
 
-  public void lookupArmAngle(double distance){
+  public void lookupArmAngle(double distance, boolean distanceValid){
     double angle;
 
-    if(distance >= ArmConstants.LOOKUP_TABLE_MAX){
-      angle = ArmConstants.LOOKUP_TABLE_MAX;
-    }else if(distance <= ArmConstants.LOOKUP_TABLE_MIN){
-      angle = ArmConstants.LOOKUP_TABLE_MIN;
+    if(distanceValid){
+      if(distance >= ArmConstants.LOOKUP_TABLE_MAX){
+        angle = ArmConstants.ANGLE_LOOK_UP_TABLE[0];
+      }else if(distance <= ArmConstants.LOOKUP_TABLE_MIN){
+        angle = ArmConstants.ANGLE_LOOK_UP_TABLE[9];
+      }else{
+        temp_index = ((ArmConstants.LOOKUP_TABLE_MAX - distance)/0.5);
+        index = (int)(temp_index);
+        angle = ArmConstants.ANGLE_LOOK_UP_TABLE[index];
+      } 
     }else{
-      double temp_index = ArmConstants.LOOKUP_TABLE_MAX % distance;
-      int index = (int)(temp_index/0.5);
-      angle = ArmConstants.ANGLE_LOOK_UP_TABLE[index];
+      angle = ArmConstants.ANGLE_LOOK_UP_TABLE[0];
     }
     goalRotate = angle;
     rotateArm(goalRotate);

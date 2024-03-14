@@ -4,6 +4,7 @@
 
 package frc.robot.commands;
 
+import java.util.function.BooleanSupplier;
 import java.util.function.DoubleSupplier;
 
 import edu.wpi.first.wpilibj2.command.Command;
@@ -11,14 +12,16 @@ import frc.robot.subsystems.Arm.ArmSubsystem;
 
 public class AutoRotateArm extends Command {
   /** Creates a new AutoRotateArm. */
-  private ArmSubsystem armSubsystem;
+  private ArmSubsystem arm;
   private DoubleSupplier distance;
+  private BooleanSupplier distanceValid;
 
-  public AutoRotateArm(ArmSubsystem armSubsystem, DoubleSupplier distance) {
+  public AutoRotateArm(ArmSubsystem arm, DoubleSupplier distance, BooleanSupplier distanceValid) {
     // Use addRequirements() here to declare subsystem dependencies.
-    this.armSubsystem = armSubsystem;
+    this.arm = arm;
     this.distance = distance;
-    addRequirements(armSubsystem);
+    this.distanceValid = distanceValid;
+    addRequirements(arm);
   }
 
   // Called when the command is initially scheduled.
@@ -28,7 +31,7 @@ public class AutoRotateArm extends Command {
   // Called every time the scheduler runs while the command is scheduled.
   @Override
   public void execute() {
-    armSubsystem.lookupArmAngle(distance.getAsDouble());
+    arm.lookupArmAngle(distance.getAsDouble(), distanceValid.getAsBoolean());
   }
 
   // Called once the command ends or is interrupted.
@@ -38,6 +41,9 @@ public class AutoRotateArm extends Command {
   // Returns true when the command should end.
   @Override
   public boolean isFinished() {
-    return true;
+    if(arm.isArmAtRotateGoal()){
+      return true;
+    }
+    return false;
   }
 }
