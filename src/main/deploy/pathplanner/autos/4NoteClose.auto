@@ -98,52 +98,9 @@
           }
         },
         {
-          "type": "named",
-          "data": {
-            "name": "Rotate to far shot"
-          }
-        },
-        {
-          "type": "named",
-          "data": {
-            "name": "Shot Note"
-          }
-        },
-        {
-          "type": "named",
-          "data": {
-            "name": "Rotate to intake"
-          }
-        },
-        {
-          "type": "named",
-          "data": {
-            "name": "Intake off"
-          }
-        },
-        {
-          "type": "race",
-          "data": {
-            "commands": [
-              {
-                "type": "path",
-                "data": {
-                  "pathName": "44nc"
-                }
-              },
-              {
-                "type": "named",
-                "data": {
-                  "name": "Intake on"
-                }
-              }
-            ]
-          }
-        },
-        {
           "type": "path",
           "data": {
-            "pathName": "54nc"
+            "pathName": "TestPath"
           }
         },
         {
@@ -167,50 +124,7 @@
         {
           "type": "named",
           "data": {
-            "name": "Shooter off"
-          }
-        },
-        {
-          "type": "race",
-          "data": {
-            "commands": [
-              {
-                "type": "path",
-                "data": {
-                  "pathName": "64nc"
-                }
-              },
-              {
-                "type": "named",
-                "data": {
-                  "name": "Intake on"
-                }
-              }
-            ]
-          }
-        },
-        {
-          "type": "path",
-          "data": {
-            "pathName": "74nc"
-          }
-        },
-        {
-          "type": "named",
-          "data": {
-            "name": "Rotate to far shot"
-          }
-        },
-        {
-          "type": "named",
-          "data": {
-            "name": "Shot Note"
-          }
-        },
-        {
-          "type": "named",
-          "data": {
-            "name": "Shooter off"
+            "name": "Intake off"
           }
         }
       ]
