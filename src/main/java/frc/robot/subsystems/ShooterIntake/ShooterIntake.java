@@ -97,7 +97,7 @@ public class ShooterIntake extends SubsystemBase {
     
     //Set up intake control
     intake = Motors.INTAKE;
-    intake.setSmartCurrentLimit(60);
+    intake.setSmartCurrentLimit(40);
     intake_controller = intake.getPIDController();
     intake_controller.setFF(intake_ff);
     
