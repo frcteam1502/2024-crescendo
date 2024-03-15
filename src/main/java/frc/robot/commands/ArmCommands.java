@@ -17,6 +17,11 @@ public class ArmCommands extends Command {
     this.arm = arm;
 
     addRequirements(arm);
+
+    NamedCommands.registerCommand("Rotate to amp", new MoveToAmp(arm));
+    NamedCommands.registerCommand("Rotate to intake", new InstantCommand(arm::rotateToIntake));
+    NamedCommands.registerCommand("Rotate to close shot", new InstantCommand(arm::rotateToShootClose));
+    NamedCommands.registerCommand("Rotate to far shot", new InstantCommand(arm::rotateToShootFar));
   }
 
   @Override
@@ -26,11 +31,6 @@ public class ArmCommands extends Command {
     Operator.Y().onTrue(new InstantCommand(arm::rotateToShootClose));
     Operator.X().onTrue(new InstantCommand(arm::rotateToIntake));
     Operator.Start().onTrue(new InstantCommand(arm::rotateToStart));
-
-    NamedCommands.registerCommand("Rotate to amp", new MoveToAmp(arm));
-    NamedCommands.registerCommand("Rotate to intake", new InstantCommand(arm::rotateToIntake));
-    NamedCommands.registerCommand("Rotate to close shot", new InstantCommand(arm::rotateToShootClose));
-    NamedCommands.registerCommand("Rotate to far shot", new InstantCommand(arm::rotateToShootFar));
     
     arm.reset();
   }

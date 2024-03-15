@@ -23,6 +23,10 @@ public class ShooterIntakeCommands extends Command {
     this.arm = arm;
     // Use addRequirements() here to declare subsystem dependencies.
     addRequirements(shooterIntake, arm);
+
+    NamedCommands.registerCommand("Intake on", new IntakeNote(shooterIntake));
+    NamedCommands.registerCommand("Intake off", new InstantCommand(shooterIntake::setIntakeOff));
+    NamedCommands.registerCommand("Shot Note", new ShootNote(shooterIntake, ()->arm.isArmAtAmp()));
   }
 
   // Called when the command is initially scheduled.
@@ -35,10 +39,6 @@ public class ShooterIntakeCommands extends Command {
     
     Operator.LeftBumper().onTrue(new InstantCommand(shooterIntake::setIntakeEject));
     Operator.LeftBumper().onFalse(new InstantCommand(shooterIntake::setIntakeOff));
-
-    NamedCommands.registerCommand("Intake on", new IntakeNote(shooterIntake));
-    NamedCommands.registerCommand("Intake off", new InstantCommand(shooterIntake::setIntakeOff));
-    NamedCommands.registerCommand("Shot Note", new ShootNote(shooterIntake, ()->arm.isArmAtAmp()));
   }
 
   // Called every time the scheduler runs while the command is scheduled.
