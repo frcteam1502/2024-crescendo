@@ -10,6 +10,7 @@ import frc.robot.subsystems.ShooterIntake.ShooterIntake;
 import frc.robot.commands.ControllerCommands;
 import frc.robot.commands.IntakeNote;
 import frc.robot.commands.MoveToAmp;
+import frc.robot.commands.MoveToFarShot;
 import frc.robot.commands.MoveToIntake;
 import frc.robot.commands.MoveToShoot;
 import frc.robot.commands.ShootNote;
@@ -64,7 +65,7 @@ public class RobotContainer {
     NamedCommands.registerCommand("Rotate to amp", new MoveToAmp(armSubsystem));
     NamedCommands.registerCommand("Rotate to intake", new InstantCommand(armSubsystem::rotateToIntake));
     NamedCommands.registerCommand("Rotate to close shot", new MoveToShoot(armSubsystem));
-    NamedCommands.registerCommand("Rotate to far shot", new InstantCommand(armSubsystem::rotateToShootFar));
+    NamedCommands.registerCommand("Rotate to far shot", new MoveToFarShot(armSubsystem));
     NamedCommands.registerCommand("Rotate to intake", new MoveToIntake(armSubsystem));
     NamedCommands.registerCommand("Intake on", new IntakeNote(shooterIntakeSubsystem));
     NamedCommands.registerCommand("Intake off", new InstantCommand(shooterIntakeSubsystem::setIntakeOff));
