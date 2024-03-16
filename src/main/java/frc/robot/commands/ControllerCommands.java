@@ -15,7 +15,7 @@ import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 public class ControllerCommands extends Command {
   //private static final double MAX_TELEOP_SPEED = 1; //Range 0 to 1
   private static final double MAX_TELEOP_SPEED_DRIVER_1 = 1; //Range 0 to 1
-  private static final double MAX_TELEOP_SPEED_DRIVER_2 = 2; //Range 0 to 1
+  private static final double MAX_TELEOP_SPEED_DRIVER_2 = .75; //Range 0 to 1
   private static final double MAX_FINESSE_SPEED = .3;
 
   public static final double MAX_TELEOP_ROTATION = .3;
@@ -33,6 +33,8 @@ public class ControllerCommands extends Command {
 
   private SlewRateLimiter turnLimiter = new SlewRateLimiter(5);
   private final SendableChooser<String> driverChooser = new SendableChooser<>();
+
+  boolean finesse_mode = false;
   
   public ControllerCommands(RobotConfiguration config, DriveSubsystem drive, MockDetector brownOutDetector) {
     this.drive = drive;

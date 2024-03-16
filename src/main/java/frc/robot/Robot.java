@@ -46,11 +46,7 @@ public class Robot extends TimedRobot {
     catch (IOException ex) {
 
     }
-     
-    //CameraServer.startAutomaticCapture();
-    
-    RobotController.setBrownoutVoltage(3);
-    
+         
     // Instantiate our RobotContainer.  This will perform all our button bindings, and put our
     // autonomous chooser on the dashboard.
     m_robotContainer = new RobotContainer(radio);

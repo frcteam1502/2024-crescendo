@@ -31,6 +31,9 @@ public final class RobotConfigurations {
     }
     
     private static RobotConfiguration buildCompetitionBot(RobotConfiguration parts) {
+        parts.DisableSubsystem("Logger");
+        parts.Value("brownoutVoltage", 0.3);
+
         // PDH
         parts.PowerDistributionModule(pdh -> pdh
             .Ch(20, parts.RoboRIO())
@@ -61,7 +64,7 @@ public final class RobotConfigurations {
             .MotorController("Intake Motor", Manufacturer.REVRobotics, c->c
                 .Motor("NEO", m->m)
                 .IdleMode(IdleMode.kBrake)
-                .SmartCurrentLimit(60)
+                .SmartCurrentLimit(40)
                 .GearBox(g-> g
                     .Gear("Cartridge #1 3:1", 1, 3))
             )

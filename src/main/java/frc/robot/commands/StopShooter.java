@@ -5,29 +5,24 @@
 package frc.robot.commands;
 
 import edu.wpi.first.wpilibj2.command.Command;
-import frc.robot.subsystems.Arm.ArmSubsystem;
+import frc.robot.subsystems.ShooterIntake.ShooterIntake;
 
-
-public class MoveToAmp extends Command {
-  /** Creates a new MoveToAmp. */
-
-  private final ArmSubsystem arm;
-
-  public MoveToAmp(ArmSubsystem arm) {
-    // Use addRequirements() here to declare subsystem dependencies.
-    this.arm = arm;
-    addRequirements(arm);
+public class StopShooter extends Command {
+  private final ShooterIntake shooterIntake;
+  /** Creates a new StopShooter. */
+  public StopShooter(ShooterIntake shooterIntake) {
+    this.shooterIntake = shooterIntake;
   }
 
   // Called when the command is initially scheduled.
   @Override
-  public void initialize() {
-    arm.rotateToAmpTrap();
-  }
+  public void initialize() {}
 
   // Called every time the scheduler runs while the command is scheduled.
   @Override
-  public void execute() {}
+  public void execute() {
+    shooterIntake.setShooterOff();
+  }
 
   // Called once the command ends or is interrupted.
   @Override
@@ -36,9 +31,6 @@ public class MoveToAmp extends Command {
   // Returns true when the command should end.
   @Override
   public boolean isFinished() {
-    if(arm.isArmAtRotateGoal()){
-      return true;
-    }
-    return false;
+    return true;
   }
 }

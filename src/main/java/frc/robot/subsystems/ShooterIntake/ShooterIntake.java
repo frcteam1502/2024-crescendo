@@ -31,7 +31,7 @@ public class ShooterIntake extends SubsystemBase {
 
   private final static double INTAKE_DEFAULT_PICK_UP_RPM = 2500;
   private final static double INTAKE_DEFAULT_INDEX_RPM = 100;
-  private final static double INTAKE_DEFAULT_AMP_RPM = 2000;
+  private final static double INTAKE_DEFAULT_AMP_RPM = 2500;
   private final static double INTAKE_DEFAULT_EJECT_RPM = -1000;
   private final static double INTAKE_DEFAULT_SHOOT_RPM = 3500;
 
@@ -128,7 +128,7 @@ public class ShooterIntake extends SubsystemBase {
     isShooterOn = true;
   }
 
-  private void setShooterOff(){
+  public void setShooterOff(){
     shooter_lead_controller.setReference(0.0, CANSparkMax.ControlType.kVelocity);
     shooter_follow_controller.setReference(0.0, CANSparkMax.ControlType.kVelocity);
     isShooterOn = false;

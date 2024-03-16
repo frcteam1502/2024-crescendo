@@ -118,7 +118,10 @@ public class DriveSubsystem extends SubsystemBase{
       PoseEstConfig.createVisionMeasurementStdDevs());
 
     reset();
-    registerLoggerObjects(config);
+    
+    if (!config.isDisabled("Logger")) {
+      registerLoggerObjects(config);
+    }
 
     //Configure Auto Builder last!
     configAutoBuilder(); 
@@ -137,7 +140,7 @@ public class DriveSubsystem extends SubsystemBase{
 
   private void updateDashboard(){
     SmartDashboard.putData(this);
-    swerveModules.send();
+    //swerveModules.send();
   }
   
   private boolean wasAutonExecuted = false;
@@ -150,14 +153,18 @@ public class DriveSubsystem extends SubsystemBase{
         wasAutonExecuted = true; }
       else if (GameState.isTeleop() && wasAutonExecuted) {
         wasAutonExecuted = false;
-        resetGyro(getPoseRotationDegrees()); }
+        //resetGyro(getPoseRotationDegrees()); 
+      }
     }
     checkInitialAngle();
     updateOdometry();
     updateEstimatedPose();
-    vision.update();
-    visionPose = vision.getVisionBotPose();
-    
+
+    if (vision != null) {
+      vision.update();
+      visionPose = vision.getVisionBotPose();
+    }
+
     if (VisionConfig.IS_LIMELIGHT_MODE && visionPose != null) { // Limelight mode
       
       double currentTimestamp = vision.getTimestampSeconds(vision.getTotalLatency());
@@ -236,6 +243,7 @@ public class DriveSubsystem extends SubsystemBase{
 
   private void resetOdometry(Pose2d pose) {
     odometry.resetPosition(getGyroRotation2d(), getModulePositions(), pose);
+    poseEstimator.resetPosition(getGyroRotation2d(), getModulePositions(), pose);
   }
 
   private void resetPoseEstimation(Pose2d pose) {
@@ -290,7 +298,7 @@ public class DriveSubsystem extends SubsystemBase{
     double kP = .01;
 
     double error = vision.getSpeaker_tx();
-    double min_rate = 0.075;
+    double min_rate = .075;
 
     // tx ranges from (-hfov/2) to (hfov/2) in degrees. If your target is on the rightmost edge of 
     // your limelight 3 feed, tx should return roughly 31 degrees.
@@ -310,7 +318,7 @@ public class DriveSubsystem extends SubsystemBase{
       }   
     }else{
       //Speaker not found, turn until we find it
-      targetingAngularVelocity = 0.75;
+      targetingAngularVelocity = 2.0;
     }
 
     return targetingAngularVelocity;
@@ -371,27 +379,28 @@ public class DriveSubsystem extends SubsystemBase{
     builder.addDoubleProperty("Field Oriented Y Command (Forward)", ()->fieldYCommand, null);
 
     //Robot Relative inputs
-    builder.addDoubleProperty("Robot Relative vX Speed Command", ()->speedCommands.vxMetersPerSecond, null);
-    builder.addDoubleProperty("Robot Relative vY Speed Command", ()->speedCommands.vyMetersPerSecond, null);
-    builder.addDoubleProperty("Robot Relative Rotation Command", ()->speedCommands.omegaRadiansPerSecond, null);
+    // builder.addDoubleProperty("Robot Relative vX Speed Command", ()->speedCommands.vxMetersPerSecond, null);
+    // builder.addDoubleProperty("Robot Relative vY Speed Command", ()->speedCommands.vyMetersPerSecond, null);
+    // builder.addDoubleProperty("Robot Relative Rotation Command", ()->speedCommands.omegaRadiansPerSecond, null);
     
-    builder.addDoubleProperty("DriveRobot Relative vX Speed Command", ()->relativeCommands.vxMetersPerSecond, null);
-    builder.addDoubleProperty("DriveRobot Relative vY Speed Command", ()->relativeCommands.vyMetersPerSecond, null);
+    // builder.addDoubleProperty("DriveRobot Relative vX Speed Command", ()->relativeCommands.vxMetersPerSecond, null);
+    // builder.addDoubleProperty("DriveRobot Relative vY Speed Command", ()->relativeCommands.vyMetersPerSecond, null);
     builder.addDoubleProperty("DriveRobot Relative Rotation Command", ()->relativeCommands.omegaRadiansPerSecond, null);
     
 
     builder.addDoubleProperty("Gyro Yaw", ()->getIMU_Yaw(), null);
+    builder.addDoubleProperty("Target Angle", ()->targetAngle, null);
 
-    addChild("SwerveModules", swerveModules);
+    //addChild("SwerveModules", swerveModules);
     //SendableRegistry.addLW(swerveModules, SendableRegistry.getSubsystem(this), "SwerveModule");
 
-        //Pose Info
-    builder.addStringProperty("FMS Alliance", ()->DriverStation.getAlliance().toString(), null);
-    builder.addDoubleProperty("Pose2D X", ()->pose.getX(), null);
-    builder.addDoubleProperty("Pose2D Y", ()->pose.getY(), null);
-    builder.addDoubleProperty("Pose2D Rotation", ()->pose.getRotation().getDegrees(), null);
-
     if (limelightEnabled) {
+      // Pose and Vision
+      builder.addStringProperty("FMS Alliance", ()->DriverStation.getAlliance().toString(), null);
+      builder.addDoubleProperty("Pose2D X", ()->pose.getX(), null);
+      builder.addDoubleProperty("Pose2D Y", ()->pose.getY(), null);
+      builder.addDoubleProperty("Pose2D Rotation", ()->pose.getRotation().getDegrees(), null);
+
       builder.addDoubleProperty("Vision Pose X", ()->vision.getVisionBotPose().getX(), null);
       builder.addDoubleProperty("Vision Pose Y", ()->vision.getVisionBotPose().getY(), null);
       builder.addDoubleProperty("Vision Pose Rotation", ()->vision.getVisionBotPose().getRotation().getDegrees(), null);

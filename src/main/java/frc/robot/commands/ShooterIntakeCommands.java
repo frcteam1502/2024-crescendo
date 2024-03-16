@@ -21,12 +21,12 @@ public class ShooterIntakeCommands extends Command {
   public ShooterIntakeCommands(ShooterIntake shooterIntake, ArmSubsystem arm) {
     this.shooterIntake = shooterIntake;
     this.arm = arm;
-    // Use addRequirements() here to declare subsystem dependencies.
     addRequirements(shooterIntake, arm);
 
     NamedCommands.registerCommand("Intake on", new IntakeNote(shooterIntake));
     NamedCommands.registerCommand("Intake off", new InstantCommand(shooterIntake::setIntakeOff));
     NamedCommands.registerCommand("Shot Note", new ShootNote(shooterIntake, ()->arm.isArmAtAmp()));
+    NamedCommands.registerCommand("Shooter On", new InstantCommand(shooterIntake::setShooterOn));
   }
 
   // Called when the command is initially scheduled.
@@ -36,7 +36,6 @@ public class ShooterIntakeCommands extends Command {
     Operator.RightBumper().toggleOnTrue(new InstantCommand(shooterIntake::toggleShooter));
 
     Operator.LeftTrigger(.5).whileTrue(new IntakeNote(shooterIntake)); // whileTrue() is causing CommandScheduler overruns!
-    
     Operator.LeftBumper().onTrue(new InstantCommand(shooterIntake::setIntakeEject));
     Operator.LeftBumper().onFalse(new InstantCommand(shooterIntake::setIntakeOff));
   }
