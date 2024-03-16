@@ -2,6 +2,8 @@ package team1502.configuration.builders.motors;
 
 import java.util.function.Function;
 
+import com.ctre.phoenix6.hardware.CANcoder;
+
 import team1502.configuration.CAN.Manufacturer;
 import team1502.configuration.builders.Builder;
 import team1502.configuration.builders.Connector;
@@ -95,5 +97,11 @@ public class SwerveModule extends Builder {
     public SwerveModule setSwerveModuleInstance(frc.robot.subsystems.SwerveDrive.SwerveModule sm) {
         Value("getSwerveModuleInstance", sm);
         return this;
+    }
+
+    public CANcoder getCANcoder() {
+        var encoder = Encoder();
+        var canCoder = encoder.CANcoder();
+        return (canCoder != null) ? canCoder : encoder.buildCANcoder();
     }
 }

@@ -52,6 +52,22 @@ public class RobotConfiguration {
         return disabledMap.containsKey(clsName);
     }
     
+    private HashMap<String, Object> valueMap = new HashMap<>();
+    public Object getConfigValue(String valueName) { return valueMap.get(valueName); }
+    public RobotConfiguration Value(String valueName, Object value) {
+        if (_robotBuilder.hasSubsystemPart()) {
+            _robotBuilder.Value(valueName, value); }
+        else {
+            valueMap.put(valueName, value);
+        }
+        return this;
+    }    
+    public double getConfigDouble(String valueName, double defaultValue) {
+        var result = (Double)getConfigValue(valueName);
+        return result != null ? result : defaultValue;
+    }
+
+
     RobotBuilder getBuilder() {
         if (_robotBuilder == null) {
             _robotBuilder = RobotBuilder.Create();
@@ -122,7 +138,9 @@ public class RobotConfiguration {
 
     public RobotConfiguration Subsystem(Class<?> subsystemClass) { return Subsystem(subsystemClass.getName()); }
     public RobotConfiguration Subsystem(String partName) { return new RobotConfiguration((RobotBuilder)Part(partName).Value("robotBuilder")); }
-    public Object Value(String valueName) { return _robotBuilder.getSubsystemPart().Value(valueName); }
+    public Object Value(String valueName) { return _robotBuilder.hasSubsystemPart() ? _robotBuilder.getSubsystemPart().Value(valueName) : getConfigValue(valueName); }
+    public Double getDouble(String valueName, double defaultValue) { return _robotBuilder.hasSubsystemPart() ? _robotBuilder.getSubsystemPart().getDouble(valueName, defaultValue) : getConfigDouble(valueName, defaultValue); }
+    public boolean hasValue(String valueName) { return _robotBuilder.hasSubsystemPart() ? _robotBuilder.getSubsystemPart().hasValue(valueName) : valueMap.containsKey(valueName); }
 
     public MotorController MotorController() { return Values().MotorController(); }
     public MotorController MotorController(String name) { return Values().MotorController(name); }
