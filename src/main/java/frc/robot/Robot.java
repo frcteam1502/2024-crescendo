@@ -15,7 +15,7 @@ import edu.wpi.first.wpilibj.TimedRobot;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
-
+import edu.wpi.first.wpilibj2.command.RunCommand;
 import frc.testmode.swerve.AbsoluteEncoderAlignment;
 
 /**
@@ -31,8 +31,6 @@ public class Robot extends TimedRobot {
   private String branch = "unknown";
   private String commit = "unknown";
   private String radio = "1502";
-
-  private boolean wasAutonExecuted = false;
 
   /**
    * This function is run when the robot is first started up and should be used for any
@@ -96,7 +94,6 @@ public class Robot extends TimedRobot {
   public void autonomousInit() {
     GameState.autonomousInit();
     m_autonomousCommand = m_robotContainer.getAutonomousCommand();
-    wasAutonExecuted = true;
 
     // schedule the autonomous command (example)
     if (m_autonomousCommand != null) {
@@ -111,13 +108,7 @@ public class Robot extends TimedRobot {
   @Override
   public void teleopInit() {
     GameState.teleopInit();
-    double rotation = m_robotContainer.driveSubsystem.getPoseRotationDegrees();
-    if(wasAutonExecuted){
-      m_robotContainer.driveSubsystem.resetGyro(rotation);
-      wasAutonExecuted = false;
-    }
-
-
+  
     // This makes sure that the autonomous stops running when
     // teleop starts running. If you want the autonomous to
     // continue until interrupted by another command, remove
@@ -137,14 +128,12 @@ public class Robot extends TimedRobot {
     GameState.testInit();
     // Cancels all running commands at the start of test mode.
     CommandScheduler.getInstance().cancelAll();
-    m_swerveTests = new AbsoluteEncoderAlignment();
-    m_swerveTests.testInit();
+    AbsoluteEncoderAlignment.StartAlignment();
   }
 
   /** This function is called periodically during test mode. */
   @Override
   public void testPeriodic() {
-    m_swerveTests.testPeriodic();
   }
 
   /** This function is called once when the robot is first started up. */

@@ -1,0 +1,10 @@
+[
+  {
+    "name": "/SmartDashboard/testDouble",
+    "type": "double",
+    "value": 71.3,
+    "properties": {
+      "persistent": true
+    }
+  }
+]

@@ -53,7 +53,7 @@ public class ControllerCommands extends Command {
 
   @Override
   public void initialize() {
-    Driver.A.onTrue(new AlignToSpeaker(this));
+    //Driver.A.onTrue(new AlignToSpeaker(this));
 
   }
 

@@ -75,5 +75,9 @@ public class SwerveDrive extends Builder {
             .findFirst()
             .get());
     }
+    /** NOTE: NOT an index! number is e.g., 1 through 4 */
+    public SwerveModule SwerveModule(int number) {
+        return SwerveModule.Wrap(getPieces().get(number - 1));
+    }
 
 }

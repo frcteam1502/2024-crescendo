@@ -30,12 +30,12 @@ public class ShooterIntakeCommands extends Command {
     Operator.rightTrigger(0.5).onTrue(new ShootNote(shooterIntake, ()->arm.isArmAtAmp()));
     Operator.RightBumper.toggleOnTrue(new InstantCommand(shooterIntake::toggleShooter));
 
-    Operator.leftTrigger(.5).whileTrue(new IntakeNote(shooterIntake)); // whileTrue() is causing CommandScheduler overruns!
+    //Operator.leftTrigger(.5).whileTrue(new IntakeNote(shooterIntake)); // whileTrue() is causing CommandScheduler overruns!
     
     Operator.LeftBumper.onTrue(new InstantCommand(shooterIntake::setIntakeEject));
     Operator.LeftBumper.onFalse(new InstantCommand(shooterIntake::setIntakeOff));
 
-    NamedCommands.registerCommand("Intake on", new IntakeNote(shooterIntake));
+    //NamedCommands.registerCommand("Intake on", new IntakeNote(shooterIntake));
     NamedCommands.registerCommand("Intake off", new InstantCommand(shooterIntake::setIntakeOff));
     NamedCommands.registerCommand("Shot Note", new ShootNote(shooterIntake, ()->arm.isArmAtAmp()));
   }

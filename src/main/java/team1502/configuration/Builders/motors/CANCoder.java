@@ -55,6 +55,14 @@ public class CANCoder extends Builder{ // Accelerometer {
         return this;
     }
 
+    public CANcoder CANcoder() {
+        return (CANcoder)Value("CANcoder");
+    }
+    public CANcoder CANcoder(CANcoder encoder) {
+        Value("CANcoder", encoder);
+        return encoder;
+    }
+
     public CANcoder buildCANcoder() {
         var encoder = CANcoder(new CANcoder(CanNumber()));
         encoder.getConfigurator().apply(
@@ -65,12 +73,13 @@ public class CANCoder extends Builder{ // Accelerometer {
         );
         return encoder;
     }
-    public CANcoder CANcoder() {
-        return (CANcoder)Value("CANcoder");
-    }
-    public CANcoder CANcoder(CANcoder encoder) {
-        Value("CANcoder", encoder);
-        return encoder;
+    
+    void setMagneticOffset(double offset) {
+        var canCoder = CANcoder();
+        if (canCoder != null) {
+            canCoder.getConfigurator().apply(
+            new CANcoderConfiguration().MagnetSensor.withMagnetOffset(-offset));
+        }
     }
 
 }
