@@ -56,6 +56,7 @@ final class ArmConstants{
     -34,  //Shoot Far
     -76,  //Stow/Start
     -90,  //Amp/Trap
+    -63,  //Source
   };
 
   public static final double BRAKE_THRESHOLD = 0.25;
@@ -192,6 +193,10 @@ public class ArmSubsystem extends SubsystemBase {
 
   public void rotateToAmpTrap() {
     rotateArm(ArmConstants.POSITION_TABLE[4]);
+  }
+
+  public void rotateToSource(){
+    rotateArm(ArmConstants.POSITION_TABLE[5]);
   }
 
   public void rotateManually(double input) {

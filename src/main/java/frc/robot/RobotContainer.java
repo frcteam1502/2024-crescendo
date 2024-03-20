@@ -5,6 +5,7 @@
 package frc.robot;
 
 import frc.robot.subsystems.Arm.ArmSubsystem;
+import frc.robot.subsystems.Leds.LedSubsystem;
 import frc.robot.subsystems.PowerManagement.MockDetector;
 import frc.robot.subsystems.ShooterIntake.ShooterIntake;
 import frc.robot.commands.ControllerCommands;
@@ -41,7 +42,7 @@ public class RobotContainer {
   public final DriveSubsystem driveSubsystem = new DriveSubsystem();
   public final ArmSubsystem armSubsystem = new ArmSubsystem();
   public final ShooterIntake shooterIntakeSubsystem = new ShooterIntake();
-  //public final LEDS ledSubsystem = new LEDS(()->shooterIntakeSubsystem.isNotePresent());
+  public final LedSubsystem ledSubsystem = new LedSubsystem(()->shooterIntakeSubsystem.isNotePresent());
   //private final PdpSubsystem pdpSubsystem = new PdpSubsystem();
   
   //Needed to invoke scheduler
@@ -116,6 +117,7 @@ public class RobotContainer {
     Operator.Controller.y().onTrue(new InstantCommand(armSubsystem::rotateToShootClose));
     Operator.Controller.x().onTrue(new InstantCommand(armSubsystem::rotateToIntake));
     Operator.Controller.start().onTrue(new InstantCommand(armSubsystem::rotateToStart));
+    Operator.Controller.back().onTrue(new InstantCommand(armSubsystem::rotateToSource));
 
     //ShooterIntake
     shooterIntakeSubsystem.setDefaultCommand(new ShooterIntakeCommands(shooterIntakeSubsystem));
