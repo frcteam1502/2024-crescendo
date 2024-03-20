@@ -49,27 +49,28 @@
           }
         },
         {
-          "type": "named",
+          "type": "race",
           "data": {
-            "name": "Rotate to close shot"
-          }
-        },
-        {
-          "type": "path",
-          "data": {
-            "pathName": "1NoteRight"
+            "commands": [
+              {
+                "type": "path",
+                "data": {
+                  "pathName": "OneNoteAmp - Return Shot"
+                }
+              },
+              {
+                "type": "named",
+                "data": {
+                  "name": "Rotate to close shot"
+                }
+              }
+            ]
           }
         },
         {
           "type": "named",
           "data": {
             "name": "Shot Note"
-          }
-        },
-        {
-          "type": "path",
-          "data": {
-            "pathName": "1NoteRight2"
           }
         }
       ]

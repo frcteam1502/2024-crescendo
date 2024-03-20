@@ -41,6 +41,7 @@ public class RobotContainer {
   public final DriveSubsystem driveSubsystem = new DriveSubsystem();
   public final ArmSubsystem armSubsystem = new ArmSubsystem();
   public final ShooterIntake shooterIntakeSubsystem = new ShooterIntake();
+  //public final LEDS ledSubsystem = new LEDS(()->shooterIntakeSubsystem.isNotePresent());
   //private final PdpSubsystem pdpSubsystem = new PdpSubsystem();
   
   //Needed to invoke scheduler
@@ -59,6 +60,7 @@ public class RobotContainer {
   /** The container for the robot. Contains subsystems, OI devices, and commands. */
   public RobotContainer() {
     // Configure the trigger bindings
+
     configureBindings();
 
     //Register named commands. Must register all commands we want Pathplanner to execute.
@@ -80,9 +82,9 @@ public class RobotContainer {
     new PathPlannerAuto("4NoteLeft");
     new PathPlannerAuto("4NoteMiddle");
     new PathPlannerAuto("4NoteRight");
-    new PathPlannerAuto("1NoteMiddle");
-    new PathPlannerAuto("1NoteLeft");
-    new PathPlannerAuto("1NoteRight");
+    new PathPlannerAuto("OneNoteMiddle");
+    new PathPlannerAuto("OneNoteAMP");
+    new PathPlannerAuto("OneNoteSource");
     new PathPlannerAuto("Leave");
 
 
