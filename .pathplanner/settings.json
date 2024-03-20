@@ -8,14 +8,14 @@
     "Attempt2Defence",
     "LeftSpotStartAMP",
     "MiddleSpotStartAmp",
-    "Race",
+    "BPaths",
     "PathsForDefenceBotAlliance",
     "RightSpotStartAMP"
   ],
   "autoFolders": [
     "1Note",
     "AMP3Note",
-    "Race",
+    "Speaker3Note",
     "Shot4Note"
   ],
   "defaultMaxVel": 4.5,
