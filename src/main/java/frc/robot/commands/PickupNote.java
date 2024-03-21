@@ -4,6 +4,8 @@
 
 package frc.robot.commands;
 
+import java.util.function.BooleanSupplier;
+
 import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj2.command.Command;
 import frc.robot.subsystems.ShooterIntake.ShooterIntake;
@@ -11,12 +13,14 @@ import frc.robot.subsystems.ShooterIntake.ShooterIntake;
 public class PickupNote extends Command {
   /** Creates a new IntakeNote. */
   private final ShooterIntake shooterIntake;
+  private final BooleanSupplier isArmAtIntake;
 
   private final Timer pickupTimer = new Timer();
 
-  public PickupNote(ShooterIntake shooterIntake) {
+  public PickupNote(ShooterIntake shooterIntake, BooleanSupplier isArmAtIntake) {
     // Use addRequirements() here to declare subsystem dependencies.
     this.shooterIntake = shooterIntake;
+    this.isArmAtIntake = isArmAtIntake;
 
     pickupTimer.reset();
 
@@ -33,7 +37,9 @@ public class PickupNote extends Command {
   // Called every time the scheduler runs while the command is scheduled.
   @Override
   public void execute() {
-    if(!shooterIntake.isNotePresent()){
+    if((!shooterIntake.isNotePresent())&&
+       (isArmAtIntake.getAsBoolean()))
+    {
       shooterIntake.setIntakePickup();
     }
   }
@@ -47,7 +53,13 @@ public class PickupNote extends Command {
   // Returns true when the command should end.
   @Override
   public boolean isFinished() {
-    //Wait for inrush current
+    
+    //If arm is up, don't wait for current spike
+    if(!isArmAtIntake.getAsBoolean()){
+      return true;
+    }
+
+    //If Arm is down, delay untill after inrush current, then wait for current spike or Note Present
     if(pickupTimer.get() > 0.5){
 
       if((shooterIntake.getIntakeCurrent() >= 20)||

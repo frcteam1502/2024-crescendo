@@ -14,6 +14,7 @@ import frc.robot.commands.MoveToAmp;
 import frc.robot.commands.MoveToFarShot;
 import frc.robot.commands.MoveToIntake;
 import frc.robot.commands.MoveToShoot;
+import frc.robot.commands.RampAndMoveToShoot;
 import frc.robot.commands.RampUpShooter;
 import frc.robot.commands.ShootNote;
 import frc.robot.commands.ShooterIntakeCommands;
@@ -71,11 +72,12 @@ public class RobotContainer {
     NamedCommands.registerCommand("Rotate to close shot", new MoveToShoot(armSubsystem));
     NamedCommands.registerCommand("Rotate to far shot", new MoveToFarShot(armSubsystem));
     NamedCommands.registerCommand("Rotate to intake", new MoveToIntake(armSubsystem));
-    NamedCommands.registerCommand("Intake on", new IntakeNote(shooterIntakeSubsystem));
+    NamedCommands.registerCommand("Intake on", new IntakeNote(shooterIntakeSubsystem,()->armSubsystem.isArmAtIntake()));
     NamedCommands.registerCommand("Intake off", new InstantCommand(shooterIntakeSubsystem::setIntakeOff));
     NamedCommands.registerCommand("Shot Note", new ShootNote(shooterIntakeSubsystem, ()->armSubsystem.isArmAtAmp()));
     NamedCommands.registerCommand("Shooter On", new InstantCommand(shooterIntakeSubsystem::setShooterOn));
     NamedCommands.registerCommand("Ramp Up Shooter", new RampUpShooter(shooterIntakeSubsystem, ()->armSubsystem.isArmAtAmp()));
+    NamedCommands.registerCommand("Move to close shot w/ ramp", new RampAndMoveToShoot(shooterIntakeSubsystem, armSubsystem));
   
     //Build an Autochooser from SmartDashboard selection.  Default will be Commands.none()
 
@@ -127,7 +129,7 @@ public class RobotContainer {
     Operator.Controller.rightTrigger(0.5).onTrue(new ShootNote(shooterIntakeSubsystem, ()->armSubsystem.isArmAtAmp()));
     Operator.Controller.rightBumper().toggleOnTrue(new InstantCommand(shooterIntakeSubsystem::toggleShooter));
 
-    Operator.Controller.leftTrigger(.5).whileTrue(new IntakeNote(shooterIntakeSubsystem));//whileTrue() is causing CommandScheduler overruns!
+    Operator.Controller.leftTrigger(.5).whileTrue(new IntakeNote(shooterIntakeSubsystem,()->armSubsystem.isArmAtIntake()));//whileTrue() is causing CommandScheduler overruns!
     Operator.Controller.leftBumper().onTrue(new InstantCommand(shooterIntakeSubsystem::setIntakeEject));
     Operator.Controller.leftBumper().onFalse(new InstantCommand(shooterIntakeSubsystem::setIntakeOff));
     

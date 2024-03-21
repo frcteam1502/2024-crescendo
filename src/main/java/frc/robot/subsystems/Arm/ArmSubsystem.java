@@ -40,7 +40,8 @@ final class ArmConstants{
   
   public static final double ROTATE_CHANGE = .3; 
 
-  public static final double MAX_ROTATION_SPEED = .3;
+  public static final double MIN_ROTATION_SPEED = -0.5;
+  public static final double MAX_ROTATION_SPEED = 0.125;
 
   public static final double ABS_OFFSET = -6.5;//This is unique for the robot!
 
@@ -107,7 +108,7 @@ public class ArmSubsystem extends SubsystemBase {
     rotatePID.setI(0);
     rotatePID.setD(0);
     //rotatePID.setFF(MAX_ROTATE_FEEDFORWARD);
-    rotatePID.setOutputRange((-ArmConstants.MAX_ROTATION_SPEED), (ArmConstants.MAX_ROTATION_SPEED/4));
+    rotatePID.setOutputRange(ArmConstants.MIN_ROTATION_SPEED, ArmConstants.MAX_ROTATION_SPEED);
 
     SmartDashboard.putNumber("ANGLE P Gain", arm_p_gain);
     SmartDashboard.putNumber("Arm Intake Angle", arm_intake_angle);
@@ -150,6 +151,7 @@ public class ArmSubsystem extends SubsystemBase {
     SmartDashboard.putNumber("Arm Relative Encoder", rotateRelativeEncoder.getPosition());
     SmartDashboard.putNumber("Rotation Goal", goalRotate);
     SmartDashboard.putBoolean("Is Arm At Rotation Goal", isArmAtRotateGoal());
+    SmartDashboard.putBoolean("Is Arm At Intake", isArmAtIntake());
   }
 
   public void reset(){
@@ -238,6 +240,13 @@ public class ArmSubsystem extends SubsystemBase {
        (angle<=goalRotate+1.0)){
         return true;
        }
+    return false;
+  }
+
+  public boolean isArmAtIntake(){
+    if(getArmAbsPositionDegrees()>=(ArmConstants.POSITION_TABLE[0]-2.0)){
+      return true;
+    }
     return false;
   }
 
