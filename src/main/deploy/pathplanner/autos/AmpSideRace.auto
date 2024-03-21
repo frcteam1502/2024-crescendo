@@ -60,9 +60,22 @@
           }
         },
         {
-          "type": "path",
+          "type": "race",
           "data": {
-            "pathName": "6ar"
+            "commands": [
+              {
+                "type": "named",
+                "data": {
+                  "name": "Intake on"
+                }
+              },
+              {
+                "type": "path",
+                "data": {
+                  "pathName": "6ar"
+                }
+              }
+            ]
           }
         }
       ]

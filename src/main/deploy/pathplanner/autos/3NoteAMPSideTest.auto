@@ -1,0 +1,55 @@
+{
+  "version": 1.0,
+  "startingPose": {
+    "position": {
+      "x": 0.95,
+      "y": 6.5
+    },
+    "rotation": 60.13
+  },
+  "command": {
+    "type": "sequential",
+    "data": {
+      "commands": [
+        {
+          "type": "path",
+          "data": {
+            "pathName": "AMPSide - RotatePos1"
+          }
+        },
+        {
+          "type": "path",
+          "data": {
+            "pathName": "RotatePos1 - MiddleLeftNote"
+          }
+        },
+        {
+          "type": "path",
+          "data": {
+            "pathName": "MiddleLeftNote - RotatePos1"
+          }
+        },
+        {
+          "type": "path",
+          "data": {
+            "pathName": "RotatePos1 - Shoot"
+          }
+        },
+        {
+          "type": "path",
+          "data": {
+            "pathName": "Shoot - CloseLeftNote"
+          }
+        },
+        {
+          "type": "path",
+          "data": {
+            "pathName": "CloseLeftNote - Shoot"
+          }
+        }
+      ]
+    }
+  },
+  "folder": null,
+  "choreoAuto": false
+}

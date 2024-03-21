@@ -16,12 +16,28 @@
     },
     {
       "anchor": {
-        "x": 8.012618136505887,
-        "y": 7.4598028796628215
+        "x": 4.487656336225653,
+        "y": 7.68
       },
       "prevControl": {
-        "x": 7.012618136505887,
-        "y": 7.4598028796628215
+        "x": 3.820138653116107,
+        "y": 7.68230877403267
+      },
+      "nextControl": {
+        "x": 5.467352837083877,
+        "y": 7.676611478769307
+      },
+      "isLocked": false,
+      "linkedName": null
+    },
+    {
+      "anchor": {
+        "x": 8.246834867421518,
+        "y": 7.448092043117039
+      },
+      "prevControl": {
+        "x": 7.485630491945719,
+        "y": 7.4949353893001645
       },
       "nextControl": null,
       "isLocked": false,
@@ -39,13 +55,13 @@
   },
   "goalEndState": {
     "velocity": 0,
-    "rotation": -178.82478586935278,
+    "rotation": 151.38954033403493,
     "rotateFast": false
   },
   "reversed": false,
   "folder": "Race",
   "previewStartingState": {
-    "rotation": 179.49947471241583,
+    "rotation": -1.3985637740435028,
     "velocity": 0
   },
   "useDefaultConstraints": true

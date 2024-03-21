@@ -55,7 +55,7 @@
               {
                 "type": "path",
                 "data": {
-                  "pathName": "AMPSide - MiddleLeftNote"
+                  "pathName": "AMPSide - RotatePos1"
                 }
               }
             ]
@@ -80,7 +80,7 @@
               {
                 "type": "path",
                 "data": {
-                  "pathName": "MiddleLeftNote - Shoot"
+                  "pathName": "RotatePos1 - Shoot"
                 }
               }
             ]
@@ -151,6 +151,6 @@
       ]
     }
   },
-  "folder": "Speaker3Note",
+  "folder": null,
   "choreoAuto": false
 }
