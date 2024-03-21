@@ -12,15 +12,46 @@
     "data": {
       "commands": [
         {
+          "type": "named",
+          "data": {
+            "name": "RampAndMoveToShoot"
+          }
+        },
+        {
+          "type": "named",
+          "data": {
+            "name": "Shot Note"
+          }
+        },
+        {
           "type": "path",
           "data": {
             "pathName": "AMPSide - RotatePos1"
           }
         },
         {
-          "type": "path",
+          "type": "named",
           "data": {
-            "pathName": "RotatePos1 - MiddleLeftNote"
+            "name": "Rotate to intake"
+          }
+        },
+        {
+          "type": "race",
+          "data": {
+            "commands": [
+              {
+                "type": "path",
+                "data": {
+                  "pathName": "RotatePos1 - MiddleLeftNote"
+                }
+              },
+              {
+                "type": "named",
+                "data": {
+                  "name": "Intake on"
+                }
+              }
+            ]
           }
         },
         {
@@ -30,21 +61,78 @@
           }
         },
         {
-          "type": "path",
+          "type": "race",
           "data": {
-            "pathName": "RotatePos1 - Shoot"
+            "commands": [
+              {
+                "type": "path",
+                "data": {
+                  "pathName": "RotatePos1 - Shoot"
+                }
+              },
+              {
+                "type": "named",
+                "data": {
+                  "name": "RampAndMoveToShoot"
+                }
+              }
+            ]
           }
         },
         {
-          "type": "path",
+          "type": "named",
           "data": {
-            "pathName": "Shoot - CloseLeftNote"
+            "name": "Shot Note"
           }
         },
         {
-          "type": "path",
+          "type": "named",
           "data": {
-            "pathName": "CloseLeftNote - Shoot"
+            "name": "Rotate to intake"
+          }
+        },
+        {
+          "type": "race",
+          "data": {
+            "commands": [
+              {
+                "type": "path",
+                "data": {
+                  "pathName": "Shoot - CloseLeftNote"
+                }
+              },
+              {
+                "type": "named",
+                "data": {
+                  "name": "Intake on"
+                }
+              }
+            ]
+          }
+        },
+        {
+          "type": "race",
+          "data": {
+            "commands": [
+              {
+                "type": "path",
+                "data": {
+                  "pathName": "CloseLeftNote - Shoot"
+                }
+              },
+              {
+                "type": "named",
+                "data": {
+                  "name": "RampAndMoveToShoot"
+                }
+              }
+            ]
+          }
+        },
+        {
+          "type": "named",
+          "data": {
+            "name": "Shot Note"
           }
         }
       ]

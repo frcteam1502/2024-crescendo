@@ -35,18 +35,18 @@ final class ShooterIntakeConstants{
   public final static double INTAKE_DEFAULT_INDEX_RPM = 1000;
   public final static double INTAKE_DEFAULT_AMP_RPM = 2500;
   public final static double INTAKE_DEFAULT_EJECT_RPM = -1000;
-  public final static double INTAKE_DEFAULT_SHOOT_RPM = 3500;
+  public final static double INTAKE_DEFAULT_SHOOT_RPM = 2500;
 
   public final static double SHOOTER_PID_P = 0.00005;
   public final static double SHOOTER_PID_I = 0;
   public final static double SHOOTER_PID_D = 0;
   public final static double SHOOTER_PID_F = 0.000185;
 
-  public final static double INTAKE_GEAR_RATIO = 1.0/3.0;
+  public final static double INTAKE_GEAR_RATIO = 1.0/4.0;
   public final static double INTAKE_PID_P = 0.00005;
   public final static double INTAKE_PID_I = 0;
   public final static double INTAKE_PID_D = 0;
-  public final static double INTAKE_PID_F = 0.000275;
+  public final static double INTAKE_PID_F = 0.000375;//0.000275;
 
 }
 
@@ -122,6 +122,7 @@ public class ShooterIntake extends SubsystemBase {
     SmartDashboard.putNumber("Shooter PID FF", shooter_ff);
     SmartDashboard.putNumber("Shooter Set Speed",shooter_speed);
     SmartDashboard.putNumber("Shooter PID P", shooter_p);
+
     
     SmartDashboard.putNumber("Intake PID FF", intake_ff);
     SmartDashboard.putNumber("Intake Pickup Speed", intakePickupSpeed);
