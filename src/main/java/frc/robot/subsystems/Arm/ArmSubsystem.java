@@ -40,7 +40,7 @@ final class ArmConstants{
   
   public static final double ROTATE_CHANGE = .3; 
 
-  public static final double MIN_ROTATION_SPEED = -0.5;
+  public static final double MIN_ROTATION_SPEED = -0.4;
   public static final double MAX_ROTATION_SPEED = 0.125;
 
   public static final double ABS_OFFSET = -6.5;//This is unique for the robot!
@@ -57,7 +57,7 @@ final class ArmConstants{
     -34,  //Shoot Far
     -76,  //Stow/Start
     -90,  //Amp/Trap
-    -63,  //Source
+    -66,  //Source
   };
 
   public static final double BRAKE_THRESHOLD = 0.25;
