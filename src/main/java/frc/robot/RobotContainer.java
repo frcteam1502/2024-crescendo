@@ -5,6 +5,7 @@
 package frc.robot;
 
 import frc.robot.subsystems.Arm.ArmSubsystem;
+import frc.robot.subsystems.Climber.Climber;
 import frc.robot.subsystems.Leds.LedSubsystem;
 import frc.robot.subsystems.PowerManagement.MockDetector;
 import frc.robot.subsystems.ShooterIntake.ShooterIntake;
@@ -20,6 +21,8 @@ import frc.robot.commands.ShootNote;
 import frc.robot.commands.ShooterIntakeCommands;
 import frc.robot.commands.AlignToSpeaker;
 import frc.robot.commands.ArmCommands;
+import frc.robot.commands.ClimberCommands;
+import frc.robot.commands.ClimberHome;
 import frc.robot.subsystems.SwerveDrive.DriveSubsystem;
 
 import com.pathplanner.lib.auto.AutoBuilder;
@@ -45,6 +48,7 @@ public class RobotContainer {
   public final ArmSubsystem armSubsystem = new ArmSubsystem();
   public final ShooterIntake shooterIntakeSubsystem = new ShooterIntake();
   public final LedSubsystem ledSubsystem = new LedSubsystem(()->shooterIntakeSubsystem.isNotePresent());
+  public final Climber climber = new Climber();
   //private final PdpSubsystem pdpSubsystem = new PdpSubsystem();
   
   //Needed to invoke scheduler
@@ -111,7 +115,10 @@ public class RobotContainer {
   private void configureBindings() {
     //Drivetrain
     driveSubsystem.setDefaultCommand(new ControllerCommands(driveSubsystem, new MockDetector())); //USES THE LEFT BUMPER TO SLOW DOWN
-    //Driver.Controller.a().onTrue(new AlignToSpeaker(driveSubsystem));
+    
+    //Climber
+    climber.setDefaultCommand(new ClimberCommands(climber));
+    //Driver.Controller.x().onTrue(new ClimberHome(climber));
     
     //Arm
     armSubsystem.setDefaultCommand(new ArmCommands(armSubsystem));
