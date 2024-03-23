@@ -32,21 +32,21 @@ final class ShooterIntakeConstants{
   public final static double SHOOTER_DEFAULT_RPM = 4000;
   public final static double SHOOTER_HOLD_RPM = -100;
   public final static double INTAKE_DEFAULT_PICK_UP_RPM = 2500;
-  public final static double INTAKE_DEFAULT_INDEX_RPM = 100;
+  public final static double INTAKE_DEFAULT_INDEX_RPM = 1000;
   public final static double INTAKE_DEFAULT_AMP_RPM = 2500;
   public final static double INTAKE_DEFAULT_EJECT_RPM = -1000;
-  public final static double INTAKE_DEFAULT_SHOOT_RPM = 3500;
+  public final static double INTAKE_DEFAULT_SHOOT_RPM = 2500;
 
   public final static double SHOOTER_PID_P = 0.00005;
   public final static double SHOOTER_PID_I = 0;
   public final static double SHOOTER_PID_D = 0;
   public final static double SHOOTER_PID_F = 0.000185;
 
-  public final static double INTAKE_GEAR_RATIO = 1.0/3.0;
+  public final static double INTAKE_GEAR_RATIO = 1.0/4.0;
   public final static double INTAKE_PID_P = 0.00005;
   public final static double INTAKE_PID_I = 0;
   public final static double INTAKE_PID_D = 0;
-  public final static double INTAKE_PID_F = 0.000275;
+  public final static double INTAKE_PID_F = 0.000375;//0.000275;
 
   public static final double[] SPEED_LOOK_UP_TABLE = 
   {
@@ -114,7 +114,7 @@ public class ShooterIntake extends SubsystemBase {
     
     //Set up intake control
     intake = Motors.INTAKE;
-    intake.setSmartCurrentLimit(60);
+    intake.setSmartCurrentLimit(40);
     intake_controller = intake.getPIDController();
     intake_controller.setFF(intake_ff);
     
@@ -139,6 +139,7 @@ public class ShooterIntake extends SubsystemBase {
     SmartDashboard.putNumber("Shooter PID FF", shooter_ff);
     SmartDashboard.putNumber("Shooter Set Speed",shooter_speed);
     SmartDashboard.putNumber("Shooter PID P", shooter_p);
+
     
     SmartDashboard.putNumber("Intake PID FF", intake_ff);
     SmartDashboard.putNumber("Intake Pickup Speed", intakePickupSpeed);

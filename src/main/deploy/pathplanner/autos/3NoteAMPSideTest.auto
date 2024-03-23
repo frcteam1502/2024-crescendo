@@ -5,7 +5,7 @@
       "x": 0.95,
       "y": 6.5
     },
-    "rotation": 61.536564237266255
+    "rotation": 60.13
   },
   "command": {
     "type": "sequential",
@@ -14,7 +14,69 @@
         {
           "type": "named",
           "data": {
-            "name": "Rotate to close shot"
+            "name": "RampAndMoveToShoot"
+          }
+        },
+        {
+          "type": "named",
+          "data": {
+            "name": "Shot Note"
+          }
+        },
+        {
+          "type": "path",
+          "data": {
+            "pathName": "AMPSide - RotatePos1"
+          }
+        },
+        {
+          "type": "named",
+          "data": {
+            "name": "Rotate to intake"
+          }
+        },
+        {
+          "type": "race",
+          "data": {
+            "commands": [
+              {
+                "type": "path",
+                "data": {
+                  "pathName": "RotatePos1 - MiddleLeftNote"
+                }
+              },
+              {
+                "type": "named",
+                "data": {
+                  "name": "Intake on"
+                }
+              }
+            ]
+          }
+        },
+        {
+          "type": "path",
+          "data": {
+            "pathName": "MiddleLeftNote - RotatePos1"
+          }
+        },
+        {
+          "type": "race",
+          "data": {
+            "commands": [
+              {
+                "type": "path",
+                "data": {
+                  "pathName": "RotatePos1 - Shoot"
+                }
+              },
+              {
+                "type": "named",
+                "data": {
+                  "name": "RampAndMoveToShoot"
+                }
+              }
+            ]
           }
         },
         {
@@ -36,7 +98,7 @@
               {
                 "type": "path",
                 "data": {
-                  "pathName": "LeftStart-RotatePos1"
+                  "pathName": "Shoot - CloseLeftNote"
                 }
               },
               {
@@ -46,24 +108,6 @@
                 }
               }
             ]
-          }
-        },
-        {
-          "type": "path",
-          "data": {
-            "pathName": "LeftNoteMiddle-AMP"
-          }
-        },
-        {
-          "type": "named",
-          "data": {
-            "name": "Rotate to amp"
-          }
-        },
-        {
-          "type": "named",
-          "data": {
-            "name": "Shot Note"
           }
         },
         {
@@ -73,28 +117,16 @@
               {
                 "type": "path",
                 "data": {
-                  "pathName": "AMP-LeftNote"
+                  "pathName": "CloseLeftNote - Shoot"
                 }
               },
               {
                 "type": "named",
                 "data": {
-                  "name": "Intake on"
+                  "name": "RampAndMoveToShoot"
                 }
               }
             ]
-          }
-        },
-        {
-          "type": "path",
-          "data": {
-            "pathName": "Leftnote-Rotate"
-          }
-        },
-        {
-          "type": "named",
-          "data": {
-            "name": "Rotate to far shot"
           }
         },
         {
@@ -106,6 +138,6 @@
       ]
     }
   },
-  "folder": "AMP3Note",
+  "folder": null,
   "choreoAuto": false
 }

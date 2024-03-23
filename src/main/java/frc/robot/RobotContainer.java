@@ -5,13 +5,17 @@
 package frc.robot;
 
 import frc.robot.subsystems.Arm.ArmSubsystem;
+import frc.robot.subsystems.Leds.LedSubsystem;
 import frc.robot.subsystems.PowerManagement.MockDetector;
 import frc.robot.subsystems.ShooterIntake.ShooterIntake;
 import frc.robot.commands.ControllerCommands;
 import frc.robot.commands.IntakeNote;
 import frc.robot.commands.MoveToAmp;
+import frc.robot.commands.MoveToFarShot;
 import frc.robot.commands.MoveToIntake;
 import frc.robot.commands.MoveToShoot;
+import frc.robot.commands.RampAndMoveToShoot;
+import frc.robot.commands.RampUpShooter;
 import frc.robot.commands.ShootNote;
 import frc.robot.commands.ShooterIntakeCommands;
 import frc.robot.commands.AlignToSpeaker;
@@ -41,6 +45,7 @@ public class RobotContainer {
   public final DriveSubsystem driveSubsystem = new DriveSubsystem();
   public final ArmSubsystem armSubsystem = new ArmSubsystem();
   public final ShooterIntake shooterIntakeSubsystem = new ShooterIntake();
+  public final LedSubsystem ledSubsystem = new LedSubsystem(()->shooterIntakeSubsystem.isNotePresent());
   //private final PdpSubsystem pdpSubsystem = new PdpSubsystem();
   
   //Needed to invoke scheduler
@@ -59,18 +64,21 @@ public class RobotContainer {
   /** The container for the robot. Contains subsystems, OI devices, and commands. */
   public RobotContainer() {
     // Configure the trigger bindings
+
     configureBindings();
 
     //Register named commands. Must register all commands we want Pathplanner to execute.
     NamedCommands.registerCommand("Rotate to amp", new MoveToAmp(armSubsystem));
     NamedCommands.registerCommand("Rotate to intake", new InstantCommand(armSubsystem::rotateToIntake));
     NamedCommands.registerCommand("Rotate to close shot", new MoveToShoot(armSubsystem));
-    NamedCommands.registerCommand("Rotate to far shot", new InstantCommand(armSubsystem::rotateToShootFar));
+    NamedCommands.registerCommand("Rotate to far shot", new MoveToFarShot(armSubsystem));
     NamedCommands.registerCommand("Rotate to intake", new MoveToIntake(armSubsystem));
-    NamedCommands.registerCommand("Intake on", new IntakeNote(shooterIntakeSubsystem));
+    NamedCommands.registerCommand("Intake on", new IntakeNote(shooterIntakeSubsystem,()->armSubsystem.isArmAtIntake()));
     NamedCommands.registerCommand("Intake off", new InstantCommand(shooterIntakeSubsystem::setIntakeOff));
     NamedCommands.registerCommand("Shot Note", new ShootNote(shooterIntakeSubsystem, ()->armSubsystem.isArmAtAmp()));
     NamedCommands.registerCommand("Shooter On", new InstantCommand(shooterIntakeSubsystem::setShooterOn));
+    NamedCommands.registerCommand("Ramp Up Shooter", new RampUpShooter(shooterIntakeSubsystem, ()->armSubsystem.isArmAtAmp()));
+    NamedCommands.registerCommand("Move to close shot w/ ramp", new RampAndMoveToShoot(shooterIntakeSubsystem, armSubsystem));
   
     //Build an Autochooser from SmartDashboard selection.  Default will be Commands.none()
 
@@ -80,10 +88,12 @@ public class RobotContainer {
     new PathPlannerAuto("4NoteLeft");
     new PathPlannerAuto("4NoteMiddle");
     new PathPlannerAuto("4NoteRight");
-    new PathPlannerAuto("1NoteMiddle");
-    new PathPlannerAuto("1NoteLeft");
-    new PathPlannerAuto("1NoteRight");
+    new PathPlannerAuto("OneNoteMiddle");
+    new PathPlannerAuto("OneNoteAMP");
+    new PathPlannerAuto("OneNoteSource");
     new PathPlannerAuto("Leave");
+    new PathPlannerAuto("SourceSideRace");
+    new PathPlannerAuto("AmpSideRace");
 
 
     autoChooser = AutoBuilder.buildAutoChooser();
@@ -113,6 +123,7 @@ public class RobotContainer {
     Operator.Controller.y().onTrue(new InstantCommand(armSubsystem::rotateToShootClose));
     Operator.Controller.x().onTrue(new InstantCommand(armSubsystem::rotateToIntake));
     Operator.Controller.start().onTrue(new InstantCommand(armSubsystem::rotateToStart));
+    Operator.Controller.back().onTrue(new InstantCommand(armSubsystem::rotateToSource));
 
     //ShooterIntake
     shooterIntakeSubsystem.setDefaultCommand(new ShooterIntakeCommands(shooterIntakeSubsystem));
@@ -120,7 +131,7 @@ public class RobotContainer {
     Operator.Controller.rightTrigger(0.5).onTrue(new ShootNote(shooterIntakeSubsystem, ()->armSubsystem.isArmAtAmp()));
     Operator.Controller.rightBumper().toggleOnTrue(new InstantCommand(shooterIntakeSubsystem::toggleShooter));
 
-    Operator.Controller.leftTrigger(.5).whileTrue(new IntakeNote(shooterIntakeSubsystem));//whileTrue() is causing CommandScheduler overruns!
+    Operator.Controller.leftTrigger(.5).whileTrue(new IntakeNote(shooterIntakeSubsystem,()->armSubsystem.isArmAtIntake()));//whileTrue() is causing CommandScheduler overruns!
     Operator.Controller.leftBumper().onTrue(new InstantCommand(shooterIntakeSubsystem::setIntakeEject));
     Operator.Controller.leftBumper().onFalse(new InstantCommand(shooterIntakeSubsystem::setIntakeOff));
     

@@ -2,10 +2,10 @@
   "version": 1.0,
   "startingPose": {
     "position": {
-      "x": 1.34,
-      "y": 5.54
+      "x": 0.72,
+      "y": 6.68
     },
-    "rotation": 0
+    "rotation": 59.08588693235971
   },
   "command": {
     "type": "sequential",
@@ -30,6 +30,36 @@
           }
         },
         {
+          "type": "path",
+          "data": {
+            "pathName": "1ar"
+          }
+        },
+        {
+          "type": "path",
+          "data": {
+            "pathName": "2ar"
+          }
+        },
+        {
+          "type": "path",
+          "data": {
+            "pathName": "3ar"
+          }
+        },
+        {
+          "type": "path",
+          "data": {
+            "pathName": "4ar"
+          }
+        },
+        {
+          "type": "path",
+          "data": {
+            "pathName": "5ar"
+          }
+        },
+        {
           "type": "race",
           "data": {
             "commands": [
@@ -42,22 +72,10 @@
               {
                 "type": "path",
                 "data": {
-                  "pathName": "4NoteMiddle1"
+                  "pathName": "6ar"
                 }
               }
             ]
-          }
-        },
-        {
-          "type": "named",
-          "data": {
-            "name": "Rotate to close shot"
-          }
-        },
-        {
-          "type": "named",
-          "data": {
-            "name": "Shot Note"
           }
         }
       ]

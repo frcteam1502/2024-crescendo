@@ -3,17 +3,20 @@
   "robotLength": 0.9144,
   "holonomicMode": true,
   "pathFolders": [
+    "4NoteClose",
     "4NoteShoot",
     "Attempt2Defence",
     "LeftSpotStartAMP",
     "MiddleSpotStartAmp",
-    "4NoteClose",
+    "BPaths",
     "PathsForDefenceBotAlliance",
+    "Race",
     "RightSpotStartAMP"
   ],
   "autoFolders": [
-    "AMP3Note",
     "1Note",
+    "AMP3Note",
+    "Speaker3Note",
     "Shot4Note"
   ],
   "defaultMaxVel": 4.5,

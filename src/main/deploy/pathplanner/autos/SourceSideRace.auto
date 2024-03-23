@@ -2,10 +2,10 @@
   "version": 1.0,
   "startingPose": {
     "position": {
-      "x": 0.72,
-      "y": 4.37
+      "x": 0.67,
+      "y": 4.41
     },
-    "rotation": -60.39975503603433
+    "rotation": -58.50354222377822
   },
   "command": {
     "type": "sequential",
@@ -30,51 +30,51 @@
           }
         },
         {
+          "type": "path",
+          "data": {
+            "pathName": "1sr"
+          }
+        },
+        {
+          "type": "path",
+          "data": {
+            "pathName": "2sr"
+          }
+        },
+        {
+          "type": "path",
+          "data": {
+            "pathName": "3sr"
+          }
+        },
+        {
+          "type": "path",
+          "data": {
+            "pathName": "4sr"
+          }
+        },
+        {
           "type": "race",
           "data": {
             "commands": [
-              {
-                "type": "path",
-                "data": {
-                  "pathName": "4NoteRight1"
-                }
-              },
               {
                 "type": "named",
                 "data": {
                   "name": "Intake on"
                 }
+              },
+              {
+                "type": "path",
+                "data": {
+                  "pathName": "5sr"
+                }
               }
             ]
-          }
-        },
-        {
-          "type": "named",
-          "data": {
-            "name": "Rotate to close shot"
-          }
-        },
-        {
-          "type": "path",
-          "data": {
-            "pathName": "1NoteRight"
-          }
-        },
-        {
-          "type": "named",
-          "data": {
-            "name": "Shot Note"
-          }
-        },
-        {
-          "type": "path",
-          "data": {
-            "pathName": "1NoteRight2"
           }
         }
       ]
     }
   },
-  "folder": "1Note",
+  "folder": null,
   "choreoAuto": false
 }

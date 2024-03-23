@@ -3,25 +3,41 @@
   "waypoints": [
     {
       "anchor": {
-        "x": 2.5,
-        "y": 5.58
+        "x": 8.34,
+        "y": 5.8
       },
       "prevControl": null,
       "nextControl": {
-        "x": 2.501681613805452,
-        "y": 5.525804013063089
+        "x": 8.181454055215804,
+        "y": 6.038569000214923
       },
       "isLocked": false,
       "linkedName": null
     },
     {
       "anchor": {
-        "x": 2.883271729453586,
-        "y": 6.558068465637644
+        "x": 7.4710341728375775,
+        "y": 7.696215392430785
       },
       "prevControl": {
-        "x": 2.859850056362024,
-        "y": 6.534646792546079
+        "x": 7.4710341728375775,
+        "y": 7.400207108106525
+      },
+      "nextControl": {
+        "x": 7.4710341728375775,
+        "y": 8.033716763843065
+      },
+      "isLocked": false,
+      "linkedName": null
+    },
+    {
+      "anchor": {
+        "x": 8.220921826459039,
+        "y": 7.696215392430785
+      },
+      "prevControl": {
+        "x": 8.220921826459039,
+        "y": 7.625950373156095
       },
       "nextControl": null,
       "isLocked": false,
@@ -39,13 +55,13 @@
   },
   "goalEndState": {
     "velocity": 0,
-    "rotation": 88.53119928561414,
+    "rotation": 0.0,
     "rotateFast": false
   },
   "reversed": false,
-  "folder": "4NoteClose",
+  "folder": "Race",
   "previewStartingState": {
-    "rotation": 0,
+    "rotation": 178.27862122627232,
     "velocity": 0
   },
   "useDefaultConstraints": true
