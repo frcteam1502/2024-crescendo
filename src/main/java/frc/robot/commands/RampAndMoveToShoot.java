@@ -17,7 +17,7 @@ public class RampAndMoveToShoot extends ParallelCommandGroup {
     // Add your commands in the addCommands() call, e.g.
     // addCommands(new FooCommand(), new BarCommand());
     addCommands(
-      new RampUpShooter(shooterIntake, ()->arm.isArmAtAmp()),
+      new RampUpShooter(shooterIntake, arm),
       new MoveToShoot(arm));
   }
 }

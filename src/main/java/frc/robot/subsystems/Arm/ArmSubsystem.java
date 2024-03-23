@@ -102,6 +102,8 @@ public class ArmSubsystem extends SubsystemBase {
   private double arm_close_angle = ArmConstants.POSITION_TABLE[1];
   private double arm_far_angle = ArmConstants.POSITION_TABLE[2];
 
+  private boolean auto_aim = false;
+
   public ArmSubsystem() {
     //Initialize Motors
     rotate = Motors.ARM_LEAD;
@@ -177,6 +179,8 @@ public class ArmSubsystem extends SubsystemBase {
 
   public void reset(){
     //Set Arm relative Position to absolute position
+    auto_aim = false;
+
     double zeroedArmAbsPosition = getArmAbsPositionDegrees();
 
     rotateRelativeEncoder.setPosition((zeroedArmAbsPosition));
@@ -197,28 +201,34 @@ public class ArmSubsystem extends SubsystemBase {
   }
 
   public void rotateToIntake() {
+    auto_aim = false;
     rotateArm(arm_intake_angle);
   }
 
   public void rotateToShootClose() {
     //rotateArm(ArmConstants.POSITION_TABLE[1]);
+    auto_aim = false;
     rotateArm(arm_close_angle);
   }
 
   public void rotateToShootFar() {
     //rotateArm(ArmConstants.POSITION_TABLE[2]);
+    auto_aim = false;
     rotateArm(arm_far_angle);
   }
 
   public void rotateToStart() {
+    auto_aim = false;
     rotateArm(ArmConstants.POSITION_TABLE[3]);
   }
 
   public void rotateToAmpTrap() {
+    auto_aim = false;
     rotateArm(ArmConstants.POSITION_TABLE[4]);
   }
 
   public void rotateToSource(){
+    auto_aim = false;
     rotateArm(ArmConstants.POSITION_TABLE[5]);
   }
 
@@ -230,6 +240,8 @@ public class ArmSubsystem extends SubsystemBase {
 
   public void lookupArmAngle(double distance, boolean distanceValid){
     double angle;
+
+    auto_aim = true;
 
     if(distanceValid){
       if(distance >= ArmConstants.LOOKUP_TABLE_MAX){
@@ -276,8 +288,8 @@ public class ArmSubsystem extends SubsystemBase {
 
   public boolean isArmAtRotateGoal(){
     double angle = rotateRelativeEncoder.getPosition();
-    if((angle>= goalRotate-1.0)&&
-       (angle<=goalRotate+1.0)){
+    if((angle>= goalRotate-0.5)&&
+       (angle<=goalRotate+0.5)){
         return true;
        }
     return false;
@@ -288,6 +300,10 @@ public class ArmSubsystem extends SubsystemBase {
       return true;
     }
     return false;
+  }
+
+  public boolean isAutoAim(){
+    return auto_aim;
   }
 
   /**

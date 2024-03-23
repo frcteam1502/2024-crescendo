@@ -4,20 +4,21 @@
 
 package frc.robot.commands;
 
-import java.util.function.BooleanSupplier;
-
-import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
+import edu.wpi.first.wpilibj2.command.ParallelCommandGroup;
 import frc.robot.subsystems.Arm.ArmSubsystem;
 import frc.robot.subsystems.ShooterIntake.ShooterIntake;
+import frc.robot.subsystems.SwerveDrive.DriveSubsystem;
 
 // NOTE:  Consider using this command inline, rather than writing a subclass.  For more
 // information, see:
 // https://docs.wpilib.org/en/stable/docs/software/commandbased/convenience-features.html
-public class ShootNote extends SequentialCommandGroup {
-  /** Creates a new ShootNote. */
-  public ShootNote(ShooterIntake shooterIntake, ArmSubsystem arm) {
+public class AutoTargetSpeaker extends ParallelCommandGroup {
+  /** Creates a new AutoTargetSpeaker. */
+
+  public AutoTargetSpeaker(ArmSubsystem arm, ShooterIntake shooterIntake, DriveSubsystem drive) {
     // Add your commands in the addCommands() call, e.g.
     // addCommands(new FooCommand(), new BarCommand());
-    addCommands(new RampUpShooter(shooterIntake, arm), new LaunchNote(shooterIntake, arm));
+    addCommands(new AutoRotateArm(arm, ()->drive.getDistanceToSpeaker(), ()->drive.isSpeakerDataValid()),
+                new AutoShootSpeed(shooterIntake, ()->drive.getDistanceToSpeaker(), ()->drive.isSpeakerDataValid()));
   }
 }

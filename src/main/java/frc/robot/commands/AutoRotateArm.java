@@ -26,13 +26,13 @@ public class AutoRotateArm extends Command {
 
   // Called when the command is initially scheduled.
   @Override
-  public void initialize() {}
+  public void initialize() {
+    arm.lookupArmAngle(distance.getAsDouble(), distanceValid.getAsBoolean());
+  }
 
   // Called every time the scheduler runs while the command is scheduled.
   @Override
-  public void execute() {
-    arm.lookupArmAngle(distance.getAsDouble(), distanceValid.getAsBoolean());
-  }
+  public void execute() {}
 
   // Called once the command ends or is interrupted.
   @Override
@@ -45,5 +45,6 @@ public class AutoRotateArm extends Command {
       return true;
     }
     return false;
+    //return true;
   }
 }

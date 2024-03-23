@@ -12,7 +12,7 @@ import edu.wpi.first.wpilibj2.command.SubsystemBase;
 
 final class LedConstants{
   public static final Spark BLINKIN = new Spark(9);
-  public static final double ORANGE = .65;
+  public static final double ORANGE = .63;
   public static final double RED = .61;
   public static final double BLUE = .87;
 }

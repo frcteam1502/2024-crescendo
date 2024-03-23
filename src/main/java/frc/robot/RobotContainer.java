@@ -21,6 +21,7 @@ import frc.robot.commands.ShooterIntakeCommands;
 import frc.robot.commands.AlignToSpeaker;
 import frc.robot.commands.ArmCommands;
 import frc.robot.commands.AutoRotateArm;
+import frc.robot.commands.AutoTargetSpeaker;
 import frc.robot.subsystems.SwerveDrive.DriveSubsystem;
 
 import com.pathplanner.lib.auto.AutoBuilder;
@@ -75,9 +76,9 @@ public class RobotContainer {
     NamedCommands.registerCommand("Rotate to intake", new MoveToIntake(armSubsystem));
     NamedCommands.registerCommand("Intake on", new IntakeNote(shooterIntakeSubsystem,()->armSubsystem.isArmAtIntake()));
     NamedCommands.registerCommand("Intake off", new InstantCommand(shooterIntakeSubsystem::setIntakeOff));
-    NamedCommands.registerCommand("Shot Note", new ShootNote(shooterIntakeSubsystem, ()->armSubsystem.isArmAtAmp()));
+    NamedCommands.registerCommand("Shot Note", new ShootNote(shooterIntakeSubsystem, armSubsystem));
     NamedCommands.registerCommand("Shooter On", new InstantCommand(shooterIntakeSubsystem::setShooterOn));
-    NamedCommands.registerCommand("Ramp Up Shooter", new RampUpShooter(shooterIntakeSubsystem, ()->armSubsystem.isArmAtAmp()));
+    NamedCommands.registerCommand("Ramp Up Shooter", new RampUpShooter(shooterIntakeSubsystem, armSubsystem));
     NamedCommands.registerCommand("Move to close shot w/ ramp", new RampAndMoveToShoot(shooterIntakeSubsystem, armSubsystem));
   
     //Build an Autochooser from SmartDashboard selection.  Default will be Commands.none()
@@ -119,7 +120,7 @@ public class RobotContainer {
     
     Operator.Controller.a().onTrue(new InstantCommand(armSubsystem::rotateToAmpTrap));
     //Operator.Controller.b().onTrue(new InstantCommand(armSubsystem::rotateToShootFar));
-    Operator.Controller.b().onTrue(new AutoRotateArm(armSubsystem, ()->driveSubsystem.getDistanceToSpeaker(), ()->driveSubsystem.isSpeakerDataValid()));
+    Operator.Controller.b().onTrue(new AutoTargetSpeaker(armSubsystem, shooterIntakeSubsystem, driveSubsystem));
     Operator.Controller.y().onTrue(new InstantCommand(armSubsystem::rotateToShootClose));
     Operator.Controller.x().onTrue(new InstantCommand(armSubsystem::rotateToIntake));
     Operator.Controller.start().onTrue(new InstantCommand(armSubsystem::rotateToStart));
@@ -128,7 +129,7 @@ public class RobotContainer {
     //ShooterIntake
     shooterIntakeSubsystem.setDefaultCommand(new ShooterIntakeCommands(shooterIntakeSubsystem));
 
-    Operator.Controller.rightTrigger(0.5).onTrue(new ShootNote(shooterIntakeSubsystem, ()->armSubsystem.isArmAtAmp()));
+    Operator.Controller.rightTrigger(0.5).onTrue(new ShootNote(shooterIntakeSubsystem, armSubsystem));
     Operator.Controller.rightBumper().toggleOnTrue(new InstantCommand(shooterIntakeSubsystem::toggleShooter));
 
     Operator.Controller.leftTrigger(.5).whileTrue(new IntakeNote(shooterIntakeSubsystem,()->armSubsystem.isArmAtIntake()));//whileTrue() is causing CommandScheduler overruns!

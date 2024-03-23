@@ -84,6 +84,7 @@ public class ShooterIntake extends SubsystemBase {
   private final DigitalInput photoSensorNormOpen;
   private final DigitalInput photoSensorNormClosed;
 
+  private double auto_shooter_speed = ShooterIntakeConstants.SHOOTER_DEFAULT_RPM;
   private double shooter_speed = ShooterIntakeConstants.SHOOTER_DEFAULT_RPM;
   private double intakePickupSpeed = ShooterIntakeConstants.INTAKE_DEFAULT_PICK_UP_RPM;
   private double intakeIndexSpeed = ShooterIntakeConstants.INTAKE_DEFAULT_INDEX_RPM;
@@ -98,6 +99,9 @@ public class ShooterIntake extends SubsystemBase {
 
   private boolean isNoteLoading = false;
   private boolean isShooterOn = false;
+
+  private double temp_index;
+  private int index;
   
   public ShooterIntake() {
     //Set up shooter control
@@ -211,19 +215,27 @@ public class ShooterIntake extends SubsystemBase {
     }
   }
 
-  public void lookupShooterSpeed(double distance){
-    double angle;
-
-    if(distance >= ShooterIntakeConstants.LOOKUP_TABLE_MAX){
-      angle = ShooterIntakeConstants.LOOKUP_TABLE_MAX;
-    }else if(distance <= ShooterIntakeConstants.LOOKUP_TABLE_MIN){
-      angle = ShooterIntakeConstants.LOOKUP_TABLE_MIN;
+  public void lookupShooterSpeed(double distance, boolean distanceValid){
+    
+    if(distanceValid){
+      if(distance >= ShooterIntakeConstants.LOOKUP_TABLE_MAX){
+        shooter_speed = ShooterIntakeConstants.SPEED_LOOK_UP_TABLE[0];
+      }else if(distance <= ShooterIntakeConstants.LOOKUP_TABLE_MIN){
+        shooter_speed = ShooterIntakeConstants.SPEED_LOOK_UP_TABLE[9];
+      }else{
+        temp_index = ((ShooterIntakeConstants.LOOKUP_TABLE_MAX - distance)/0.5);
+        index = (int)(temp_index);
+        shooter_speed = ShooterIntakeConstants.SPEED_LOOK_UP_TABLE[index];
+      } 
     }else{
-      double temp_index = ShooterIntakeConstants.LOOKUP_TABLE_MAX % distance;
-      int index = (int)(temp_index/0.5);
-      angle = ShooterIntakeConstants.SPEED_LOOK_UP_TABLE[index];
+      shooter_speed = ShooterIntakeConstants.SPEED_LOOK_UP_TABLE[0];
     }
-    shooter_speed = angle;
+
+    setShooterOn();
+  }
+
+  public void setCloseShotSpeed(){
+    shooter_speed = ShooterIntakeConstants.SHOOTER_DEFAULT_RPM;
   }
 
   public double getIntakeCurrent(){
