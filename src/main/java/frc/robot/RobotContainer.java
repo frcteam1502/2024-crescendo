@@ -80,6 +80,7 @@ public class RobotContainer {
     NamedCommands.registerCommand("Shooter On", new InstantCommand(shooterIntakeSubsystem::setShooterOn));
     NamedCommands.registerCommand("Ramp Up Shooter", new RampUpShooter(shooterIntakeSubsystem, armSubsystem));
     NamedCommands.registerCommand("Move to close shot w/ ramp", new RampAndMoveToShoot(shooterIntakeSubsystem, armSubsystem));
+    NamedCommands.registerCommand("Target speaker", new AutoTargetSpeaker(armSubsystem, shooterIntakeSubsystem, driveSubsystem));
   
     //Build an Autochooser from SmartDashboard selection.  Default will be Commands.none()
 
