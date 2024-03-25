@@ -175,11 +175,12 @@ public class ArmSubsystem extends SubsystemBase {
     SmartDashboard.putBoolean("Is Arm At Rotation Goal", isArmAtRotateGoal());
     SmartDashboard.putNumber("Lookup Temp Index", temp_index);
     SmartDashboard.putBoolean("Is Arm At Intake", isArmAtIntake());
+    SmartDashboard.putBoolean("Is Auto Aim", auto_aim);
   }
 
   public void reset(){
     //Set Arm relative Position to absolute position
-    auto_aim = false;
+    //auto_aim = false;
 
     double zeroedArmAbsPosition = getArmAbsPositionDegrees();
 

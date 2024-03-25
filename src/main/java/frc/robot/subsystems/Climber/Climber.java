@@ -26,9 +26,9 @@ final class ClimberConstants{
   public final static double CLIMBER_MAX_DISTANCE = .24;
   public final static double CLIMBER_MIN_DISTANCE = 0;
 
-  public final static double CLIMBER_HOME_POSITION = .24;
+  public final static double CLIMBER_HOME_POSITION = .3;
 
-  public final static double CLIMBER_PID_P = 0.4;
+  public final static double CLIMBER_PID_P = 1;
   public final static double CLIMBER_PID_I = 0;
   public final static double CLIMBER_PID_D = 0;
   public final static double CLIMBER_PID_FF = 0;

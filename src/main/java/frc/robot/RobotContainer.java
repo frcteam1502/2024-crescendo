@@ -121,7 +121,9 @@ public class RobotContainer {
     
     //Climber
     climber.setDefaultCommand(new ClimberCommands(climber));
-    Driver.Controller.x().onTrue(new InstantCommand(climber::setClimberHome));
+    //Driver.Controller.y().onTrue(new InstantCommand(climber::climbUp).repeatedly()).onFalse(new InstantCommand(climber::climberOff));
+    //Driver.Controller.a().onTrue(new InstantCommand(climber::climbDown).repeatedly()).onFalse(new InstantCommand(climber::climberOff));
+    Driver.Controller.x().whileTrue(new InstantCommand(climber::setClimberHome));
     
     //Arm
     armSubsystem.setDefaultCommand(new ArmCommands(armSubsystem));
