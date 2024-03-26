@@ -91,9 +91,9 @@ public class RobotContainer {
     new PathPlannerAuto("MiddleAutoAMPFinal");
     new PathPlannerAuto("LeftAuto-AMPFinal");
     new PathPlannerAuto("RightAuto-AMPFinal");
-    new PathPlannerAuto("4NoteLeft");
+    new PathPlannerAuto("4NoteAmp");
     new PathPlannerAuto("4NoteMiddle");
-    new PathPlannerAuto("4NoteRight");
+    new PathPlannerAuto("4NoteSource");
     new PathPlannerAuto("OneNoteMiddle");
     new PathPlannerAuto("OneNoteAMP");
     new PathPlannerAuto("OneNoteSource");
