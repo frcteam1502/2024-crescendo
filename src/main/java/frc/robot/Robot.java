@@ -128,7 +128,7 @@ public class Robot extends TimedRobot {
     GameState.testInit();
     // Cancels all running commands at the start of test mode.
     CommandScheduler.getInstance().cancelAll();
-    AbsoluteEncoderAlignment.StartAlignment();
+    AbsoluteEncoderAlignment.StartAlignment(m_robotContainer);
   }
 
   /** This function is called periodically during test mode. */

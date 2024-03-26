@@ -73,13 +73,15 @@ public class CANCoder extends Builder{ // Accelerometer {
         );
         return encoder;
     }
-    
-    void setMagneticOffset(double offset) {
+    public void setMagneticOffset(double offset) {
         var canCoder = CANcoder();
         if (canCoder != null) {
             canCoder.getConfigurator().apply(
             new CANcoderConfiguration().MagnetSensor.withMagnetOffset(-offset));
         }
+    }
+    public double getPosition() {
+        return CANcoder().getAbsolutePosition().getValue();   
     }
 
 }

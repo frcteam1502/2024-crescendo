@@ -1,6 +1,7 @@
 package frc.robot.commands;
 
 import frc.robot.Driver;
+import frc.robot.GameState;
 import frc.robot.Operator;
 import frc.robot.subsystems.PowerManagement.AdaptiveSpeedController;
 import frc.robot.subsystems.PowerManagement.IBrownOutDetector;
@@ -59,6 +60,8 @@ public class ControllerCommands extends Command {
 
   @Override
   public void execute() {
+    if (GameState.isTest()) { return; }
+
     double teleopSpeedGain;
     double teleopRotationGain;
     double driver_gain;

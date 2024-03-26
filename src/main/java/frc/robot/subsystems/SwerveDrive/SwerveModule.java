@@ -34,7 +34,7 @@ public class SwerveModule implements Sendable {
 
     this.turningMotor = config.TurningMotor().buildSparkMax();
     this.turningPIDController = config.TurningMotor().PID().createPIDController();
-    this.turningPIDController.enableContinuousInput(-Math.PI, Math.PI); 
+    //this.turningPIDController.enableContinuousInput(-Math.PI, Math.PI); 
 
     this.absEncoder = config.Encoder().buildCANcoder();
   }
@@ -109,14 +109,16 @@ public class SwerveModule implements Sendable {
     builder.addDoubleProperty("Angle Command", ()->getCommandedAngle(), null);
     builder.addDoubleProperty("Speed Setpoint", ()->getControllerSetpoint(), null);
     builder.addDoubleProperty("Speed", ()->getModuleVelocity(), null);
-    builder.addDoubleProperty("Angle", ()->getAbsPositionZeroed()*(180/Math.PI), null);
+    builder.addDoubleProperty("Angle", ()->Math.toDegrees(getAbsPositionZeroed()), null);
   }
 
-  //CANcoders in Phoenix return rotations 0 to 1
-  private double getAbsPositionZeroed() { return absEncoder.getAbsolutePosition().getValue()*2.0*Math.PI; }
+  //CANcoders in Phoenix return rotations 0 to 1 (or -0.5 to 0.5)
+  private double getAbsPositionZeroed() { return angleFromRotations(absEncoder.getAbsolutePosition().getValue()); }
   private double getCommandedSpeed() { return commandedSpeed; }
   private double getModuleVelocity() { return driveEncoder.getVelocity(); }
   private double getCommandedAngle() { return commandedAngle; }
   private double getControllerSetpoint() { return driveMotor.get(); }
+
+  static double angleFromRotations(double rot) { return rot * 2 * Math.PI; }
 
 }

@@ -32,16 +32,23 @@ public class RobotContainer {
 
   private final SendableChooser<Command> autoChooser; 
   
-  /** The container for the robot. Contains subsystems, OI devices, and commands. */
+  private final RobotConfiguration config;
+  public RobotConfiguration getConfig() {return config; }
+  private final RobotFactory factory;
+  public RobotFactory getFactory() {return factory; }
+
+  /** The container for the robot. Contains subsystems, IO devices, and commands. */
   public RobotContainer(String radio) {
-    var config = RobotConfigurations.getConfiguration(radio);
-    var factory = RobotFactory.Create(config);
+    config = RobotConfigurations.getConfiguration(radio);
+    factory = RobotFactory.Create(config);
     
     configureBindings(factory);
 
-    Logger.RegisterPdp(new PowerDistribution(1, ModuleType.kRev), config.PDH().ChannelNames());
-    Logger.RegisterPneumaticHub(new PneumaticHub(), config.PCM().ChannelNames());
-    logger.start();
+    if (!config.isDisabled("Logger")) {
+      Logger.RegisterPdp(new PowerDistribution(1, ModuleType.kRev), config.PDH().ChannelNames());
+      Logger.RegisterPneumaticHub(new PneumaticHub(), config.PCM().ChannelNames());
+      logger.start();
+    }
 
     // Path planner NamedCommands are currently in their respective Command class
 

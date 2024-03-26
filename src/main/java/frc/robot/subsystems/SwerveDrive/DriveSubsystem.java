@@ -54,7 +54,7 @@ public class DriveSubsystem extends SubsystemBase { //implements Subsystem, Send
   private final double maxSpeed;
   private final double driveBaseRadius;
 
-  private final boolean limelightEnabled;
+  private final boolean limelightEnabled = false;
 
   public DriveSubsystem(RobotConfiguration config) {
     gyro = config.Pigeon2().buildPigeon2();
@@ -67,7 +67,7 @@ public class DriveSubsystem extends SubsystemBase { //implements Subsystem, Send
 
     this.odometry = new SwerveDrivePoseEstimator(kinematics, getGyroRotation2d(), getModulePositions(), pose);
 
-    limelightEnabled = !config.isDisabled("limelight");
+    //limelightEnabled = !config.isDisabled("limelight");
         
     reset();
     registerLoggerObjects(config);

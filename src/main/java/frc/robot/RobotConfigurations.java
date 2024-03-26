@@ -13,7 +13,7 @@ public final class RobotConfigurations {
         switch(radio) {
             case "1502": return RobotConfiguration.Create("robot_2024_1502", r->competitionRobot2024(r));
             case "1502_practice": return RobotConfiguration.Create("robot_2024_1502_practice", r->practiceRobot2024(r));
-            default: return RobotConfiguration.Create("robot_2024_1502", r->competitionRobot2024(r));
+            default: return RobotConfiguration.Create("robot_2024_1502", r->practiceRobot2024(r));
         }
     }
 
@@ -201,6 +201,7 @@ public final class RobotConfigurations {
         parts.DisableSubsystem(ArmSubsystem.class.getName());
         parts.DisableSubsystem(ShooterIntake.class.getName());
         parts.DisableSubsystem("limelight");
+        parts.DisableSubsystem("Logger");
 
         parts.PowerDistributionModule(pdh -> pdh
             .Ch(17, parts.EthernetSwitch().Part("POE"))
@@ -283,6 +284,8 @@ public final class RobotConfigurations {
             .Motor("NEO", m -> m
                 .MotorType(MotorType.kBrushless)
                 .FreeSpeedRPM(5_820.0) // from MK4i docs, see data sheet for empirical values
+                .StallTorque(3.75) // Nm from NEO (Theoretical)
+                .Value("empiricalStallTorque", 2.6) // Nm from NEO (Empirical)
                 .Note("NAME", "NEO")
                 .Note("VERSION", "V1.0/V1.1")
                 .Note("gearing", "8mm bore pinion gears")
@@ -319,6 +322,7 @@ public final class RobotConfigurations {
                         .Gear("Stage2", 10, 60)
                         .Note("MK4i Standard", "150/7:1")
                     )
+                    .AngleController(-180, 180)
                     .PID(p->p
                         .Gain(3.4, 0.0, 0.0)
                         .EnableContinuousInput(-Math.PI, Math.PI)

@@ -12,6 +12,7 @@ public class Motor extends Builder {
     public static final String idleMode = "idleMode";
     public static final String motorType = "motorType";
     public static final String freeSpeedRPM = "freeSpeedRPM";
+    public static final String stallTorque = "stallTorque";
 
     public static final String CLASSNAME = "Motor";
     public static final Function<IBuild, Motor> Define = build->new Motor(build);
@@ -34,5 +35,9 @@ public class Motor extends Builder {
     public double FreeSpeedRPM() { return (double)getValue(Motor.freeSpeedRPM); }          
     public Motor FreeSpeedRPM(double speed) {
         return (Motor)Value(Motor.freeSpeedRPM, speed);
+    }          
+    public double StallTorque() { return (double)getValue(Motor.stallTorque); }          
+    public Motor StallTorque(double speed) {
+        return (Motor)Value(Motor.stallTorque, speed);
     }          
 }
