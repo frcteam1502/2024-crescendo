@@ -49,6 +49,12 @@
           }
         },
         {
+          "type": "wait",
+          "data": {
+            "waitTime": 0.05
+          }
+        },
+        {
           "type": "named",
           "data": {
             "name": "Target speaker"
@@ -86,9 +92,21 @@
           }
         },
         {
+          "type": "wait",
+          "data": {
+            "waitTime": 0.05
+          }
+        },
+        {
           "type": "path",
           "data": {
             "pathName": "4NoteLeft3"
+          }
+        },
+        {
+          "type": "wait",
+          "data": {
+            "waitTime": 0.05
           }
         },
         {
@@ -129,9 +147,21 @@
           }
         },
         {
+          "type": "wait",
+          "data": {
+            "waitTime": 0.05
+          }
+        },
+        {
           "type": "path",
           "data": {
             "pathName": "4NoteLeft5"
+          }
+        },
+        {
+          "type": "wait",
+          "data": {
+            "waitTime": 0.05
           }
         },
         {
