@@ -19,6 +19,7 @@ import frc.robot.commands.RampAndMoveToShoot;
 import frc.robot.commands.RampUpShooter;
 import frc.robot.commands.ShootNote;
 import frc.robot.commands.ShooterIntakeCommands;
+import frc.robot.commands.StopDriveMotors;
 import frc.robot.commands.AlignToSpeaker;
 import frc.robot.commands.ArmCommands;
 import frc.robot.commands.AutoRotateArm;
@@ -85,6 +86,8 @@ public class RobotContainer {
     NamedCommands.registerCommand("Ramp Up Shooter", new RampUpShooter(shooterIntakeSubsystem, armSubsystem));
     NamedCommands.registerCommand("Move to close shot w/ ramp", new RampAndMoveToShoot(shooterIntakeSubsystem, armSubsystem));
     NamedCommands.registerCommand("Target speaker", new AutoTargetSpeaker(armSubsystem, shooterIntakeSubsystem, driveSubsystem));
+    NamedCommands.registerCommand("Stop Drive Motors", new StopDriveMotors(driveSubsystem));
+    NamedCommands.registerCommand("Limelight Align to Speaker", new AlignToSpeaker(driveSubsystem));
   
     //Build an Autochooser from SmartDashboard selection.  Default will be Commands.none()
 

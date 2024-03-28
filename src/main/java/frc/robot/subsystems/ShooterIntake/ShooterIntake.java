@@ -35,7 +35,7 @@ final class ShooterIntakeConstants{
   public final static double INTAKE_DEFAULT_INDEX_RPM = 1000;
   public final static double INTAKE_DEFAULT_AMP_RPM = 2500;
   public final static double INTAKE_DEFAULT_EJECT_RPM = -1000;
-  public final static double INTAKE_DEFAULT_SHOOT_RPM = 2500;
+  public final static double INTAKE_DEFAULT_SHOOT_RPM = 3000;
 
   public final static double SHOOTER_PID_P = 0.00005;
   public final static double SHOOTER_PID_I = 0;
@@ -273,7 +273,7 @@ public class ShooterIntake extends SubsystemBase {
     SmartDashboard.putNumber("Intake Applied Output Volts", (intake.getAppliedOutput()*intake.getBusVoltage()));
 
     SmartDashboard.putBoolean("Note Sensor NO", !photoSensorNormOpen.get());
-    SmartDashboard.putBoolean("Note Sensor NC", !photoSensorNormClosed.get());
+    SmartDashboard.putBoolean("Note Sensor NC", photoSensorNormClosed.get());
     SmartDashboard.putBoolean("Is Note Present", isNotePresent());
 
     SmartDashboard.putBoolean("Is Shooter On", isShooterOn);

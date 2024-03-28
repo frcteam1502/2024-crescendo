@@ -58,7 +58,7 @@ final class ArmConstants{
     -34,  //Shoot Far
     -76,  //Stow/Start
     -90,  //Amp/Trap
-    -66,  //Source
+    -57,  //Source
   };
 
   public static final double[] ANGLE_LOOK_UP_TABLE = 
@@ -289,8 +289,8 @@ public class ArmSubsystem extends SubsystemBase {
 
   public boolean isArmAtRotateGoal(){
     double angle = rotateRelativeEncoder.getPosition();
-    if((angle>= goalRotate-0.5)&&
-       (angle<=goalRotate+0.5)){
+    if((angle>= goalRotate-0.25)&&
+       (angle<=goalRotate+0.25)){
         return true;
        }
     return false;

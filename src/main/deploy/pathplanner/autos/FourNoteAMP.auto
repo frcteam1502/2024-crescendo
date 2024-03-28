@@ -30,7 +30,7 @@
           }
         },
         {
-          "type": "parallel",
+          "type": "race",
           "data": {
             "commands": [
               {
@@ -46,6 +46,30 @@
                 }
               }
             ]
+          }
+        },
+        {
+          "type": "named",
+          "data": {
+            "name": "Stop Drive Motors"
+          }
+        },
+        {
+          "type": "named",
+          "data": {
+            "name": "Limelight Align to Speaker"
+          }
+        },
+        {
+          "type": "named",
+          "data": {
+            "name": "Target speaker"
+          }
+        },
+        {
+          "type": "named",
+          "data": {
+            "name": "Shot Note"
           }
         }
       ]
