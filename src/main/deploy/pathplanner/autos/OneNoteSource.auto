@@ -68,9 +68,21 @@
           }
         },
         {
+          "type": "wait",
+          "data": {
+            "waitTime": 5.0
+          }
+        },
+        {
           "type": "named",
           "data": {
             "name": "Shot Note"
+          }
+        },
+        {
+          "type": "path",
+          "data": {
+            "pathName": "1NoteRight2"
           }
         }
       ]
