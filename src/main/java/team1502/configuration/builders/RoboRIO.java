@@ -18,6 +18,7 @@ public class RoboRIO extends Builder {
     
     /** key to channel number in connector --  */
     public static final String digitalInput = "digitalInput";
+    public static final String pwmOutput = "pwmOutput";
 
     public static final String CLASSNAME = "RoboRIO"; 
     public static final Function<IBuild, RoboRIO> Define = build->new RoboRIO(build);

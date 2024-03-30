@@ -220,6 +220,7 @@ public final class RobotConfigurations {
             .Ch(4, 10)
             .Ch(5, 10)
             .PDH(0, "MPM0"))
+        .Subsystem("LEDSubsystem", s->s.Blinken(9) )
         // GYRO
         .Pigeon2(g->g
             .CanNumber(14)

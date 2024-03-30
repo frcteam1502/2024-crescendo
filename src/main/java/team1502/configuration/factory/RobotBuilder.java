@@ -263,6 +263,16 @@ public class RobotBuilder implements IBuild /*extends Builder*/{
         abs.connectToChannel(RoboRIO.CLASSNAME, channel);
         return this;
     }
+    
+    public RobotBuilder Blinken(int channel) {
+        return Spark("Blinken", channel);
+    }
+    public RobotBuilder Spark(String name, int channel) {
+        return Spark(name, name, f->f.connectPWM(channel));
+    }
+    public RobotBuilder Spark(String name, String partName, Function<Spark, Builder> fn) {
+        return installBuilder(name, partName, Spark.Define, fn);
+    }
 
     // "part" Parts
     public RobotBuilder DC(Function<Builder, Builder> fn) {

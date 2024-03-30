@@ -357,6 +357,37 @@ public class Builder {
         return ch;
     }
 
+    public Builder connectPWM(int channel) {
+        var abs = addConnector(Channel.SIGNAL_PWM, getName());
+        abs.Value(RoboRIO.pwmOutput, channel); // 0-9 is onboard
+        abs.connectToChannel(RoboRIO.CLASSNAME, channel);
+        return this;
+    }
+    public Integer getDigitalInputChannel() {
+        var connector = findConnector(Channel.SIGNAL_DIO);
+        // expected
+        Integer channel = connector.getInt(RoboRIO.digitalInput);
+        if (connector.hasConnection()) {
+            if (connector.isConnected()) { // actual
+                channel = connector.getChannel().Channel();
+            }
+            return channel;
+        }
+        return null; 
+    }
+    public Integer getPWMChannel() {
+        var connector = findConnector(Channel.SIGNAL_PWM);
+        // expected
+        Integer channel = connector.getInt(RoboRIO.pwmOutput);
+        if (connector.hasConnection()) {
+            if (connector.isConnected()) { // actual
+                channel = connector.getChannel().Channel();
+            }
+            return channel;
+        }
+        return null; 
+    }
+
     public Integer DigitalInput(String name) { return getPart(name).getInt(RoboRIO.digitalInput); }
     // == CAN =========
     public Builder CanInfo(DeviceType deviceType, Manufacturer manufacturer, int number) {
