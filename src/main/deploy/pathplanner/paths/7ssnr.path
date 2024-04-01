@@ -3,25 +3,25 @@
   "waypoints": [
     {
       "anchor": {
-        "x": 0.7167669684840067,
-        "y": 6.67517683109546
+        "x": 6.01,
+        "y": 6.37
       },
       "prevControl": null,
       "nextControl": {
-        "x": 1.0680920648574521,
-        "y": 6.90939356201109
+        "x": 6.080330106451938,
+        "y": 6.347273407813577
       },
       "isLocked": false,
       "linkedName": null
     },
     {
       "anchor": {
-        "x": 2.098645680886225,
-        "y": 7.68230877403267
+        "x": 8.27025654051308,
+        "y": 5.820285763253409
       },
       "prevControl": {
-        "x": 1.7238989114212167,
-        "y": 7.401248696933913
+        "x": 8.281967377058862,
+        "y": 5.808574926707628
       },
       "nextControl": null,
       "isLocked": false,
@@ -39,13 +39,13 @@
   },
   "goalEndState": {
     "velocity": 0,
-    "rotation": 180.0,
+    "rotation": 0,
     "rotateFast": false
   },
   "reversed": false,
-  "folder": "Race",
+  "folder": "ShottingNoteRacing",
   "previewStartingState": {
-    "rotation": 59.42077312751104,
+    "rotation": 0,
     "velocity": 0
   },
   "useDefaultConstraints": true

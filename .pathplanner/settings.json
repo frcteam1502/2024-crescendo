@@ -1,6 +1,6 @@
 {
-  "robotWidth": 0.9144,
-  "robotLength": 0.9144,
+  "robotWidth": 0.9,
+  "robotLength": 0.9,
   "holonomicMode": true,
   "pathFolders": [
     "4NoteClose",
@@ -9,21 +9,24 @@
     "BPaths",
     "LeftSpotStartAMP",
     "MiddleSpotStartAmp",
-    "Middle 4 Note ",
     "PathsForDefenceBotAlliance",
     "Race",
-    "RightSpotStartAMP"
+    "RightSpotStartAMP",
+    "ShottingNoteRacing"
   ],
   "autoFolders": [
     "1Note",
     "AMP3Note",
-    "New Folder",
+    "ShottingNoteRacing",
+    "Race",
+    "Random",
+    "Ben Autos",
     "Shot4Note",
     "Speaker3Note"
   ],
-  "defaultMaxVel": 4.5,
+  "defaultMaxVel": 3.0,
   "defaultMaxAccel": 3.0,
   "defaultMaxAngVel": 540.0,
   "defaultMaxAngAccel": 720.0,
-  "maxModuleSpeed": 0.5
+  "maxModuleSpeed": 4.5
 }

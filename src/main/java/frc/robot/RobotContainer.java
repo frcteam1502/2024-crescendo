@@ -90,6 +90,7 @@ public class RobotContainer {
     NamedCommands.registerCommand("Limelight Align to Speaker", new AlignToSpeaker(driveSubsystem));
     NamedCommands.registerCommand("Lower Climber", new ClimberHome(climber));
   
+  
     //Build an Autochooser from SmartDashboard selection.  Default will be Commands.none()
 
     new PathPlannerAuto("MiddleAutoAMPFinal");
@@ -109,6 +110,8 @@ public class RobotContainer {
     new PathPlannerAuto("OneNoteAMPDelay");
     new PathPlannerAuto("AmpSideRaceToMiddleNote");
     new PathPlannerAuto("SourceSideRaceToMiddleNote");
+    new PathPlannerAuto("SourceShotRace");
+    new PathPlannerAuto("testclimber");
 
 
     autoChooser = AutoBuilder.buildAutoChooser();
