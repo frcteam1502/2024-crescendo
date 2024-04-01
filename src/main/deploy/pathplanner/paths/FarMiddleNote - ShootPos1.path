@@ -3,25 +3,25 @@
   "waypoints": [
     {
       "anchor": {
-        "x": 0.7167669684840067,
-        "y": 6.733731013824367
+        "x": 8.0,
+        "y": 4.45
       },
       "prevControl": null,
       "nextControl": {
-        "x": 0.9994615044294252,
-        "y": 7.225895489479995
+        "x": 6.595606914466325,
+        "y": 6.382405917450922
       },
       "isLocked": false,
       "linkedName": null
     },
     {
       "anchor": {
-        "x": 2.26,
-        "y": 7.7
+        "x": 4.92,
+        "y": 6.41
       },
       "prevControl": {
-        "x": 1.194315726917455,
-        "y": 7.781999935849252
+        "x": 6.185727635363972,
+        "y": 6.686887667641241
       },
       "nextControl": null,
       "isLocked": false,
@@ -39,13 +39,13 @@
   },
   "goalEndState": {
     "velocity": 0,
-    "rotation": 0,
+    "rotation": 9.93,
     "rotateFast": false
   },
   "reversed": false,
-  "folder": "BPaths",
+  "folder": "Middle 4 Note ",
   "previewStartingState": {
-    "rotation": 60.066268933090704,
+    "rotation": -50.95999999999998,
     "velocity": 0
   },
   "useDefaultConstraints": true

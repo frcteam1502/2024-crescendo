@@ -6,9 +6,10 @@
     "4NoteClose",
     "4NoteShoot",
     "Attempt2Defence",
+    "BPaths",
     "LeftSpotStartAMP",
     "MiddleSpotStartAmp",
-    "BPaths",
+    "Middle 4 Note ",
     "PathsForDefenceBotAlliance",
     "Race",
     "RightSpotStartAMP"
@@ -16,8 +17,9 @@
   "autoFolders": [
     "1Note",
     "AMP3Note",
-    "Speaker3Note",
-    "Shot4Note"
+    "New Folder",
+    "Shot4Note",
+    "Speaker3Note"
   ],
   "defaultMaxVel": 4.5,
   "defaultMaxAccel": 3.0,

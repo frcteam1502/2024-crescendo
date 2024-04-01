@@ -14,7 +14,7 @@
         {
           "type": "named",
           "data": {
-            "name": "RampAndMoveToShoot"
+            "name": "Move to close shot w/ ramp"
           }
         },
         {
@@ -73,7 +73,7 @@
               {
                 "type": "named",
                 "data": {
-                  "name": "RampAndMoveToShoot"
+                  "name": "Move to close shot w/ ramp"
                 }
               }
             ]
@@ -123,7 +123,7 @@
               {
                 "type": "named",
                 "data": {
-                  "name": "RampAndMoveToShoot"
+                  "name": "Move to close shot w/ ramp"
                 }
               }
             ]
