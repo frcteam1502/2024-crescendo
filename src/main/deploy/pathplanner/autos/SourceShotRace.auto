@@ -12,32 +12,32 @@
     "data": {
       "commands": [
         {
-          "type": "named",
-          "data": {
-            "name": "RampAndMoveToShoot"
-          }
-        },
-        {
           "type": "race",
           "data": {
             "commands": [
               {
                 "type": "named",
                 "data": {
-                  "name": "Shot Note"
+                  "name": "RampUpShooter"
                 }
               },
               {
                 "type": "named",
                 "data": {
-                  "name": "Lower Climber"
+                  "name": "Rotate to close shot"
                 }
               }
             ]
           }
         },
         {
-          "type": "race",
+          "type": "named",
+          "data": {
+            "name": "Shot Note"
+          }
+        },
+        {
+          "type": "parallel",
           "data": {
             "commands": [
               {
@@ -68,7 +68,7 @@
           }
         },
         {
-          "type": "race",
+          "type": "parallel",
           "data": {
             "commands": [
               {
@@ -99,7 +99,7 @@
           }
         },
         {
-          "type": "race",
+          "type": "parallel",
           "data": {
             "commands": [
               {
@@ -130,7 +130,7 @@
           }
         },
         {
-          "type": "race",
+          "type": "parallel",
           "data": {
             "commands": [
               {
@@ -161,7 +161,7 @@
           }
         },
         {
-          "type": "race",
+          "type": "parallel",
           "data": {
             "commands": [
               {
@@ -192,7 +192,7 @@
           }
         },
         {
-          "type": "race",
+          "type": "parallel",
           "data": {
             "commands": [
               {
@@ -223,7 +223,7 @@
           }
         },
         {
-          "type": "race",
+          "type": "parallel",
           "data": {
             "commands": [
               {
