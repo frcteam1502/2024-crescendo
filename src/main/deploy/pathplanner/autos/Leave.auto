@@ -12,9 +12,22 @@
     "data": {
       "commands": [
         {
-          "type": "path",
+          "type": "race",
           "data": {
-            "pathName": "Leave"
+            "commands": [
+              {
+                "type": "path",
+                "data": {
+                  "pathName": "Leave"
+                }
+              },
+              {
+                "type": "named",
+                "data": {
+                  "name": "Lower Climber"
+                }
+              }
+            ]
           }
         }
       ]

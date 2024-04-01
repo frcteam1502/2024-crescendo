@@ -2,10 +2,10 @@
   "version": 1.0,
   "startingPose": {
     "position": {
-      "x": 0.72,
-      "y": 4.37
+      "x": 0.67,
+      "y": 4.41
     },
-    "rotation": -60.39975503603433
+    "rotation": -58.50354222377822
   },
   "command": {
     "type": "sequential",
@@ -14,7 +14,7 @@
         {
           "type": "named",
           "data": {
-            "name": "Move to close shot w/ ramp"
+            "name": "Rotate to close shot"
           }
         },
         {
@@ -30,20 +30,39 @@
           }
         },
         {
-          "type": "wait",
+          "type": "path",
           "data": {
-            "waitTime": 5.0
+            "pathName": "1srm"
           }
         },
         {
           "type": "path",
           "data": {
-            "pathName": "SourceLeave"
+            "pathName": "4sr"
+          }
+        },
+        {
+          "type": "race",
+          "data": {
+            "commands": [
+              {
+                "type": "named",
+                "data": {
+                  "name": "Intake on"
+                }
+              },
+              {
+                "type": "path",
+                "data": {
+                  "pathName": "5sr"
+                }
+              }
+            ]
           }
         }
       ]
     }
   },
-  "folder": "1Note",
+  "folder": null,
   "choreoAuto": false
 }

@@ -30,46 +30,9 @@
           }
         },
         {
-          "type": "race",
-          "data": {
-            "commands": [
-              {
-                "type": "path",
-                "data": {
-                  "pathName": "4NoteLeft1"
-                }
-              },
-              {
-                "type": "named",
-                "data": {
-                  "name": "Intake on"
-                }
-              }
-            ]
-          }
-        },
-        {
-          "type": "named",
-          "data": {
-            "name": "Rotate to close shot"
-          }
-        },
-        {
-          "type": "path",
-          "data": {
-            "pathName": "1NoteLeft"
-          }
-        },
-        {
-          "type": "named",
-          "data": {
-            "name": "Shot Note"
-          }
-        },
-        {
           "type": "wait",
           "data": {
-            "waitTime": 5.0
+            "waitTime": 10.0
           }
         },
         {

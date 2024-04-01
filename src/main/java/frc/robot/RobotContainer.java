@@ -88,6 +88,7 @@ public class RobotContainer {
     NamedCommands.registerCommand("Target speaker", new AutoTargetSpeaker(armSubsystem, shooterIntakeSubsystem, driveSubsystem));
     NamedCommands.registerCommand("Stop Drive Motors", new StopDriveMotors(driveSubsystem));
     NamedCommands.registerCommand("Limelight Align to Speaker", new AlignToSpeaker(driveSubsystem));
+    NamedCommands.registerCommand("Lower Climber", new ClimberHome(climber));
   
     //Build an Autochooser from SmartDashboard selection.  Default will be Commands.none()
 
@@ -106,6 +107,8 @@ public class RobotContainer {
     new PathPlannerAuto("OneNoteSourceDelay");
     new PathPlannerAuto("OneNoteMiddleDelay");
     new PathPlannerAuto("OneNoteAMPDelay");
+    new PathPlannerAuto("AmpSideRaceToMiddleNote");
+    new PathPlannerAuto("SourceSideRaceToMiddleNote");
 
 
     autoChooser = AutoBuilder.buildAutoChooser();
@@ -129,7 +132,7 @@ public class RobotContainer {
     climber.setDefaultCommand(new ClimberCommands(climber));
     //Driver.Controller.y().onTrue(new InstantCommand(climber::climbUp).repeatedly()).onFalse(new InstantCommand(climber::climberOff));
     //Driver.Controller.a().onTrue(new InstantCommand(climber::climbDown).repeatedly()).onFalse(new InstantCommand(climber::climberOff));
-    Driver.Controller.x().whileTrue(new InstantCommand(climber::setClimberHome));
+    Driver.Controller.x().whileTrue(new ClimberHome(climber));
     
     //Arm
     armSubsystem.setDefaultCommand(new ArmCommands(armSubsystem));
