@@ -59,6 +59,7 @@ final class ArmConstants{
     -76,  //Stow/Start
     -90,  //Amp/Trap
     -57,  //Source
+    -43   //Source Side Center Note Auto Shot
   };
 
   public static final double[] ANGLE_LOOK_UP_TABLE = 
@@ -232,6 +233,13 @@ public class ArmSubsystem extends SubsystemBase {
     auto_aim = false;
     rotateArm(ArmConstants.POSITION_TABLE[5]);
   }
+
+  public void rotateToSourceSideAutoShot(){
+    auto_aim = false;
+    rotateArm(ArmConstants.POSITION_TABLE[6]);
+  }
+
+
 
   public void rotateManually(double input) {
     double change = Math.signum(input) * ArmConstants.ROTATE_CHANGE;

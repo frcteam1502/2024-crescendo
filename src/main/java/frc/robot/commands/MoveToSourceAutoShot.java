@@ -5,22 +5,22 @@
 package frc.robot.commands;
 
 import edu.wpi.first.wpilibj2.command.Command;
-import frc.robot.subsystems.Climber.Climber;
+import frc.robot.subsystems.Arm.ArmSubsystem;
 
-public class ClimberHome extends Command {
-  /** Creates a new ClimberHome. */
-  private Climber climber;
-  
-  public ClimberHome(Climber climber) {
+public class MoveToSourceAutoShot extends Command {
+  /** Creates a new MoveToFarShot. */
+  private final ArmSubsystem arm;
+
+  public MoveToSourceAutoShot(ArmSubsystem arm) {
     // Use addRequirements() here to declare subsystem dependencies.
-    this.climber = climber;
-    addRequirements(climber);
+    this.arm = arm;
+    addRequirements(arm);
   }
 
   // Called when the command is initially scheduled.
   @Override
   public void initialize() {
-    climber.climbUp();
+    arm.rotateToSourceSideAutoShot();
   }
 
   // Called every time the scheduler runs while the command is scheduled.
@@ -29,17 +29,14 @@ public class ClimberHome extends Command {
 
   // Called once the command ends or is interrupted.
   @Override
-  public void end(boolean interrupted) {
-    climber.climberOff();
-  }
+  public void end(boolean interrupted) {}
 
   // Returns true when the command should end.
   @Override
   public boolean isFinished() {
-    if((climber.isLeftClimberAtHome())&&
-       (climber.isRightClimberAtHome())){
-        return true;
-       }
+    if(arm.isArmAtRotateGoal()){
+      return true;
+    }
     return false;
   }
 }

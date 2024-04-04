@@ -2,85 +2,183 @@
   "version": 1.0,
   "startingPose": {
     "position": {
-      "x": 1.47,
-      "y": 3.48
+      "x": 1.2211290254423093,
+      "y": 3.935762862581182
     },
-    "rotation": 0
+    "rotation": -60.0
   },
   "command": {
     "type": "sequential",
     "data": {
       "commands": [
         {
-          "type": "path",
+          "type": "named",
           "data": {
-            "pathName": "CenterLineSource2"
+            "name": "Move to close shot w/ ramp"
           }
         },
         {
           "type": "named",
           "data": {
-            "name": "Stop Drive Motors"
+            "name": "Shot Note"
           }
         },
         {
-          "type": "wait",
+          "type": "parallel",
           "data": {
-            "waitTime": 2.0
+            "commands": [
+              {
+                "type": "named",
+                "data": {
+                  "name": "Rotate to intake"
+                }
+              },
+              {
+                "type": "named",
+                "data": {
+                  "name": "Intake on"
+                }
+              },
+              {
+                "type": "named",
+                "data": {
+                  "name": "Lower Climber"
+                }
+              },
+              {
+                "type": "sequential",
+                "data": {
+                  "commands": [
+                    {
+                      "type": "path",
+                      "data": {
+                        "pathName": "CenterLineSource1"
+                      }
+                    },
+                    {
+                      "type": "named",
+                      "data": {
+                        "name": "Stop Drive Motors"
+                      }
+                    }
+                  ]
+                }
+              }
+            ]
           }
         },
         {
-          "type": "path",
+          "type": "parallel",
           "data": {
-            "pathName": "CenterLineSource2"
+            "commands": [
+              {
+                "type": "named",
+                "data": {
+                  "name": "Move to Source Side Auto Shot w/ ramp"
+                }
+              },
+              {
+                "type": "sequential",
+                "data": {
+                  "commands": [
+                    {
+                      "type": "path",
+                      "data": {
+                        "pathName": "CenterLineSource2"
+                      }
+                    },
+                    {
+                      "type": "named",
+                      "data": {
+                        "name": "Stop Drive Motors"
+                      }
+                    }
+                  ]
+                }
+              }
+            ]
           }
         },
         {
           "type": "named",
           "data": {
-            "name": "Stop Drive Motors"
+            "name": "Shot Note"
           }
         },
         {
-          "type": "wait",
+          "type": "parallel",
           "data": {
-            "waitTime": 2.0
+            "commands": [
+              {
+                "type": "named",
+                "data": {
+                  "name": "Rotate to intake"
+                }
+              },
+              {
+                "type": "named",
+                "data": {
+                  "name": "Intake on"
+                }
+              },
+              {
+                "type": "sequential",
+                "data": {
+                  "commands": [
+                    {
+                      "type": "path",
+                      "data": {
+                        "pathName": "CenterLineSource3"
+                      }
+                    },
+                    {
+                      "type": "named",
+                      "data": {
+                        "name": "Stop Drive Motors"
+                      }
+                    }
+                  ]
+                }
+              }
+            ]
           }
         },
         {
-          "type": "path",
+          "type": "parallel",
           "data": {
-            "pathName": "CenterLineSource3"
+            "commands": [
+              {
+                "type": "named",
+                "data": {
+                  "name": "Move to Source Side Auto Shot w/ ramp"
+                }
+              },
+              {
+                "type": "sequential",
+                "data": {
+                  "commands": [
+                    {
+                      "type": "path",
+                      "data": {
+                        "pathName": "CenterLineSource4"
+                      }
+                    },
+                    {
+                      "type": "named",
+                      "data": {
+                        "name": "Stop Drive Motors"
+                      }
+                    }
+                  ]
+                }
+              }
+            ]
           }
         },
         {
           "type": "named",
           "data": {
-            "name": "Stop Drive Motors"
-          }
-        },
-        {
-          "type": "wait",
-          "data": {
-            "waitTime": 2.0
-          }
-        },
-        {
-          "type": "path",
-          "data": {
-            "pathName": "CenterLineSource4"
-          }
-        },
-        {
-          "type": "wait",
-          "data": {
-            "waitTime": 2.0
-          }
-        },
-        {
-          "type": "path",
-          "data": {
-            "pathName": "CenterLineSource5"
+            "name": "Shot Note"
           }
         }
       ]

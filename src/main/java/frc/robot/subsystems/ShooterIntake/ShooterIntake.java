@@ -243,7 +243,7 @@ public class ShooterIntake extends SubsystemBase {
   }
 
   public boolean isShooterAtSpeed(){
-    double shooter_on_threshold = shooter_speed - (shooter_speed*0.05);
+    double shooter_on_threshold = shooter_speed - (shooter_speed*0.025);
     if(shooter_lead_encoder.getVelocity() >= shooter_on_threshold){
       return true;
     }
