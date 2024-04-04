@@ -15,8 +15,11 @@ import frc.robot.commands.MoveToAmp;
 import frc.robot.commands.MoveToFarShot;
 import frc.robot.commands.MoveToIntake;
 import frc.robot.commands.MoveToShoot;
+import frc.robot.commands.RampAndMoveToAmp3NoteClose;
+import frc.robot.commands.RampAndMoveToAmp3NoteFar;
 import frc.robot.commands.RampAndMoveToShoot;
 import frc.robot.commands.RampUpShooter;
+import frc.robot.commands.ResetGyro;
 import frc.robot.commands.ShootNote;
 import frc.robot.commands.ShooterIntakeCommands;
 import frc.robot.commands.StopDriveMotors;
@@ -89,7 +92,8 @@ public class RobotContainer {
     NamedCommands.registerCommand("Stop Drive Motors", new StopDriveMotors(driveSubsystem));
     NamedCommands.registerCommand("Limelight Align to Speaker", new AlignToSpeaker(driveSubsystem));
     NamedCommands.registerCommand("Lower Climber", new ClimberHome(climber));
-  
+    NamedCommands.registerCommand("Amp Side 3 Note Close", new RampAndMoveToAmp3NoteClose(shooterIntakeSubsystem, armSubsystem));
+    NamedCommands.registerCommand("Amp Side 3 Note Far", new RampAndMoveToAmp3NoteFar(shooterIntakeSubsystem, armSubsystem));
   
     //Build an Autochooser from SmartDashboard selection.  Default will be Commands.none()
 
@@ -136,6 +140,7 @@ public class RobotContainer {
     //Driver.Controller.y().onTrue(new InstantCommand(climber::climbUp).repeatedly()).onFalse(new InstantCommand(climber::climberOff));
     //Driver.Controller.a().onTrue(new InstantCommand(climber::climbDown).repeatedly()).onFalse(new InstantCommand(climber::climberOff));
     Driver.Controller.x().whileTrue(new ClimberHome(climber));
+    Driver.Controller.start().onTrue(new ResetGyro(driveSubsystem));
     
     //Arm
     armSubsystem.setDefaultCommand(new ArmCommands(armSubsystem));

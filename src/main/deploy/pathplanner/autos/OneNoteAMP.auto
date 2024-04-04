@@ -24,13 +24,26 @@
           }
         },
         {
-          "type": "named",
+          "type": "parallel",
           "data": {
-            "name": "Rotate to intake"
+            "commands": [
+              {
+                "type": "named",
+                "data": {
+                  "name": "Rotate to intake"
+                }
+              },
+              {
+                "type": "named",
+                "data": {
+                  "name": "Intake on"
+                }
+              }
+            ]
           }
         },
         {
-          "type": "race",
+          "type": "parallel",
           "data": {
             "commands": [
               {

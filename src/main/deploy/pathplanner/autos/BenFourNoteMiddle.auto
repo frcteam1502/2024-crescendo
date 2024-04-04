@@ -57,7 +57,7 @@
         {
           "type": "named",
           "data": {
-            "name": "Target speaker"
+            "name": "Amp Side 3 Note Close"
           }
         },
         {
@@ -98,21 +98,28 @@
           }
         },
         {
-          "type": "path",
+          "type": "parallel",
           "data": {
-            "pathName": "FarMiddleLeftNote - ShootPos1"
+            "commands": [
+              {
+                "type": "path",
+                "data": {
+                  "pathName": "FarMiddleLeftNote - ShootPos1"
+                }
+              },
+              {
+                "type": "named",
+                "data": {
+                  "name": "Amp Side 3 Note Far"
+                }
+              }
+            ]
           }
         },
         {
           "type": "named",
           "data": {
             "name": "Stop Drive Motors"
-          }
-        },
-        {
-          "type": "named",
-          "data": {
-            "name": "Target speaker"
           }
         },
         {

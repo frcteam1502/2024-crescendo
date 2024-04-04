@@ -59,6 +59,8 @@ final class ArmConstants{
     -76,  //Stow/Start
     -90,  //Amp/Trap
     -57,  //Source
+    -32,  //Amp Side 3 Note Close
+    -42,  //Amp Side 3 Note Far
   };
 
   public static final double[] ANGLE_LOOK_UP_TABLE = 
@@ -231,6 +233,16 @@ public class ArmSubsystem extends SubsystemBase {
   public void rotateToSource(){
     auto_aim = false;
     rotateArm(ArmConstants.POSITION_TABLE[5]);
+  }
+
+  public void rotateToAmpSide3NoteClose(){
+    auto_aim = false;
+    rotateArm(ArmConstants.POSITION_TABLE[6]);
+  }
+
+  public void rotateToAmpSide3NoteFar(){
+    auto_aim = false;
+    rotateArm(ArmConstants.POSITION_TABLE[7]);
   }
 
   public void rotateManually(double input) {

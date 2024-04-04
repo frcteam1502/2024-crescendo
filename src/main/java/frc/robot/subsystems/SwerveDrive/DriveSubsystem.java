@@ -477,7 +477,7 @@ public class DriveSubsystem extends SubsystemBase{
 
   public void resetGyro(double angle) {
     gyro.setYaw(angle);
-    //targetAngle = angle;
+    targetAngle = angle;
   }
 
   public void resetModules() {
