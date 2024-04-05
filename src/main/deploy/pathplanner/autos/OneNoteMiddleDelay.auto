@@ -30,40 +30,9 @@
           }
         },
         {
-          "type": "race",
-          "data": {
-            "commands": [
-              {
-                "type": "named",
-                "data": {
-                  "name": "Intake on"
-                }
-              },
-              {
-                "type": "path",
-                "data": {
-                  "pathName": "4NoteMiddle1"
-                }
-              }
-            ]
-          }
-        },
-        {
           "type": "named",
           "data": {
-            "name": "Rotate to close shot"
-          }
-        },
-        {
-          "type": "path",
-          "data": {
-            "pathName": "1NoteAuto"
-          }
-        },
-        {
-          "type": "named",
-          "data": {
-            "name": "Shot Note"
+            "name": "Lower Climber"
           }
         },
         {
