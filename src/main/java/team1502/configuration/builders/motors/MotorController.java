@@ -82,6 +82,11 @@ public class MotorController extends Builder {
         return this;
     }
 
+    /** A rotating/revolving actuator with a diameter in inches -- used for position conversion */
+    public MotorController Wheel(double diameter) {
+        Value(wheelDiameter, diameter);
+        return this;
+    }
     public GearBox GearBox() { return GearBox.WrapPart(this); }
     public MotorController GearBox(Function<GearBox, Builder> fn) {
         return (MotorController)AddPart(GearBox.Define, fn);

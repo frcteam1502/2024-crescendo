@@ -1,6 +1,5 @@
 package team1502.configuration.factory;
 
-import java.lang.module.Configuration;
 import java.util.HashMap;
 import java.util.function.BiConsumer;
 import java.util.function.Consumer;

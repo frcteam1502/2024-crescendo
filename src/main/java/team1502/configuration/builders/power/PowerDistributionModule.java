@@ -131,38 +131,3 @@ public class PowerDistributionModule extends Builder {
         return "Ch " + ch.ID().toString();
     }
 }
-
-    /*
-    public void updateChannel(Builder part) {
-        int channelNumber = part.PowerChannel();
-        updateChannel(channelNumber, part);
-    }
-    @Override // Builder
-    public Builder Powers(Builder builder) {
-        super.Powers(builder);
-        if (builder.hasPowerProfile() && builder.PowerProfile().Channel() != null) {
-            updateChannel(builder);
-        }
-        return this;
-    }
-
-    public PowerDistributionModule Ch(Integer channel, Integer fuse, String name) {
-        return this;
-    }
-    public PowerDistributionModule Module(String module, String ... sub) {
-        return this;
-    }
-    public PowerDistributionModule Module(String module, Function<PowerDistributionModule,PowerDistributionModule> fn) {
-        return this;
-    }
-     * The REV PDH has one channel (23) that can be switched on or off to control custom circuits.
-        examplePD.setSwitchableChannel(true);
-        examplePD.setSwitchableChannel(false);
-
-    public void tryAddPart(Builder part) {
-        if (part.hasPowerProfile()) {
-            updateChannel(part);
-        }
-    }
-     */
-        

@@ -263,7 +263,7 @@ public class RobotBuilder implements IBuild /*extends Builder*/{
         abs.connectToChannel(RoboRIO.CLASSNAME, channel);
         return this;
     }
-    
+
     public RobotBuilder Blinken(int channel) {
         return Spark("Blinken", channel);
     }
@@ -347,9 +347,16 @@ public class RobotBuilder implements IBuild /*extends Builder*/{
         return (PowerDistributionModule)pdm;
     }
 
-    private <T extends Builder> Object getValue(String partName, Function<T, Object> fn) {
-        var builder = getInstalled(partName);
-        return fn.apply((T)builder);
+    // private <T extends Builder> Object getValue(String partName, Function<T, Object> fn) {
+    //     var builder = getInstalled(partName);
+    //     return fn.apply((T)builder);
+    // }
+    private <T extends Builder, U> U getValue(String partName, Function<Builder, T> wrapper, Function<T, U> fn) {
+        var susBuilder = getInstalled(partName);
+        var builder = wrapper.apply(susBuilder);
+        return (U)fn.apply(builder);    
     }
+    
+    public Builder EthernetSwitch() { return Part("EthernetSwitch"); }
 
 }
