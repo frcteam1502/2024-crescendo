@@ -14,7 +14,7 @@
         {
           "type": "named",
           "data": {
-            "name": "Rotate to close shot"
+            "name": "Move to close shot w/ ramp"
           }
         },
         {
@@ -30,40 +30,21 @@
           }
         },
         {
-          "type": "race",
+          "type": "named",
           "data": {
-            "commands": [
-              {
-                "type": "path",
-                "data": {
-                  "pathName": "4NoteMiddle1"
-                }
-              },
-              {
-                "type": "named",
-                "data": {
-                  "name": "Intake on"
-                }
-              }
-            ]
+            "name": "Lower Climber"
           }
         },
         {
-          "type": "named",
+          "type": "wait",
           "data": {
-            "name": "Rotate to close shot"
+            "waitTime": 5.0
           }
         },
         {
           "type": "path",
           "data": {
-            "pathName": "1NoteAuto"
-          }
-        },
-        {
-          "type": "named",
-          "data": {
-            "name": "Shot Note"
+            "pathName": "MiddleLeave"
           }
         }
       ]

@@ -8,18 +8,20 @@ import java.util.function.BooleanSupplier;
 
 import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj2.command.Command;
+import frc.robot.subsystems.Arm.ArmSubsystem;
 import frc.robot.subsystems.ShooterIntake.ShooterIntake;
 
 public class LaunchNote extends Command {
   /** Creates a new LaunchNote. */
   private final ShooterIntake shooterIntake;
-  
+  private final ArmSubsystem arm;
 
   private final Timer launchNoteTimer = new Timer();
 
-  public LaunchNote(ShooterIntake shooterIntake) {
+  public LaunchNote(ShooterIntake shooterIntake, ArmSubsystem arm) {
     // Use addRequirements() here to declare subsystem dependencies.
     this.shooterIntake = shooterIntake;
+    this.arm = arm;
     launchNoteTimer.reset();
 
     addRequirements(shooterIntake);
@@ -35,14 +37,17 @@ public class LaunchNote extends Command {
   // Called every time the scheduler runs while the command is scheduled.
   @Override
   public void execute() {
-    shooterIntake.setIntakeShoot();
+    if(!arm.isArmAtAmp()){
+      shooterIntake.setIntakeShoot();
+    }else{
+      shooterIntake.setIntakeAmp();
+    }
   }
 
   // Called once the command ends or is interrupted.
   @Override
   public void end(boolean interrupted) {
     shooterIntake.setIntakeOff();
-    shooterIntake.setShooterOff();
   }
 
   // Returns true when the command should end.

@@ -2,10 +2,10 @@
   "version": 1.0,
   "startingPose": {
     "position": {
-      "x": 0.68,
-      "y": 6.71
+      "x": 0.72,
+      "y": 6.68
     },
-    "rotation": 61.22246217454346
+    "rotation": 59.08588693235971
   },
   "command": {
     "type": "sequential",
@@ -30,51 +30,57 @@
           }
         },
         {
-          "type": "wait",
+          "type": "path",
           "data": {
-            "waitTime": 1.0
-          }
-        },
-        {
-          "type": "parallel",
-          "data": {
-            "commands": [
-              {
-                "type": "path",
-                "data": {
-                  "pathName": "4NoteLeft1"
-                }
-              },
-              {
-                "type": "named",
-                "data": {
-                  "name": "Intake on"
-                }
-              }
-            ]
-          }
-        },
-        {
-          "type": "named",
-          "data": {
-            "name": "Rotate to close shot"
+            "pathName": "1ar"
           }
         },
         {
           "type": "path",
           "data": {
-            "pathName": "1NoteLeft"
+            "pathName": "2ar"
           }
         },
         {
-          "type": "named",
+          "type": "path",
           "data": {
-            "name": "Shot Note"
+            "pathName": "3ar"
+          }
+        },
+        {
+          "type": "path",
+          "data": {
+            "pathName": "4ar"
+          }
+        },
+        {
+          "type": "path",
+          "data": {
+            "pathName": "5ar"
+          }
+        },
+        {
+          "type": "race",
+          "data": {
+            "commands": [
+              {
+                "type": "named",
+                "data": {
+                  "name": "Intake on"
+                }
+              },
+              {
+                "type": "path",
+                "data": {
+                  "pathName": "6ar"
+                }
+              }
+            ]
           }
         }
       ]
     }
   },
-  "folder": "1Note",
+  "folder": "Race",
   "choreoAuto": false
 }

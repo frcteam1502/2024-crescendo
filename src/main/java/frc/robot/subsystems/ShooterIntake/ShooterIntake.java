@@ -29,15 +29,13 @@ final class ShooterIntakeConstants{
   public final static DigitalInput PHOTO_SENSOR_NO = new DigitalInput(PHOTO_SENSOR_NO_CHANNEL);
   public final static DigitalInput PHOTO_SENSOR_NC = new DigitalInput(PHOTO_SENSOR_NC_CHANNEL);
 
-  public final static double SHOOTER_DEFAULT_RPM = 4000;
-  public final static double SHOOTER_AMP_RPM = 100;
+  public final static double SHOOTER_DEFAULT_RPM = 4300;
   public final static double SHOOTER_HOLD_RPM = -100;
-
-  public final static double INTAKE_PICK_UP_FAST_RPM = 2000;
-  public final static double INTAKE_PICK_UP_SLOW_RPM = 1000;
-  public final static double INTAKE_DEFAULT_INDEX_RPM = 250;
+  public final static double INTAKE_DEFAULT_PICK_UP_RPM = 1800;
+  public final static double INTAKE_DEFAULT_INDEX_RPM = 1000;
+  public final static double INTAKE_DEFAULT_AMP_RPM = 1800;
   public final static double INTAKE_DEFAULT_EJECT_RPM = -1000;
-  public final static double INTAKE_DEFAULT_SHOOT_RPM = 3500;
+  public final static double INTAKE_DEFAULT_SHOOT_RPM = 1800;
 
   public final static double SHOOTER_PID_P = 0.00005;
   public final static double SHOOTER_PID_I = 0;
@@ -48,7 +46,24 @@ final class ShooterIntakeConstants{
   public final static double INTAKE_PID_P = 0.00005;
   public final static double INTAKE_PID_I = 0;
   public final static double INTAKE_PID_D = 0;
-  public final static double INTAKE_PID_F = 0.000275;
+  public final static double INTAKE_PID_F = 0.000375;//0.000275;
+
+  public static final double[] SPEED_LOOK_UP_TABLE = 
+  {
+    5000,//6
+    5000,//5.5
+    5000,//5
+    5000,//4.5
+    5000,//4
+    4500,//3.5
+    4500,//3
+    4500,//2.5
+    4000,//2
+    4000,//1.5
+  };
+
+  public static final double LOOKUP_TABLE_MIN = 1.5;
+  public static final double LOOKUP_TABLE_MAX = 6;
 
 }
 
@@ -69,10 +84,11 @@ public class ShooterIntake extends SubsystemBase {
   private final DigitalInput photoSensorNormOpen;
   private final DigitalInput photoSensorNormClosed;
 
+  private double auto_shooter_speed = ShooterIntakeConstants.SHOOTER_DEFAULT_RPM;
   private double shooter_speed = ShooterIntakeConstants.SHOOTER_DEFAULT_RPM;
-  private double intakePickupFastSpeed = ShooterIntakeConstants.INTAKE_PICK_UP_FAST_RPM;
-  private double intakePickupSlowSpeed = ShooterIntakeConstants.INTAKE_PICK_UP_SLOW_RPM;
+  private double intakePickupSpeed = ShooterIntakeConstants.INTAKE_DEFAULT_PICK_UP_RPM;
   private double intakeIndexSpeed = ShooterIntakeConstants.INTAKE_DEFAULT_INDEX_RPM;
+  private double intakeAmpSpeed = ShooterIntakeConstants.INTAKE_DEFAULT_AMP_RPM;
   private double intakeEjectSpeed = ShooterIntakeConstants.INTAKE_DEFAULT_EJECT_RPM;
   private double intakeShootSpeed = ShooterIntakeConstants.INTAKE_DEFAULT_SHOOT_RPM;
 
@@ -83,6 +99,9 @@ public class ShooterIntake extends SubsystemBase {
 
   private boolean isNoteLoading = false;
   private boolean isShooterOn = false;
+
+  private double temp_index;
+  private int index;
   
   public ShooterIntake() {
     //Set up shooter control
@@ -99,7 +118,7 @@ public class ShooterIntake extends SubsystemBase {
     
     //Set up intake control
     intake = Motors.INTAKE;
-    intake.setSmartCurrentLimit(60);
+    intake.setSmartCurrentLimit(40);
     intake_controller = intake.getPIDController();
     intake_controller.setFF(intake_ff);
     
@@ -124,9 +143,10 @@ public class ShooterIntake extends SubsystemBase {
     SmartDashboard.putNumber("Shooter PID FF", shooter_ff);
     SmartDashboard.putNumber("Shooter Set Speed",shooter_speed);
     SmartDashboard.putNumber("Shooter PID P", shooter_p);
+
     
     SmartDashboard.putNumber("Intake PID FF", intake_ff);
-    //SmartDashboard.putNumber("Intake Pickup Speed", intakePickupSpeed);
+    SmartDashboard.putNumber("Intake Pickup Speed", intakePickupSpeed);
     SmartDashboard.putNumber("Intake PID p", intake_p);
 
     registerLoggerObjects();
@@ -150,22 +170,8 @@ public class ShooterIntake extends SubsystemBase {
     shooter_lead_controller.setFF(shooter_ff);
     shooter_follow_controller.setFF(shooter_ff);
     shooter_lead_controller.setReference(shooter_speed, CANSparkMax.ControlType.kVelocity);
-    shooter_follow_controller.setReference(shooter_speed, CANSparkMax.ControlType.kVelocity);
+    shooter_follow_controller.setReference(shooter_speed+200, CANSparkMax.ControlType.kVelocity);
     isShooterOn = true;
-  }
-
-  public void setShooterAmp(){
-    shooter_lead_controller.setFF(shooter_ff);
-    shooter_follow_controller.setFF(shooter_ff);
-    shooter_lead_controller.setReference(ShooterIntakeConstants.SHOOTER_AMP_RPM, CANSparkMax.ControlType.kVelocity);
-    shooter_follow_controller.setReference(ShooterIntakeConstants.SHOOTER_AMP_RPM, CANSparkMax.ControlType.kVelocity);
-  }
-
-  public void setShooterHold(){
-    shooter_lead_controller.setFF(shooter_ff);
-    shooter_follow_controller.setFF(shooter_ff);
-    shooter_lead_controller.setReference(ShooterIntakeConstants.SHOOTER_HOLD_RPM, CANSparkMax.ControlType.kVelocity);
-    shooter_follow_controller.setReference(ShooterIntakeConstants.SHOOTER_HOLD_RPM, CANSparkMax.ControlType.kVelocity);
   }
 
   public void setShooterOff(){
@@ -174,19 +180,18 @@ public class ShooterIntake extends SubsystemBase {
     isShooterOn = false;
   }
 
-  public void setIntakePickupFast(){
+  public void setIntakePickup(){
     intake_controller.setFF(intake_ff);
-    intake_controller.setReference(intakePickupFastSpeed, CANSparkMax.ControlType.kVelocity);
-  }
-
-  public void setIntakePickupSlow(){
-    intake_controller.setFF(intake_ff);
-    intake_controller.setReference(intakePickupSlowSpeed, CANSparkMax.ControlType.kVelocity);
+    intake_controller.setReference(intakePickupSpeed, CANSparkMax.ControlType.kVelocity);
   }
 
   public void setIntakeIndex(){
     intake_controller.setFF(intake_ff); 
     intake_controller.setReference(intakeIndexSpeed, CANSparkMax.ControlType.kVelocity);
+  }
+  public void setIntakeAmp(){
+    intake_controller.setFF(intake_ff); 
+    intake_controller.setReference(intakeAmpSpeed, CANSparkMax.ControlType.kVelocity);
   }
 
   public void setIntakeShoot(){
@@ -210,6 +215,29 @@ public class ShooterIntake extends SubsystemBase {
     }
   }
 
+  public void lookupShooterSpeed(double distance, boolean distanceValid){
+    
+    if(distanceValid){
+      if(distance >= ShooterIntakeConstants.LOOKUP_TABLE_MAX){
+        shooter_speed = ShooterIntakeConstants.SPEED_LOOK_UP_TABLE[0];
+      }else if(distance <= ShooterIntakeConstants.LOOKUP_TABLE_MIN){
+        shooter_speed = ShooterIntakeConstants.SPEED_LOOK_UP_TABLE[9];
+      }else{
+        temp_index = ((ShooterIntakeConstants.LOOKUP_TABLE_MAX - distance)/0.5);
+        index = (int)(temp_index);
+        shooter_speed = ShooterIntakeConstants.SPEED_LOOK_UP_TABLE[index];
+      } 
+    }else{
+      shooter_speed = ShooterIntakeConstants.SPEED_LOOK_UP_TABLE[0];
+    }
+
+    setShooterOn();
+  }
+
+  public void setCloseShotSpeed(){
+    shooter_speed = ShooterIntakeConstants.SHOOTER_DEFAULT_RPM;
+  }
+
   public double getIntakeCurrent(){
     return(intake.getOutputCurrent());
   }
@@ -228,7 +256,7 @@ public class ShooterIntake extends SubsystemBase {
     shooter_p =SmartDashboard.getNumber("Shooter PID p", 0);
     
     intake_ff = SmartDashboard.getNumber("Intake PID FF", 0);
-    //intakePickupSpeed = SmartDashboard.getNumber("Intake Pickup Speed", 0);
+    intakePickupSpeed = SmartDashboard.getNumber("Intake Pickup Speed", 0);
     intake_p = SmartDashboard.getNumber("Intake PID p", 0);
 
     SmartDashboard.putNumber("Shooter Lead Speed",shooter_lead_encoder.getVelocity());
@@ -245,7 +273,7 @@ public class ShooterIntake extends SubsystemBase {
     SmartDashboard.putNumber("Intake Applied Output Volts", (intake.getAppliedOutput()*intake.getBusVoltage()));
 
     SmartDashboard.putBoolean("Note Sensor NO", !photoSensorNormOpen.get());
-    SmartDashboard.putBoolean("Note Sensor NC", !photoSensorNormClosed.get());
+    SmartDashboard.putBoolean("Note Sensor NC", photoSensorNormClosed.get());
     SmartDashboard.putBoolean("Is Note Present", isNotePresent());
 
     SmartDashboard.putBoolean("Is Shooter On", isShooterOn);

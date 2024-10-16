@@ -1,0 +1,261 @@
+{
+  "version": 1.0,
+  "startingPose": {
+    "position": {
+      "x": 0.7,
+      "y": 4.37
+    },
+    "rotation": -60.12357771742847
+  },
+  "command": {
+    "type": "sequential",
+    "data": {
+      "commands": [
+        {
+          "type": "race",
+          "data": {
+            "commands": [
+              {
+                "type": "named",
+                "data": {
+                  "name": "RampUpShooter"
+                }
+              },
+              {
+                "type": "named",
+                "data": {
+                  "name": "Rotate to close shot"
+                }
+              }
+            ]
+          }
+        },
+        {
+          "type": "named",
+          "data": {
+            "name": "Shot Note"
+          }
+        },
+        {
+          "type": "parallel",
+          "data": {
+            "commands": [
+              {
+                "type": "named",
+                "data": {
+                  "name": "Rotate to intake"
+                }
+              },
+              {
+                "type": "named",
+                "data": {
+                  "name": "Intake on"
+                }
+              },
+              {
+                "type": "path",
+                "data": {
+                  "pathName": "1ssnr"
+                }
+              }
+            ]
+          }
+        },
+        {
+          "type": "named",
+          "data": {
+            "name": "Stop Drive Motors"
+          }
+        },
+        {
+          "type": "parallel",
+          "data": {
+            "commands": [
+              {
+                "type": "named",
+                "data": {
+                  "name": "Amp Side 3 Note Far"
+                }
+              },
+              {
+                "type": "path",
+                "data": {
+                  "pathName": "2ssnr"
+                }
+              }
+            ]
+          }
+        },
+        {
+          "type": "named",
+          "data": {
+            "name": "Stop Drive Motors"
+          }
+        },
+        {
+          "type": "named",
+          "data": {
+            "name": "Shot Note"
+          }
+        },
+        {
+          "type": "parallel",
+          "data": {
+            "commands": [
+              {
+                "type": "named",
+                "data": {
+                  "name": "Rotate to intake"
+                }
+              },
+              {
+                "type": "named",
+                "data": {
+                  "name": "Intake on"
+                }
+              },
+              {
+                "type": "path",
+                "data": {
+                  "pathName": "3ssnr"
+                }
+              }
+            ]
+          }
+        },
+        {
+          "type": "named",
+          "data": {
+            "name": "Stop Drive Motors"
+          }
+        },
+        {
+          "type": "parallel",
+          "data": {
+            "commands": [
+              {
+                "type": "named",
+                "data": {
+                  "name": "Amp Side 3 Note Far"
+                }
+              },
+              {
+                "type": "path",
+                "data": {
+                  "pathName": "4ssnr"
+                }
+              }
+            ]
+          }
+        },
+        {
+          "type": "named",
+          "data": {
+            "name": "Stop Drive Motors"
+          }
+        },
+        {
+          "type": "named",
+          "data": {
+            "name": "Shot Note"
+          }
+        },
+        {
+          "type": "parallel",
+          "data": {
+            "commands": [
+              {
+                "type": "named",
+                "data": {
+                  "name": "Rotate to intake"
+                }
+              },
+              {
+                "type": "named",
+                "data": {
+                  "name": "Intake on"
+                }
+              },
+              {
+                "type": "path",
+                "data": {
+                  "pathName": "5ssnr"
+                }
+              }
+            ]
+          }
+        },
+        {
+          "type": "named",
+          "data": {
+            "name": "Stop Drive Motors"
+          }
+        },
+        {
+          "type": "parallel",
+          "data": {
+            "commands": [
+              {
+                "type": "named",
+                "data": {
+                  "name": "Amp Side 3 Note Far"
+                }
+              },
+              {
+                "type": "path",
+                "data": {
+                  "pathName": "6ssnr"
+                }
+              }
+            ]
+          }
+        },
+        {
+          "type": "named",
+          "data": {
+            "name": "Stop Drive Motors"
+          }
+        },
+        {
+          "type": "named",
+          "data": {
+            "name": "Shot Note"
+          }
+        },
+        {
+          "type": "parallel",
+          "data": {
+            "commands": [
+              {
+                "type": "named",
+                "data": {
+                  "name": "Rotate to intake"
+                }
+              },
+              {
+                "type": "named",
+                "data": {
+                  "name": "Intake on"
+                }
+              },
+              {
+                "type": "path",
+                "data": {
+                  "pathName": "7ssnr"
+                }
+              }
+            ]
+          }
+        },
+        {
+          "type": "named",
+          "data": {
+            "name": "Stop Drive Motors"
+          }
+        }
+      ]
+    }
+  },
+  "folder": "ShottingNoteRacing",
+  "choreoAuto": false
+}

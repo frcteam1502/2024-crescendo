@@ -2,10 +2,10 @@
   "version": 1.0,
   "startingPose": {
     "position": {
-      "x": 0.72,
-      "y": 4.37
+      "x": 1.34,
+      "y": 5.54
     },
-    "rotation": -60.39975503603433
+    "rotation": 0
   },
   "command": {
     "type": "sequential",
@@ -14,7 +14,7 @@
         {
           "type": "named",
           "data": {
-            "name": "Rotate to close shot"
+            "name": "Move to close shot w/ ramp"
           }
         },
         {
@@ -30,19 +30,19 @@
           }
         },
         {
-          "type": "race",
+          "type": "parallel",
           "data": {
             "commands": [
-              {
-                "type": "path",
-                "data": {
-                  "pathName": "4NoteRight1"
-                }
-              },
               {
                 "type": "named",
                 "data": {
                   "name": "Intake on"
+                }
+              },
+              {
+                "type": "path",
+                "data": {
+                  "pathName": "4NoteMiddle1"
                 }
               }
             ]
@@ -57,13 +57,19 @@
         {
           "type": "path",
           "data": {
-            "pathName": "1NoteRight"
+            "pathName": "1NoteAuto"
           }
         },
         {
           "type": "named",
           "data": {
             "name": "Shot Note"
+          }
+        },
+        {
+          "type": "named",
+          "data": {
+            "name": "Lower Climber"
           }
         }
       ]

@@ -76,6 +76,8 @@ private String[] pneumaticNames = {
   null, //"15",
 };
 
+  private boolean wasAutonExecuted = false;
+
   /**
    * This function is run when the robot is first started up and should be used for any
    * initialization code.
@@ -94,10 +96,8 @@ private String[] pneumaticNames = {
     //Register Logger items
     //Logger.RegisterLoopTimes(this);
     Logger.RegisterPdp(new PowerDistribution(1, ModuleType.kRev), pdhRealChannelNames);
-    //Logger.RegisterPneumaticHub(new PneumaticHub(), pneumaticNames);
+    Logger.RegisterPneumaticHub(new PneumaticHub(7), pneumaticNames);
     logger.start();
-
-    
   }
 
   /**
@@ -117,7 +117,6 @@ private String[] pneumaticNames = {
     GameState.robotPeriodic();
     }
 
-
   /** This function is called once each time the robot enters Disabled mode. */
   @Override
   public void disabledInit() {
@@ -133,6 +132,8 @@ private String[] pneumaticNames = {
     GameState.autonomousInit();
     m_autonomousCommand = m_robotContainer.getAutonomousCommand();
 
+    wasAutonExecuted = true;
+
     // schedule the autonomous command (example)
     if (m_autonomousCommand != null) {
       m_autonomousCommand.schedule();
@@ -145,6 +146,12 @@ private String[] pneumaticNames = {
 
   @Override
   public void teleopInit() {
+    double rotation = m_robotContainer.driveSubsystem.getPoseRotationDegrees();
+    if(wasAutonExecuted){
+      //m_robotContainer.driveSubsystem.resetGyro(rotation);//Take out until PathPlanner headings are fixed!
+      wasAutonExecuted = false;
+    }
+
     GameState.teleopInit();
     // This makes sure that the autonomous stops running when
     // teleop starts running. If you want the autonomous to

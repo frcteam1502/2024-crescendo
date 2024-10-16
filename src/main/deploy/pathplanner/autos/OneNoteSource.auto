@@ -1,0 +1,87 @@
+{
+  "version": 1.0,
+  "startingPose": {
+    "position": {
+      "x": 0.72,
+      "y": 4.37
+    },
+    "rotation": -60.39975503603433
+  },
+  "command": {
+    "type": "sequential",
+    "data": {
+      "commands": [
+        {
+          "type": "named",
+          "data": {
+            "name": "Move to close shot w/ ramp"
+          }
+        },
+        {
+          "type": "named",
+          "data": {
+            "name": "Shot Note"
+          }
+        },
+        {
+          "type": "named",
+          "data": {
+            "name": "Rotate to intake"
+          }
+        },
+        {
+          "type": "race",
+          "data": {
+            "commands": [
+              {
+                "type": "path",
+                "data": {
+                  "pathName": "4NoteRight1"
+                }
+              },
+              {
+                "type": "named",
+                "data": {
+                  "name": "Intake on"
+                }
+              }
+            ]
+          }
+        },
+        {
+          "type": "race",
+          "data": {
+            "commands": [
+              {
+                "type": "path",
+                "data": {
+                  "pathName": "OneNoteAmp - Return Shot"
+                }
+              },
+              {
+                "type": "named",
+                "data": {
+                  "name": "Rotate to close shot"
+                }
+              }
+            ]
+          }
+        },
+        {
+          "type": "named",
+          "data": {
+            "name": "Shot Note"
+          }
+        },
+        {
+          "type": "named",
+          "data": {
+            "name": "Lower Climber"
+          }
+        }
+      ]
+    }
+  },
+  "folder": "1Note",
+  "choreoAuto": false
+}

@@ -13,14 +13,15 @@ import frc.robot.subsystems.ShooterIntake.ShooterIntake;
 public class PickupNote extends Command {
   /** Creates a new IntakeNote. */
   private final ShooterIntake shooterIntake;
-  private final BooleanSupplier atIntakePosition;
+  private final BooleanSupplier isArmAtIntake;
 
   private final Timer pickupTimer = new Timer();
 
-  public PickupNote(ShooterIntake shooterIntake, BooleanSupplier atIntakePosition) {
+  public PickupNote(ShooterIntake shooterIntake, BooleanSupplier isArmAtIntake) {
     // Use addRequirements() here to declare subsystem dependencies.
     this.shooterIntake = shooterIntake;
-    this.atIntakePosition = atIntakePosition;
+    this.isArmAtIntake = isArmAtIntake;
+
     pickupTimer.reset();
 
     addRequirements(shooterIntake);
@@ -36,12 +37,10 @@ public class PickupNote extends Command {
   // Called every time the scheduler runs while the command is scheduled.
   @Override
   public void execute() {
-    if(!shooterIntake.isNotePresent()){
-      if(atIntakePosition.getAsBoolean()){
-        shooterIntake.setIntakePickupFast();
-      }else{
-        shooterIntake.setIntakePickupSlow();
-      }
+    if((!shooterIntake.isNotePresent())&&
+       (isArmAtIntake.getAsBoolean()))
+    {
+      shooterIntake.setIntakePickup();
     }
   }
 
@@ -54,10 +53,16 @@ public class PickupNote extends Command {
   // Returns true when the command should end.
   @Override
   public boolean isFinished() {
-    //Wait for inrush current
-    if(pickupTimer.get() > 0.3){
+    
+    //If arm is up, don't wait for current spike
+    if(!isArmAtIntake.getAsBoolean()){
+      return true;
+    }
 
-      if((shooterIntake.getIntakeCurrent() >= 35)||
+    //If Arm is down, delay untill after inrush current, then wait for current spike or Note Present
+    if(pickupTimer.get() > 0.5){
+
+      if((shooterIntake.getIntakeCurrent() >= 20)||
          (shooterIntake.isNotePresent())){
         return true;
       }

@@ -2,10 +2,10 @@
   "version": 1.0,
   "startingPose": {
     "position": {
-      "x": 0.68,
-      "y": 6.71
+      "x": 0.95,
+      "y": 6.5
     },
-    "rotation": 58.148583537986035
+    "rotation": 61.536564237266255
   },
   "command": {
     "type": "sequential",
@@ -30,33 +30,34 @@
           }
         },
         {
+          "type": "race",
+          "data": {
+            "commands": [
+              {
+                "type": "path",
+                "data": {
+                  "pathName": "LeftStart-RotatePos1"
+                }
+              },
+              {
+                "type": "named",
+                "data": {
+                  "name": "Intake on"
+                }
+              }
+            ]
+          }
+        },
+        {
           "type": "path",
           "data": {
-            "pathName": "4NoteLeft1"
+            "pathName": "LeftNoteMiddle-AMP"
           }
         },
         {
           "type": "named",
           "data": {
-            "name": "Intake on"
-          }
-        },
-        {
-          "type": "path",
-          "data": {
-            "pathName": "4NoteLeft2"
-          }
-        },
-        {
-          "type": "named",
-          "data": {
-            "name": "Rotate to close shot"
-          }
-        },
-        {
-          "type": "path",
-          "data": {
-            "pathName": "4NoteLeft3"
+            "name": "Rotate to amp"
           }
         },
         {
@@ -66,33 +67,34 @@
           }
         },
         {
-          "type": "named",
+          "type": "race",
           "data": {
-            "name": "Rotate to intake"
+            "commands": [
+              {
+                "type": "path",
+                "data": {
+                  "pathName": "AMP-LeftNote"
+                }
+              },
+              {
+                "type": "named",
+                "data": {
+                  "name": "Intake on"
+                }
+              }
+            ]
           }
         },
         {
           "type": "path",
           "data": {
-            "pathName": "4NoteLeft4"
+            "pathName": "Leftnote-Rotate"
           }
         },
         {
           "type": "named",
           "data": {
-            "name": "Intake on"
-          }
-        },
-        {
-          "type": "named",
-          "data": {
-            "name": "Rotate to close shot"
-          }
-        },
-        {
-          "type": "path",
-          "data": {
-            "pathName": "4NoteLeft5"
+            "name": "Rotate to far shot"
           }
         },
         {
@@ -104,6 +106,6 @@
       ]
     }
   },
-  "folder": "Shot4Note",
+  "folder": "AMP3Note",
   "choreoAuto": false
 }

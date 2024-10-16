@@ -1,13 +1,8 @@
 package frc.robot.subsystems.SwerveDrive;
 
-
-import java.util.function.BooleanSupplier;
-
-import javax.swing.text.Utilities;
-
 import frc.robot.Logger;
-import frc.robot.LimelightHelpers.LimelightResults;
-import frc.robot.LimelightHelpers;
+import frc.robot.subsystems.Vision.Limelight;
+import frc.robot.subsystems.Vision.LimelightHelpers;
 
 import com.ctre.phoenix6.hardware.CANcoder;
 import com.ctre.phoenix6.hardware.Pigeon2;
@@ -24,16 +19,19 @@ import com.revrobotics.CANSparkMax;
 import com.revrobotics.CANSparkLowLevel;
 import com.revrobotics.CANSparkBase.IdleMode;
 
+import edu.wpi.first.math.VecBuilder;
+import edu.wpi.first.math.Vector;
 import edu.wpi.first.math.estimator.SwerveDrivePoseEstimator;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.math.kinematics.ChassisSpeeds;
 import edu.wpi.first.math.kinematics.SwerveDriveKinematics;
+import edu.wpi.first.math.kinematics.SwerveDriveOdometry;
 import edu.wpi.first.math.kinematics.SwerveModulePosition;
 import edu.wpi.first.math.kinematics.SwerveModuleState;
+import edu.wpi.first.math.numbers.N3;
 import edu.wpi.first.math.util.Units;
-import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 
 import frc.robot.GameState;
@@ -71,6 +69,8 @@ final class CANCoders {
 
 final class DriveConstants {
   public static final double MAX_SPEED_METERS_PER_SECOND = 4.6; //IF YOU UP THE SPEED CHANGE ACCELERATION
+  public static final double MAX_ROTATION_RADIANS_PER_SECOND = 11;
+  public static final double MAX_TELEOP_ROTATION = .3;
 
   //Turning Motors
   public static final boolean FrontLeftTurningMotorReversed = true;
@@ -143,6 +143,20 @@ final class Motors {
   
 }
 
+final class PoseEstConfig{
+  public static final double POSITION_STD_DEV_X = 0.1;
+  public static final double POSITION_STD_DEV_Y = 0.1;
+  public static final double POSITION_STD_DEV_THETA = 10; 
+
+  public static final double VISION_STD_DEV_X = 5;
+  public static final double VISION_STD_DEV_Y = 5;
+  public static final double VISION_STD_DEV_THETA = 500;
+}
+
+final class VisionConfig{
+  public static final boolean IS_LIMELIGHT_MODE = true;
+  public static String POSE_LIMELIGHT = "limelight-pose";
+}
 
 public class DriveSubsystem extends SubsystemBase{
   
@@ -185,13 +199,35 @@ public class DriveSubsystem extends SubsystemBase{
 
   private final SwerveDriveKinematics kinematics = DriveConstants.KINEMATICS;
 
-  public final SwerveDrivePoseEstimator odometry;
+  //public final SwerveDrivePoseEstimator odometry;
+  public final SwerveDriveOdometry odometry;
+
+  public final SwerveDrivePoseEstimator poseEstimator;
 
   private Pose2d pose = new Pose2d();
-  
+  private Pose2d estimatedPose = new Pose2d();
+  private Pose2d visionPose = new Pose2d();
+
+  private static Limelight vision = new Limelight();
+
   public DriveSubsystem() {
 
-    this.odometry = new SwerveDrivePoseEstimator(kinematics, getGyroRotation2d(), getModulePositions(), pose);
+    //this.odometry = new SwerveDrivePoseEstimator(kinematics, getGyroRotation2d(), getModulePositions(), pose);
+    this.odometry = new SwerveDriveOdometry(kinematics, getGyroRotation2d(), getModulePositions());
+
+    this.poseEstimator = new SwerveDrivePoseEstimator(
+      kinematics, 
+      getGyroRotation2d(), 
+      getModulePositions(),
+      estimatedPose,
+      createStateStdDevs(
+          PoseEstConfig.POSITION_STD_DEV_X,
+          PoseEstConfig.POSITION_STD_DEV_Y,
+          PoseEstConfig.POSITION_STD_DEV_THETA),
+      createVisionMeasurementStdDevs(
+          PoseEstConfig.VISION_STD_DEV_X,
+          PoseEstConfig.VISION_STD_DEV_Y,
+          PoseEstConfig.VISION_STD_DEV_THETA));
 
     reset();
     ConfigMotorDirections();
@@ -203,8 +239,7 @@ public class DriveSubsystem extends SubsystemBase{
 
   private void checkInitialAngle() {
     if (GameState.isTeleop() && GameState.isFirst()) { 
-      //targetAngle = getIMU_Yaw();
-      gyro.getYaw().getValue();
+      targetAngle = getIMU_Yaw();
     }
   }
 
@@ -219,18 +254,19 @@ public class DriveSubsystem extends SubsystemBase{
     SmartDashboard.putNumber("Field Oriented Y Command (Forward)", fieldYCommand);
 
     //Robot Relative inputs
-    SmartDashboard.putNumber("Robot Relative vX Speed Command", speedCommands.vxMetersPerSecond);
+    /*SmartDashboard.putNumber("Robot Relative vX Speed Command", speedCommands.vxMetersPerSecond);
     SmartDashboard.putNumber("Robot Relative vY Speed Command", speedCommands.vyMetersPerSecond);
-    SmartDashboard.putNumber("Robot Relative Rotation Command", speedCommands.omegaRadiansPerSecond);
+    SmartDashboard.putNumber("Robot Relative Rotation Command", speedCommands.omegaRadiansPerSecond);*/
 
-    SmartDashboard.putNumber("Drive Robot Relative vX Speed Command", relativeCommands.vxMetersPerSecond);
-    SmartDashboard.putNumber("Drive Robot Relative vY Speed Command", relativeCommands.vyMetersPerSecond);
+    /*SmartDashboard.putNumber("Drive Robot Relative vX Speed Command", relativeCommands.vxMetersPerSecond);
+    SmartDashboard.putNumber("Drive Robot Relative vY Speed Command", relativeCommands.vyMetersPerSecond);*/
     SmartDashboard.putNumber("Drive Robot Relative Rotation Command", relativeCommands.omegaRadiansPerSecond);
 
     SmartDashboard.putNumber("Gyro Yaw", getIMU_Yaw());
+    SmartDashboard.putNumber("Target Angle", targetAngle);
 
     //Swerve Module info
-    SmartDashboard.putNumber("Front Left Speed Command", frontLeft.getCommandedSpeed());
+    /*SmartDashboard.putNumber("Front Left Speed Command", frontLeft.getCommandedSpeed());
     SmartDashboard.putNumber("Front Left Angle Command", frontLeft.getCommandedAngle());
     SmartDashboard.putNumber("Front Left Speed Setpoint", frontLeft.getControllerSetpoint());
     SmartDashboard.putNumber("Front Left Measured Speed", frontLeft.getModuleVelocity());
@@ -252,7 +288,7 @@ public class DriveSubsystem extends SubsystemBase{
     SmartDashboard.putNumber("Rear Left Angle Command", backLeft.getCommandedAngle());
     SmartDashboard.putNumber("Rear Left Speed Setpoint", backLeft.getControllerSetpoint());
     SmartDashboard.putNumber("Rear Left Measured Speed", backLeft.getModuleVelocity());
-    SmartDashboard.putNumber("Rear Left CANcoder Angle", (backLeft.getAbsPositionZeroed()*(180/Math.PI)));
+    SmartDashboard.putNumber("Rear Left CANcoder Angle", (backLeft.getAbsPositionZeroed()*(180/Math.PI)));*/
 
     //Pose Info
     SmartDashboard.putString("FMS Alliance", DriverStation.getAlliance().toString());
@@ -260,22 +296,39 @@ public class DriveSubsystem extends SubsystemBase{
     SmartDashboard.putNumber("Pose2D Y", pose.getY());
     SmartDashboard.putNumber("Pose2D Rotation", pose.getRotation().getDegrees());
 
-    //Limelight Info
-    /*LimelightResults llresults = LimelightHelpers.getLatestResults("");
-    int numAprilTags = llresults.targetingResults.targets_Fiducials.length;
+    SmartDashboard.putNumber("EstimatedPose X", estimatedPose.getX());
+    SmartDashboard.putNumber("EstimatedPose Y", estimatedPose.getY());
+    SmartDashboard.putNumber("EstimatedPose Rotation", estimatedPose.getRotation().getDegrees());
 
-    SmartDashboard.putNumber("Number of AprilTags",numAprilTags);
-    SmartDashboard.putNumber("Tag ID", LimelightHelpers.getFiducialID(""));
-    SmartDashboard.putNumber("Limelight TX", LimelightHelpers.getTX(""));
-    SmartDashboard.putNumber("Limelight TY", LimelightHelpers.getTY(""));
-    SmartDashboard.putNumber("Limelight TA", LimelightHelpers.getTA(""));*/
+    SmartDashboard.putNumber("Vision Pose X", vision.getVisionBotPose().getX());
+    SmartDashboard.putNumber("Vision Pose Y", vision.getVisionBotPose().getY());
+    SmartDashboard.putNumber("Vision Pose Rotation", vision.getVisionBotPose().getRotation().getDegrees());
+    SmartDashboard.putBoolean("Is Target Valid", vision.isValidPose());
+    SmartDashboard.putNumber("Limelight Latency", vision.getTotalLatency());
 
+    SmartDashboard.putNumber("Speaker tX", vision.getSpeaker_tx());
+    SmartDashboard.putNumber("Speaker tY", vision.getSpeaker_ty());
+    SmartDashboard.putBoolean("Speaker Found", vision.isSpeakerFound());
+    SmartDashboard.putNumber("Distance to Speaker", getDistanceToSpeaker());
   }
   
   @Override
   public void periodic() {
     checkInitialAngle();
     updateOdometry();
+    updateEstimatedPose();
+    vision.update();
+    visionPose = vision.getVisionBotPose();
+    
+    if (VisionConfig.IS_LIMELIGHT_MODE && visionPose != null) { // Limelight mode
+      
+      double currentTimestamp = vision.getTimestampSeconds(vision.getTotalLatency());
+      
+      if (vision.visionAccurate(visionPose)) 
+      {
+        poseEstimator.addVisionMeasurement(visionPose, currentTimestamp);
+      }
+    }
     updateDashboard();
   }
   
@@ -328,9 +381,6 @@ public class DriveSubsystem extends SubsystemBase{
     //Normalize wheel speed commands to make sure no speed is greater than the maximum achievable wheel speed.
     SwerveDriveKinematics.desaturateWheelSpeeds(swerveModuleStates, DriveConstants.MAX_SPEED_METERS_PER_SECOND);
 
-    /*for (int i = 0; i<=3; i++){
-      swerveModuleStates[i].speedMetersPerSecond *= -1;
-    }*/
     //Set the speed and angle of each module
     setDesiredState(swerveModuleStates);
   }
@@ -372,8 +422,20 @@ public class DriveSubsystem extends SubsystemBase{
         });
   }
 
+  public void updateEstimatedPose(){
+    estimatedPose = poseEstimator.update(
+      getGyroRotation2d(), 
+      getModulePositions());
+  }
+
+
   public void resetOdometry(Pose2d pose) {
     odometry.resetPosition(getGyroRotation2d(), getModulePositions(), pose);
+    poseEstimator.resetPosition(getGyroRotation2d(), getModulePositions(), pose);
+  }
+
+  public void resetPoseEstimation(Pose2d pose) {
+    poseEstimator.resetPosition(getGyroRotation2d(), getModulePositions(), pose);
   }
   
   public SwerveModulePosition[] getModulePositions() {
@@ -400,49 +462,22 @@ public class DriveSubsystem extends SubsystemBase{
     setDesiredState(moduleStates);
   }
 
-  /*public void alignToSpeaker(){
-    LimelightResults llresults = LimelightHelpers.getLatestResults("");
-    int numAprilTags = llresults.targetingResults.targets_Fiducials.length;
-    boolean validTarget = llresults.targetingResults.valid;
-
-    double tx = 0;
-    boolean targetFound = false;
-    ChassisSpeeds speedCommands = new ChassisSpeeds(0,0,0);
-
-    //Determine if any AprilTags are present
-    if(validTarget){
-      //Parse through the JSON fiducials and see if speaker tags are present
-      for(int i=0;i<numAprilTags;i++){
-        int tagID = (int)llresults.targetingResults.targets_Fiducials[i].fiducialID;
-        
-        if((tagID == 7)||(tagID == 4)){
-          //Center Tag
-          tx = llresults.targetingResults.targets_Fiducials[i].tx;
-          targetFound = true;
-        }else{
-          targetFound = false;
-        }
-      }
-
-      double turnCommand = (tx - getIMU_Yaw())*DriveConstants.GO_STRAIGHT_GAIN;
-
-      ChassisSpeeds speedCommands = new ChassisSpeeds(0,0,turnCommand);
-
-      driveRobotRelative(speedCommands);
-    }else
-
-  }*/
-
   public Rotation2d getGyroRotation2d() {
     return new Rotation2d(Units.degreesToRadians(getIMU_Yaw()));
   }
 
   public Pose2d getPose2d() {
-    return odometry.getEstimatedPosition();
+    //return odometry.getEstimatedPosition();
+    return odometry.getPoseMeters();
   }
 
-  public void resetGyro() {
-    gyro.setYaw(0);
+  public double getPoseRotationDegrees(){
+    return pose.getRotation().getDegrees();
+  }
+
+  public void resetGyro(double angle) {
+    gyro.setYaw(angle);
+    targetAngle = angle;
   }
 
   public void resetModules() {
@@ -453,10 +488,63 @@ public class DriveSubsystem extends SubsystemBase{
   }
 
   public void reset() {
-    resetGyro();
+    resetGyro(0);
     resetModules();
     resetOdometry(pose);
-  }  
+  }
+  
+  public double vision_aim_proportional(){    
+    // kP (constant of proportionality)
+    // this is a hand-tuned number that determines the aggressiveness of our proportional control loop
+    // if it is too high, the robot will oscillate around.
+    // if it is too low, the robot will never reach its target
+    // if the robot never turns in the correct direction, kP should be inverted.
+    double targetingAngularVelocity;
+    double kP = .01;
+
+    double error = vision.getSpeaker_tx();
+    double min_rate = .075;
+
+    // tx ranges from (-hfov/2) to (hfov/2) in degrees. If your target is on the rightmost edge of 
+    // your limelight 3 feed, tx should return roughly 31 degrees.
+    
+    if(vision.isSpeakerFound()){  
+      if(Math.abs(error) > 1.0){
+        if(error > 0){
+          targetingAngularVelocity = (error * kP) + min_rate;
+        }else{
+          targetingAngularVelocity = (error * kP) - min_rate;
+        }
+
+        // convert to radians per second for our drive method
+        targetingAngularVelocity *= DriveConstants.MAX_ROTATION_RADIANS_PER_SECOND * DriveConstants.MAX_TELEOP_ROTATION;
+      }else{
+        targetingAngularVelocity = 0.0;
+      }   
+    }else{
+      //Speaker not found, turn until we find it
+      targetingAngularVelocity = 2.0;
+    }
+
+    return targetingAngularVelocity;
+  }
+
+  public boolean isSpeakerDataValid(){
+    return vision.isSpeakerFound();
+  }
+
+  public double getDistanceToSpeaker(){
+    double ty = vision.getSpeaker_ty();
+    double camera_pitch = 20;
+    ty += camera_pitch;
+    // tan(w)=y/x -> x = y/tan(w)
+    double distance = 1.055/(Math.tan(Math.toRadians(ty)));
+    return distance;
+  }
+
+  public double getVisionTargetAngle(){
+    return vision.getSpeaker_tx();
+  }
 
   public void ConfigMotorDirections() {
     Motors.ANGLE_FRONT_LEFT.setInverted(DriveConstants.FrontLeftTurningMotorReversed);
@@ -533,5 +621,33 @@ public class DriveSubsystem extends SubsystemBase{
     Logger.RegisterSensor("RL Drive Speed", ()->backLeft.getVelocity());
     Logger.RegisterSensor("RR Drive Speed", ()->backRight.getVelocity());
   }
+
+  /**
+   * Creates a vector of standard deviations for the states. Standard deviations of model states.
+   * Increase these numbers to trust your model's state estimates less.
+   *
+   * @param x in meters
+   * @param y in meters
+   * @param theta in degrees
+   * @return the Vector of standard deviations need for the poseEstimator
+   */
+  public Vector<N3> createStateStdDevs(double x, double y, double theta) {
+    return VecBuilder.fill(x, y, Units.degreesToRadians(theta));
+  }
+
+  /**
+   * Creates a vector of standard deviations for the vision measurements. Standard deviations of
+   * global measurements from vision. Increase these numbers to trust global measurements from
+   * vision less.
+   *
+   * @param x in meters
+   * @param y in meters
+   * @param theta in degrees
+   * @return the Vector of standard deviations need for the poseEstimator
+   */
+  public Vector<N3> createVisionMeasurementStdDevs(double x, double y, double theta) {
+    return VecBuilder.fill(x, y, Units.degreesToRadians(theta));
+  }
+
 
 }

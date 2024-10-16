@@ -1,0 +1,52 @@
+{
+  "version": 1.0,
+  "waypoints": [
+    {
+      "anchor": {
+        "x": 8.09,
+        "y": 4.3
+      },
+      "prevControl": null,
+      "nextControl": {
+        "x": 6.685606914466325,
+        "y": 6.232405917450921
+      },
+      "isLocked": false,
+      "linkedName": null
+    },
+    {
+      "anchor": {
+        "x": 4.92,
+        "y": 6.41
+      },
+      "prevControl": {
+        "x": 6.185727635363972,
+        "y": 6.686887667641241
+      },
+      "nextControl": null,
+      "isLocked": false,
+      "linkedName": null
+    }
+  ],
+  "rotationTargets": [],
+  "constraintZones": [],
+  "eventMarkers": [],
+  "globalConstraints": {
+    "maxVelocity": 4.5,
+    "maxAcceleration": 3.0,
+    "maxAngularVelocity": 540.0,
+    "maxAngularAcceleration": 720.0
+  },
+  "goalEndState": {
+    "velocity": 0,
+    "rotation": 9.93,
+    "rotateFast": false
+  },
+  "reversed": false,
+  "folder": "Middle 4 Note ",
+  "previewStartingState": {
+    "rotation": -50.95999999999998,
+    "velocity": 0
+  },
+  "useDefaultConstraints": true
+}

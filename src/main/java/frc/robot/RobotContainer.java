@@ -5,14 +5,30 @@
 package frc.robot;
 
 import frc.robot.subsystems.Arm.ArmSubsystem;
+import frc.robot.subsystems.Climber.Climber;
+import frc.robot.subsystems.Leds.LedSubsystem;
 import frc.robot.subsystems.PowerManagement.MockDetector;
 import frc.robot.subsystems.ShooterIntake.ShooterIntake;
 import frc.robot.commands.ControllerCommands;
 import frc.robot.commands.IntakeNote;
+import frc.robot.commands.MoveToAmp;
+import frc.robot.commands.MoveToFarShot;
+import frc.robot.commands.MoveToIntake;
 import frc.robot.commands.MoveToShoot;
+import frc.robot.commands.RampAndMoveToAmp3NoteClose;
+import frc.robot.commands.RampAndMoveToAmp3NoteFar;
+import frc.robot.commands.RampAndMoveToShoot;
+import frc.robot.commands.RampUpShooter;
+import frc.robot.commands.ResetGyro;
 import frc.robot.commands.ShootNote;
 import frc.robot.commands.ShooterIntakeCommands;
+import frc.robot.commands.StopDriveMotors;
+import frc.robot.commands.AlignToSpeaker;
 import frc.robot.commands.ArmCommands;
+import frc.robot.commands.AutoRotateArm;
+import frc.robot.commands.AutoTargetSpeaker;
+import frc.robot.commands.ClimberCommands;
+import frc.robot.commands.ClimberHome;
 import frc.robot.subsystems.SwerveDrive.DriveSubsystem;
 
 import com.pathplanner.lib.auto.AutoBuilder;
@@ -37,8 +53,12 @@ public class RobotContainer {
   public final DriveSubsystem driveSubsystem = new DriveSubsystem();
   public final ArmSubsystem armSubsystem = new ArmSubsystem();
   public final ShooterIntake shooterIntakeSubsystem = new ShooterIntake();
+  public final LedSubsystem ledSubsystem = new LedSubsystem(()->shooterIntakeSubsystem.isNotePresent());
+  public final Climber climber = new Climber();
   //private final PdpSubsystem pdpSubsystem = new PdpSubsystem();
-  //private final ExampleSubsystem m_exampleSubsystem = new ExampleSubsystem();
+  
+  //Needed to invoke scheduler
+  //public final Vision visionSubsystem = new Vision();
 
   private final SendableChooser<Command> autoChooser; 
 
@@ -53,32 +73,49 @@ public class RobotContainer {
   /** The container for the robot. Contains subsystems, OI devices, and commands. */
   public RobotContainer() {
     // Configure the trigger bindings
+
     configureBindings();
 
     //Register named commands. Must register all commands we want Pathplanner to execute.
-    NamedCommands.registerCommand("Rotate to amp", new InstantCommand(armSubsystem::rotateToAmpTrap));
+    NamedCommands.registerCommand("Rotate to amp", new MoveToAmp(armSubsystem));
     NamedCommands.registerCommand("Rotate to intake", new InstantCommand(armSubsystem::rotateToIntake));
     NamedCommands.registerCommand("Rotate to close shot", new MoveToShoot(armSubsystem));
-    NamedCommands.registerCommand("Rotate to far shot", new InstantCommand(armSubsystem::rotateToShootFar));
-    NamedCommands.registerCommand("Rotate to intake", new InstantCommand(armSubsystem::rotateToIntake));
-    NamedCommands.registerCommand("Intake on", new IntakeNote(shooterIntakeSubsystem, ()->armSubsystem.isArmAtIntake()));
+    NamedCommands.registerCommand("Rotate to far shot", new MoveToFarShot(armSubsystem));
+    NamedCommands.registerCommand("Rotate to intake", new MoveToIntake(armSubsystem));
+    NamedCommands.registerCommand("Intake on", new IntakeNote(shooterIntakeSubsystem,()->armSubsystem.isArmAtIntake()));
     NamedCommands.registerCommand("Intake off", new InstantCommand(shooterIntakeSubsystem::setIntakeOff));
-    NamedCommands.registerCommand("Shot Note", new ShootNote(shooterIntakeSubsystem, ()->armSubsystem.isArmAtAmp()));
-    
-    
-    
-
+    NamedCommands.registerCommand("Shot Note", new ShootNote(shooterIntakeSubsystem, armSubsystem));
+    NamedCommands.registerCommand("Shooter On", new InstantCommand(shooterIntakeSubsystem::setShooterOn));
+    NamedCommands.registerCommand("Ramp Up Shooter", new RampUpShooter(shooterIntakeSubsystem, armSubsystem));
+    NamedCommands.registerCommand("Move to close shot w/ ramp", new RampAndMoveToShoot(shooterIntakeSubsystem, armSubsystem));
+    NamedCommands.registerCommand("Target speaker", new AutoTargetSpeaker(armSubsystem, shooterIntakeSubsystem, driveSubsystem));
+    NamedCommands.registerCommand("Stop Drive Motors", new StopDriveMotors(driveSubsystem));
+    NamedCommands.registerCommand("Limelight Align to Speaker", new AlignToSpeaker(driveSubsystem));
+    NamedCommands.registerCommand("Lower Climber", new ClimberHome(climber));
+    NamedCommands.registerCommand("Amp Side 3 Note Close", new RampAndMoveToAmp3NoteClose(shooterIntakeSubsystem, armSubsystem));
+    NamedCommands.registerCommand("Amp Side 3 Note Far", new RampAndMoveToAmp3NoteFar(shooterIntakeSubsystem, armSubsystem));
+  
     //Build an Autochooser from SmartDashboard selection.  Default will be Commands.none()
 
     new PathPlannerAuto("MiddleAutoAMPFinal");
     new PathPlannerAuto("LeftAuto-AMPFinal");
     new PathPlannerAuto("RightAuto-AMPFinal");
-    new PathPlannerAuto("4NoteLeft");
+    new PathPlannerAuto("4NoteAmp");
     new PathPlannerAuto("4NoteMiddle");
-    new PathPlannerAuto("4NoteRight");
-    new PathPlannerAuto("1NoteMiddle");
-    new PathPlannerAuto("1NoteLeft");
-    new PathPlannerAuto("1NoteRight");
+    new PathPlannerAuto("4NoteSource");
+    new PathPlannerAuto("OneNoteMiddle");
+    new PathPlannerAuto("OneNoteAMP");
+    new PathPlannerAuto("OneNoteSource");
+    new PathPlannerAuto("Leave");
+    new PathPlannerAuto("SourceSideRace");
+    new PathPlannerAuto("AmpSideRace");
+    new PathPlannerAuto("OneNoteSourceDelay");
+    new PathPlannerAuto("OneNoteMiddleDelay");
+    new PathPlannerAuto("OneNoteAMPDelay");
+    new PathPlannerAuto("AmpSideRaceToMiddleNote");
+    new PathPlannerAuto("SourceSideRaceToMiddleNote");
+    new PathPlannerAuto("SourceShotRace");
+    new PathPlannerAuto("testclimber");
 
 
     autoChooser = AutoBuilder.buildAutoChooser();
@@ -97,27 +134,38 @@ public class RobotContainer {
   private void configureBindings() {
     //Drivetrain
     driveSubsystem.setDefaultCommand(new ControllerCommands(driveSubsystem, new MockDetector())); //USES THE LEFT BUMPER TO SLOW DOWN
-
+    
+    //Climber
+    climber.setDefaultCommand(new ClimberCommands(climber));
+    //Driver.Controller.y().onTrue(new InstantCommand(climber::climbUp).repeatedly()).onFalse(new InstantCommand(climber::climberOff));
+    //Driver.Controller.a().onTrue(new InstantCommand(climber::climbDown).repeatedly()).onFalse(new InstantCommand(climber::climberOff));
+    Driver.Controller.x().whileTrue(new ClimberHome(climber));
+    Driver.Controller.start().onTrue(new ResetGyro(driveSubsystem));
+    
     //Arm
     armSubsystem.setDefaultCommand(new ArmCommands(armSubsystem));
     
     Operator.Controller.a().onTrue(new InstantCommand(armSubsystem::rotateToAmpTrap));
-    Operator.Controller.b().onTrue(new InstantCommand(armSubsystem::rotateToShootFar));
+    //Operator.Controller.b().onTrue(new InstantCommand(armSubsystem::rotateToShootFar));
+    Operator.Controller.b().onTrue(new AutoTargetSpeaker(armSubsystem, shooterIntakeSubsystem, driveSubsystem));
     Operator.Controller.y().onTrue(new InstantCommand(armSubsystem::rotateToShootClose));
     Operator.Controller.x().onTrue(new InstantCommand(armSubsystem::rotateToIntake));
     Operator.Controller.start().onTrue(new InstantCommand(armSubsystem::rotateToStart));
+    Operator.Controller.back().onTrue(new InstantCommand(armSubsystem::rotateToSource));
 
     //ShooterIntake
     shooterIntakeSubsystem.setDefaultCommand(new ShooterIntakeCommands(shooterIntakeSubsystem));
 
-    Operator.Controller.rightTrigger(0.5).onTrue(new ShootNote(shooterIntakeSubsystem, ()->armSubsystem.isArmAtAmp()));
+    Operator.Controller.rightTrigger(0.5).onTrue(new ShootNote(shooterIntakeSubsystem, armSubsystem));
     Operator.Controller.rightBumper().toggleOnTrue(new InstantCommand(shooterIntakeSubsystem::toggleShooter));
 
-    Operator.Controller.leftTrigger(.5).whileTrue(new IntakeNote(shooterIntakeSubsystem, ()->armSubsystem.isArmAtIntake()));
-
+    Operator.Controller.leftTrigger(.5).whileTrue(new IntakeNote(shooterIntakeSubsystem,()->armSubsystem.isArmAtIntake()));//whileTrue() is causing CommandScheduler overruns!
     Operator.Controller.leftBumper().onTrue(new InstantCommand(shooterIntakeSubsystem::setIntakeEject));
     Operator.Controller.leftBumper().onFalse(new InstantCommand(shooterIntakeSubsystem::setIntakeOff));
-
+    
+    //Driver.Controller.leftTrigger(.5).whileTrue(new IntakeNote(shooterIntakeSubsystem));//whileTrue() is causing CommandScheduler overruns!
+    //Driver.Controller.leftBumper().onTrue(new InstantCommand(shooterIntakeSubsystem::setIntakeEject));
+    //Driver.Controller.leftBumper().onFalse(new InstantCommand(shooterIntakeSubsystem::setIntakeOff));
 
     /* sample code
     // Schedule `ExampleCommand` when `exampleCondition` changes to `true`

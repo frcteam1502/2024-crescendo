@@ -1,0 +1,156 @@
+{
+  "version": 1.0,
+  "startingPose": {
+    "position": {
+      "x": 0.68,
+      "y": 6.71
+    },
+    "rotation": 60.13
+  },
+  "command": {
+    "type": "sequential",
+    "data": {
+      "commands": [
+        {
+          "type": "parallel",
+          "data": {
+            "commands": [
+              {
+                "type": "named",
+                "data": {
+                  "name": "RampUpShooter"
+                }
+              },
+              {
+                "type": "named",
+                "data": {
+                  "name": "MoveToShoot"
+                }
+              }
+            ]
+          }
+        },
+        {
+          "type": "named",
+          "data": {
+            "name": "Shot Note"
+          }
+        },
+        {
+          "type": "race",
+          "data": {
+            "commands": [
+              {
+                "type": "named",
+                "data": {
+                  "name": "Rotate to intake"
+                }
+              },
+              {
+                "type": "named",
+                "data": {
+                  "name": "Intake on"
+                }
+              },
+              {
+                "type": "path",
+                "data": {
+                  "pathName": "AMPSide - RotatePos1"
+                }
+              }
+            ]
+          }
+        },
+        {
+          "type": "race",
+          "data": {
+            "commands": [
+              {
+                "type": "named",
+                "data": {
+                  "name": "RampUpShooter"
+                }
+              },
+              {
+                "type": "named",
+                "data": {
+                  "name": "MoveToShoot"
+                }
+              },
+              {
+                "type": "path",
+                "data": {
+                  "pathName": "RotatePos1 - Shoot"
+                }
+              }
+            ]
+          }
+        },
+        {
+          "type": "named",
+          "data": {
+            "name": "Shot Note"
+          }
+        },
+        {
+          "type": "named",
+          "data": {
+            "name": "Rotate to intake"
+          }
+        },
+        {
+          "type": "race",
+          "data": {
+            "commands": [
+              {
+                "type": "named",
+                "data": {
+                  "name": "Intake on"
+                }
+              },
+              {
+                "type": "path",
+                "data": {
+                  "pathName": "Shoot - CloseLeftNote"
+                }
+              }
+            ]
+          }
+        },
+        {
+          "type": "race",
+          "data": {
+            "commands": [
+              {
+                "type": "named",
+                "data": {
+                  "name": "MoveToShoot"
+                }
+              },
+              {
+                "type": "named",
+                "data": {
+                  "name": "RampUpShooter"
+                }
+              },
+              {
+                "type": "path",
+                "data": {
+                  "pathName": "CloseLeftNote - Shoot"
+                }
+              }
+            ]
+          }
+        },
+        {
+          "type": "named",
+          "data": {
+            "name": "Shot Note"
+          }
+        }
+      ]
+    }
+  },
+  "folder": null,
+  "choreoAuto": false
+}

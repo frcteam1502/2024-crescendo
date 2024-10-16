@@ -16,11 +16,11 @@ public class IntakeNote extends SequentialCommandGroup {
   /** Creates a new IntakeNote. */
   //ShooterIntake shooterIntake;
   
-  public IntakeNote(ShooterIntake shooterIntake, BooleanSupplier atIntakePosition) {
+  public IntakeNote(ShooterIntake shooterIntake, BooleanSupplier isArmAtIntake) {
     // Add your commands in the addCommands() call, e.g.
     // addCommands(new FooCommand(), new BarCommand());
     addCommands(
-      new PickupNote(shooterIntake, atIntakePosition),
+      new PickupNote(shooterIntake, isArmAtIntake),
       new IndexNote(shooterIntake)
       );
   }
