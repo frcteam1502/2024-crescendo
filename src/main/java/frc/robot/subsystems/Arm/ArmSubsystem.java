@@ -58,7 +58,7 @@ final class ArmConstants{
     -34,  //Shoot Far
     -76,  //Stow/Start
     -90,  //Amp/Trap
-    -57,  //Source
+    -62,  //Source
     -32,  //Amp Side 3 Note Close
     -42,  //Amp Side 3 Note Far
   };

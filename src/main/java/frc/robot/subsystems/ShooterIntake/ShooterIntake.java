@@ -31,18 +31,18 @@ final class ShooterIntakeConstants{
 
   public final static double SHOOTER_DEFAULT_RPM = 4300;
   public final static double SHOOTER_HOLD_RPM = -100;
-  public final static double INTAKE_DEFAULT_PICK_UP_RPM = 1400;
+  public final static double INTAKE_DEFAULT_PICK_UP_RPM = 1800;
   public final static double INTAKE_DEFAULT_INDEX_RPM = 1000;
-  public final static double INTAKE_DEFAULT_AMP_RPM = 1400;
+  public final static double INTAKE_DEFAULT_AMP_RPM = 1800;
   public final static double INTAKE_DEFAULT_EJECT_RPM = -1000;
-  public final static double INTAKE_DEFAULT_SHOOT_RPM = 1400;
+  public final static double INTAKE_DEFAULT_SHOOT_RPM = 1800;
 
   public final static double SHOOTER_PID_P = 0.00005;
   public final static double SHOOTER_PID_I = 0;
   public final static double SHOOTER_PID_D = 0;
   public final static double SHOOTER_PID_F = 0.000185;
 
-  public final static double INTAKE_GEAR_RATIO = 1.0/4.0;
+  public final static double INTAKE_GEAR_RATIO = 1.0/3.0;
   public final static double INTAKE_PID_P = 0.00005;
   public final static double INTAKE_PID_I = 0;
   public final static double INTAKE_PID_D = 0;

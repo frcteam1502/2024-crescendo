@@ -26,6 +26,12 @@
         {
           "type": "named",
           "data": {
+            "name": "Rotate to intake"
+          }
+        },
+        {
+          "type": "named",
+          "data": {
             "name": "Lower Climber"
           }
         },
