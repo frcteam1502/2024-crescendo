@@ -30,6 +30,12 @@
           }
         },
         {
+          "type": "named",
+          "data": {
+            "name": "Lower Climber"
+          }
+        },
+        {
           "type": "wait",
           "data": {
             "waitTime": 5.0

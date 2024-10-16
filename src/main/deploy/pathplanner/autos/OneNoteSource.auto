@@ -72,6 +72,12 @@
           "data": {
             "name": "Shot Note"
           }
+        },
+        {
+          "type": "named",
+          "data": {
+            "name": "Lower Climber"
+          }
         }
       ]
     }

@@ -40,6 +40,12 @@
           "data": {
             "pathName": "AmpLeave"
           }
+        },
+        {
+          "type": "named",
+          "data": {
+            "name": "Lower Climber"
+          }
         }
       ]
     }
