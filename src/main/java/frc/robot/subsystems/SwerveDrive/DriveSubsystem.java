@@ -8,9 +8,11 @@ import com.ctre.phoenix6.hardware.CANcoder;
 import com.ctre.phoenix6.hardware.Pigeon2;
 import com.ctre.phoenix6.signals.SensorDirectionValue;
 import com.pathplanner.lib.auto.AutoBuilder;
-import com.pathplanner.lib.util.HolonomicPathFollowerConfig;
-import com.pathplanner.lib.util.PIDConstants;
-import com.pathplanner.lib.util.ReplanningConfig;
+import com.pathplanner.lib.config.RobotConfig;
+import com.pathplanner.lib.controllers.PPHolonomicDriveController;
+import com.pathplanner.lib.controllers.PPHolonomicDriveController;
+import com.pathplanner.lib.controllers.PPHolonomicDriveController;
+import com.pathplanner.lib.config.PIDConstants;
 
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
@@ -21,6 +23,7 @@ import com.revrobotics.CANSparkBase.IdleMode;
 
 import edu.wpi.first.math.VecBuilder;
 import edu.wpi.first.math.Vector;
+import edu.wpi.first.math.controller.HolonomicDriveController;
 import edu.wpi.first.math.estimator.SwerveDrivePoseEstimator;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
@@ -568,23 +571,30 @@ public class DriveSubsystem extends SubsystemBase{
   }
 
   private void configAutoBuilder(){
-    //Wraper for AutoBuilder.configureHolonomic, must be called from DriveTrain config....
+    //Wrapper for AutoBuilder.configure, must be called from DriveTrain config....
 
-    AutoBuilder.configureHolonomic(
-      this::getPose2d, //Robot pose supplier
-      this::resetOdometry, //Method to reset odometry (will be called if the robot has a starting pose)
-      this::getRobotRelativeSpeeds, //ChassisSpeeds provider.  MUST BE ROBOT RELATIVE!!! 
-      this::driveRobotRelative, //ChassisSpeeds consumer.  MUST BE ROBOT RELATIVE!!!
-      new HolonomicPathFollowerConfig(
+    /*From Path Planner example code 
+    https://github.com/mjansen4857/pathplanner/blob/main/examples/java/src/main/java/frc/robot/subsystems/SwerveSubsystem.java*/
+
+    // Load the RobotConfig from the GUI settings. You should probably
+    // store this in your Constants file
+    RobotConfig config;
+    try{
+      config = RobotConfig.fromGUISettings();
+
+      AutoBuilder.configure(
+        this::getPose2d, //Robot pose supplier
+        this::resetOdometry, //Method to reset odometry (will be called if the robot has a starting pose)
+        this::getRobotRelativeSpeeds, //ChassisSpeeds provider.  MUST BE ROBOT RELATIVE!!! 
+        this::driveRobotRelative, //ChassisSpeeds consumer.  MUST BE ROBOT RELATIVE!!!
+        new PPHolonomicDriveController(
                 new PIDConstants(5.0, 0, 0), //Translation PID constants
-                new PIDConstants(5.0, 0, 0), //Rotation PID constants
-                DriveConstants.MAX_SPEED_METERS_PER_SECOND, 
-                (DriveConstants.WHEEL_BASE_DIAMETER/2),
-                new ReplanningConfig()), //HolonomicPathFollowerConfig
-      () -> {
-        // Boolean supplier that controls when the path will be mirrored for the red alliance
-        // This will flip the path being followed to the red side of the field.
-        // THE ORIGIN WILL REMAIN ON THE BLUE SIDE
+                new PIDConstants(5.0, 0, 0)), //Rotation PID constants
+        config,
+        () -> {
+          // Boolean supplier that controls when the path will be mirrored for the red alliance
+          // This will flip the path being followed to the red side of the field.
+          // THE ORIGIN WILL REMAIN ON THE BLUE SIDE
     
           var alliance = DriverStation.getAlliance();
           if (alliance.isPresent()) {
@@ -592,11 +602,14 @@ public class DriveSubsystem extends SubsystemBase{
             }
               return false;
           },
-      this); //Reference to this subsystem to set 
-  }
+        this //Reference to this subsystem to set 
+      );
 
-  public void dummyAction1(){System.out.println("Drivetrain Command 1!");}
-  public void dummyAction2(){System.out.println("Drivetrain Command 2!");}
+    } catch (Exception e) {
+      // Handle exception as needed
+      DriverStation.reportError("Failed to load PathPlanner config and configure AutoBuilder", e.getStackTrace());
+    }
+  }
 
   private void registerLoggerObjects(){
     Logger.RegisterCanSparkMax("FL Drive", Motors.DRIVE_FRONT_LEFT);
