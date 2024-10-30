@@ -174,15 +174,12 @@ public class SwerveModule {
       commandedSpeed = desiredState.speedMetersPerSecond;
       commandedAngle = desiredState.angle.getDegrees();
 
+      //Calculate the motor speed output and pass the value to the SPARK PID Controller object
+      var desiredSpeed = state.speedMetersPerSecond/ModuleConstants.MAX_SPEED_METERS_PER_SECOND;
+      drivePIDController.setReference(desiredSpeed, CANSparkMax.ControlType.kVelocity);
 
       // Calculate the turning motor output from the turning PID controller.
       final double turnOutput = turningPIDController.calculate(getAbsPositionZeroed(), state.angle.getRadians());
-
-      var desiredSpeed = state.speedMetersPerSecond/ModuleConstants.MAX_SPEED_METERS_PER_SECOND;
-      //drivePIDController.setReference(state.speedMetersPerSecond, CANSparkMax.ControlType.kVelocity);
-      drivePIDController.setReference(desiredSpeed, CANSparkMax.ControlType.kVelocity);
-
-      //driveMotor.set(desiredSpeed);
       turningMotor.setVoltage(turnOutput);
     }
   }

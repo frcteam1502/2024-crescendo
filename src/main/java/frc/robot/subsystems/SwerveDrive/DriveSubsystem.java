@@ -10,8 +10,6 @@ import com.ctre.phoenix6.signals.SensorDirectionValue;
 import com.pathplanner.lib.auto.AutoBuilder;
 import com.pathplanner.lib.config.RobotConfig;
 import com.pathplanner.lib.controllers.PPHolonomicDriveController;
-import com.pathplanner.lib.controllers.PPHolonomicDriveController;
-import com.pathplanner.lib.controllers.PPHolonomicDriveController;
 import com.pathplanner.lib.config.PIDConstants;
 
 import edu.wpi.first.wpilibj.DriverStation;
@@ -36,7 +34,7 @@ import edu.wpi.first.math.kinematics.SwerveModuleState;
 import edu.wpi.first.math.numbers.N3;
 import edu.wpi.first.math.util.Units;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
-
+import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine;
 import frc.robot.GameState;
 
 final class Gyro {
@@ -132,11 +130,6 @@ final class Motors {
   public static final CANSparkMax DRIVE_FRONT_RIGHT = new CANSparkMax(11, CANSparkLowLevel.MotorType.kBrushless);
   public static final CANSparkMax DRIVE_BACK_RIGHT = new CANSparkMax(9, CANSparkLowLevel.MotorType.kBrushless);
   public static final CANSparkMax DRIVE_BACK_LEFT = new CANSparkMax(5, CANSparkLowLevel.MotorType.kBrushless);
-
-  /*public static final CANSparkMax DRIVE_FRONT_LEFT = new CANSparkMax(15, CANSparkLowLevel.MotorType.kBrushless);
-  public static final CANSparkMax DRIVE_FRONT_RIGHT = new CANSparkMax(11, CANSparkLowLevel.MotorType.kBrushless);
-  public static final CANSparkMax DRIVE_BACK_RIGHT = new CANSparkMax(9, CANSparkLowLevel.MotorType.kBrushless);
-  public static final CANSparkMax DRIVE_BACK_LEFT = new CANSparkMax(3, CANSparkLowLevel.MotorType.kBrushless);*/
   
   //turn
   public static final CANSparkMax ANGLE_FRONT_LEFT = new CANSparkMax(16, CANSparkLowLevel.MotorType.kBrushless);
@@ -390,12 +383,6 @@ public class DriveSubsystem extends SubsystemBase{
 
   public ChassisSpeeds getRobotRelativeSpeeds(){
     //This method is a supplier of ChassisSpeeds as determined by the module states.  This is required for PathPlanner 2024
-    /*var robotSpeeds = kinematics.toChassisSpeeds(getModuleStates());
-    robotSpeeds.vxMetersPerSecond *= -1;
-    robotSpeeds.vyMetersPerSecond *= -1;
-    robotSpeeds.omegaRadiansPerSecond *= -1;
-    return robotSpeeds;*/
-
     return kinematics.toChassisSpeeds(getModuleStates());
   }
 
