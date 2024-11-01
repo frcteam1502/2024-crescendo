@@ -14,6 +14,9 @@ import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.kinematics.SwerveModulePosition;
 import edu.wpi.first.math.kinematics.SwerveModuleState;
 import edu.wpi.first.math.util.Units;
+import edu.wpi.first.units.Measure;
+import edu.wpi.first.units.Voltage;
+import edu.wpi.first.wpilibj.RobotController;
 
 final class ModuleConstants {
  
@@ -125,6 +128,10 @@ public class SwerveModule {
     return new SwerveModulePosition(driveEncoder.getPosition(), new Rotation2d(getAbsPositionZeroed()));
   }
 
+  public double getLinearPosition() {
+    return driveEncoder.getPosition();
+  }
+
   public void zeroModule() {
     driveEncoder.setPosition(0);
   }
@@ -182,5 +189,18 @@ public class SwerveModule {
       final double turnOutput = turningPIDController.calculate(getAbsPositionZeroed(), state.angle.getRadians());
       turningMotor.setVoltage(turnOutput);
     }
+  }
+
+  public void setSysIDVoltage(Measure<Voltage> volts){
+    //Set drive motor open-loop voltage
+    driveMotor.setVoltage(volts.magnitude());
+    
+    // Calculate the turning motor output from the turning PID controller.  For SysID, all motors should be facing "forward"
+    final double turnOutput = turningPIDController.calculate(getAbsPositionZeroed(), 0);
+    turningMotor.setVoltage(turnOutput);
+  }
+
+  public double getDriveMotorVoltage(){
+    return (driveMotor.get()*driveMotor.getBusVoltage());
   }
 }

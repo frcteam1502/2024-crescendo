@@ -1,9 +1,12 @@
 package frc.robot.subsystems.SwerveDrive;
 
+import static edu.wpi.first.units.Units.*;
+
 import frc.robot.Logger;
 import frc.robot.subsystems.Vision.Limelight;
 import frc.robot.subsystems.Vision.LimelightHelpers;
 
+import com.ctre.phoenix6.configs.VoltageConfigs;
 import com.ctre.phoenix6.hardware.CANcoder;
 import com.ctre.phoenix6.hardware.Pigeon2;
 import com.ctre.phoenix6.signals.SensorDirectionValue;
@@ -33,6 +36,10 @@ import edu.wpi.first.math.kinematics.SwerveModulePosition;
 import edu.wpi.first.math.kinematics.SwerveModuleState;
 import edu.wpi.first.math.numbers.N3;
 import edu.wpi.first.math.util.Units;
+import edu.wpi.first.units.Distance;
+import edu.wpi.first.units.MutableMeasure;
+import edu.wpi.first.units.Velocity;
+import edu.wpi.first.units.Voltage;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine;
 import frc.robot.GameState;
@@ -205,6 +212,50 @@ public class DriveSubsystem extends SubsystemBase{
   private Pose2d visionPose = new Pose2d();
 
   private static Limelight vision = new Limelight();
+
+  private final MutableMeasure<Voltage> appliedVoltage = MutableMeasure.zero(Volts);
+  private final MutableMeasure<Distance> distance = MutableMeasure.zero(Meters);
+  private final MutableMeasure<Velocity<Distance>> velocity = MutableMeasure.zero(MetersPerSecond);;
+
+
+  //Create a SysIdRoutine object for characterizing the drive
+  private final SysIdRoutine sysIdRoutine = 
+  new SysIdRoutine(
+    //Create a new SysID Congig with default ramp rate, step, and time out values
+    new SysIdRoutine.Config(), 
+    new SysIdRoutine.Mechanism(
+      voltage -> {
+        frontLeft.setSysIDVoltage(voltage);
+        frontRight.setSysIDVoltage(voltage);
+        backLeft.setSysIDVoltage(voltage);
+        backRight.setSysIDVoltage(voltage);},
+      // Tell SysId how to record a frame of data for each motor on the mechanism being
+      // characterized.
+      log -> {
+        //Log a frame for the frontLeft Motor
+        log.motor("drive-frontLeft")
+          .voltage(appliedVoltage.mut_replace(frontLeft.getDriveMotorVoltage(), Volts))
+          .linearPosition(distance.mut_replace(frontLeft.getLinearPosition(), Meters))
+          .linearVelocity(velocity.mut_replace(frontLeft.getModuleVelocity(), MetersPerSecond));
+        //Log a frame for the frontRight Motor
+        log.motor("drive-frontRight")
+          .voltage(appliedVoltage.mut_replace(frontRight.getDriveMotorVoltage(), Volts))
+          .linearPosition(distance.mut_replace(frontRight.getLinearPosition(), Meters))
+          .linearVelocity(velocity.mut_replace(frontRight.getModuleVelocity(), MetersPerSecond));
+        //Log a frame for the backLeft Motor
+        log.motor("drive-backLeft")
+          .voltage(appliedVoltage.mut_replace(backLeft.getDriveMotorVoltage(), Volts))
+          .linearPosition(distance.mut_replace(backLeft.getLinearPosition(), Meters))
+          .linearVelocity(velocity.mut_replace(backLeft.getModuleVelocity(), MetersPerSecond));
+        //Log a frame for the backRight Motor
+        log.motor("drive-backRight")
+          .voltage(appliedVoltage.mut_replace(backRight.getDriveMotorVoltage(), Volts))
+          .linearPosition(distance.mut_replace(backRight.getLinearPosition(), Meters))
+          .linearVelocity(velocity.mut_replace(backRight.getModuleVelocity(), MetersPerSecond));
+      },
+      // Tell SysId to make generated commands require this subsystem, suffix test state in
+      // WPILog with this subsystem's name ("drive")
+      this));
 
   public DriveSubsystem() {
 
