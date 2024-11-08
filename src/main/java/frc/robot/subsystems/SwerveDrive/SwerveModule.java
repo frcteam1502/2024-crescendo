@@ -10,6 +10,7 @@ import com.revrobotics.RelativeEncoder;
 import com.revrobotics.SparkPIDController;
 
 import edu.wpi.first.math.controller.PIDController;
+import edu.wpi.first.math.controller.SimpleMotorFeedforward;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.kinematics.SwerveModulePosition;
 import edu.wpi.first.math.kinematics.SwerveModuleState;
@@ -36,8 +37,11 @@ final class ModuleConstants {
   public static final double MODULE_DRIVE_PID_CONTROLLER_P = .0005;
   public static final double MODULE_DRIVE_PID_CONTROLLER_I = 0;
   public static final double MODULE_DRIVE_PID_CONTROLLER_D = 0;
-  public static final double MODULE_DRIVE_PID_CONTROLLER_F = 1.0;
   
+  public static final double MODULE_DRIVE_KV = 2.6527;
+  public static final double MODULE_DRIVE_KS = 0.098218;
+  public static final double MODULE_DRIVE_KA = 0.66568;
+
   public static final double CLOSED_LOOP_RAMP_RATE = .5;
   public static final int SMART_CURRENT_LIMIT = 30;
 
@@ -99,7 +103,7 @@ public class SwerveModule {
     this.drivePIDController.setP(ModuleConstants.MODULE_DRIVE_PID_CONTROLLER_P);
     this.drivePIDController.setI(ModuleConstants.MODULE_DRIVE_PID_CONTROLLER_I);
     this.drivePIDController.setD(ModuleConstants.MODULE_DRIVE_PID_CONTROLLER_D);
-    this.drivePIDController.setFF(ModuleConstants.MODULE_DRIVE_PID_CONTROLLER_F);
+    //this.drivePIDController.setFF(ModuleConstants.MODULE_DRIVE_PID_CONTROLLER_F);
   }
 
   /**

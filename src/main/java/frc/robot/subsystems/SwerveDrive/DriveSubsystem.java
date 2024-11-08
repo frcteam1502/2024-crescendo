@@ -669,6 +669,11 @@ public class DriveSubsystem extends SubsystemBase{
     Logger.RegisterSensor("FR Drive Speed", ()->frontRight.getVelocity());
     Logger.RegisterSensor("RL Drive Speed", ()->backLeft.getVelocity());
     Logger.RegisterSensor("RR Drive Speed", ()->backRight.getVelocity());
+
+    Logger.RegisterSensor("FL Drive Distance", ()->frontLeft.getLinearPosition());
+    Logger.RegisterSensor("FR Drive Distance", ()->frontRight.getLinearPosition());
+    Logger.RegisterSensor("RL Drive Distance", ()->backLeft.getLinearPosition());
+    Logger.RegisterSensor("RR Drive Distance", ()->backRight.getLinearPosition());
   }
 
   /**
