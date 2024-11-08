@@ -355,17 +355,6 @@ public class DriveSubsystem extends SubsystemBase{
     SmartDashboard.putNumber("EstimatedPose X", estimatedPose.getX());
     SmartDashboard.putNumber("EstimatedPose Y", estimatedPose.getY());
     SmartDashboard.putNumber("EstimatedPose Rotation", estimatedPose.getRotation().getDegrees());
-
-    SmartDashboard.putNumber("Vision Pose X", vision.getVisionBotPose().getX());
-    SmartDashboard.putNumber("Vision Pose Y", vision.getVisionBotPose().getY());
-    SmartDashboard.putNumber("Vision Pose Rotation", vision.getVisionBotPose().getRotation().getDegrees());
-    SmartDashboard.putBoolean("Is Target Valid", vision.isValidPose());
-    SmartDashboard.putNumber("Limelight Latency", vision.getTotalLatency());
-
-    SmartDashboard.putNumber("Speaker tX", vision.getSpeaker_tx());
-    SmartDashboard.putNumber("Speaker tY", vision.getSpeaker_ty());
-    SmartDashboard.putBoolean("Speaker Found", vision.isSpeakerFound());
-    SmartDashboard.putNumber("Distance to Speaker", getDistanceToSpeaker());
   }
   
   @Override
