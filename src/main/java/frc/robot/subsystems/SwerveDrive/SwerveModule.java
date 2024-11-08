@@ -201,6 +201,10 @@ public class SwerveModule {
   }
 
   public double getDriveMotorVoltage(){
-    return (driveMotor.get()*driveMotor.getBusVoltage());
+    return (driveMotor.getAppliedOutput()*driveMotor.getBusVoltage());
+  }
+
+  public double getBusVoltage(){
+    return driveMotor.getBusVoltage();
   }
 }

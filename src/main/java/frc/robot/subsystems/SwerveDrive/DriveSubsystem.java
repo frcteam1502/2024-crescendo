@@ -40,6 +40,7 @@ import edu.wpi.first.units.Distance;
 import edu.wpi.first.units.MutableMeasure;
 import edu.wpi.first.units.Velocity;
 import edu.wpi.first.units.Voltage;
+import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine;
 import frc.robot.GameState;
@@ -256,6 +257,14 @@ public class DriveSubsystem extends SubsystemBase{
       // Tell SysId to make generated commands require this subsystem, suffix test state in
       // WPILog with this subsystem's name ("drive")
       this));
+  
+  public Command sysIdQuasistatic(SysIdRoutine.Direction direction){
+    return sysIdRoutine.quasistatic(direction);
+  }
+
+  public Command sysIdDynamic(SysIdRoutine.Direction direction){
+    return sysIdRoutine.dynamic(direction);
+  }
 
   public DriveSubsystem() {
 

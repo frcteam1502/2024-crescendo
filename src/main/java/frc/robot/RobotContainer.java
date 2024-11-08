@@ -41,6 +41,7 @@ import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
+import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine;
 
 /**
  * This class is where the bulk of the robot should be declared. Since Command-based is a
@@ -136,11 +137,17 @@ public class RobotContainer {
     driveSubsystem.setDefaultCommand(new ControllerCommands(driveSubsystem, new MockDetector())); //USES THE LEFT BUMPER TO SLOW DOWN
     
     //Climber
-    climber.setDefaultCommand(new ClimberCommands(climber));
+    //climber.setDefaultCommand(new ClimberCommands(climber));
     //Driver.Controller.y().onTrue(new InstantCommand(climber::climbUp).repeatedly()).onFalse(new InstantCommand(climber::climberOff));
     //Driver.Controller.a().onTrue(new InstantCommand(climber::climbDown).repeatedly()).onFalse(new InstantCommand(climber::climberOff));
-    Driver.Controller.x().whileTrue(new ClimberHome(climber));
+    //Driver.Controller.x().whileTrue(new ClimberHome(climber));
     Driver.Controller.start().onTrue(new ResetGyro(driveSubsystem));
+
+    //SysID stuff - comment out on competition build!
+    Driver.Controller.y().whileTrue(driveSubsystem.sysIdQuasistatic(SysIdRoutine.Direction.kForward));
+    Driver.Controller.a().whileTrue(driveSubsystem.sysIdQuasistatic(SysIdRoutine.Direction.kReverse));
+    Driver.Controller.b().whileTrue(driveSubsystem.sysIdDynamic(SysIdRoutine.Direction.kForward));
+    Driver.Controller.x().whileTrue(driveSubsystem.sysIdDynamic(SysIdRoutine.Direction.kReverse));
     
     //Arm
     armSubsystem.setDefaultCommand(new ArmCommands(armSubsystem));
