@@ -36,10 +36,14 @@ import edu.wpi.first.math.kinematics.SwerveModulePosition;
 import edu.wpi.first.math.kinematics.SwerveModuleState;
 import edu.wpi.first.math.numbers.N3;
 import edu.wpi.first.math.util.Units;
-import edu.wpi.first.units.Distance;
 import edu.wpi.first.units.MutableMeasure;
-import edu.wpi.first.units.Velocity;
-import edu.wpi.first.units.Voltage;
+import edu.wpi.first.units.measure.Voltage;
+import edu.wpi.first.units.measure.Distance;
+import edu.wpi.first.units.measure.MutDistance;
+import edu.wpi.first.units.measure.MutLinearVelocity;
+import edu.wpi.first.units.measure.MutVelocity;
+import edu.wpi.first.units.measure.MutVoltage;
+import edu.wpi.first.units.measure.Velocity;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine;
@@ -214,9 +218,9 @@ public class DriveSubsystem extends SubsystemBase{
 
   private static Limelight vision = new Limelight();
 
-  private final MutableMeasure<Voltage> appliedVoltage = MutableMeasure.zero(Volts);
-  private final MutableMeasure<Distance> distance = MutableMeasure.zero(Meters);
-  private final MutableMeasure<Velocity<Distance>> velocity = MutableMeasure.zero(MetersPerSecond);;
+  private final MutVoltage appliedVoltage = new MutVoltage(0,0, Volts);
+  private final MutDistance distance = new MutDistance(0,0, Meters);
+  private final MutLinearVelocity velocity = new MutLinearVelocity(0, 0, MetersPerSecond);
 
 
   //Create a SysIdRoutine object for characterizing the drive

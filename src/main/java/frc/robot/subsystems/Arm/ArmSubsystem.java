@@ -28,7 +28,12 @@ final class Motors{
 
 final class AbsEncoder{
   public static final int ARM_ABS_ENCODER_CHANNEL = 0;
-  public static final DutyCycleEncoder ARM_ABS_ENCODER = new DutyCycleEncoder(ARM_ABS_ENCODER_CHANNEL);
+  public static final double ARM_ABS_EXPECTED_ZERO = 0;
+  public static final double ARM_ABS_FULL_RANGE_VALUE = 1;
+  public static final DutyCycleEncoder ARM_ABS_ENCODER = new DutyCycleEncoder(
+                                                                      ARM_ABS_ENCODER_CHANNEL,
+                                                                      ARM_ABS_FULL_RANGE_VALUE,
+                                                                      ARM_ABS_EXPECTED_ZERO);
 }
 
 final class ArmConstants{
@@ -192,7 +197,7 @@ public class ArmSubsystem extends SubsystemBase {
 
   public double getArmAbsPositionDegrees(){
     //REV Encoder is CCW+
-    double angleDegrees = rotateAbsEncoder.getAbsolutePosition()*360;
+    double angleDegrees = rotateAbsEncoder.get()*360;
 
     angleDegrees = angleDegrees - 360;
 

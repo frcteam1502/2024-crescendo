@@ -16,7 +16,7 @@ import edu.wpi.first.math.kinematics.SwerveModulePosition;
 import edu.wpi.first.math.kinematics.SwerveModuleState;
 import edu.wpi.first.math.util.Units;
 import edu.wpi.first.units.Measure;
-import edu.wpi.first.units.Voltage;
+import edu.wpi.first.units.measure.Voltage;
 import edu.wpi.first.wpilibj.RobotController;
 
 final class ModuleConstants {
@@ -195,7 +195,7 @@ public class SwerveModule {
     }
   }
 
-  public void setSysIDVoltage(Measure<Voltage> volts){
+  public void setSysIDVoltage(Voltage volts){
     //Set drive motor open-loop voltage
     driveMotor.setVoltage(volts.magnitude());
     
