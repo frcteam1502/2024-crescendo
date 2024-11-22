@@ -70,7 +70,7 @@ public class ControllerCommands extends Command {
         driver_gain = DriveConstants.MAX_TELEOP_SPEED_DRIVER_1;
     }
 
-    if(Driver.Controller.getHID().getRightBumper()){
+    if(Driver.Controller.getHID().getRightBumperButton()){
       teleopSpeedGain = DriveConstants.MAX_FINESSE_SPEED;
       teleopRotationGain = DriveConstants.MAX_FINESSE_ROTATION;
     }else{

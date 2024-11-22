@@ -84,7 +84,6 @@ public class ShooterIntake extends SubsystemBase {
   private final DigitalInput photoSensorNormOpen;
   private final DigitalInput photoSensorNormClosed;
 
-  private double auto_shooter_speed = ShooterIntakeConstants.SHOOTER_DEFAULT_RPM;
   private double shooter_speed = ShooterIntakeConstants.SHOOTER_DEFAULT_RPM;
   private double intakePickupSpeed = ShooterIntakeConstants.INTAKE_DEFAULT_PICK_UP_RPM;
   private double intakeIndexSpeed = ShooterIntakeConstants.INTAKE_DEFAULT_INDEX_RPM;
@@ -97,7 +96,6 @@ public class ShooterIntake extends SubsystemBase {
   private double shooter_p = ShooterIntakeConstants.SHOOTER_PID_P;
   private double intake_p = ShooterIntakeConstants.INTAKE_PID_P;
 
-  private boolean isNoteLoading = false;
   private boolean isShooterOn = false;
 
   private double temp_index;

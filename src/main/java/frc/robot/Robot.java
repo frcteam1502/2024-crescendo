@@ -146,7 +146,8 @@ private String[] pneumaticNames = {
 
   @Override
   public void teleopInit() {
-    double rotation = m_robotContainer.driveSubsystem.getPoseRotationDegrees();
+    //TODO: Handle pose during transition from auto to teleop
+    //double rotation = m_robotContainer.driveSubsystem.getPoseRotationDegrees();
     if(wasAutonExecuted){
       //m_robotContainer.driveSubsystem.resetGyro(rotation);//Take out until PathPlanner headings are fixed!
       wasAutonExecuted = false;

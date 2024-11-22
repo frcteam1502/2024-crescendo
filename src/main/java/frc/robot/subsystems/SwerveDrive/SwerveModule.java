@@ -10,14 +10,11 @@ import com.revrobotics.RelativeEncoder;
 import com.revrobotics.SparkPIDController;
 
 import edu.wpi.first.math.controller.PIDController;
-import edu.wpi.first.math.controller.SimpleMotorFeedforward;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.kinematics.SwerveModulePosition;
 import edu.wpi.first.math.kinematics.SwerveModuleState;
 import edu.wpi.first.math.util.Units;
-import edu.wpi.first.units.Measure;
 import edu.wpi.first.units.measure.Voltage;
-import edu.wpi.first.wpilibj.RobotController;
 
 final class ModuleConstants {
  
@@ -57,7 +54,7 @@ final class ModuleConstants {
 }
 
 
-public class SwerveModule {
+public class SwerveModule{
   private final CANSparkMax driveMotor;
   private final CANSparkMax turningMotor;
 
@@ -179,18 +176,18 @@ public class SwerveModule {
       return;
     }else{
       // Optimize the reference state to avoid spinning further than 90 degrees
-      SwerveModuleState state = SwerveModuleState.optimize(desiredState, new Rotation2d(getAbsPositionZeroed()));
+      desiredState.optimize(new Rotation2d(getAbsPositionZeroed()));
 
       //Set SmartDashboard variables
       commandedSpeed = desiredState.speedMetersPerSecond;
       commandedAngle = desiredState.angle.getDegrees();
 
       //Calculate the motor speed output and pass the value to the SPARK PID Controller object
-      var desiredSpeed = state.speedMetersPerSecond/ModuleConstants.MAX_SPEED_METERS_PER_SECOND;
+      var desiredSpeed = desiredState.speedMetersPerSecond/ModuleConstants.MAX_SPEED_METERS_PER_SECOND;
       drivePIDController.setReference(desiredSpeed, CANSparkMax.ControlType.kVelocity);
 
       // Calculate the turning motor output from the turning PID controller.
-      final double turnOutput = turningPIDController.calculate(getAbsPositionZeroed(), state.angle.getRadians());
+      final double turnOutput = turningPIDController.calculate(getAbsPositionZeroed(), desiredState.angle.getRadians());
       turningMotor.setVoltage(turnOutput);
     }
   }

@@ -4,9 +4,7 @@ import static edu.wpi.first.units.Units.*;
 
 import frc.robot.Logger;
 import frc.robot.subsystems.Vision.Limelight;
-import frc.robot.subsystems.Vision.LimelightHelpers;
 
-import com.ctre.phoenix6.configs.VoltageConfigs;
 import com.ctre.phoenix6.hardware.CANcoder;
 import com.ctre.phoenix6.hardware.Pigeon2;
 import com.ctre.phoenix6.signals.SensorDirectionValue;
@@ -16,6 +14,7 @@ import com.pathplanner.lib.controllers.PPHolonomicDriveController;
 import com.pathplanner.lib.config.PIDConstants;
 
 import edu.wpi.first.wpilibj.DriverStation;
+import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 
 import com.revrobotics.CANSparkMax;
@@ -24,7 +23,7 @@ import com.revrobotics.CANSparkBase.IdleMode;
 
 import edu.wpi.first.math.VecBuilder;
 import edu.wpi.first.math.Vector;
-import edu.wpi.first.math.controller.HolonomicDriveController;
+
 import edu.wpi.first.math.estimator.SwerveDrivePoseEstimator;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
@@ -36,14 +35,9 @@ import edu.wpi.first.math.kinematics.SwerveModulePosition;
 import edu.wpi.first.math.kinematics.SwerveModuleState;
 import edu.wpi.first.math.numbers.N3;
 import edu.wpi.first.math.util.Units;
-import edu.wpi.first.units.MutableMeasure;
-import edu.wpi.first.units.measure.Voltage;
-import edu.wpi.first.units.measure.Distance;
 import edu.wpi.first.units.measure.MutDistance;
 import edu.wpi.first.units.measure.MutLinearVelocity;
-import edu.wpi.first.units.measure.MutVelocity;
 import edu.wpi.first.units.measure.MutVoltage;
-import edu.wpi.first.units.measure.Velocity;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine;
@@ -222,7 +216,6 @@ public class DriveSubsystem extends SubsystemBase{
   private final MutDistance distance = new MutDistance(0,0, Meters);
   private final MutLinearVelocity velocity = new MutLinearVelocity(0, 0, MetersPerSecond);
 
-
   //Create a SysIdRoutine object for characterizing the drive
   private final SysIdRoutine sysIdRoutine = 
   new SysIdRoutine(
@@ -309,6 +302,7 @@ public class DriveSubsystem extends SubsystemBase{
   }
 
   private void updateDashboard(){
+
     //Field Oriented inputs
     SmartDashboard.putNumber("Field Oriented X Command (Forward)", fieldXCommand);
     SmartDashboard.putNumber("Field Oriented Y Command (Forward)", fieldYCommand);
@@ -359,6 +353,7 @@ public class DriveSubsystem extends SubsystemBase{
     SmartDashboard.putNumber("EstimatedPose X", estimatedPose.getX());
     SmartDashboard.putNumber("EstimatedPose Y", estimatedPose.getY());
     SmartDashboard.putNumber("EstimatedPose Rotation", estimatedPose.getRotation().getDegrees());
+
   }
   
   @Override
