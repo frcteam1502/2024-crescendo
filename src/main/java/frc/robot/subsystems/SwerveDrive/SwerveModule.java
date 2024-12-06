@@ -5,7 +5,7 @@ import com.ctre.phoenix6.hardware.CANcoder;
 import com.ctre.phoenix6.signals.AbsoluteSensorRangeValue;
 import com.ctre.phoenix6.signals.SensorDirectionValue;
 
-import com.revrobotics.CANSparkMax;
+import com.revrobotics.spark.SparkMax;
 import com.revrobotics.RelativeEncoder;
 import com.revrobotics.SparkPIDController;
 
@@ -55,8 +55,8 @@ final class ModuleConstants {
 
 
 public class SwerveModule{
-  private final CANSparkMax driveMotor;
-  private final CANSparkMax turningMotor;
+  private final SparkMax driveMotor;
+  private final SparkMax turningMotor;
 
   private final RelativeEncoder driveEncoder;
 
@@ -68,7 +68,7 @@ public class SwerveModule{
   private double commandedSpeed;
   private double commandedAngle;
 
-  public SwerveModule(CANSparkMax driveMotor, CANSparkMax turnMotor, CANcoder absEncoder, double absOffset, SensorDirectionValue directionValue) {
+  public SwerveModule(SparkMax driveMotor, SparkMax turnMotor, CANcoder absEncoder, double absOffset, SensorDirectionValue directionValue) {
     this.driveMotor = driveMotor;
     this.turningMotor = turnMotor;
     this.absEncoder = absEncoder;

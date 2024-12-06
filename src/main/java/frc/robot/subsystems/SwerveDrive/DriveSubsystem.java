@@ -17,9 +17,9 @@ import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 
-import com.revrobotics.CANSparkMax;
-import com.revrobotics.CANSparkLowLevel;
-import com.revrobotics.CANSparkBase.IdleMode;
+import com.revrobotics.spark.*;
+import com.revrobotics.spark.SparkMax;
+import com.revrobotics.spark.config.SparkBaseConfig;
 
 import edu.wpi.first.math.VecBuilder;
 import edu.wpi.first.math.Vector;
@@ -85,21 +85,11 @@ final class DriveConstants {
   public static final boolean FrontRightTurningMotorReversed = true;
   public static final boolean BackRightTurningMotorReversed = true;
 
-  public static final CANSparkMax.IdleMode FrontLeftTurningMotorBrake = IdleMode.kBrake;
-  public static final CANSparkMax.IdleMode BackLeftTurningMotorBrake = IdleMode.kBrake;
-  public static final CANSparkMax.IdleMode FrontRightTurningMotorBrake = IdleMode.kBrake;
-  public static final CANSparkMax.IdleMode BackRightTurningMotorBrake = IdleMode.kBrake;
-
   //Drive Motors
   public static final boolean FrontLeftDriveMotorReversed  = true;
   public static final boolean BackLeftDriveMotorReversed   = true;
   public static final boolean FrontRightDriveMotorReversed = true;
   public static final boolean BackRightDriveMotorReversed  = true;
-
-  public static final CANSparkMax.IdleMode FrontLeftDriveMotorBrake = IdleMode.kBrake;
-  public static final CANSparkMax.IdleMode BackLeftDriveMotorBrake = IdleMode.kBrake;
-  public static final CANSparkMax.IdleMode FrontRightDriveMotorBrake = IdleMode.kBrake;
-  public static final CANSparkMax.IdleMode BackRightDriveMotorBrake = IdleMode.kBrake;
 
   //Wheel Base
   public static final double WHEEL_BASE_WIDTH = Units.inchesToMeters(23.25);
@@ -132,16 +122,16 @@ final class DriveConstants {
 
 final class Motors {
   //drive
-  public static final CANSparkMax DRIVE_FRONT_LEFT = new CANSparkMax(17, CANSparkLowLevel.MotorType.kBrushless);
-  public static final CANSparkMax DRIVE_FRONT_RIGHT = new CANSparkMax(11, CANSparkLowLevel.MotorType.kBrushless);
-  public static final CANSparkMax DRIVE_BACK_RIGHT = new CANSparkMax(9, CANSparkLowLevel.MotorType.kBrushless);
-  public static final CANSparkMax DRIVE_BACK_LEFT = new CANSparkMax(5, CANSparkLowLevel.MotorType.kBrushless);
+  public static final SparkMax DRIVE_FRONT_LEFT   = new SparkMax(17, SparkLowLevel.MotorType.kBrushless);
+  public static final SparkMax DRIVE_FRONT_RIGHT  = new SparkMax(11, SparkLowLevel.MotorType.kBrushless);
+  public static final SparkMax DRIVE_BACK_RIGHT   = new SparkMax(9, SparkLowLevel.MotorType.kBrushless);
+  public static final SparkMax DRIVE_BACK_LEFT    = new SparkMax(5, SparkLowLevel.MotorType.kBrushless);
   
   //turn
-  public static final CANSparkMax ANGLE_FRONT_LEFT = new CANSparkMax(16, CANSparkLowLevel.MotorType.kBrushless);
-  public static final CANSparkMax ANGLE_FRONT_RIGHT = new CANSparkMax(10, CANSparkLowLevel.MotorType.kBrushless);
-  public static final CANSparkMax ANGLE_BACK_RIGHT = new CANSparkMax(8, CANSparkLowLevel.MotorType.kBrushless);
-  public static final CANSparkMax ANGLE_BACK_LEFT = new CANSparkMax(4, CANSparkLowLevel.MotorType.kBrushless);
+  public static final SparkMax ANGLE_FRONT_LEFT   = new SparkMax(16, SparkLowLevel.MotorType.kBrushless);
+  public static final SparkMax ANGLE_FRONT_RIGHT  = new SparkMax(10, SparkLowLevel.MotorType.kBrushless);
+  public static final SparkMax ANGLE_BACK_RIGHT   = new SparkMax(8, SparkLowLevel.MotorType.kBrushless);
+  public static final SparkMax ANGLE_BACK_LEFT    = new SparkMax(4, SparkLowLevel.MotorType.kBrushless);
   
 }
 
@@ -219,7 +209,7 @@ public class DriveSubsystem extends SubsystemBase{
   //Create a SysIdRoutine object for characterizing the drive
   private final SysIdRoutine sysIdRoutine = 
   new SysIdRoutine(
-    //Create a new SysID Congig with default ramp rate, step, and time out values
+    //Create a new SysID Congig with default ramp rate (0.1 V/s), step (7V), and time out values
     new SysIdRoutine.Config(), 
     new SysIdRoutine.Mechanism(
       voltage -> {
@@ -298,7 +288,7 @@ public class DriveSubsystem extends SubsystemBase{
 
   private double getIMU_Yaw() {
     var currentHeading = gyro.getYaw(); 
-    return( currentHeading.getValue() );
+    return(currentHeading.getValueAsDouble());
   }
 
   private void updateDashboard(){
@@ -593,16 +583,6 @@ public class DriveSubsystem extends SubsystemBase{
     Motors.DRIVE_FRONT_RIGHT.setInverted(DriveConstants.FrontRightDriveMotorReversed);
     Motors.DRIVE_BACK_LEFT.setInverted(DriveConstants.BackLeftDriveMotorReversed);
     Motors.DRIVE_BACK_RIGHT.setInverted(DriveConstants.BackRightDriveMotorReversed);
-
-    Motors.DRIVE_FRONT_LEFT.setIdleMode(DriveConstants.FrontLeftDriveMotorBrake);
-    Motors.DRIVE_FRONT_RIGHT.setIdleMode(DriveConstants.FrontRightDriveMotorBrake);
-    Motors.DRIVE_BACK_LEFT.setIdleMode(DriveConstants.BackLeftDriveMotorBrake);
-    Motors.DRIVE_BACK_RIGHT.setIdleMode(DriveConstants.BackRightDriveMotorBrake);
-
-    Motors.ANGLE_FRONT_LEFT.setIdleMode(DriveConstants.FrontLeftTurningMotorBrake);
-    Motors.ANGLE_FRONT_RIGHT.setIdleMode(DriveConstants.FrontRightTurningMotorBrake);
-    Motors.ANGLE_BACK_LEFT.setIdleMode(DriveConstants.BackLeftTurningMotorBrake);
-    Motors.ANGLE_BACK_RIGHT.setIdleMode(DriveConstants.BackRightTurningMotorBrake);
   }
 
   private void configAutoBuilder(){

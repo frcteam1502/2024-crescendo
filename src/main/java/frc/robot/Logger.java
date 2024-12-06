@@ -17,7 +17,7 @@ import com.ctre.phoenix6.hardware.Pigeon2;
 //import com.ctre.phoenix.sensors.Pigeon2_Faults;
 //import com.ctre.phoenix.sensors.PigeonIMU;
 //import com.ctre.phoenix.sensors.PigeonIMU_Faults;
-import com.revrobotics.CANSparkMax;
+import com.revrobotics.spark.*;
 
 import edu.wpi.first.math.kinematics.SwerveModuleState;
 import edu.wpi.first.networktables.NetworkTable;
@@ -43,7 +43,7 @@ public class Logger implements Runnable {
     private static PneumaticHub ph;
     private static String[] pneumaticNames;
     private static Pigeon2 pigeon;
-    private static CANSparkMax spark;       //used to stop warning about not closing motor, since we really don't...
+    private static SparkMax spark;       //used to stop warning about not closing motor, since we really don't...
 
     private NetworkTable currentTable;
     private NetworkTable commandTable;
@@ -103,7 +103,7 @@ public class Logger implements Runnable {
         items.put(name, talon);
     }
 
-    public static void RegisterCanSparkMax(String name, CANSparkMax spark) {
+    public static void RegisterCanSparkMax(String name, SparkMax spark) {
         items.put(name, spark);
     }
 
@@ -160,7 +160,7 @@ public class Logger implements Runnable {
                 sensorTable.getEntry(i).setDouble(((DoubleSupplier)item).getAsDouble());
             } else if(item instanceof CANcoder) {
                 var coder = (CANcoder)item;
-                sensorTable.getEntry(i + " Angle").setDouble(coder.getAbsolutePosition().getValue());
+                sensorTable.getEntry(i + " Angle").setDouble(coder.getAbsolutePosition().getValueAsDouble());
                 sensorTable.getEntry(i + " Mag Str").setString(coder.getMagnetHealth().toString());
 
                 /*var faults = new CANCoderFaults();
@@ -171,13 +171,13 @@ public class Logger implements Runnable {
                 coder.getStickyFaults(sFaults);
                 stickyTable.getEntry(i).setString(readFaultStruct(sFaults));
                 canStatusTable.getEntry(i).setString(coder.getLastError().name());*/
-            } else if(item instanceof CANSparkMax) {
-                spark = (CANSparkMax)item;
+            } else if(item instanceof SparkMax) {
+                spark = (SparkMax)item;
 
                 commandTable.getEntry(i).setDouble(spark.getAppliedOutput()*spark.getBusVoltage());
                 currentTable.getEntry(i).setDouble(spark.getOutputCurrent());
-                faultTable.getEntry(i).setString(readSparkFaults(spark.getFaults()));
-                stickyTable.getEntry(i).setString(readSparkFaults(spark.getStickyFaults()));
+                //faultTable.getEntry(i).setString(readSparkFaults(spark.getFaults()));
+                //stickyTable.getEntry(i).setString(readSparkFaults(spark.getStickyFaults()));
                 tempTable.getEntry(i).setDouble(spark.getMotorTemperature());
                 canStatusTable.getEntry(i).setString(spark.getLastError().name());
             } else {
@@ -218,17 +218,17 @@ public class Logger implements Runnable {
         }
 
         if(pigeon != null) {
-            var yaw = pigeon.getYaw().getValue();
-            var pitch = pigeon.getPitch().getValue();
-            var roll = pigeon.getRoll().getValue();
+            var yaw = pigeon.getYaw().getValueAsDouble();
+            var pitch = pigeon.getPitch().getValueAsDouble();
+            var roll = pigeon.getRoll().getValueAsDouble();
 
             sensorTable.getEntry("Pigeon Yaw").setDouble(yaw);
             sensorTable.getEntry("Pigeon Pitch").setDouble(pitch);
             sensorTable.getEntry("Pigeon Roll").setDouble(roll);
 
-            var accel_x = pigeon.getAccelerationX().getValue();
-            var accel_y = pigeon.getAccelerationY().getValue();
-            var accel_z = pigeon.getAccelerationZ().getValue();
+            var accel_x = pigeon.getAccelerationX().getValueAsDouble();
+            var accel_y = pigeon.getAccelerationY().getValueAsDouble();
+            var accel_z = pigeon.getAccelerationZ().getValueAsDouble();
 
             sensorTable.getEntry("Pigeon Ax").setDouble(accel_x);
             sensorTable.getEntry("Pigeon Ay").setDouble(accel_y);
@@ -381,8 +381,8 @@ public class Logger implements Runnable {
         StringBuilder work = new StringBuilder();
         for(var i=0; i<15; i++) {
             if((faults & (1 << i)) == 1) {
-                var fault = CANSparkMax.FaultID.fromId(i);
-                work.append(fault.name()).append(" ");
+                //var fault = SparkMax.FaultID.fromId(i);
+                //work.append(fault.name()).append(" ");
             }
         }
         return work.toString();
@@ -405,8 +405,8 @@ public class Logger implements Runnable {
             if(item instanceof CANcoder) {
                 var coder = (CANcoder)item;
                 coder.clearStickyFaults();
-            } else if(item instanceof CANSparkMax) {
-                spark = (CANSparkMax)item;
+            } else if(item instanceof SparkMax) {
+                spark = (SparkMax)item;
                 spark.clearFaults();
             } else {
                 //unknown table

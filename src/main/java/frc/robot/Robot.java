@@ -5,7 +5,6 @@
 package frc.robot;
 
 import frc.robot.Logger;
-import frc.robot.subsystems.Arm.ArmSubsystem;
 import edu.wpi.first.cameraserver.CameraServer;
 import edu.wpi.first.networktables.NetworkTableEntry;
 import edu.wpi.first.wpilibj.PneumaticHub;

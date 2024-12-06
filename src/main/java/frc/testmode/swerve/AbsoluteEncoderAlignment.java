@@ -25,10 +25,10 @@ public class AbsoluteEncoderAlignment {
     }
 
     public void updateDashboard(){
-        SmartDashboard.putNumber("16", CANCoders.FRONT_LEFT_CAN_CODER.getAbsolutePosition().getValue());
-        SmartDashboard.putNumber("10", CANCoders.FRONT_RIGHT_CAN_CODER.getAbsolutePosition().getValue());
-        SmartDashboard.putNumber("4", CANCoders.BACK_LEFT_CAN_CODER.getAbsolutePosition().getValue());
-        SmartDashboard.putNumber("8", CANCoders.BACK_RIGHT_CAN_CODER.getAbsolutePosition().getValue());
+        SmartDashboard.putNumber("16", CANCoders.FRONT_LEFT_CAN_CODER.getAbsolutePosition().getValueAsDouble());
+        SmartDashboard.putNumber("10", CANCoders.FRONT_RIGHT_CAN_CODER.getAbsolutePosition().getValueAsDouble());
+        SmartDashboard.putNumber("4", CANCoders.BACK_LEFT_CAN_CODER.getAbsolutePosition().getValueAsDouble());
+        SmartDashboard.putNumber("8", CANCoders.BACK_RIGHT_CAN_CODER.getAbsolutePosition().getValueAsDouble());
     }
     
     public void zeroPositions(){
