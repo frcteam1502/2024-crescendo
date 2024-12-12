@@ -2,12 +2,12 @@ package frc.robot.subsystems.SwerveDrive;
 
 import com.ctre.phoenix6.configs.CANcoderConfiguration;
 import com.ctre.phoenix6.hardware.CANcoder;
-import com.ctre.phoenix6.signals.AbsoluteSensorRangeValue;
 import com.ctre.phoenix6.signals.SensorDirectionValue;
-
+import com.revrobotics.spark.SparkBase;
+import com.revrobotics.spark.SparkClosedLoopController;
 import com.revrobotics.spark.SparkMax;
+import com.revrobotics.spark.config.*;
 import com.revrobotics.RelativeEncoder;
-import com.revrobotics.SparkPIDController;
 
 import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.math.geometry.Rotation2d;
@@ -30,7 +30,7 @@ final class ModuleConstants {
   public static final double MODULE_TURN_PID_CONTROLLER_I = 0;
   public static final double MODULE_TURN_PID_CONTROLLER_D = 0;
   
-  // public static final double MODULE_TURN_PID_CONTROLLER_F = 0;
+  public static final double MODULE_DRIVE_PID_CONTROLLER_F = 1;
   public static final double MODULE_DRIVE_PID_CONTROLLER_P = .0005;
   public static final double MODULE_DRIVE_PID_CONTROLLER_I = 0;
   public static final double MODULE_DRIVE_PID_CONTROLLER_D = 0;
@@ -43,6 +43,9 @@ final class ModuleConstants {
   public static final int SMART_CURRENT_LIMIT = 30;
 
   public static final double MAX_SPEED_METERS_PER_SECOND = 4.6;
+
+  public static final SparkBaseConfig.IdleMode DRIVE_IDLE_MODE  = SparkBaseConfig.IdleMode.kBrake;
+  public static final SparkBaseConfig.IdleMode TURN_IDLE_MODE   = SparkBaseConfig.IdleMode.kBrake;
 
   /*
   public static final double MAX_METERS_PER_SECOND = 4.4; //5600 * DRIVE_ENCODER_MPS_PER_REV;
@@ -62,7 +65,7 @@ public class SwerveModule{
 
   private final CANcoder absEncoder;
 
-  private final SparkPIDController drivePIDController;
+  private final SparkClosedLoopController drivePIDController;
   private final PIDController turningPIDController = new PIDController(ModuleConstants.MODULE_TURN_PID_CONTROLLER_P, ModuleConstants.MODULE_TURN_PID_CONTROLLER_I, ModuleConstants.MODULE_TURN_PID_CONTROLLER_D);
 
   private double commandedSpeed;
@@ -73,34 +76,48 @@ public class SwerveModule{
     this.turningMotor = turnMotor;
     this.absEncoder = absEncoder;
 
-    driveMotor.setClosedLoopRampRate(ModuleConstants.CLOSED_LOOP_RAMP_RATE);
-    driveMotor.setSmartCurrentLimit(ModuleConstants.SMART_CURRENT_LIMIT);
-
     driveEncoder = driveMotor.getEncoder();
 
-    // Set the distance per pulse for the drive encoder. 
-    driveEncoder.setPositionConversionFactor(ModuleConstants.DRIVE_METERS_PER_ENCODER_REV);
+    //Setup Encoder Config
+    EncoderConfig driveEncoderConfig = new EncoderConfig();
+    driveEncoderConfig.positionConversionFactor(ModuleConstants.DRIVE_METERS_PER_ENCODER_REV);
+    driveEncoderConfig.velocityConversionFactor(ModuleConstants.DRIVE_ENCODER_MPS_PER_REV);
 
-    // Set the velocity per pulse for the drive encoder
-    driveEncoder.setVelocityConversionFactor(ModuleConstants.DRIVE_ENCODER_MPS_PER_REV);
+    //Setup Closed Loop Config settings
+    ClosedLoopConfig drivePIDF_Config = new ClosedLoopConfig();
+    drivePIDF_Config.p(ModuleConstants.MODULE_DRIVE_PID_CONTROLLER_P);
+    drivePIDF_Config.i(ModuleConstants.MODULE_DRIVE_PID_CONTROLLER_I);
+    drivePIDF_Config.d(ModuleConstants.MODULE_DRIVE_PID_CONTROLLER_D);
+    drivePIDF_Config.velocityFF(ModuleConstants.MODULE_DRIVE_PID_CONTROLLER_F);
+
+    //Setup Drive Motor Config
+    SparkMaxConfig driveConfig = new SparkMaxConfig();
+    driveConfig.idleMode(ModuleConstants.DRIVE_IDLE_MODE);
+    driveConfig.closedLoopRampRate(ModuleConstants.CLOSED_LOOP_RAMP_RATE);
+    driveConfig.smartCurrentLimit(ModuleConstants.SMART_CURRENT_LIMIT);
+    
+    //Apply Encoder Config to this Spark Config
+    driveConfig.apply(driveEncoderConfig);
+
+    //Apply Closed Loop Config to this Spark Config
+    driveConfig.apply(drivePIDF_Config);
+
+    //Finally, write all the config settings to the controller!
+    driveMotor.configure(driveConfig, SparkBase.ResetMode.kResetSafeParameters, SparkBase.PersistMode.kPersistParameters);
 
     //Set absolute encoder magnet configuration
     CANcoderConfiguration config = new CANcoderConfiguration();
     double offsetRotations = -absOffset/360;
     config.MagnetSensor.MagnetOffset = offsetRotations;
     config.MagnetSensor.SensorDirection = directionValue;
-    config.MagnetSensor.AbsoluteSensorRange = AbsoluteSensorRangeValue.Unsigned_0To1;
+    config.MagnetSensor.AbsoluteSensorDiscontinuityPoint = 1;
     this.absEncoder.getConfigurator().apply(config);
 
     // Limit the PID Controller's input range between -pi and pi and set the input
     // to be continuous.
     this.turningPIDController.enableContinuousInput(-Math.PI, Math.PI);
 
-    this.drivePIDController = this.driveMotor.getPIDController();
-    this.drivePIDController.setP(ModuleConstants.MODULE_DRIVE_PID_CONTROLLER_P);
-    this.drivePIDController.setI(ModuleConstants.MODULE_DRIVE_PID_CONTROLLER_I);
-    this.drivePIDController.setD(ModuleConstants.MODULE_DRIVE_PID_CONTROLLER_D);
-    //this.drivePIDController.setFF(ModuleConstants.MODULE_DRIVE_PID_CONTROLLER_F);
+    this.drivePIDController = driveMotor.getClosedLoopController();
   }
 
   /**
@@ -140,7 +157,7 @@ public class SwerveModule{
   public double getAbsPositionZeroed() {
     //CANcoders in Phoenix return rotations 0 to 1
     var angle = absEncoder.getAbsolutePosition();
-    return angle.getValue()*2.0*Math.PI;
+    return angle.getValueAsDouble()*2.0*Math.PI;
   }
 
   public double getCommandedSpeed(){
@@ -184,7 +201,7 @@ public class SwerveModule{
 
       //Calculate the motor speed output and pass the value to the SPARK PID Controller object
       var desiredSpeed = desiredState.speedMetersPerSecond/ModuleConstants.MAX_SPEED_METERS_PER_SECOND;
-      drivePIDController.setReference(desiredSpeed, CANSparkMax.ControlType.kVelocity);
+      drivePIDController.setReference(desiredSpeed, SparkMax.ControlType.kVelocity);
 
       // Calculate the turning motor output from the turning PID controller.
       final double turnOutput = turningPIDController.calculate(getAbsPositionZeroed(), desiredState.angle.getRadians());
