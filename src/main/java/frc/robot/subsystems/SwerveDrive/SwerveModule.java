@@ -6,6 +6,7 @@ import com.ctre.phoenix6.signals.SensorDirectionValue;
 import com.revrobotics.spark.SparkBase;
 import com.revrobotics.spark.SparkClosedLoopController;
 import com.revrobotics.spark.SparkMax;
+import com.revrobotics.spark.SparkFlex;
 import com.revrobotics.spark.config.*;
 import com.revrobotics.RelativeEncoder;
 
@@ -58,7 +59,7 @@ final class ModuleConstants {
 
 
 public class SwerveModule{
-  private final SparkMax driveMotor;
+  private final SparkFlex driveMotor;
   private final SparkMax turningMotor;
 
   private final RelativeEncoder driveEncoder;
@@ -71,7 +72,7 @@ public class SwerveModule{
   private double commandedSpeed;
   private double commandedAngle;
 
-  public SwerveModule(SparkMax driveMotor, SparkMax turnMotor, CANcoder absEncoder, double absOffset, SensorDirectionValue directionValue) {
+  public SwerveModule(SparkFlex driveMotor, SparkMax turnMotor, CANcoder absEncoder, double absOffset, SensorDirectionValue directionValue) {
     this.driveMotor = driveMotor;
     this.turningMotor = turnMotor;
     this.absEncoder = absEncoder;

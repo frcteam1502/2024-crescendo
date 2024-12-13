@@ -107,6 +107,10 @@ public class Logger implements Runnable {
         items.put(name, spark);
     }
 
+    public static void RegisterCanSparkFlex(String name, SparkFlex spark) {
+        items.put(name, spark);
+    }
+
     public static void RegisterCanCoder(String name, CANcoder coder) {
         items.put(name, coder);
     }

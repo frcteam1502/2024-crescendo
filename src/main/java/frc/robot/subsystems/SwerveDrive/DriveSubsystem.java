@@ -122,10 +122,15 @@ final class DriveConstants {
 
 final class Motors {
   //drive
-  public static final SparkMax DRIVE_FRONT_LEFT   = new SparkMax(17, SparkLowLevel.MotorType.kBrushless);
-  public static final SparkMax DRIVE_FRONT_RIGHT  = new SparkMax(11, SparkLowLevel.MotorType.kBrushless);
-  public static final SparkMax DRIVE_BACK_RIGHT   = new SparkMax(9, SparkLowLevel.MotorType.kBrushless);
-  public static final SparkMax DRIVE_BACK_LEFT    = new SparkMax(5, SparkLowLevel.MotorType.kBrushless);
+  //public static final SparkMax DRIVE_FRONT_LEFT   = new SparkMax(17, SparkLowLevel.MotorType.kBrushless);
+  //public static final SparkMax DRIVE_FRONT_RIGHT  = new SparkMax(11, SparkLowLevel.MotorType.kBrushless);
+  //public static final SparkMax DRIVE_BACK_RIGHT   = new SparkMax(9, SparkLowLevel.MotorType.kBrushless);
+  //public static final SparkMax DRIVE_BACK_LEFT    = new SparkMax(5, SparkLowLevel.MotorType.kBrushless);
+
+  public static final SparkFlex DRIVE_FRONT_LEFT   = new SparkFlex(17, SparkLowLevel.MotorType.kBrushless);
+  public static final SparkFlex DRIVE_FRONT_RIGHT  = new SparkFlex(11, SparkLowLevel.MotorType.kBrushless);
+  public static final SparkFlex DRIVE_BACK_RIGHT   = new SparkFlex(9, SparkLowLevel.MotorType.kBrushless);
+  public static final SparkFlex DRIVE_BACK_LEFT    = new SparkFlex(5, SparkLowLevel.MotorType.kBrushless);
   
   //turn
   public static final SparkMax ANGLE_FRONT_LEFT   = new SparkMax(16, SparkLowLevel.MotorType.kBrushless);
@@ -627,10 +632,10 @@ public class DriveSubsystem extends SubsystemBase{
   }
 
   private void registerLoggerObjects(){
-    Logger.RegisterCanSparkMax("FL Drive", Motors.DRIVE_FRONT_LEFT);
-    Logger.RegisterCanSparkMax("FR Drive", Motors.DRIVE_FRONT_RIGHT);
-    Logger.RegisterCanSparkMax("RL Drive", Motors.DRIVE_BACK_LEFT);
-    Logger.RegisterCanSparkMax("RR Drive", Motors.DRIVE_BACK_RIGHT);
+    Logger.RegisterCanSparkFlex("FL Drive", Motors.DRIVE_FRONT_LEFT);
+    Logger.RegisterCanSparkFlex("FR Drive", Motors.DRIVE_FRONT_RIGHT);
+    Logger.RegisterCanSparkFlex("RL Drive", Motors.DRIVE_BACK_LEFT);
+    Logger.RegisterCanSparkFlex("RR Drive", Motors.DRIVE_BACK_RIGHT);
 
     Logger.RegisterCanSparkMax("FL Turn", Motors.ANGLE_FRONT_LEFT);
     Logger.RegisterCanSparkMax("FR Turn", Motors.ANGLE_FRONT_RIGHT);
