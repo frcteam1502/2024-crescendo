@@ -52,30 +52,26 @@ final class CANCoders {
   //Front Left CANCoder
   public static final CANcoder FRONT_LEFT_CAN_CODER = new CANcoder(16);
   public static final SensorDirectionValue FRONT_LEFT_CAN_CODER_DIRECTION = SensorDirectionValue.CounterClockwise_Positive;
-  //public static final SensorDirectionValue FRONT_LEFT_CAN_CODER_DIRECTION = SensorDirectionValue.Clockwise_Positive;
-  public static final double FRONT_LEFT_CAN_CODER_OFFSET = 103.32;
+  public static final double FRONT_LEFT_CAN_CODER_OFFSET = 306.72;
 
   //Front Right CANCoder
   public static final CANcoder FRONT_RIGHT_CAN_CODER = new CANcoder(10);
   public static final SensorDirectionValue FRONT_RIGHT_CAN_CODER_DIRECTION = SensorDirectionValue.CounterClockwise_Positive;
-  //public static final SensorDirectionValue FRONT_RIGHT_CAN_CODER_DIRECTION = SensorDirectionValue.Clockwise_Positive;
   public static final double FRONT_RIGHT_CAN_CODER_OFFSET = 292.68;
 
   //Back Left CANCoder
   public static final CANcoder BACK_LEFT_CAN_CODER = new CANcoder(4);
   public static final SensorDirectionValue BACK_LEFT_CAN_CODER_DIRECTION = SensorDirectionValue.CounterClockwise_Positive;
-  //public static final SensorDirectionValue BACK_LEFT_CAN_CODER_DIRECTION = SensorDirectionValue.Clockwise_Positive;
-  public static final double BACK_LEFT_CAN_CODER_OFFSET = 276.48;
+  public static final double BACK_LEFT_CAN_CODER_OFFSET = 60.84;
 
   //Back Right CANCoder
   public static final CANcoder BACK_RIGHT_CAN_CODER = new CANcoder(8);
   public static final SensorDirectionValue BACK_RIGHT_CAN_CODER_DIRECTION = SensorDirectionValue.CounterClockwise_Positive;
-  //public static final SensorDirectionValue BACK_RIGHT_CAN_CODER_DIRECTION = SensorDirectionValue.Clockwise_Positive;
-  public static final double BACK_RIGHT_CAN_CODER_OFFSET = 12.24;
+  public static final double BACK_RIGHT_CAN_CODER_OFFSET = 122.76;
 }
 
 final class DriveConstants {
-  public static final double MAX_SPEED_METERS_PER_SECOND = 4.6; //IF YOU UP THE SPEED CHANGE ACCELERATION
+  public static final double MAX_SPEED_METERS_PER_SECOND = 5.897;//NEO Vortex w/ L3 MK4i
   public static final double MAX_ROTATION_RADIANS_PER_SECOND = 11;
   public static final double MAX_TELEOP_ROTATION = .3;
 

@@ -21,7 +21,7 @@ final class ModuleConstants {
  
   // kinematics
   public static final double WHEEL_DIAMETER_METERS = Units.inchesToMeters(4);
-  public static final double DRIVE_GEAR_RATIO = 1 / ((14.0 / 50.0) * (27.0 / 17.0) * (15.0 / 45.0));
+  public static final double DRIVE_GEAR_RATIO = 1 / ((14.0 / 50.0) * (28.0 / 16.0) * (15.0 / 45.0));//L3 gearing
   public static final double STEER_GEAR_RATIO = 1 / ((14.0 / 50.0) * (10.0 / 60.0));
   public static final double DRIVE_METERS_PER_ENCODER_REV = (WHEEL_DIAMETER_METERS * Math.PI) / DRIVE_GEAR_RATIO;
   public static final double DRIVE_ENCODER_MPS_PER_REV = DRIVE_METERS_PER_ENCODER_REV / 60; 
@@ -43,7 +43,7 @@ final class ModuleConstants {
   public static final double CLOSED_LOOP_RAMP_RATE = .5;
   public static final int SMART_CURRENT_LIMIT = 30;
 
-  public static final double MAX_SPEED_METERS_PER_SECOND = 4.6;
+  public static final double MAX_SPEED_METERS_PER_SECOND = 5.897;//NEO Vortex w/ L3 MK4i;
 
   public static final SparkBaseConfig.IdleMode DRIVE_IDLE_MODE  = SparkBaseConfig.IdleMode.kBrake;
   public static final SparkBaseConfig.IdleMode TURN_IDLE_MODE   = SparkBaseConfig.IdleMode.kBrake;
