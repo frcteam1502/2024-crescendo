@@ -8,7 +8,6 @@ import frc.robot.subsystems.PowerManagement.MockDetector;
 import frc.robot.commands.ControllerCommands;
 import frc.robot.commands.ResetGyro;
 import frc.robot.commands.StopDriveMotors;
-import frc.robot.commands.AlignToSpeaker;
 import frc.robot.subsystems.SwerveDrive.DriveSubsystem;
 
 import com.pathplanner.lib.auto.AutoBuilder;
@@ -55,7 +54,6 @@ public class RobotContainer {
 
     //Register named commands. Must register all commands we want Pathplanner to execute.
     NamedCommands.registerCommand("Stop Drive Motors", new StopDriveMotors(driveSubsystem));
-    NamedCommands.registerCommand("Limelight Align to Speaker", new AlignToSpeaker(driveSubsystem));
   
     //Build an Autochooser from SmartDashboard selection.  Default will be Commands.none()
 

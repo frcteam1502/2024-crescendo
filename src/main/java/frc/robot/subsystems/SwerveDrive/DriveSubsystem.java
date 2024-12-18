@@ -5,21 +5,14 @@ import static edu.wpi.first.units.Units.*;
 import frc.robot.Logger;
 import frc.robot.subsystems.Vision.Limelight;
 
-import com.ctre.phoenix6.hardware.CANcoder;
 import com.ctre.phoenix6.hardware.Pigeon2;
-import com.ctre.phoenix6.signals.SensorDirectionValue;
 import com.pathplanner.lib.auto.AutoBuilder;
 import com.pathplanner.lib.config.RobotConfig;
 import com.pathplanner.lib.controllers.PPHolonomicDriveController;
 import com.pathplanner.lib.config.PIDConstants;
 
 import edu.wpi.first.wpilibj.DriverStation;
-import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
-
-import com.revrobotics.spark.*;
-import com.revrobotics.spark.SparkMax;
-import com.revrobotics.spark.config.SparkBaseConfig;
 
 import edu.wpi.first.math.VecBuilder;
 import edu.wpi.first.math.Vector;
@@ -27,7 +20,6 @@ import edu.wpi.first.math.Vector;
 import edu.wpi.first.math.estimator.SwerveDrivePoseEstimator;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
-import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.math.kinematics.ChassisSpeeds;
 import edu.wpi.first.math.kinematics.SwerveDriveKinematics;
 import edu.wpi.first.math.kinematics.SwerveDriveOdometry;
@@ -43,114 +35,6 @@ import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine;
 import frc.robot.GameState;
 
-final class Gyro {
-  public static final Pigeon2 gyro = new Pigeon2(14);
-  public static final boolean GYRO_REVERSED = true;
-}
-
-final class CANCoders {
-  //Front Left CANCoder
-  public static final CANcoder FRONT_LEFT_CAN_CODER = new CANcoder(16);
-  public static final SensorDirectionValue FRONT_LEFT_CAN_CODER_DIRECTION = SensorDirectionValue.CounterClockwise_Positive;
-  public static final double FRONT_LEFT_CAN_CODER_OFFSET = 306.72;
-
-  //Front Right CANCoder
-  public static final CANcoder FRONT_RIGHT_CAN_CODER = new CANcoder(10);
-  public static final SensorDirectionValue FRONT_RIGHT_CAN_CODER_DIRECTION = SensorDirectionValue.CounterClockwise_Positive;
-  public static final double FRONT_RIGHT_CAN_CODER_OFFSET = 292.68;
-
-  //Back Left CANCoder
-  public static final CANcoder BACK_LEFT_CAN_CODER = new CANcoder(4);
-  public static final SensorDirectionValue BACK_LEFT_CAN_CODER_DIRECTION = SensorDirectionValue.CounterClockwise_Positive;
-  public static final double BACK_LEFT_CAN_CODER_OFFSET = 60.84;
-
-  //Back Right CANCoder
-  public static final CANcoder BACK_RIGHT_CAN_CODER = new CANcoder(8);
-  public static final SensorDirectionValue BACK_RIGHT_CAN_CODER_DIRECTION = SensorDirectionValue.CounterClockwise_Positive;
-  public static final double BACK_RIGHT_CAN_CODER_OFFSET = 122.76;
-}
-
-final class DriveConstants {
-  public static final double MAX_SPEED_METERS_PER_SECOND = 5.897;//NEO Vortex w/ L3 MK4i
-  public static final double MAX_ROTATION_RADIANS_PER_SECOND = 11;
-  public static final double MAX_TELEOP_ROTATION = .3;
-
-  //Turning Motors
-  public static final boolean FrontLeftTurningMotorReversed = true;
-  public static final boolean BackLeftTurningMotorReversed = true;
-  public static final boolean FrontRightTurningMotorReversed = true;
-  public static final boolean BackRightTurningMotorReversed = true;
-
-  //Drive Motors
-  public static final boolean FrontLeftDriveMotorReversed  = true;
-  public static final boolean BackLeftDriveMotorReversed   = true;
-  public static final boolean FrontRightDriveMotorReversed = true;
-  public static final boolean BackRightDriveMotorReversed  = true;
-
-  //Wheel Base
-  public static final double WHEEL_BASE_WIDTH = Units.inchesToMeters(23.25);
-  public static final double WHEEL_BASE_LENGTH = Units.inchesToMeters(23.25);
-  public static final double WHEEL_BASE_DIAMETER = Units.inchesToMeters(32.880);
-
-
-  public static final Translation2d FRONT_LEFT_MODULE = new Translation2d(WHEEL_BASE_LENGTH/2, WHEEL_BASE_WIDTH/2);
-  public static final Translation2d FRONT_RIGHT_MODULE = new Translation2d(WHEEL_BASE_LENGTH/2, -WHEEL_BASE_WIDTH/2);
-  public static final Translation2d BACK_LEFT_MODULE = new Translation2d(-WHEEL_BASE_LENGTH/2, WHEEL_BASE_WIDTH/2);
-  public static final Translation2d BACK_RIGHT_MODULE = new Translation2d(-WHEEL_BASE_LENGTH/2, -WHEEL_BASE_WIDTH/2);
-
-  public static final SwerveDriveKinematics KINEMATICS =
-  new SwerveDriveKinematics(
-    FRONT_LEFT_MODULE,
-    FRONT_RIGHT_MODULE,
-    BACK_LEFT_MODULE,
-    BACK_RIGHT_MODULE
-    );
-
-    /*
-      public static final double MAX_ROTATION_RADIANS_PER_SECOND = (Math.PI/2);
-      public static final double MAX_ROTATION_RADIANS_PER_SECOND_PER_SECOND = Math.PI;
-      */
-
-      public static final double GO_STRAIGHT_GAIN = 0.1;
-      public static final double MIN_ALIGN_SPEED = 0.05;
-}
-
-
-final class Motors {
-  //drive
-  //public static final SparkMax DRIVE_FRONT_LEFT   = new SparkMax(17, SparkLowLevel.MotorType.kBrushless);
-  //public static final SparkMax DRIVE_FRONT_RIGHT  = new SparkMax(11, SparkLowLevel.MotorType.kBrushless);
-  //public static final SparkMax DRIVE_BACK_RIGHT   = new SparkMax(9, SparkLowLevel.MotorType.kBrushless);
-  //public static final SparkMax DRIVE_BACK_LEFT    = new SparkMax(5, SparkLowLevel.MotorType.kBrushless);
-
-  public static final SparkFlex DRIVE_FRONT_LEFT   = new SparkFlex(17, SparkLowLevel.MotorType.kBrushless);
-  public static final SparkFlex DRIVE_FRONT_RIGHT  = new SparkFlex(11, SparkLowLevel.MotorType.kBrushless);
-  public static final SparkFlex DRIVE_BACK_RIGHT   = new SparkFlex(9, SparkLowLevel.MotorType.kBrushless);
-  public static final SparkFlex DRIVE_BACK_LEFT    = new SparkFlex(5, SparkLowLevel.MotorType.kBrushless);
-  
-  //turn
-  public static final SparkMax ANGLE_FRONT_LEFT   = new SparkMax(16, SparkLowLevel.MotorType.kBrushless);
-  public static final SparkMax ANGLE_FRONT_RIGHT  = new SparkMax(10, SparkLowLevel.MotorType.kBrushless);
-  public static final SparkMax ANGLE_BACK_RIGHT   = new SparkMax(8, SparkLowLevel.MotorType.kBrushless);
-  public static final SparkMax ANGLE_BACK_LEFT    = new SparkMax(4, SparkLowLevel.MotorType.kBrushless);
-  
-}
-
-final class PoseEstConfig{
-  public static final double POSITION_STD_DEV_X = 0.1;
-  public static final double POSITION_STD_DEV_Y = 0.1;
-  public static final double POSITION_STD_DEV_THETA = 10; 
-
-  public static final double VISION_STD_DEV_X = 5;
-  public static final double VISION_STD_DEV_Y = 5;
-  public static final double VISION_STD_DEV_THETA = 500;
-}
-
-final class VisionConfig{
-  public static final boolean IS_LIMELIGHT_MODE = true;
-  public static String POSE_LIMELIGHT = "limelight-pose";
-}
-
 public class DriveSubsystem extends SubsystemBase{
   
   public static boolean isTeleOp = false;
@@ -165,32 +49,36 @@ public class DriveSubsystem extends SubsystemBase{
   ChassisSpeeds relativeCommands = new ChassisSpeeds(0,0,0);
 
   private final SwerveModule frontLeft = new SwerveModule(
-    Motors.DRIVE_FRONT_LEFT, Motors.ANGLE_FRONT_LEFT, 
-    CANCoders.FRONT_LEFT_CAN_CODER, 
-    CANCoders.FRONT_LEFT_CAN_CODER_OFFSET,
-    CANCoders.FRONT_LEFT_CAN_CODER_DIRECTION);
+    DrivebaseCfg.FRONT_LEFT_MOD_ID,
+    ChassisMotorCfg.DRIVE_FRONT_LEFT, ChassisMotorCfg.ANGLE_FRONT_LEFT, 
+    CANCoderCfg.FRONT_LEFT_CAN_CODER, 
+    CANCoderCfg.FRONT_LEFT_CAN_CODER_OFFSET,
+    CANCoderCfg.FRONT_LEFT_CAN_CODER_DIRECTION);
 
   private final SwerveModule frontRight = new SwerveModule(
-    Motors.DRIVE_FRONT_RIGHT, Motors.ANGLE_FRONT_RIGHT, 
-    CANCoders.FRONT_RIGHT_CAN_CODER, 
-    CANCoders.FRONT_RIGHT_CAN_CODER_OFFSET,
-    CANCoders.FRONT_RIGHT_CAN_CODER_DIRECTION);
+    DrivebaseCfg.FRONT_RIGHT_MOD_ID,
+    ChassisMotorCfg.DRIVE_FRONT_RIGHT, ChassisMotorCfg.ANGLE_FRONT_RIGHT, 
+    CANCoderCfg.FRONT_RIGHT_CAN_CODER, 
+    CANCoderCfg.FRONT_RIGHT_CAN_CODER_OFFSET,
+    CANCoderCfg.FRONT_RIGHT_CAN_CODER_DIRECTION);
 
   private final SwerveModule backLeft = new SwerveModule(
-    Motors.DRIVE_BACK_LEFT, Motors.ANGLE_BACK_LEFT, 
-    CANCoders.BACK_LEFT_CAN_CODER, 
-    CANCoders.BACK_LEFT_CAN_CODER_OFFSET,
-    CANCoders.BACK_LEFT_CAN_CODER_DIRECTION);
+    DrivebaseCfg.BACK_LEFT_MOD_ID,
+    ChassisMotorCfg.DRIVE_BACK_LEFT, ChassisMotorCfg.ANGLE_BACK_LEFT, 
+    CANCoderCfg.BACK_LEFT_CAN_CODER, 
+    CANCoderCfg.BACK_LEFT_CAN_CODER_OFFSET,
+    CANCoderCfg.BACK_LEFT_CAN_CODER_DIRECTION);
 
   private final SwerveModule backRight = new SwerveModule(
-    Motors.DRIVE_BACK_RIGHT, Motors.ANGLE_BACK_RIGHT, 
-    CANCoders.BACK_RIGHT_CAN_CODER, 
-    CANCoders.BACK_RIGHT_CAN_CODER_OFFSET,
-    CANCoders.BACK_RIGHT_CAN_CODER_DIRECTION);
+    DrivebaseCfg.BACK_RIGHT_MOD_ID,
+    ChassisMotorCfg.DRIVE_BACK_RIGHT, ChassisMotorCfg.ANGLE_BACK_RIGHT, 
+    CANCoderCfg.BACK_RIGHT_CAN_CODER, 
+    CANCoderCfg.BACK_RIGHT_CAN_CODER_OFFSET,
+    CANCoderCfg.BACK_RIGHT_CAN_CODER_DIRECTION);
 
-  private final Pigeon2 gyro = Gyro.gyro;
+  private final Pigeon2 gyro = IMU_Cfg.PIGEON;
 
-  private final SwerveDriveKinematics kinematics = DriveConstants.KINEMATICS;
+  private final SwerveDriveKinematics kinematics = DrivebaseCfg.KINEMATICS;
 
   //public final SwerveDrivePoseEstimator odometry;
   public final SwerveDriveOdometry odometry;
@@ -199,9 +87,9 @@ public class DriveSubsystem extends SubsystemBase{
 
   private Pose2d pose = new Pose2d();
   private Pose2d estimatedPose = new Pose2d();
-  private Pose2d visionPose = new Pose2d();
+  private Pose2d limelightPose = new Pose2d();
 
-  private static Limelight vision = new Limelight();
+  private static Limelight limelight = new Limelight();
 
   private final MutVoltage appliedVoltage = new MutVoltage(0,0, Volts);
   private final MutDistance distance = new MutDistance(0,0, Meters);
@@ -265,16 +153,15 @@ public class DriveSubsystem extends SubsystemBase{
       getModulePositions(),
       estimatedPose,
       createStateStdDevs(
-          PoseEstConfig.POSITION_STD_DEV_X,
-          PoseEstConfig.POSITION_STD_DEV_Y,
-          PoseEstConfig.POSITION_STD_DEV_THETA),
+          PoseEstCfg.POSITION_STD_DEV_X,
+          PoseEstCfg.POSITION_STD_DEV_Y,
+          PoseEstCfg.POSITION_STD_DEV_THETA),
       createVisionMeasurementStdDevs(
-          PoseEstConfig.VISION_STD_DEV_X,
-          PoseEstConfig.VISION_STD_DEV_Y,
-          PoseEstConfig.VISION_STD_DEV_THETA));
+          PoseEstCfg.VISION_STD_DEV_X,
+          PoseEstCfg.VISION_STD_DEV_Y,
+          PoseEstCfg.VISION_STD_DEV_THETA));
 
     reset();
-    ConfigMotorDirections();
     registerLoggerObjects();
 
     //Configure Auto Builder last!
@@ -352,16 +239,16 @@ public class DriveSubsystem extends SubsystemBase{
     checkInitialAngle();
     updateOdometry();
     updateEstimatedPose();
-    vision.update();
-    visionPose = vision.getVisionBotPose();
+    limelight.update();
+    limelightPose = limelight.getVisionBotPose();
     
-    if (VisionConfig.IS_LIMELIGHT_MODE && visionPose != null) { // Limelight mode
+    if (limelightPose != null) { // Limelight mode
       
-      double currentTimestamp = vision.getTimestampSeconds(vision.getTotalLatency());
+      double currentTimestamp = limelight.getTimestampSeconds(limelight.getTotalLatency());
       
-      if (vision.visionAccurate(visionPose)) 
+      if (limelight.visionAccurate(limelightPose)) 
       {
-        poseEstimator.addVisionMeasurement(visionPose, currentTimestamp);
+        poseEstimator.addVisionMeasurement(limelightPose, currentTimestamp);
       }
     }
     updateDashboard();
@@ -385,7 +272,7 @@ public class DriveSubsystem extends SubsystemBase{
         turnCommand = rot;
       }
       else { 
-        turnCommand = (targetAngle - getIMU_Yaw()) * DriveConstants.GO_STRAIGHT_GAIN;
+        turnCommand = (targetAngle - getIMU_Yaw()) * DrivebaseCfg.GO_STRAIGHT_GAIN;
       }
       
     }
@@ -414,7 +301,7 @@ public class DriveSubsystem extends SubsystemBase{
     //Convert from robot frame of reference (ChassisSpeeds) to swerve module frame of reference (SwerveModuleState)
     var swerveModuleStates = kinematics.toSwerveModuleStates(robotRelativeSpeeds);
     //Normalize wheel speed commands to make sure no speed is greater than the maximum achievable wheel speed.
-    SwerveDriveKinematics.desaturateWheelSpeeds(swerveModuleStates, DriveConstants.MAX_SPEED_METERS_PER_SECOND);
+    SwerveDriveKinematics.desaturateWheelSpeeds(swerveModuleStates, DrivebaseCfg.MAX_SPEED_METERS_PER_SECOND);
 
     //Set the speed and angle of each module
     setDesiredState(swerveModuleStates);
@@ -483,7 +370,7 @@ public class DriveSubsystem extends SubsystemBase{
     return moduleStates;
   }
 
-  public void setToBreak() {
+  public void setToBrake() {
     resetModules();
     double[] speeds = {0, 0, 0, 0};
     double[] angles = {90, 90, 90, 90};
@@ -520,70 +407,6 @@ public class DriveSubsystem extends SubsystemBase{
     resetGyro(0);
     resetModules();
     resetOdometry(pose);
-  }
-  
-  public double vision_aim_proportional(){    
-    // kP (constant of proportionality)
-    // this is a hand-tuned number that determines the aggressiveness of our proportional control loop
-    // if it is too high, the robot will oscillate around.
-    // if it is too low, the robot will never reach its target
-    // if the robot never turns in the correct direction, kP should be inverted.
-    double targetingAngularVelocity;
-    double kP = .01;
-
-    double error = vision.getSpeaker_tx();
-    double min_rate = .075;
-
-    // tx ranges from (-hfov/2) to (hfov/2) in degrees. If your target is on the rightmost edge of 
-    // your limelight 3 feed, tx should return roughly 31 degrees.
-    
-    if(vision.isSpeakerFound()){  
-      if(Math.abs(error) > 1.0){
-        if(error > 0){
-          targetingAngularVelocity = (error * kP) + min_rate;
-        }else{
-          targetingAngularVelocity = (error * kP) - min_rate;
-        }
-
-        // convert to radians per second for our drive method
-        targetingAngularVelocity *= DriveConstants.MAX_ROTATION_RADIANS_PER_SECOND * DriveConstants.MAX_TELEOP_ROTATION;
-      }else{
-        targetingAngularVelocity = 0.0;
-      }   
-    }else{
-      //Speaker not found, turn until we find it
-      targetingAngularVelocity = 2.0;
-    }
-
-    return targetingAngularVelocity;
-  }
-
-  public boolean isSpeakerDataValid(){
-    return vision.isSpeakerFound();
-  }
-
-  public double getDistanceToSpeaker(){
-    double ty = vision.getSpeaker_ty();
-    double camera_pitch = 20;
-    ty += camera_pitch;
-    // tan(w)=y/x -> x = y/tan(w)
-    double distance = 1.055/(Math.tan(Math.toRadians(ty)));
-    return distance;
-  }
-
-  public double getVisionTargetAngle(){
-    return vision.getSpeaker_tx();
-  }
-
-  public void ConfigMotorDirections() {
-    Motors.ANGLE_FRONT_LEFT.setInverted(DriveConstants.FrontLeftTurningMotorReversed);
-    Motors.ANGLE_FRONT_RIGHT.setInverted(DriveConstants.FrontRightTurningMotorReversed);
-    Motors.ANGLE_BACK_LEFT.setInverted(DriveConstants.BackLeftTurningMotorReversed);
-    Motors.ANGLE_BACK_RIGHT.setInverted(DriveConstants.BackRightTurningMotorReversed);
-    Motors.DRIVE_FRONT_LEFT.setInverted(DriveConstants.FrontLeftDriveMotorReversed);
-    Motors.DRIVE_FRONT_RIGHT.setInverted(DriveConstants.FrontRightDriveMotorReversed);
-    Motors.DRIVE_BACK_LEFT.setInverted(DriveConstants.BackLeftDriveMotorReversed);
-    Motors.DRIVE_BACK_RIGHT.setInverted(DriveConstants.BackRightDriveMotorReversed);
   }
 
   private void configAutoBuilder(){
@@ -628,22 +451,22 @@ public class DriveSubsystem extends SubsystemBase{
   }
 
   private void registerLoggerObjects(){
-    Logger.RegisterCanSparkFlex("FL Drive", Motors.DRIVE_FRONT_LEFT);
-    Logger.RegisterCanSparkFlex("FR Drive", Motors.DRIVE_FRONT_RIGHT);
-    Logger.RegisterCanSparkFlex("RL Drive", Motors.DRIVE_BACK_LEFT);
-    Logger.RegisterCanSparkFlex("RR Drive", Motors.DRIVE_BACK_RIGHT);
+    Logger.RegisterCanSparkFlex("FL Drive", ChassisMotorCfg.DRIVE_FRONT_LEFT);
+    Logger.RegisterCanSparkFlex("FR Drive", ChassisMotorCfg.DRIVE_FRONT_RIGHT);
+    Logger.RegisterCanSparkFlex("RL Drive", ChassisMotorCfg.DRIVE_BACK_LEFT);
+    Logger.RegisterCanSparkFlex("RR Drive", ChassisMotorCfg.DRIVE_BACK_RIGHT);
 
-    Logger.RegisterCanSparkMax("FL Turn", Motors.ANGLE_FRONT_LEFT);
-    Logger.RegisterCanSparkMax("FR Turn", Motors.ANGLE_FRONT_RIGHT);
-    Logger.RegisterCanSparkMax("RL Turn", Motors.ANGLE_BACK_LEFT);
-    Logger.RegisterCanSparkMax("RR Turn", Motors.ANGLE_BACK_RIGHT);
+    Logger.RegisterCanSparkMax("FL Turn", ChassisMotorCfg.ANGLE_FRONT_LEFT);
+    Logger.RegisterCanSparkMax("FR Turn", ChassisMotorCfg.ANGLE_FRONT_RIGHT);
+    Logger.RegisterCanSparkMax("RL Turn", ChassisMotorCfg.ANGLE_BACK_LEFT);
+    Logger.RegisterCanSparkMax("RR Turn", ChassisMotorCfg.ANGLE_BACK_RIGHT);
 
-    Logger.RegisterPigeon(Gyro.gyro);
+    Logger.RegisterPigeon(IMU_Cfg.PIGEON);
 
-    Logger.RegisterCanCoder("FL Abs Position", CANCoders.FRONT_LEFT_CAN_CODER);
-    Logger.RegisterCanCoder("FR Abs Position", CANCoders.FRONT_RIGHT_CAN_CODER);
-    Logger.RegisterCanCoder("RL Abs Position", CANCoders.BACK_LEFT_CAN_CODER);
-    Logger.RegisterCanCoder("RR Abs Position", CANCoders.BACK_RIGHT_CAN_CODER);
+    Logger.RegisterCanCoder("FL Abs Position", CANCoderCfg.FRONT_LEFT_CAN_CODER);
+    Logger.RegisterCanCoder("FR Abs Position", CANCoderCfg.FRONT_RIGHT_CAN_CODER);
+    Logger.RegisterCanCoder("RL Abs Position", CANCoderCfg.BACK_LEFT_CAN_CODER);
+    Logger.RegisterCanCoder("RR Abs Position", CANCoderCfg.BACK_RIGHT_CAN_CODER);
 
     Logger.RegisterSensor("FL Drive Speed", ()->frontLeft.getVelocity());
     Logger.RegisterSensor("FR Drive Speed", ()->frontRight.getVelocity());

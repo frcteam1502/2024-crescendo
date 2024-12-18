@@ -7,12 +7,9 @@ package frc.robot.subsystems.Vision;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.util.Units;
-import edu.wpi.first.networktables.GenericEntry;
 import edu.wpi.first.networktables.NetworkTableInstance;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.Timer;
-import edu.wpi.first.wpilibj.shuffleboard.Shuffleboard;
-import edu.wpi.first.wpilibj.shuffleboard.ShuffleboardTab;
 import frc.robot.subsystems.Vision.LimelightHelpers.LimelightTarget_Fiducial;
 
 /** Add your docs here. */
@@ -121,8 +118,8 @@ public class Limelight {
     }
 
     /**
-   * @param limelight name of limelight to control in {@link VisionConfig}
-   * @param pipelineIndex use pipeline indexes in {@link VisionConfig}
+   * @param limelight name of limelight to control in {@link VisionCfg}
+   * @param pipelineIndex use pipeline indexes in {@link VisionCfg}
    */
     public void setLimelightPipeline(String limelight, int pipelineIndex) {
         LimelightHelpers.setPipelineIndex(limelight, pipelineIndex);

@@ -85,12 +85,9 @@ public class ControllerCommands extends Command {
         DriveConstants.MAX_SPEED_METERS_PER_SECOND;
 
     //Need to convert joystick input (-1 to 1) into m/s!!! 100% == MAX Attainable Rotation
-    if(Driver.Controller.getRightTriggerAxis() > 0.5){
-      rotationSpeed = drive.vision_aim_proportional();
-    }else{
-      rotationSpeed = turnLimiter.calculate(((MathUtil.applyDeadband(Driver.getRightX(), 0.1)) * teleopRotationGain) *
+    rotationSpeed = turnLimiter.calculate(((MathUtil.applyDeadband(Driver.getRightX(), 0.1)) * teleopRotationGain) *
         DriveConstants.MAX_ROTATION_RADIANS_PER_SECOND);
-    }
+    
 
     SmartDashboard.putNumber("Forward In", forwardSpeed);
     SmartDashboard.putNumber("Strafe In", strafeSpeed);

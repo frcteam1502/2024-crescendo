@@ -17,47 +17,6 @@ import edu.wpi.first.math.kinematics.SwerveModuleState;
 import edu.wpi.first.math.util.Units;
 import edu.wpi.first.units.measure.Voltage;
 
-final class ModuleConstants {
- 
-  // kinematics
-  public static final double WHEEL_DIAMETER_METERS = Units.inchesToMeters(4);
-  public static final double DRIVE_GEAR_RATIO = 1 / ((14.0 / 50.0) * (28.0 / 16.0) * (15.0 / 45.0));//L3 gearing
-  public static final double STEER_GEAR_RATIO = 1 / ((14.0 / 50.0) * (10.0 / 60.0));
-  public static final double DRIVE_METERS_PER_ENCODER_REV = (WHEEL_DIAMETER_METERS * Math.PI) / DRIVE_GEAR_RATIO;
-  public static final double DRIVE_ENCODER_MPS_PER_REV = DRIVE_METERS_PER_ENCODER_REV / 60; 
-  
-  // max turn speed = (5400/ 21.43) revs per min 240 revs per min 4250 deg per min
-  public static final double MODULE_TURN_PID_CONTROLLER_P = 3.4;
-  public static final double MODULE_TURN_PID_CONTROLLER_I = 0;
-  public static final double MODULE_TURN_PID_CONTROLLER_D = 0;
-  
-  public static final double MODULE_DRIVE_PID_CONTROLLER_F = 1;
-  public static final double MODULE_DRIVE_PID_CONTROLLER_P = .0005;
-  public static final double MODULE_DRIVE_PID_CONTROLLER_I = 0;
-  public static final double MODULE_DRIVE_PID_CONTROLLER_D = 0;
-  
-  public static final double MODULE_DRIVE_KV = 2.6527;
-  public static final double MODULE_DRIVE_KS = 0.098218;
-  public static final double MODULE_DRIVE_KA = 0.66568;
-
-  public static final double CLOSED_LOOP_RAMP_RATE = .5;
-  public static final int SMART_CURRENT_LIMIT = 30;
-
-  public static final double MAX_SPEED_METERS_PER_SECOND = 5.897;//NEO Vortex w/ L3 MK4i;
-
-  public static final SparkBaseConfig.IdleMode DRIVE_IDLE_MODE  = SparkBaseConfig.IdleMode.kBrake;
-  public static final SparkBaseConfig.IdleMode TURN_IDLE_MODE   = SparkBaseConfig.IdleMode.kBrake;
-
-  /*
-  public static final double MAX_METERS_PER_SECOND = 4.4; //5600 * DRIVE_ENCODER_MPS_PER_REV;
-  public static final double TURNING_DEGREES_PER_ENCODER_REV = 360 / STEER_GEAR_RATIO;
-  public static final double RADIANS_PER_ENCODER_REV = TURNING_DEGREES_PER_ENCODER_REV * (Math.PI/180);
-  public static final double MAX_MODULE_ROTATION_RADIANS_PER_SECOND = Math.PI/2;
-  public static final double MAX_MODULE_ROTATION_RADIANS_PER_SECOND_PER_SECOND = Math.PI;
-  */
-}
-
-
 public class SwerveModule{
   private final SparkFlex driveMotor;
   private final SparkMax turningMotor;
@@ -66,45 +25,61 @@ public class SwerveModule{
 
   private final CANcoder absEncoder;
 
+  //REV Spark PIDF Controller
   private final SparkClosedLoopController drivePIDController;
-  private final PIDController turningPIDController = new PIDController(ModuleConstants.MODULE_TURN_PID_CONTROLLER_P, ModuleConstants.MODULE_TURN_PID_CONTROLLER_I, ModuleConstants.MODULE_TURN_PID_CONTROLLER_D);
+  //WPI PID Controller
+  private final PIDController turningPIDController = new PIDController(
+                                                            SwerveModuleCfg.MODULE_TURN_PID_CONTROLLER_P, 
+                                                            SwerveModuleCfg.MODULE_TURN_PID_CONTROLLER_I, 
+                                                            SwerveModuleCfg.MODULE_TURN_PID_CONTROLLER_D);
 
   private double commandedSpeed;
   private double commandedAngle;
 
-  public SwerveModule(SparkFlex driveMotor, SparkMax turnMotor, CANcoder absEncoder, double absOffset, SensorDirectionValue directionValue) {
+  public SwerveModule(int moduleId, 
+                      SparkFlex driveMotor, 
+                      SparkMax turnMotor, 
+                      CANcoder absEncoder, 
+                      double absOffset, 
+                      SensorDirectionValue directionValue) {
     this.driveMotor = driveMotor;
     this.turningMotor = turnMotor;
     this.absEncoder = absEncoder;
 
     driveEncoder = driveMotor.getEncoder();
 
-    //Setup Encoder Config
+    //Setup Drive Encoder Config
     EncoderConfig driveEncoderConfig = new EncoderConfig();
-    driveEncoderConfig.positionConversionFactor(ModuleConstants.DRIVE_METERS_PER_ENCODER_REV);
-    driveEncoderConfig.velocityConversionFactor(ModuleConstants.DRIVE_ENCODER_MPS_PER_REV);
+    driveEncoderConfig.positionConversionFactor(SwerveModuleCfg.DRIVE_METERS_PER_ENCODER_REV);
+    driveEncoderConfig.velocityConversionFactor(SwerveModuleCfg.DRIVE_ENCODER_MPS_PER_REV);
 
-    //Setup Closed Loop Config settings
+    //Setup Drive Motor Closed Loop Config settings
     ClosedLoopConfig drivePIDF_Config = new ClosedLoopConfig();
-    drivePIDF_Config.p(ModuleConstants.MODULE_DRIVE_PID_CONTROLLER_P);
-    drivePIDF_Config.i(ModuleConstants.MODULE_DRIVE_PID_CONTROLLER_I);
-    drivePIDF_Config.d(ModuleConstants.MODULE_DRIVE_PID_CONTROLLER_D);
-    drivePIDF_Config.velocityFF(ModuleConstants.MODULE_DRIVE_PID_CONTROLLER_F);
+    drivePIDF_Config.p(SwerveModuleCfg.MODULE_DRIVE_PID_CONTROLLER_P);
+    drivePIDF_Config.i(SwerveModuleCfg.MODULE_DRIVE_PID_CONTROLLER_I);
+    drivePIDF_Config.d(SwerveModuleCfg.MODULE_DRIVE_PID_CONTROLLER_D);
+    drivePIDF_Config.velocityFF(SwerveModuleCfg.MODULE_DRIVE_PID_CONTROLLER_F);
 
     //Setup Drive Motor Config
-    SparkMaxConfig driveConfig = new SparkMaxConfig();
-    driveConfig.idleMode(ModuleConstants.DRIVE_IDLE_MODE);
-    driveConfig.closedLoopRampRate(ModuleConstants.CLOSED_LOOP_RAMP_RATE);
-    driveConfig.smartCurrentLimit(ModuleConstants.SMART_CURRENT_LIMIT);
+    SparkFlexConfig driveConfig = new SparkFlexConfig();
+    driveConfig.idleMode(SwerveModuleCfg.DRIVE_IDLE_MODE);
+    driveConfig.closedLoopRampRate(SwerveModuleCfg.CLOSED_LOOP_RAMP_RATE);
+    driveConfig.smartCurrentLimit(SwerveModuleCfg.SMART_CURRENT_LIMIT);
+    driveConfig.inverted(ChassisMotorCfg.DRIVE_MOTOR_REVERSED[moduleId]);
     
-    //Apply Encoder Config to this Spark Config
+    //Apply Drive Encoder & Drive PID Configs to the Drive Config
     driveConfig.apply(driveEncoderConfig);
-
-    //Apply Closed Loop Config to this Spark Config
     driveConfig.apply(drivePIDF_Config);
 
-    //Finally, write all the config settings to the controller!
+    //Finally, write all the config settings to the drive controller!
     driveMotor.configure(driveConfig, SparkBase.ResetMode.kResetSafeParameters, SparkBase.PersistMode.kPersistParameters);
+
+    //Setup Turn Motor Config
+    SparkMaxConfig turnConfig = new SparkMaxConfig();
+    turnConfig.inverted(ChassisMotorCfg.ANGLE_MOTOR_REVERSED[moduleId]);
+
+    //Finally, write all the config settings to the turn controller!
+    turnMotor.configure(turnConfig, SparkBase.ResetMode.kResetSafeParameters, SparkBase.PersistMode.kPersistParameters);
 
     //Set absolute encoder magnet configuration
     CANcoderConfiguration config = new CANcoderConfiguration();
@@ -114,7 +89,7 @@ public class SwerveModule{
     config.MagnetSensor.AbsoluteSensorDiscontinuityPoint = 1;
     this.absEncoder.getConfigurator().apply(config);
 
-    // Limit the PID Controller's input range between -pi and pi and set the input
+    // Limit the Turning PID Controller's input range between -pi and pi and set the input
     // to be continuous.
     this.turningPIDController.enableContinuousInput(-Math.PI, Math.PI);
 
@@ -201,7 +176,7 @@ public class SwerveModule{
       commandedAngle = desiredState.angle.getDegrees();
 
       //Calculate the motor speed output and pass the value to the SPARK PID Controller object
-      var desiredSpeed = desiredState.speedMetersPerSecond/ModuleConstants.MAX_SPEED_METERS_PER_SECOND;
+      var desiredSpeed = desiredState.speedMetersPerSecond/DrivebaseCfg.MAX_SPEED_METERS_PER_SECOND;
       drivePIDController.setReference(desiredSpeed, SparkMax.ControlType.kVelocity);
 
       // Calculate the turning motor output from the turning PID controller.

@@ -1,0 +1,37 @@
+package frc.robot.subsystems.SwerveDrive;
+
+import edu.wpi.first.math.geometry.Translation2d;
+import edu.wpi.first.math.kinematics.SwerveDriveKinematics;
+import edu.wpi.first.math.util.Units;
+
+public class DrivebaseCfg {
+    //Wheel Base
+    public static final double WHEEL_BASE_WIDTH = Units.inchesToMeters(23.25);
+    public static final double WHEEL_BASE_LENGTH = Units.inchesToMeters(23.25);
+    public static final double WHEEL_BASE_DIAMETER = Units.inchesToMeters(32.880);
+
+    public static final Translation2d FRONT_LEFT_MODULE = new Translation2d(WHEEL_BASE_LENGTH/2, WHEEL_BASE_WIDTH/2);
+    public static final Translation2d FRONT_RIGHT_MODULE = new Translation2d(WHEEL_BASE_LENGTH/2, -WHEEL_BASE_WIDTH/2);
+    public static final Translation2d BACK_LEFT_MODULE = new Translation2d(-WHEEL_BASE_LENGTH/2, WHEEL_BASE_WIDTH/2);
+    public static final Translation2d BACK_RIGHT_MODULE = new Translation2d(-WHEEL_BASE_LENGTH/2, -WHEEL_BASE_WIDTH/2);
+
+    public static final SwerveDriveKinematics KINEMATICS = new SwerveDriveKinematics(
+        FRONT_LEFT_MODULE,
+        FRONT_RIGHT_MODULE,
+        BACK_LEFT_MODULE,
+        BACK_RIGHT_MODULE
+    );
+
+    public static final double MAX_SPEED_METERS_PER_SECOND = 5.897;//NEO Vortex w/ L3 MK4i
+    public static final double MAX_ROTATION_RADIANS_PER_SECOND = 11;
+    public static final double MAX_TELEOP_ROTATION = .3;
+
+    public static final double GO_STRAIGHT_GAIN = 0.1;
+    public static final double MIN_ALIGN_SPEED = 0.05;
+
+    //Module IDs
+    public static final int FRONT_LEFT_MOD_ID   = 0;
+    public static final int FRONT_RIGHT_MOD_ID  = 1;
+    public static final int BACK_LEFT_MOD_ID    = 2;
+    public static final int BACK_RIGHT_MOD_ID   = 3;
+}
