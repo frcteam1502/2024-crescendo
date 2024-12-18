@@ -36,12 +36,7 @@ public class SwerveModule{
   private double commandedSpeed;
   private double commandedAngle;
 
-  public SwerveModule(int moduleId, 
-                      SparkFlex driveMotor, 
-                      SparkMax turnMotor, 
-                      CANcoder absEncoder, 
-                      double absOffset, 
-                      SensorDirectionValue directionValue) {
+  public SwerveModule(int moduleId, SparkFlex driveMotor, SparkMax turnMotor, CANcoder absEncoder) {
     this.driveMotor = driveMotor;
     this.turningMotor = turnMotor;
     this.absEncoder = absEncoder;
@@ -83,9 +78,10 @@ public class SwerveModule{
 
     //Set absolute encoder magnet configuration
     CANcoderConfiguration config = new CANcoderConfiguration();
-    double offsetRotations = -absOffset/360;
-    config.MagnetSensor.MagnetOffset = offsetRotations;
-    config.MagnetSensor.SensorDirection = directionValue;
+    //double offsetRotations = -CANCoderCfg.MAGNET_OFFSETS[moduleId]/360;
+    //config.MagnetSensor.MagnetOffset = offsetRotations;
+    config.MagnetSensor.MagnetOffset = -CANCoderCfg.MAGNET_OFFSET[moduleId]/360;
+    config.MagnetSensor.SensorDirection = CANCoderCfg.SENSOR_DIRECTION[moduleId];
     config.MagnetSensor.AbsoluteSensorDiscontinuityPoint = 1;
     this.absEncoder.getConfigurator().apply(config);
 

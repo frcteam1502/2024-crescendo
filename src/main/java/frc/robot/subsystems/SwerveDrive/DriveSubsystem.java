@@ -51,30 +51,22 @@ public class DriveSubsystem extends SubsystemBase{
   private final SwerveModule frontLeft = new SwerveModule(
     DrivebaseCfg.FRONT_LEFT_MOD_ID,
     ChassisMotorCfg.DRIVE_FRONT_LEFT, ChassisMotorCfg.ANGLE_FRONT_LEFT, 
-    CANCoderCfg.FRONT_LEFT_CAN_CODER, 
-    CANCoderCfg.FRONT_LEFT_CAN_CODER_OFFSET,
-    CANCoderCfg.FRONT_LEFT_CAN_CODER_DIRECTION);
+    CANCoderCfg.FRONT_LEFT_CAN_CODER);
 
   private final SwerveModule frontRight = new SwerveModule(
     DrivebaseCfg.FRONT_RIGHT_MOD_ID,
     ChassisMotorCfg.DRIVE_FRONT_RIGHT, ChassisMotorCfg.ANGLE_FRONT_RIGHT, 
-    CANCoderCfg.FRONT_RIGHT_CAN_CODER, 
-    CANCoderCfg.FRONT_RIGHT_CAN_CODER_OFFSET,
-    CANCoderCfg.FRONT_RIGHT_CAN_CODER_DIRECTION);
+    CANCoderCfg.FRONT_RIGHT_CAN_CODER);
 
   private final SwerveModule backLeft = new SwerveModule(
     DrivebaseCfg.BACK_LEFT_MOD_ID,
     ChassisMotorCfg.DRIVE_BACK_LEFT, ChassisMotorCfg.ANGLE_BACK_LEFT, 
-    CANCoderCfg.BACK_LEFT_CAN_CODER, 
-    CANCoderCfg.BACK_LEFT_CAN_CODER_OFFSET,
-    CANCoderCfg.BACK_LEFT_CAN_CODER_DIRECTION);
+    CANCoderCfg.BACK_LEFT_CAN_CODER);
 
   private final SwerveModule backRight = new SwerveModule(
     DrivebaseCfg.BACK_RIGHT_MOD_ID,
     ChassisMotorCfg.DRIVE_BACK_RIGHT, ChassisMotorCfg.ANGLE_BACK_RIGHT, 
-    CANCoderCfg.BACK_RIGHT_CAN_CODER, 
-    CANCoderCfg.BACK_RIGHT_CAN_CODER_OFFSET,
-    CANCoderCfg.BACK_RIGHT_CAN_CODER_DIRECTION);
+    CANCoderCfg.BACK_RIGHT_CAN_CODER);
 
   private final Pigeon2 gyro = IMU_Cfg.PIGEON;
 

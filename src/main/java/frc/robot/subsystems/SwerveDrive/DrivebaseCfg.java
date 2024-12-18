@@ -5,6 +5,12 @@ import edu.wpi.first.math.kinematics.SwerveDriveKinematics;
 import edu.wpi.first.math.util.Units;
 
 public class DrivebaseCfg {
+    //Swerve Module IDs
+    public static final int FRONT_LEFT_MOD_ID   = 0;
+    public static final int FRONT_RIGHT_MOD_ID  = 1;
+    public static final int BACK_LEFT_MOD_ID    = 2;
+    public static final int BACK_RIGHT_MOD_ID   = 3;
+
     //Wheel Base
     public static final double WHEEL_BASE_WIDTH = Units.inchesToMeters(23.25);
     public static final double WHEEL_BASE_LENGTH = Units.inchesToMeters(23.25);
@@ -28,10 +34,4 @@ public class DrivebaseCfg {
 
     public static final double GO_STRAIGHT_GAIN = 0.1;
     public static final double MIN_ALIGN_SPEED = 0.05;
-
-    //Module IDs
-    public static final int FRONT_LEFT_MOD_ID   = 0;
-    public static final int FRONT_RIGHT_MOD_ID  = 1;
-    public static final int BACK_LEFT_MOD_ID    = 2;
-    public static final int BACK_RIGHT_MOD_ID   = 3;
 }
