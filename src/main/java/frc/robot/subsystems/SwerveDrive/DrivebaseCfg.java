@@ -32,6 +32,7 @@ public class DrivebaseCfg {
     //Rotiational Velocity is w = ((max_speed)/(2*pi*robot_radius))*(2*pi)
     public static final double MAX_ROTATION_RADIANS_PER_SECOND = ((MAX_SPEED_METERS_PER_SECOND)/(Math.PI*WHEEL_BASE_DIAMETER))*(2*Math.PI);
     
+    //Driver constants
     public static final double ROTATION_GAIN = .3;
     public static final double TRANSLATION_GAIN_1 = 1;
     public static final double TRANSLATION_GAIN_2 = .75;

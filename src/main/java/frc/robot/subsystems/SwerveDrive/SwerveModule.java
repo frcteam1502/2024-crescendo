@@ -10,6 +10,7 @@ import com.revrobotics.spark.config.*;
 import com.revrobotics.RelativeEncoder;
 
 import edu.wpi.first.math.controller.PIDController;
+import edu.wpi.first.math.controller.SimpleMotorFeedforward;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.kinematics.SwerveModulePosition;
 import edu.wpi.first.math.kinematics.SwerveModuleState;
@@ -40,7 +41,7 @@ public class SwerveModule{
     this.turningMotor = turnMotor;
     this.absEncoder = absEncoder;
 
-    driveEncoder = driveMotor.getEncoder();
+    this.driveEncoder = driveMotor.getEncoder();
 
     //Setup Drive Encoder Config
     EncoderConfig driveEncoderConfig = new EncoderConfig();
@@ -57,7 +58,7 @@ public class SwerveModule{
     //Setup Drive Motor Config
     SparkFlexConfig driveConfig = new SparkFlexConfig();
     driveConfig.idleMode(SwerveModuleCfg.DRIVE_IDLE_MODE);
-    driveConfig.closedLoopRampRate(SwerveModuleCfg.CLOSED_LOOP_RAMP_RATE);
+    driveConfig.closedLoopRampRate(SwerveModuleCfg.CLSD_LOOP_RAMP_RATE_SECONDS);
     driveConfig.smartCurrentLimit(SwerveModuleCfg.SMART_CURRENT_LIMIT);
     driveConfig.inverted(ChassisMotorCfg.DRIVE_MOTOR_REVERSED[moduleId]);
     
@@ -67,6 +68,8 @@ public class SwerveModule{
 
     //Finally, write all the config settings to the drive controller!
     driveMotor.configure(driveConfig, SparkBase.ResetMode.kResetSafeParameters, SparkBase.PersistMode.kPersistParameters);
+
+    this.drivePIDController = driveMotor.getClosedLoopController();
 
     //Setup Turn Motor Config
     SparkMaxConfig turnConfig = new SparkMaxConfig();
@@ -87,8 +90,6 @@ public class SwerveModule{
     // Limit the Turning PID Controller's input range between -pi and pi and set the input
     // to be continuous.
     this.turningPIDController.enableContinuousInput(-Math.PI, Math.PI);
-
-    this.drivePIDController = driveMotor.getClosedLoopController();
   }
 
   /**

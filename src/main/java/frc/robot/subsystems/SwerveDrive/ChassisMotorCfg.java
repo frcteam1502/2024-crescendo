@@ -40,5 +40,4 @@ final class ChassisMotorCfg {
         ANGLE_BACK_LEFT_REVERSED,
         ANGLE_BACK_RIGHT_REVERSED
       };
-  
 }
