@@ -5,7 +5,7 @@
 package frc.robot;
 
 import frc.robot.subsystems.PowerManagement.MockDetector;
-import frc.robot.commands.ControllerCommands;
+import frc.robot.commands.DriverCommands;
 import frc.robot.commands.ResetGyro;
 import frc.robot.commands.StopDriveMotors;
 import frc.robot.subsystems.SwerveDrive.DriveSubsystem;
@@ -74,7 +74,7 @@ public class RobotContainer {
    */
   private void configureBindings() {
     //Drivetrain
-    driveSubsystem.setDefaultCommand(new ControllerCommands(driveSubsystem, new MockDetector())); //USES THE LEFT BUMPER TO SLOW DOWN
+    driveSubsystem.setDefaultCommand(new DriverCommands(driveSubsystem, new MockDetector())); //USES THE LEFT BUMPER TO SLOW DOWN
     
     Driver.Controller.start().onTrue(new ResetGyro(driveSubsystem));
 

@@ -11,7 +11,7 @@ import edu.wpi.first.math.filter.SlewRateLimiter;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 
-public class ControllerCommands extends Command {
+public class DriverCommands extends Command {
   private final DriveSubsystem drive;
   private final AdaptiveSpeedController speedController;
 
@@ -23,7 +23,7 @@ public class ControllerCommands extends Command {
 
   boolean finesse_mode = false;
   
-  public ControllerCommands(DriveSubsystem drive, IBrownOutDetector brownOutDetector) {
+  public DriverCommands(DriveSubsystem drive, IBrownOutDetector brownOutDetector) {
     this.drive = drive;
     this.speedController = new AdaptiveSpeedController(brownOutDetector, 3.0, DrivebaseCfg.FINESSE_TRANSLATION_GAIN, DrivebaseCfg.TRANSLATION_GAIN_1);
     addRequirements(drive);
