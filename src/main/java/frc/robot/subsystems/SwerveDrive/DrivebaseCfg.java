@@ -29,9 +29,15 @@ public class DrivebaseCfg {
     );
 
     public static final double MAX_SPEED_METERS_PER_SECOND = 5.897;//NEO Vortex w/ L3 MK4i
-    public static final double MAX_ROTATION_RADIANS_PER_SECOND = 11;
-    public static final double MAX_TELEOP_ROTATION = .3;
-
+    //Rotiational Velocity is w = ((max_speed)/(2*pi*robot_radius))*(2*pi)
+    public static final double MAX_ROTATION_RADIANS_PER_SECOND = ((MAX_SPEED_METERS_PER_SECOND)/(Math.PI*WHEEL_BASE_DIAMETER))*(2*Math.PI);
+    
+    public static final double ROTATION_GAIN = .3;
+    public static final double TRANSLATION_GAIN_1 = 1;
+    public static final double TRANSLATION_GAIN_2 = .75;
+    public static final double FINESSE_ROTATION_GAIN = .1;
+    public static final double FINESSE_TRANSLATION_GAIN = .3;
     public static final double GO_STRAIGHT_GAIN = 0.1;
-    public static final double MIN_ALIGN_SPEED = 0.05;
+
+    public static final boolean ADAPTIVE_LIMITING_ENABLED = false;
 }

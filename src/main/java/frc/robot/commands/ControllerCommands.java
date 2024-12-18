@@ -5,31 +5,18 @@ import frc.robot.Driver;
 import frc.robot.subsystems.PowerManagement.AdaptiveSpeedController;
 import frc.robot.subsystems.PowerManagement.IBrownOutDetector;
 import frc.robot.subsystems.SwerveDrive.DriveSubsystem;
-
+import frc.robot.subsystems.SwerveDrive.DrivebaseCfg;
 import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.math.filter.SlewRateLimiter;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 
-final class DriveConstants {
-  public static final double MAX_SPEED_METERS_PER_SECOND = 4.6;
-  public static final double MAX_TELEOP_SPEED_DRIVER_1 = 1; //Range 0 to 1
-  public static final double MAX_TELEOP_SPEED_DRIVER_2 = .75; //Range 0 to 1
-  public static final double MAX_FINESSE_SPEED = .3;
-
-  public static final double MAX_ROTATION_RADIANS_PER_SECOND = 11; //w = ((max_speed)/(2*pi*robot_radius))*(2*pi)
-  public static final double MAX_TELEOP_ROTATION = .3;
-  public static final double MAX_FINESSE_ROTATION = .1;
-
-  public static final boolean ADAPTIVE_LIMITING_ENABLED = false;
-}
-
 public class ControllerCommands extends Command {
   private final DriveSubsystem drive;
   private final AdaptiveSpeedController speedController;
 
-  private final String kDriver1 = "Austin";
-  private final String kDriver2 = "Ethan";
+  private final String kDriver1 = "Driver1";
+  private final String kDriver2 = "Driver2";
 
   private SlewRateLimiter turnLimiter = new SlewRateLimiter(5);
   private final SendableChooser<String> driverChooser = new SendableChooser<>();
@@ -38,12 +25,12 @@ public class ControllerCommands extends Command {
   
   public ControllerCommands(DriveSubsystem drive, IBrownOutDetector brownOutDetector) {
     this.drive = drive;
-    this.speedController = new AdaptiveSpeedController(brownOutDetector, 3.0, DriveConstants.MAX_FINESSE_SPEED, DriveConstants.MAX_TELEOP_SPEED_DRIVER_1);
+    this.speedController = new AdaptiveSpeedController(brownOutDetector, 3.0, DrivebaseCfg.FINESSE_TRANSLATION_GAIN, DrivebaseCfg.TRANSLATION_GAIN_1);
     addRequirements(drive);
 
     driverChooser.setDefaultOption("Default Driver", kDriver1);
-    driverChooser.addOption("Austin", kDriver1);
-    driverChooser.addOption("Ethan", kDriver2);
+    driverChooser.addOption("Driver 1", kDriver1);
+    driverChooser.addOption("Driver 2", kDriver2);
     SmartDashboard.putData("Driver Chooser", driverChooser);
   }
 
@@ -63,37 +50,37 @@ public class ControllerCommands extends Command {
     String driver = (String) driverChooser.getSelected();
 
     switch(driver){
-      case kDriver2:
-        driver_gain = DriveConstants.MAX_TELEOP_SPEED_DRIVER_2;
-
+      case kDriver1:
       default:
-        driver_gain = DriveConstants.MAX_TELEOP_SPEED_DRIVER_1;
+        driver_gain = DrivebaseCfg.TRANSLATION_GAIN_1;
+      case kDriver2:
+        driver_gain = DrivebaseCfg.TRANSLATION_GAIN_2;
     }
 
     if(Driver.Controller.getHID().getRightBumperButton()){
-      teleopSpeedGain = DriveConstants.MAX_FINESSE_SPEED;
-      teleopRotationGain = DriveConstants.MAX_FINESSE_ROTATION;
+      teleopSpeedGain = DrivebaseCfg.FINESSE_TRANSLATION_GAIN;
+      teleopRotationGain = DrivebaseCfg.FINESSE_ROTATION_GAIN;
     }else{
       teleopSpeedGain = driver_gain;
-      teleopRotationGain = DriveConstants.MAX_TELEOP_ROTATION;
+      teleopRotationGain = DrivebaseCfg.ROTATION_GAIN;
     }
     //Need to convert joystick input (-1 to 1) into m/s!!! 100% == MAX Attainable Speed
     forwardSpeed = ((MathUtil.applyDeadband(Driver.getLeftY(), 0.1)) * teleopSpeedGain) *
-        DriveConstants.MAX_SPEED_METERS_PER_SECOND;
+        DrivebaseCfg.MAX_SPEED_METERS_PER_SECOND;
 
     strafeSpeed = ((MathUtil.applyDeadband(Driver.getLeftX(), 0.1)) * teleopSpeedGain) *
-        DriveConstants.MAX_SPEED_METERS_PER_SECOND;
+        DrivebaseCfg.MAX_SPEED_METERS_PER_SECOND;
 
-    //Need to convert joystick input (-1 to 1) into m/s!!! 100% == MAX Attainable Rotation
+    //Need to convert joystick input (-1 to 1) into rad/s!!! 100% == MAX Attainable Rotation
     rotationSpeed = turnLimiter.calculate(((MathUtil.applyDeadband(Driver.getRightX(), 0.1)) * teleopRotationGain) *
-        DriveConstants.MAX_ROTATION_RADIANS_PER_SECOND);
+        DrivebaseCfg.MAX_ROTATION_RADIANS_PER_SECOND);
     
 
     SmartDashboard.putNumber("Forward In", forwardSpeed);
     SmartDashboard.putNumber("Strafe In", strafeSpeed);
     SmartDashboard.putNumber("Rotation In", rotationSpeed);
 
-    if(DriveConstants.ADAPTIVE_LIMITING_ENABLED){
+    if(DrivebaseCfg.ADAPTIVE_LIMITING_ENABLED){
       var speedCommand = speedController.GetSpeedCommand(
         forwardSpeed, // Forward
         strafeSpeed, // Strafe
