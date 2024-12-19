@@ -12,9 +12,9 @@ public class DrivebaseCfg {
     public static final int BACK_RIGHT_MOD_ID   = 3;
 
     //Wheel Base
-    public static final double WHEEL_BASE_WIDTH = Units.inchesToMeters(23.25);
-    public static final double WHEEL_BASE_LENGTH = Units.inchesToMeters(23.25);
-    public static final double WHEEL_BASE_DIAMETER = Units.inchesToMeters(32.880);
+    public static final double WHEEL_BASE_WIDTH = Units.inchesToMeters(19.75);
+    public static final double WHEEL_BASE_LENGTH = Units.inchesToMeters(19.75);
+    public static final double WHEEL_BASE_DIAMETER = Units.inchesToMeters(27.931);
 
     public static final Translation2d FRONT_LEFT_MODULE = new Translation2d(WHEEL_BASE_LENGTH/2, WHEEL_BASE_WIDTH/2);
     public static final Translation2d FRONT_RIGHT_MODULE = new Translation2d(WHEEL_BASE_LENGTH/2, -WHEEL_BASE_WIDTH/2);
