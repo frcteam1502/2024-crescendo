@@ -44,6 +44,7 @@ public class Logger implements Runnable {
     private static String[] pneumaticNames;
     private static Pigeon2 pigeon;
     private static SparkMax spark;       //used to stop warning about not closing motor, since we really don't...
+    private static SparkFlex sparkFlex;
 
     private NetworkTable currentTable;
     private NetworkTable commandTable;
@@ -184,7 +185,16 @@ public class Logger implements Runnable {
                 //stickyTable.getEntry(i).setString(readSparkFaults(spark.getStickyFaults()));
                 tempTable.getEntry(i).setDouble(spark.getMotorTemperature());
                 canStatusTable.getEntry(i).setString(spark.getLastError().name());
-            } else {
+            } else if(item instanceof SparkFlex) {
+                sparkFlex = (SparkFlex)item;
+
+                commandTable.getEntry(i).setDouble(sparkFlex.getAppliedOutput()*sparkFlex.getBusVoltage());
+                currentTable.getEntry(i).setDouble(sparkFlex.getOutputCurrent());
+                //faultTable.getEntry(i).setString(readSparkFaults(spark.getFaults()));
+                //stickyTable.getEntry(i).setString(readSparkFaults(spark.getStickyFaults()));
+                tempTable.getEntry(i).setDouble(sparkFlex.getMotorTemperature());
+                canStatusTable.getEntry(i).setString(sparkFlex.getLastError().name());
+            }  else {
                 //unknown table
             }
         }

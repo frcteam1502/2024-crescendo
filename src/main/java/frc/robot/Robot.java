@@ -83,7 +83,7 @@ private String[] pneumaticNames = {
    */
   @Override
   public void robotInit() {
-    CameraServer.startAutomaticCapture();
+    //CameraServer.startAutomaticCapture();
     
     RobotController.setBrownoutVoltage(3);
     //Register PDP and PH Logger items
@@ -96,7 +96,7 @@ private String[] pneumaticNames = {
     //Logger.RegisterLoopTimes(this);
     //Logger.RegisterPdp(new PowerDistribution(1, ModuleType.kRev), pdhRealChannelNames);
     //Logger.RegisterPneumaticHub(new PneumaticHub(7), pneumaticNames);
-    //logger.start();
+    logger.start();
   }
 
   /**

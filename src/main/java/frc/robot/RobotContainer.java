@@ -58,6 +58,7 @@ public class RobotContainer {
     //Build an Autochooser from SmartDashboard selection.  Default will be Commands.none()
 
     //e.g new PathPlannerAuto("MiddleAutoAMPFinal");
+    new PathPlannerAuto("Example Auto");
 
     autoChooser = AutoBuilder.buildAutoChooser();
     SmartDashboard.putData("Auto Chooser", autoChooser);

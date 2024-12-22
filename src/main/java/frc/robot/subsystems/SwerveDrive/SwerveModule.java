@@ -84,7 +84,7 @@ public class SwerveModule{
     //config.MagnetSensor.MagnetOffset = offsetRotations;
     config.MagnetSensor.MagnetOffset = -CANCoderCfg.MAGNET_OFFSET[moduleId]/360;
     config.MagnetSensor.SensorDirection = CANCoderCfg.SENSOR_DIRECTION[moduleId];
-    config.MagnetSensor.AbsoluteSensorDiscontinuityPoint = 1;
+    config.MagnetSensor.AbsoluteSensorDiscontinuityPoint = CANCoderCfg.DISCONTINUITY_POINT;
     this.absEncoder.getConfigurator().apply(config);
 
     // Limit the Turning PID Controller's input range between -pi and pi and set the input
@@ -157,7 +157,7 @@ public class SwerveModule{
     
     //Set SmartDashboard variables
     commandedSpeed = desiredState.speedMetersPerSecond;
-    commandedAngle = desiredState.angle.getDegrees();
+    commandedAngle = desiredState.angle.getRadians();
 
     if(Math.abs(desiredState.speedMetersPerSecond) < .2){
       driveMotor.set(0);
@@ -169,11 +169,12 @@ public class SwerveModule{
 
       //Set SmartDashboard variables
       commandedSpeed = desiredState.speedMetersPerSecond;
-      commandedAngle = desiredState.angle.getDegrees();
+      commandedAngle = desiredState.angle.getRadians();
 
       //Calculate the motor speed output and pass the value to the SPARK PID Controller object
       var desiredSpeed = desiredState.speedMetersPerSecond/DrivebaseCfg.MAX_SPEED_METERS_PER_SECOND;
-      drivePIDController.setReference(desiredSpeed, SparkMax.ControlType.kVelocity);
+      //drivePIDController.setReference(desiredSpeed, SparkMax.ControlType.kVelocity);
+      driveMotor.set(desiredSpeed);
 
       // Calculate the turning motor output from the turning PID controller.
       final double turnOutput = turningPIDController.calculate(getAbsPositionZeroed(), desiredState.angle.getRadians());

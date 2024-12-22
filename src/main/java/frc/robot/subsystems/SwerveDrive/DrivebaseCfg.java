@@ -35,7 +35,7 @@ public class DrivebaseCfg {
     //Driver constants
     public static final double ROTATION_GAIN = .3;
     public static final double TRANSLATION_GAIN_1 = 1;
-    public static final double TRANSLATION_GAIN_2 = .75;
+    public static final double TRANSLATION_GAIN_2 = 1;
     public static final double FINESSE_ROTATION_GAIN = .1;
     public static final double FINESSE_TRANSLATION_GAIN = .3;
     public static final double GO_STRAIGHT_GAIN = 0.1;

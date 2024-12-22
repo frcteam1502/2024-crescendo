@@ -24,6 +24,8 @@ public class CANCoderCfg {
   public static final SensorDirectionValue BACK_RIGHT_CAN_CODER_DIRECTION = SensorDirectionValue.CounterClockwise_Positive;
   public static final double BACK_RIGHT_CAN_CODER_OFFSET = 122.76;
 
+  public static final double DISCONTINUITY_POINT = 0.5;
+
   public static final double MAGNET_OFFSET[] = {
     FRONT_LEFT_CAN_CODER_OFFSET,
     FRONT_RIGHT_CAN_CODER_OFFSET,

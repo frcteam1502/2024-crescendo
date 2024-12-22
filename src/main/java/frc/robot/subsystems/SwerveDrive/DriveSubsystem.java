@@ -189,31 +189,6 @@ public class DriveSubsystem extends SubsystemBase{
     SmartDashboard.putNumber("Gyro Yaw", getIMU_Yaw());
     SmartDashboard.putNumber("Target Angle", targetAngle);
 
-    //Swerve Module info
-    /*SmartDashboard.putNumber("Front Left Speed Command", frontLeft.getCommandedSpeed());
-    SmartDashboard.putNumber("Front Left Angle Command", frontLeft.getCommandedAngle());
-    SmartDashboard.putNumber("Front Left Speed Setpoint", frontLeft.getControllerSetpoint());
-    SmartDashboard.putNumber("Front Left Measured Speed", frontLeft.getModuleVelocity());
-    SmartDashboard.putNumber("Front Left CANcoder Angle", (frontLeft.getAbsPositionZeroed()*(180/Math.PI)));
-
-    SmartDashboard.putNumber("Front Right Speed Command", frontRight.getCommandedSpeed());
-    SmartDashboard.putNumber("Front Right Angle Command", frontRight.getCommandedAngle());
-    SmartDashboard.putNumber("Front Right Speed Setpoint", frontRight.getControllerSetpoint());
-    SmartDashboard.putNumber("Front Right Measured Speed", frontRight.getModuleVelocity());
-    SmartDashboard.putNumber("Front Right CANcoder Angle", (frontRight.getAbsPositionZeroed()*(180/Math.PI)));
-
-    SmartDashboard.putNumber("Rear Right Speed Command", backRight.getCommandedSpeed());
-    SmartDashboard.putNumber("Rear Right Angle Command", backRight.getCommandedAngle());
-    SmartDashboard.putNumber("Rear Right Speed Setpoint", backRight.getControllerSetpoint());
-    SmartDashboard.putNumber("Rear Right Measured Speed", backRight.getModuleVelocity());
-    SmartDashboard.putNumber("Rear Right CANcoder Angle", (backRight.getAbsPositionZeroed()*(180/Math.PI)));
-    
-    SmartDashboard.putNumber("Rear Left Speed Command", backLeft.getCommandedSpeed());
-    SmartDashboard.putNumber("Rear Left Angle Command", backLeft.getCommandedAngle());
-    SmartDashboard.putNumber("Rear Left Speed Setpoint", backLeft.getControllerSetpoint());
-    SmartDashboard.putNumber("Rear Left Measured Speed", backLeft.getModuleVelocity());
-    SmartDashboard.putNumber("Rear Left CANcoder Angle", (backLeft.getAbsPositionZeroed()*(180/Math.PI)));*/
-
     //Pose Info
     SmartDashboard.putString("FMS Alliance", DriverStation.getAlliance().toString());
     SmartDashboard.putNumber("Pose2D X", pose.getX());
@@ -249,7 +224,7 @@ public class DriveSubsystem extends SubsystemBase{
   public void drive(double xSpeed, double ySpeed, double rot, boolean fieldRelative) {
     checkInitialAngle();
 
-    if (GameState.isTeleop()) {
+    /*if (GameState.isTeleop()) {
       if (Math.abs(rot) > 0) {
         //Driver is commanding rotation, 
         isTurning = true;
@@ -267,7 +242,8 @@ public class DriveSubsystem extends SubsystemBase{
         turnCommand = (targetAngle - getIMU_Yaw()) * DrivebaseCfg.GO_STRAIGHT_GAIN;
       }
       
-    }
+    }*/
+    turnCommand = rot;
     //Set Dashboard variables
     fieldXCommand = xSpeed;
     fieldYCommand = ySpeed;
@@ -459,6 +435,21 @@ public class DriveSubsystem extends SubsystemBase{
     Logger.RegisterCanCoder("FR Abs Position", CANCoderCfg.FRONT_RIGHT_CAN_CODER);
     Logger.RegisterCanCoder("RL Abs Position", CANCoderCfg.BACK_LEFT_CAN_CODER);
     Logger.RegisterCanCoder("RR Abs Position", CANCoderCfg.BACK_RIGHT_CAN_CODER);
+
+    Logger.RegisterSensor("Front Left Angle Command",   ()->frontLeft.getCommandedAngle());
+    Logger.RegisterSensor("Front Right Angle Command",  ()->frontRight.getCommandedAngle());
+    Logger.RegisterSensor("Back Left Angle Command",    ()->backLeft.getCommandedAngle());
+    Logger.RegisterSensor("Back Right Angle Command",   ()->backRight.getCommandedAngle());
+
+    Logger.RegisterSensor("Front Left Angle (radians)",  ()->frontLeft.getAbsPositionZeroed());
+    Logger.RegisterSensor("Front Right Angle (radians)", ()->frontRight.getAbsPositionZeroed());
+    Logger.RegisterSensor("Back Left Angle (radians)",   ()->backLeft.getAbsPositionZeroed());
+    Logger.RegisterSensor("Back Right Angle (radians)",  ()->backRight.getAbsPositionZeroed());
+
+    Logger.RegisterSensor("FL Drive Speed Command", ()->frontLeft.getCommandedSpeed());
+    Logger.RegisterSensor("FR Drive Speed Command", ()->frontRight.getCommandedSpeed());
+    Logger.RegisterSensor("RL Drive Speed Command", ()->backLeft.getCommandedSpeed());
+    Logger.RegisterSensor("RR Drive Speed Command", ()->backRight.getCommandedSpeed());
 
     Logger.RegisterSensor("FL Drive Speed", ()->frontLeft.getVelocity());
     Logger.RegisterSensor("FR Drive Speed", ()->frontRight.getVelocity());
