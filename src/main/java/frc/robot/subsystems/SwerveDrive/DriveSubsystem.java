@@ -224,7 +224,7 @@ public class DriveSubsystem extends SubsystemBase{
   public void drive(double xSpeed, double ySpeed, double rot, boolean fieldRelative) {
     checkInitialAngle();
 
-    /*if (GameState.isTeleop()) {
+    if (GameState.isTeleop()) {
       if (Math.abs(rot) > 0) {
         //Driver is commanding rotation, 
         isTurning = true;
@@ -242,8 +242,8 @@ public class DriveSubsystem extends SubsystemBase{
         turnCommand = (targetAngle - getIMU_Yaw()) * DrivebaseCfg.GO_STRAIGHT_GAIN;
       }
       
-    }*/
-    turnCommand = rot;
+    }
+    
     //Set Dashboard variables
     fieldXCommand = xSpeed;
     fieldYCommand = ySpeed;

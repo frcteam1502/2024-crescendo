@@ -12,7 +12,7 @@ public class CANCoderCfg {
   //Front Right CANCoder
   public static final CANcoder FRONT_RIGHT_CAN_CODER = new CANcoder(10);
   public static final SensorDirectionValue FRONT_RIGHT_CAN_CODER_DIRECTION = SensorDirectionValue.CounterClockwise_Positive;
-  public static final double FRONT_RIGHT_CAN_CODER_OFFSET = 292.68;
+  public static final double FRONT_RIGHT_CAN_CODER_OFFSET = 126;
 
   //Back Left CANCoder
   public static final CANcoder BACK_LEFT_CAN_CODER = new CANcoder(4);
