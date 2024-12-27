@@ -419,15 +419,15 @@ public class DriveSubsystem extends SubsystemBase{
   }
 
   private void registerLoggerObjects(){
-    Logger.RegisterCanSparkFlex("FL Drive", ChassisMotorCfg.DRIVE_FRONT_LEFT);
-    Logger.RegisterCanSparkFlex("FR Drive", ChassisMotorCfg.DRIVE_FRONT_RIGHT);
-    Logger.RegisterCanSparkFlex("RL Drive", ChassisMotorCfg.DRIVE_BACK_LEFT);
-    Logger.RegisterCanSparkFlex("RR Drive", ChassisMotorCfg.DRIVE_BACK_RIGHT);
+    Logger.RegisterSparkFlex("FL Drive", ChassisMotorCfg.DRIVE_FRONT_LEFT);
+    Logger.RegisterSparkFlex("FR Drive", ChassisMotorCfg.DRIVE_FRONT_RIGHT);
+    Logger.RegisterSparkFlex("RL Drive", ChassisMotorCfg.DRIVE_BACK_LEFT);
+    Logger.RegisterSparkFlex("RR Drive", ChassisMotorCfg.DRIVE_BACK_RIGHT);
 
-    Logger.RegisterCanSparkMax("FL Turn", ChassisMotorCfg.ANGLE_FRONT_LEFT);
-    Logger.RegisterCanSparkMax("FR Turn", ChassisMotorCfg.ANGLE_FRONT_RIGHT);
-    Logger.RegisterCanSparkMax("RL Turn", ChassisMotorCfg.ANGLE_BACK_LEFT);
-    Logger.RegisterCanSparkMax("RR Turn", ChassisMotorCfg.ANGLE_BACK_RIGHT);
+    Logger.RegisterSparkMax("FL Turn", ChassisMotorCfg.ANGLE_FRONT_LEFT);
+    Logger.RegisterSparkMax("FR Turn", ChassisMotorCfg.ANGLE_FRONT_RIGHT);
+    Logger.RegisterSparkMax("RL Turn", ChassisMotorCfg.ANGLE_BACK_LEFT);
+    Logger.RegisterSparkMax("RR Turn", ChassisMotorCfg.ANGLE_BACK_RIGHT);
 
     Logger.RegisterPigeon(IMU_Cfg.PIGEON);
 
