@@ -5,7 +5,8 @@ import com.revrobotics.spark.config.SparkBaseConfig;
 import edu.wpi.first.math.util.Units;
 
 public class SwerveModuleCfg {
-      // kinematics
+  // User Defined Configs
+  // kinematics
   public static final double WHEEL_DIAMETER_METERS = Units.inchesToMeters(4);
   public static final double DRIVE_GEAR_RATIO = 1 / ((14.0 / 50.0) * (28.0 / 16.0) * (15.0 / 45.0));//L3 gearing
   public static final double STEER_GEAR_RATIO = 1 / ((14.0 / 50.0) * (10.0 / 60.0));
@@ -28,13 +29,4 @@ public class SwerveModuleCfg {
 
   public static final SparkBaseConfig.IdleMode DRIVE_IDLE_MODE  = SparkBaseConfig.IdleMode.kBrake;
   public static final SparkBaseConfig.IdleMode TURN_IDLE_MODE   = SparkBaseConfig.IdleMode.kBrake;
-
-
-  /*
-  public static final double MAX_METERS_PER_SECOND = 4.4; //5600 * DRIVE_ENCODER_MPS_PER_REV;
-  public static final double TURNING_DEGREES_PER_ENCODER_REV = 360 / STEER_GEAR_RATIO;
-  public static final double RADIANS_PER_ENCODER_REV = TURNING_DEGREES_PER_ENCODER_REV * (Math.PI/180);
-  public static final double MAX_MODULE_ROTATION_RADIANS_PER_SECOND = Math.PI/2;
-  public static final double MAX_MODULE_ROTATION_RADIANS_PER_SECOND_PER_SECOND = Math.PI;
-  */
 }
