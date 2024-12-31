@@ -75,9 +75,9 @@ public class Logger implements Runnable {
         tempTable = NetworkTableInstance.getDefault().getTable("Motor_Temps");
         commandTable = NetworkTableInstance.getDefault().getTable("Device_Commands");
         faultTable = NetworkTableInstance.getDefault().getTable("Device_Faults");
-        stickyTable = NetworkTableInstance.getDefault().getTable("Device_Sticky_Faults");
-        warningTable = NetworkTableInstance.getDefault().getTable("Device_Warnings");
-        stickyWarningTable = NetworkTableInstance.getDefault().getTable("Device_Sticky_Warnings");
+        stickyTable = NetworkTableInstance.getDefault().getTable("Device_Faults_Sticky");
+        warningTable = NetworkTableInstance.getDefault().getTable("Device_Warnings_Sticky");
+        stickyWarningTable = NetworkTableInstance.getDefault().getTable("Device_Warnings");
         sensorTable = NetworkTableInstance.getDefault().getTable("Sensors");
         //taskTimings = NetworkTableInstance.getDefault().getTable("Task_Timings_ms");
         SmartDashboard.putBoolean("Clear Faults", false);
@@ -166,18 +166,18 @@ public class Logger implements Runnable {
                 sensorTable.getEntry(i + " Angle").setDouble(coder.getAbsolutePosition().getValueAsDouble());
                 sensorTable.getEntry(i + " Mag Str").setString(coder.getMagnetHealth().toString());
 
-                faultTable.getEntry(i).setString(readCANCoderFaults(coder));
-                stickyTable.getEntry(i).setString(readCANCoderStickyFaults(coder));
+                //faultTable.getEntry(i).setString(readCANCoderFaults(coder));
+                //stickyTable.getEntry(i).setString(readCANCoderStickyFaults(coder));
                 
             } else if(item instanceof SparkMax) {
                 spark = (SparkMax)item;
 
                 commandTable.getEntry(i).setDouble(spark.getAppliedOutput()*spark.getBusVoltage());
                 currentTable.getEntry(i).setDouble(spark.getOutputCurrent());
-                faultTable.getEntry(i).setString(readSparkFaults(spark.getFaults()));
-                stickyTable.getEntry(i).setString(readSparkFaults(spark.getStickyFaults()));
-                warningTable.getEntry(i).setString(readSparkWarnings(spark.getWarnings()));
-                stickyWarningTable.getEntry(i).setString(readSparkWarnings(spark.getStickyWarnings()));
+                faultTable.getEntry(i).setString(readFaultStruct(spark.getFaults()));
+                stickyTable.getEntry(i).setString(readFaultStruct(spark.getStickyFaults()));
+                warningTable.getEntry(i).setString(readFaultStruct(spark.getWarnings()));
+                stickyWarningTable.getEntry(i).setString(readFaultStruct(spark.getStickyWarnings()));
                 tempTable.getEntry(i).setDouble(spark.getMotorTemperature());
                 canStatusTable.getEntry(i).setString(spark.getLastError().name());
             } else if(item instanceof SparkFlex) {
@@ -185,10 +185,10 @@ public class Logger implements Runnable {
 
                 commandTable.getEntry(i).setDouble(sparkFlex.getAppliedOutput()*sparkFlex.getBusVoltage());
                 currentTable.getEntry(i).setDouble(sparkFlex.getOutputCurrent());
-                faultTable.getEntry(i).setString(readSparkFaults(spark.getFaults()));
-                stickyTable.getEntry(i).setString(readSparkFaults(spark.getStickyFaults()));
-                warningTable.getEntry(i).setString(readSparkWarnings(spark.getWarnings()));
-                stickyWarningTable.getEntry(i).setString(readSparkWarnings(spark.getStickyWarnings()));
+                faultTable.getEntry(i).setString(readFaultStruct(sparkFlex.getFaults()));
+                stickyTable.getEntry(i).setString(readFaultStruct(sparkFlex.getStickyFaults()));
+                warningTable.getEntry(i).setString(readFaultStruct(sparkFlex.getWarnings()));
+                stickyWarningTable.getEntry(i).setString(readFaultStruct(sparkFlex.getStickyWarnings()));
                 tempTable.getEntry(i).setDouble(sparkFlex.getMotorTemperature());
                 canStatusTable.getEntry(i).setString(sparkFlex.getLastError().name());
             }  else {
@@ -374,8 +374,10 @@ public class Logger implements Runnable {
         if(faults.rawBits == 0) {
             //No Active Faults
             return "No Active Faults";
+        }else{
+            return "Device Faulted";
         }
-        StringBuilder work = new StringBuilder();
+        /*StringBuilder work = new StringBuilder();
 
         if(faults.other){work.append("Other ");}
         if(faults.motorType){work.append("MotorType ");}
@@ -386,7 +388,7 @@ public class Logger implements Runnable {
         if(faults.escEeprom){work.append("ESC_EEPROM ");}
         if(faults.firmware){work.append("Firmware ");}
 
-        return work.toString();
+        return work.toString();*/
     }
     
     private String readSparkWarnings(SparkBase.Warnings warnings) {

@@ -1,38 +1,5 @@
 <xml version="1.0">
 <dashboard>
-	<widget field="Is Arm At Intake" type="Boolean" class="edu.wpi.first.smartdashboard.gui.elements.TextBox">
-		<location x="907" y="216"/>
-	</widget>
-	<widget field="Is Arm At Rotation Goal" type="Boolean" class="edu.wpi.first.smartdashboard.gui.elements.TextBox">
-		<location x="284" y="583"/>
-	</widget>
-	<widget field="Distance to Speaker" type="Number" class="edu.wpi.first.smartdashboard.gui.elements.TextBox">
-		<location x="284" y="562"/>
-	</widget>
-	<widget field="Speaker Found" type="Boolean" class="edu.wpi.first.smartdashboard.gui.elements.TextBox">
-		<location x="284" y="541"/>
-	</widget>
-	<widget field="Speaker tY" type="Number" class="edu.wpi.first.smartdashboard.gui.elements.TextBox">
-		<location x="284" y="520"/>
-	</widget>
-	<widget field="Speaker tX" type="Number" class="edu.wpi.first.smartdashboard.gui.elements.TextBox">
-		<location x="284" y="499"/>
-	</widget>
-	<widget field="Limelight Latency" type="Number" class="edu.wpi.first.smartdashboard.gui.elements.TextBox">
-		<location x="284" y="478"/>
-	</widget>
-	<widget field="Is Target Valid" type="Boolean" class="edu.wpi.first.smartdashboard.gui.elements.TextBox">
-		<location x="284" y="332"/>
-	</widget>
-	<widget field="Vision Pose Rotation" type="Number" class="edu.wpi.first.smartdashboard.gui.elements.TextBox">
-		<location x="284" y="206"/>
-	</widget>
-	<widget field="Vision Pose Y" type="Number" class="edu.wpi.first.smartdashboard.gui.elements.TextBox">
-		<location x="284" y="185"/>
-	</widget>
-	<widget field="Vision Pose X" type="Number" class="edu.wpi.first.smartdashboard.gui.elements.TextBox">
-		<location x="284" y="129"/>
-	</widget>
 	<widget field="EstimatedPose Rotation" type="Number" class="edu.wpi.first.smartdashboard.gui.elements.TextBox">
 		<location x="284" y="108"/>
 	</widget>
@@ -45,122 +12,11 @@
 	<widget field="Target Angle" type="Number" class="edu.wpi.first.smartdashboard.gui.elements.TextBox">
 		<location x="284" y="21"/>
 	</widget>
-	<widget field="limelight-pose_Interface" type="String" class="edu.wpi.first.smartdashboard.gui.elements.TextBox">
-		<location x="284" y="0"/>
-	</widget>
-	<widget field="limelight-pose_Stream" type="String" class="edu.wpi.first.smartdashboard.gui.elements.TextBox">
-		<location x="0" y="750"/>
-	</widget>
-	<widget field="limelight-pose_PipelineName" type="String" class="edu.wpi.first.smartdashboard.gui.elements.TextBox">
-		<location x="0" y="729"/>
-	</widget>
-	<widget field="Rotation In" type="Number" class="edu.wpi.first.smartdashboard.gui.elements.TextBox">
-		<location x="0" y="708"/>
-	</widget>
-	<widget field="Strafe In" type="Number" class="edu.wpi.first.smartdashboard.gui.elements.TextBox">
-		<location x="0" y="687"/>
-	</widget>
-	<widget field="Forward In" type="Number" class="edu.wpi.first.smartdashboard.gui.elements.TextBox">
-		<location x="0" y="666"/>
-	</widget>
-	<widget field="limelight_Stream" type="String" class="edu.wpi.first.smartdashboard.gui.elements.TextBox">
-		<location x="0" y="645"/>
-	</widget>
-	<widget field="limelight_Interface" type="String" class="edu.wpi.first.smartdashboard.gui.elements.TextBox">
-		<location x="0" y="498"/>
-	</widget>
-	<widget field="limelight_PipelineName" type="String" class="edu.wpi.first.smartdashboard.gui.elements.TextBox">
-		<location x="0" y="477"/>
-	</widget>
-	<widget field="testDouble" type="Number" class="edu.wpi.first.smartdashboard.gui.elements.TextBox">
-		<location x="0" y="204"/>
-	</widget>
-	<widget field="Is Note Present" type="Boolean" class="edu.wpi.first.smartdashboard.gui.elements.TextBox">
-		<location x="1237" y="572"/>
-	</widget>
-	<widget field="Note Sensor NC" type="Boolean" class="edu.wpi.first.smartdashboard.gui.elements.TextBox">
-		<location x="1236" y="545"/>
-	</widget>
-	<widget field="Note Sensor NO" type="Boolean" class="edu.wpi.first.smartdashboard.gui.elements.TextBox">
-		<location x="1234" y="518"/>
-	</widget>
 	<widget field="Driver Chooser" type="String Chooser" class="edu.wpi.first.smartdashboard.gui.elements.Chooser">
 		<location x="517" y="31"/>
 	</widget>
-	<widget field="Is Shooter On" type="Boolean" class="edu.wpi.first.smartdashboard.gui.elements.TextBox">
-		<location x="995" y="539"/>
-	</widget>
-	<widget field="Intake PID p" type="Number" class="edu.wpi.first.smartdashboard.gui.elements.TextBox">
-		<location x="0" y="624"/>
-	</widget>
-	<widget field="Shooter PID P" type="Number" class="edu.wpi.first.smartdashboard.gui.elements.TextBox">
-		<location x="0" y="519"/>
-	</widget>
-	<widget field="Shooter PID FF" type="Number" class="edu.wpi.first.smartdashboard.gui.elements.TextBox">
-		<location x="987" y="349"/>
-	</widget>
-	<widget field="Intake PID FF" type="Number" class="edu.wpi.first.smartdashboard.gui.elements.TextBox">
-		<location x="1243" y="441"/>
-	</widget>
-	<widget field="Intake Pickup Speed" type="Number" class="edu.wpi.first.smartdashboard.gui.elements.TextBox">
-		<location x="1212" y="391"/>
-	</widget>
-	<widget field="Intake Applied Output Volts" type="Number" class="edu.wpi.first.smartdashboard.gui.elements.TextBox">
-		<location x="1178" y="490"/>
-	</widget>
-	<widget field="Intake Applied Output %" type="Number" class="edu.wpi.first.smartdashboard.gui.elements.TextBox">
-		<location x="1189" y="466"/>
-	</widget>
-	<widget field="Arm Intake Angle" type="Number" class="edu.wpi.first.smartdashboard.gui.elements.TextBox">
-		<location x="900" y="134"/>
-	</widget>
-	<widget field="Shooter Follow Applied Output Volts" type="Number" class="edu.wpi.first.smartdashboard.gui.elements.TextBox">
-		<location x="890" y="512"/>
-	</widget>
-	<widget field="Shooter Follow Applied Output %" type="Number" class="edu.wpi.first.smartdashboard.gui.elements.TextBox">
-		<location x="902" y="484"/>
-	</widget>
-	<widget field="Shooter Lead Applied Output Volts" type="Number" class="edu.wpi.first.smartdashboard.gui.elements.TextBox">
-		<location x="897" y="458"/>
-	</widget>
-	<widget field="Shooter Lead Applied Output %" type="Number" class="edu.wpi.first.smartdashboard.gui.elements.TextBox">
-		<location x="909" y="432"/>
-	</widget>
-	<widget field="Shooter Set Speed" type="Number" class="edu.wpi.first.smartdashboard.gui.elements.TextBox">
-		<location x="970" y="324"/>
-	</widget>
-	<widget field="Arm Far Angle" type="Number" class="edu.wpi.first.smartdashboard.gui.elements.TextBox">
-		<location x="916" y="186"/>
-	</widget>
-	<widget field="Arm Close Angle" type="Number" class="edu.wpi.first.smartdashboard.gui.elements.TextBox">
-		<location x="906" y="160"/>
-	</widget>
-	<widget field="ANGLE P Gain" type="Number" class="edu.wpi.first.smartdashboard.gui.elements.TextBox">
-		<location x="924" y="243"/>
-	</widget>
-	<widget field="Intake Speed" type="Number" class="edu.wpi.first.smartdashboard.gui.elements.TextBox">
-		<location x="1245" y="415"/>
-	</widget>
-	<widget field="Shooter Follow Speed" type="Number" class="edu.wpi.first.smartdashboard.gui.elements.TextBox">
-		<location x="958" y="404"/>
-	</widget>
-	<widget field="Shooter Lead Speed" type="Number" class="edu.wpi.first.smartdashboard.gui.elements.TextBox">
-		<location x="964" y="378"/>
-	</widget>
-	<widget field="Rotation Goal" type="Number" class="edu.wpi.first.smartdashboard.gui.elements.TextBox">
-		<location x="920" y="91"/>
-	</widget>
-	<widget field="Arm Relative Encoder" type="Number" class="edu.wpi.first.smartdashboard.gui.elements.TextBox">
-		<location x="883" y="64"/>
-	</widget>
 	<widget field="Drive Robot Relative Rotation Command" type="Number" class="edu.wpi.first.smartdashboard.gui.elements.TextBox">
 		<location x="0" y="42"/>
-	</widget>
-	<widget field="Drive Robot Relative vY Speed Command" type="Number" class="edu.wpi.first.smartdashboard.gui.elements.TextBox">
-		<location x="0" y="21"/>
-	</widget>
-	<widget field="Drive Robot Relative vX Speed Command" type="Number" class="edu.wpi.first.smartdashboard.gui.elements.TextBox">
-		<location x="0" y="0"/>
 	</widget>
 	<widget field="FMS Alliance" type="String" class="edu.wpi.first.smartdashboard.gui.elements.TextBox">
 		<location x="0" y="603"/>
@@ -177,45 +33,8 @@
 	<widget field="Auto Chooser" type="String Chooser" class="edu.wpi.first.smartdashboard.gui.elements.Chooser">
 		<location x="1411" y="17"/>
 	</widget>
-	<widget field="Rear Left Speed Setpoint" type="Number" class="edu.wpi.first.smartdashboard.gui.elements.TextBox">
-		<location x="257" y="457"/>
-	</widget>
-	<widget field="Rear Right Speed Setpoint" type="Number" class="edu.wpi.first.smartdashboard.gui.elements.TextBox">
-		<location x="256" y="427"/>
-	</widget>
-	<widget field="Front Right Speed Setpoint" type="Number" class="edu.wpi.first.smartdashboard.gui.elements.TextBox">
-		<location x="255" y="400"/>
-	</widget>
-	<widget field="Front Left Speed Setpoint" type="Number" class="edu.wpi.first.smartdashboard.gui.elements.TextBox">
-		<location x="255" y="365"/>
-	</widget>
 	<widget field="Clear Faults" type="Boolean" class="edu.wpi.first.smartdashboard.gui.elements.TextBox">
 		<location x="310" y="66"/>
-	</widget>
-	<widget field="Rear Right Measured Speed" type="Number" class="edu.wpi.first.smartdashboard.gui.elements.TextBox">
-		<location x="516" y="427"/>
-	</widget>
-	<widget field="Rear Right Angle Command" type="Number" class="edu.wpi.first.smartdashboard.gui.elements.TextBox">
-		<location x="11" y="292"/>
-	</widget>
-	<widget field="Front Right Angle Command" type="Number" class="edu.wpi.first.smartdashboard.gui.elements.TextBox">
-		<location x="8" y="263"/>
-	</widget>
-	<widget field="Rear Left Speed Command" type="Number" class="edu.wpi.first.smartdashboard.gui.elements.TextBox">
-		<location x="23" y="456"/>
-	</widget>
-	<widget field="Robot Relative vY Speed Command" type="Number" class="edu.wpi.first.smartdashboard.gui.elements.TextBox">
-		<location x="19" y="157"/>
-	</widget>
-	<widget field="Robot Relative vX Speed Command" type="Number" class="edu.wpi.first.smartdashboard.gui.elements.TextBox">
-		<location x="19" y="134"/>
-	</widget>
-	<widget field="Front Left Measured Speed" type="Number" class="edu.wpi.first.smartdashboard.gui.elements.TextBox">
-		<location x="517" y="366"/>
-	</widget>
-	<widget field="Rear Left Measured Speed" type="Number" class="edu.wpi.first.smartdashboard.gui.elements.TextBox">
-		<location x="515" y="457"/>
-		<height>20</height>
 	</widget>
 	<widget field="Field Oriented Y Command (Forward)" type="Number" class="edu.wpi.first.smartdashboard.gui.elements.TextBox">
 		<location x="6" y="108"/>
@@ -223,44 +42,8 @@
 	<widget field="Field Oriented X Command (Forward)" type="Number" class="edu.wpi.first.smartdashboard.gui.elements.TextBox">
 		<location x="6" y="83"/>
 	</widget>
-	<widget field="Front Left Angle Command" type="Number" class="edu.wpi.first.smartdashboard.gui.elements.TextBox">
-		<location x="14" y="237"/>
-	</widget>
-	<widget field="Rear Right Speed Command" type="Number" class="edu.wpi.first.smartdashboard.gui.elements.TextBox">
-		<location x="16" y="425"/>
-	</widget>
-	<widget field="Front Right Speed Command" type="Number" class="edu.wpi.first.smartdashboard.gui.elements.TextBox">
-		<location x="16" y="397"/>
-	</widget>
-	<widget field="Robot Relative Rotation Command" type="Number" class="edu.wpi.first.smartdashboard.gui.elements.TextBox">
-		<location x="21" y="183"/>
-	</widget>
-	<widget field="Front Right Measured Speed" type="Number" class="edu.wpi.first.smartdashboard.gui.elements.TextBox">
-		<location x="516" y="398"/>
-	</widget>
-	<widget field="Front Left Speed Command" type="Number" class="edu.wpi.first.smartdashboard.gui.elements.TextBox">
-		<location x="22" y="362"/>
-	</widget>
-	<widget field="Rear Left Angle Command" type="Number" class="edu.wpi.first.smartdashboard.gui.elements.TextBox">
-		<location x="19" y="321"/>
-	</widget>
 	<widget field="Gyro Yaw" type="Number" class="edu.wpi.first.smartdashboard.gui.elements.TextBox">
 		<location x="321" y="164"/>
-	</widget>
-	<widget field="Front Right CANcoder Angle" type="Number" class="edu.wpi.first.smartdashboard.gui.elements.TextBox">
-		<location x="261" y="261"/>
-	</widget>
-	<widget field="Rear Left CANcoder Angle" type="Number" class="edu.wpi.first.smartdashboard.gui.elements.TextBox">
-		<location x="270" y="311"/>
-	</widget>
-	<widget field="Front Left CANcoder Angle" type="Number" class="edu.wpi.first.smartdashboard.gui.elements.TextBox">
-		<location x="268" y="236"/>
-	</widget>
-	<widget field="Rear Right CANcoder Angle" type="Number" class="edu.wpi.first.smartdashboard.gui.elements.TextBox">
-		<location x="264" y="286"/>
-	</widget>
-	<widget field="Arm Absolute Encoder Angle" type="Number" class="edu.wpi.first.smartdashboard.gui.elements.TextBox">
-		<location x="850" y="37"/>
 	</widget>
 </dashboard>
 <live-window>

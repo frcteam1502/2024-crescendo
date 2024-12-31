@@ -30,26 +30,26 @@ public class Robot extends TimedRobot {
   private Logger logger = new Logger();
 
   private String[] pdhRealChannelNames = {
-    null,             //"0"
-    "Arm Lead",       //"1"
-    "Shooter Lead",   //"2"
-    "Shooter Follow", //"3"
-    "RL Turn",        //"4"  
-    "RL Drive",       //"5"
-    "Arm Follow",     //"6"
+    "FL Drive",       //"0"
+    "FL Turn",        //"1"
+    null,             //"2"
+    null,             //"3"
+    null,             //"4"  
+    null,             //"5"
+    null,             //"6"
     null,             //"7"
-    "RR Turn",        //"8"
-    "RR Drive",       //"9"
-    "FR Turn",        //"10"
-    "FR Drive",       //"11"
+    "RL Turn",        //"8"
+    "RL Drive",       //"9"
+    "RR Drive",       //"10"
+    "RR Turn",        //"11"
     null,             //"12"
     null,             //"13"
     null,             //"14"
     null,             //"15"
-    "FL Turn",        //"16"
-    "FL Drive",       //"17"
-    "Intake",         //"18"
-    null,             //"19"
+    null,             //"16"
+    null,             //"17"
+    "FR Turn",        //"18"
+    "FR Drive",       //"19"
     null,             //"20"
     null,             //"21"
     null,             //"22"
@@ -57,7 +57,7 @@ public class Robot extends TimedRobot {
 };
 
 private String[] pneumaticNames = {
-  "Brake Solenoid", //"0",
+  null, //"0",
   null, //"1",
   null, //"2"
   null, //"3"
@@ -94,7 +94,7 @@ private String[] pneumaticNames = {
 
     //Register Logger items
     //Logger.RegisterLoopTimes(this);
-    //Logger.RegisterPdp(new PowerDistribution(1, ModuleType.kRev), pdhRealChannelNames);
+    Logger.RegisterPdp(new PowerDistribution(1, ModuleType.kRev), pdhRealChannelNames);
     //Logger.RegisterPneumaticHub(new PneumaticHub(7), pneumaticNames);
     logger.start();
   }

@@ -82,7 +82,7 @@ public class SwerveModule{
     CANcoderConfiguration config = new CANcoderConfiguration();
     //double offsetRotations = -CANCoderCfg.MAGNET_OFFSETS[moduleId]/360;
     //config.MagnetSensor.MagnetOffset = offsetRotations;
-    config.MagnetSensor.MagnetOffset = -CANCoderCfg.MAGNET_OFFSET[moduleId]/360;
+    config.MagnetSensor.MagnetOffset = -CANCoderCfg.MAGNET_OFFSET[moduleId];
     config.MagnetSensor.SensorDirection = CANCoderCfg.SENSOR_DIRECTION[moduleId];
     config.MagnetSensor.AbsoluteSensorDiscontinuityPoint = CANCoderCfg.DISCONTINUITY_POINT;
     this.absEncoder.getConfigurator().apply(config);
