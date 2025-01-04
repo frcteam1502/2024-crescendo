@@ -15,6 +15,7 @@ import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.kinematics.SwerveModulePosition;
 import edu.wpi.first.math.kinematics.SwerveModuleState;
 import edu.wpi.first.math.util.Units;
+import edu.wpi.first.units.measure.MutVelocity;
 import edu.wpi.first.units.measure.Voltage;
 
 public class SwerveModule{
@@ -33,6 +34,12 @@ public class SwerveModule{
                                                             SwerveModuleCfg.MODULE_TURN_PID_CONTROLLER_I, 
                                                             SwerveModuleCfg.MODULE_TURN_PID_CONTROLLER_D);
 
+  private final SimpleMotorFeedforward feedforward = new SimpleMotorFeedforward(
+                                                            SwerveModuleCfg.DRIVE_MOTOR_KS,
+                                                            SwerveModuleCfg.DRIVE_MOTOR_KV,
+                                                            SwerveModuleCfg.DRIVE_MOTOR_KA);
+  
+  
   private double commandedSpeed;
   private double commandedAngle;
 
@@ -53,13 +60,14 @@ public class SwerveModule{
     drivePIDF_Config.p(SwerveModuleCfg.MODULE_DRIVE_PID_CONTROLLER_P);
     drivePIDF_Config.i(SwerveModuleCfg.MODULE_DRIVE_PID_CONTROLLER_I);
     drivePIDF_Config.d(SwerveModuleCfg.MODULE_DRIVE_PID_CONTROLLER_D);
-    drivePIDF_Config.velocityFF(SwerveModuleCfg.MODULE_DRIVE_PID_CONTROLLER_F);
+    drivePIDF_Config.velocityFF(1/DrivebaseCfg.MAX_SPEED_METERS_PER_SECOND);
+
 
     //Setup Drive Motor Config
     SparkFlexConfig driveConfig = new SparkFlexConfig();
     driveConfig.idleMode(SwerveModuleCfg.DRIVE_IDLE_MODE);
     driveConfig.closedLoopRampRate(SwerveModuleCfg.CLSD_LOOP_RAMP_RATE_SECONDS);
-    driveConfig.smartCurrentLimit(SwerveModuleCfg.SMART_CURRENT_LIMIT);
+    driveConfig.smartCurrentLimit(SwerveModuleCfg.DRIVE_CURRENT_LIMIT_AMPS);
     driveConfig.inverted(ChassisMotorCfg.DRIVE_MOTOR_REVERSED[moduleId]);
     
     //Apply Drive Encoder & Drive PID Configs to the Drive Config
@@ -80,8 +88,6 @@ public class SwerveModule{
 
     //Set absolute encoder magnet configuration
     CANcoderConfiguration config = new CANcoderConfiguration();
-    //double offsetRotations = -CANCoderCfg.MAGNET_OFFSETS[moduleId]/360;
-    //config.MagnetSensor.MagnetOffset = offsetRotations;
     config.MagnetSensor.MagnetOffset = -CANCoderCfg.MAGNET_OFFSET[moduleId];
     config.MagnetSensor.SensorDirection = CANCoderCfg.SENSOR_DIRECTION[moduleId];
     config.MagnetSensor.AbsoluteSensorDiscontinuityPoint = CANCoderCfg.DISCONTINUITY_POINT;
@@ -172,9 +178,9 @@ public class SwerveModule{
       commandedAngle = desiredState.angle.getRadians();
 
       //Calculate the motor speed output and pass the value to the SPARK PID Controller object
-      var desiredSpeed = desiredState.speedMetersPerSecond/DrivebaseCfg.MAX_SPEED_METERS_PER_SECOND;
-      //drivePIDController.setReference(desiredSpeed, SparkMax.ControlType.kVelocity);
-      driveMotor.set(desiredSpeed);
+      //var desiredSpeed = desiredState.speedMetersPerSecond/DrivebaseCfg.MAX_SPEED_METERS_PER_SECOND;
+      var desiredSpeed = desiredState.speedMetersPerSecond;
+      drivePIDController.setReference(desiredSpeed, SparkMax.ControlType.kVelocity);
 
       // Calculate the turning motor output from the turning PID controller.
       final double turnOutput = turningPIDController.calculate(getAbsPositionZeroed(), desiredState.angle.getRadians());

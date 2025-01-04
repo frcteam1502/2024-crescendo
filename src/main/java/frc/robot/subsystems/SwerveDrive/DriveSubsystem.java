@@ -68,7 +68,7 @@ public class DriveSubsystem extends SubsystemBase{
     ChassisMotorCfg.DRIVE_BACK_RIGHT, ChassisMotorCfg.ANGLE_BACK_RIGHT, 
     CANCoderCfg.BACK_RIGHT_CAN_CODER);
 
-  private final Pigeon2 gyro = IMU_Cfg.PIGEON;
+  private final Pigeon2 gyro = IMU_Cfg.IMU;
 
   private final SwerveDriveKinematics kinematics = DrivebaseCfg.KINEMATICS;
 
@@ -198,7 +198,6 @@ public class DriveSubsystem extends SubsystemBase{
     SmartDashboard.putNumber("EstimatedPose X", estimatedPose.getX());
     SmartDashboard.putNumber("EstimatedPose Y", estimatedPose.getY());
     SmartDashboard.putNumber("EstimatedPose Rotation", estimatedPose.getRotation().getDegrees());
-
   }
   
   @Override
@@ -429,7 +428,7 @@ public class DriveSubsystem extends SubsystemBase{
     Logger.RegisterSparkMax("RL Turn", ChassisMotorCfg.ANGLE_BACK_LEFT);
     Logger.RegisterSparkMax("RR Turn", ChassisMotorCfg.ANGLE_BACK_RIGHT);
 
-    Logger.RegisterPigeon(IMU_Cfg.PIGEON);
+    Logger.RegisterPigeon(IMU_Cfg.IMU);
 
     Logger.RegisterCanCoder("FL Abs Position", CANCoderCfg.FRONT_LEFT_CAN_CODER);
     Logger.RegisterCanCoder("FR Abs Position", CANCoderCfg.FRONT_RIGHT_CAN_CODER);
